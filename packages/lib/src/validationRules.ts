@@ -82,7 +82,6 @@ export const birthDateSchema = z.date({
 })
 export const dateTimeSchema = z.string().refine(
 	(value) => {
-		console.log(value)
 		const date = new Date(value)
 		return !isNaN(date.getTime())
 	},

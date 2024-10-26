@@ -2,22 +2,18 @@ import React from "react"
 import UpdateProfile from "../components/forms/update/Profile"
 
 import { Button } from "../components/ui/Button"
-import { API_URL } from "../lib/axios"
 import { useAuth } from "../context/AuthContext"
 import { useState } from "react"
 import { UserRole } from "../lib/types"
+import { IMAGE_BASE_URL } from "../lib/axios"
 import { formatRole, formatRut } from "../lib/formatters"
 
 const ProfilePage: React.FC = () => {
-	const { user, role } = useAuth()
 	const [showUpdateForm, setShowUpdateForm] = useState<boolean>(false)
-
-	const [imageSrc, setImageSrc] = useState<string>(`
-		${API_URL}/storage/public/users/${user?.id}/${user?.id}.webp
-	`)
+	const { user, role, profilePicture, setProfilePicture } = useAuth()
 
 	const handleImageError = () => {
-		setImageSrc(`${API_URL}/storage/public/users/default-profile.webp`)
+		setProfilePicture(`${IMAGE_BASE_URL}/users/default-profile.webp`)
 	}
 
 	const handleShowUpdateForm = () => {
@@ -35,7 +31,7 @@ const ProfilePage: React.FC = () => {
 					<div className="flex flex-col items-center justify-center">
 						<div className="relative h-[150px] w-[150px] sm:h-[200px] sm:w-[200px] rounded-full overflow-hidden border-1 border-gray dark:border-gray-medium">
 							<img
-								src={imageSrc}
+								src={profilePicture?.toString()}
 								alt="profile"
 								className="h-full w-full object-cover rounded-full"
 								onError={() => handleImageError()}
@@ -57,7 +53,7 @@ const ProfilePage: React.FC = () => {
 
 				{showUpdateForm && (
 					<div className="flex flex-col justify-center items-center">
-						<UpdateProfile setImageSrc={setImageSrc} setShowUpdateForm={setShowUpdateForm} />
+						<UpdateProfile setImageSrc={setProfilePicture} setShowUpdateForm={setShowUpdateForm} />
 					</div>
 				)}
 			</div>

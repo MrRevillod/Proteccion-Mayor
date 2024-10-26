@@ -80,8 +80,8 @@ export const AdministratorSchemas = {
 
 export const EventSchemas = {
 	Create: z.object({
-		startsAt: rules.dateTimeSchema,
-		endsAt: rules.dateTimeSchema,
+		start: rules.dateTimeSchema,
+		end: rules.dateTimeSchema,
 		professionalId: rules.rutSchema,
 		serviceId: z.number({ message: "El servicio es obligatorio" }),
 		seniorId: z.optional(rules.rutSchema),
@@ -89,17 +89,17 @@ export const EventSchemas = {
 	}),
 	Update: z
 		.object({
-			startsAt: rules.dateTimeSchema,
-			endsAt: rules.dateTimeSchema,
+			start: rules.dateTimeSchema,
+			end: rules.dateTimeSchema,
 			professionalId: rules.rutSchema,
 			serviceId: z.number(),
 			assistance: z.boolean(),
 			seniorId: z.optional(rules.rutSchema),
 			centerId: z.number(),
 		})
-		.refine((data) => data.startsAt < data.endsAt, {
+		.refine((data) => data.start < data.end, {
 			message: "La fecha de inicio no puede ser mayor a la fecha de finalización",
-			path: ["startsAt", "endsAt"],
+			path: ["start", "end"],
 		}),
 }
 

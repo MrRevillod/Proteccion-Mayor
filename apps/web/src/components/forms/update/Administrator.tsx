@@ -32,7 +32,12 @@ const UpdateAdministrator: React.FC<FormProps<Administrator>> = ({ data, setData
 	return (
 		<Modal type="Edit" title={`Editar la información de ${selectedData?.name}`}>
 			<FormProvider {...methods}>
-				<Form<Administrator> data={data} setData={setData} action={updateAdministrator} actionType="update">
+				<Form<Administrator>
+					data={data as Administrator[]}
+					setData={setData}
+					action={updateAdministrator}
+					actionType="update"
+				>
 					<Input name="name" label="Nombre" type="text" placeholder="Nombre" />
 					<Input name="email" label="Correo Electrónico" type="email" placeholder="Correo Electrónico" />
 					<Input name="password" label="Contraseña" type="password" placeholder="••••" />

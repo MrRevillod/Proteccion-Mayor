@@ -16,7 +16,7 @@ const CreateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => {
 	return (
 		<Modal type="Create" title="Añadir nueva persona mayor al sistema">
 			<FormProvider {...methods}>
-				<Form<Senior> data={data} setData={setData} action={createSenior} actionType="create">
+				<Form<Senior> data={data as Senior[]} setData={setData} action={createSenior} actionType="create">
 					<Input name="id" label="Rut (sin puntos ni guión)" type="text" placeholder="123456789" />
 					<Input name="name" label="Nombre" type="text" placeholder="Juan Perez" />
 					<Input name="email" label="Correo Electrónico" type="email" placeholder="JohnD@provider.com" />

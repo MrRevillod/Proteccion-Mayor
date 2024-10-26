@@ -9,17 +9,17 @@ export type QueryMap<T> = { [K in keyof T]: (value: any) => any }
 
 // Funcion para generar un where a partir de un query y un queryMap
 // El Where es un objeto especial que se usa en prisma para filtrar.
-export const generateWhere = <T extends Query>(query: T, queryMap: QueryMap<T>) => {
-	const orConditions = [] as any[]
+export const generateWhere = <T extends Query>(query: T, queryMap: QueryMap<T>, logicCondition = "OR") => {
+	const conditions = [] as any[]
 
 	Object.keys(query).forEach((key) => {
 		if (queryMap[key as keyof T]) {
 			const filter = queryMap[key as keyof T](query[key as keyof T])
-			if (filter !== null) orConditions.push({ [key]: filter })
+			if (filter !== null) conditions.push({ [key]: filter })
 		}
 	})
 
-	return orConditions.length ? { OR: orConditions } : {}
+	return conditions.length ? { [logicCondition]: conditions } : {}
 }
 
 export const generateSelect = <T extends Query>(query: string | undefined, select: T) => {
@@ -51,8 +51,8 @@ export interface EventQuery extends Query {
 
 export const eventSelect: Prisma.EventSelect = {
 	id: true,
-	startsAt: true,
-	endsAt: true,
+	start: true,
+	end: true,
 	assistance: true,
 	seniorId: true,
 	professionalId: true,
@@ -62,7 +62,10 @@ export const eventSelect: Prisma.EventSelect = {
 		select: { name: true, color: true },
 	},
 	center: {
-		select: { name: true },
+		select: { id: true, name: true },
+	},
+	senior: {
+		select: { id: true, name: true },
 	},
 	createdAt: true,
 	updatedAt: true,

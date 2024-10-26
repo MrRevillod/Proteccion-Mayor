@@ -78,8 +78,8 @@ model Professional {
 
 model Event {
   id         Int      @id @default(autoincrement())
-  startsAt   DateTime @db.DateTime
-  endsAt     DateTime @db.DateTime
+  start      DateTime @db.DateTime
+  end        DateTime @db.DateTime
   assistance Boolean  @default(false)
 
   createdAt DateTime @default(now())

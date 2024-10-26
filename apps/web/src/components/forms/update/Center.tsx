@@ -33,7 +33,7 @@ const UpdateCenter: React.FC<FormProps<Center>> = ({ data, setData }) => {
 	return (
 		<Modal type="Edit" title={`Editar la información del ${selectedData?.name}`}>
 			<FormProvider {...methods}>
-				<Form<Center> data={data} setData={setData} action={updateCenter} actionType="update">
+				<Form<Center> data={data as Center[]} setData={setData} action={updateCenter} actionType="update">
 					<Input name="name" label="Nombre" type="text" />
 					<Input name="address" label="Dirección" type="text" />
 					<Input name="phone" label="Teléfono" type="text" />

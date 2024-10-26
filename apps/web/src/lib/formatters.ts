@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from "react"
-import { UserRole } from "./types"
+import { Event, UserRole } from "./types"
 import { Location } from "react-router-dom"
+import dayjs from "dayjs"
 
 export const formatRut = (rut: string) => {
 	return rut.replace(/(\d{1,3})(\d{3})(\d{3})(\w{1})/, "$1.$2.$3-$4")
@@ -46,7 +47,31 @@ export const selectDataFormatter = ({ data, setData, keys = defaultSelectKeys }:
 	setData(data.map((item) => ({ label: item[keys.label], value: item[keys.value] })))
 }
 
-export const getIdFromUrl = (location: Location<any>): string | undefined => {
-	const url = new URLSearchParams(location.search).toString()
-	return url.split("=")[1]
+type QueryIdsValues = {
+	centerId: string | null
+	serviceId: string | null
+	professionalId: string | null
+}
+
+export const getIdsFromUrl = (location: Location<any>): QueryIdsValues => {
+	const queryIds = {
+		centerId: null,
+		serviceId: null,
+		professionalId: null,
+	} as QueryIdsValues
+
+	const url = new URLSearchParams(location.search)
+
+	for (const key in queryIds) {
+		const value = url.get(key)
+		if (value) queryIds[key as keyof QueryIdsValues] = value
+	}
+
+	return queryIds
+}
+
+export const filterUpcomingEvents = (events: Event[]): Event[] => {
+	return events.filter((event) => {
+		return !event.assistance && event.seniorId !== null && dayjs(event.start).day() === dayjs().day()
+	})
 }

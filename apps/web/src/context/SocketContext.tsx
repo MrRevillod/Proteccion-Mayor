@@ -21,9 +21,7 @@ export const SocketProvider = ({ children }: { children?: ReactNode }) => {
 				query: { userId: user?.id, userRole: role },
 			})
 
-			newSocket.on("connect", () => {
-				console.log("Socket conectado:", newSocket)
-			})
+			newSocket.on("connect", () => {})
 
 			newSocket.on("disconnect", (reason) => {
 				if (newSocket.active) {

@@ -15,7 +15,7 @@ import { updateAdministrator, updateProfessional } from "../../../lib/actions"
 import { FieldValues, FormProvider, SubmitHandler, useForm } from "react-hook-form"
 
 interface UpdateProfileProps {
-	setImageSrc: Dispatch<SetStateAction<string>>
+	setImageSrc: Dispatch<SetStateAction<string | null>>
 	setShowUpdateForm: Dispatch<SetStateAction<boolean>>
 }
 

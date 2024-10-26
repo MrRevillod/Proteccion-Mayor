@@ -2,7 +2,7 @@ import { prisma } from "@repo/database"
 import { Prisma } from "@prisma/client"
 import { fileToFormData } from "../utils/files"
 import { AppError, httpRequest } from "@repo/lib"
-import { centerSelect, generateSelect } from "../utils/filters"
+import { centerSelect, generateSelect, generateWhere } from "../utils/filters"
 import { Request, Response, NextFunction } from "express"
 
 // Controlador de tipo select puede recibir un query para seleccionar campos específicos
@@ -11,8 +11,25 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
 	const selectQuery = req.query.select?.toString()
 	const select = generateSelect<Prisma.CenterSelect>(selectQuery, centerSelect)
 
+	let filter = {} as Prisma.CenterWhereInput
+
+	if (req.query.professionalId) {
+		filter = {
+			Event: {
+				some: {
+					professionalId: req.query.professionalId.toString(),
+				},
+			},
+		}
+	}
+
 	try {
-		const centers = await prisma.center.findMany({ select })
+		const centers = await prisma.center.findMany({
+			where: filter ? { ...filter } : undefined,
+			select,
+			distinct: ["id"],
+		})
+
 		return res.status(200).json({ values: centers })
 	} catch (error) {
 		next(error)

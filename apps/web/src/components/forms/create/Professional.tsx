@@ -37,7 +37,12 @@ const CreateProfessional: React.FC<FormProps<Professional>> = ({ data, setData }
 	return (
 		<Modal type="Create" title="Añadir nuevo profesional al sistema" loading={loading}>
 			<FormProvider {...methods}>
-				<Form<Professional> data={data} setData={setData} action={createProfessional} actionType="create">
+				<Form<Professional>
+					data={data as Professional[]}
+					setData={setData}
+					action={createProfessional}
+					actionType="create"
+				>
 					<Input name="id" label="Rut (sin puntos ni guión)" type="text" placeholder="123456789" />
 					<Input name="name" label="Nombre" type="text" placeholder="Juan Perez" />
 					<Input name="email" label="Correo Electrónico" type="email" placeholder="JohnD@provider.com" />

@@ -30,7 +30,12 @@ const UpdateProfessional: React.FC<FormProps<Professional>> = ({ data, setData }
 	return (
 		<Modal type="Edit" title={`Editar la información de ${selectedData?.name}`}>
 			<FormProvider {...methods}>
-				<Form<Professional> data={data} setData={setData} actionType="update" action={updateProfessional}>
+				<Form<Professional>
+					data={data as Professional[]}
+					setData={setData}
+					actionType="update"
+					action={updateProfessional}
+				>
 					<Input name="name" label="Nombre" type="text" placeholder="Nombre" />
 					<Input name="email" label="Correo Electrónico" type="email" placeholder="Correo Electrónico" />
 					<Input name="password" label="Contraseña" type="password" placeholder="••••" />
