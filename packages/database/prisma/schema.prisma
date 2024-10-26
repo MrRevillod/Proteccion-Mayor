@@ -30,6 +30,7 @@ model Senior {
   address   String   @db.Text
   birthDate DateTime @db.Date
   validated Boolean  @default(false)
+  gender    Gender?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

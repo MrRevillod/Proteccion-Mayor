@@ -132,4 +132,5 @@ export const seniorSelect: Prisma.SeniorSelect = {
 	password: false,
 	createdAt: true,
 	updatedAt: true,
+	gender: true,
 }

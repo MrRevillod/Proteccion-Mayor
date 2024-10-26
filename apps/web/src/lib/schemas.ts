@@ -21,6 +21,7 @@ export const SeniorSchemas = {
 			name: rules.nameSchema,
 			address: rules.addressSchema,
 			birthDate: z.string({ message: "La fecha de nacimiento es requerida" }),
+			gender: rules.genderSchema,
 		})
 		.refine((data) => rules.isValidDate(data.birthDate), {
 			message: "La fecha de ingresada no es válida",

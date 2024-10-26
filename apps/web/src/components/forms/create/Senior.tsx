@@ -4,6 +4,7 @@ import DatetimeSelect from "../../ui/DatetimeSelect"
 import { Form } from "../Form"
 import { Input } from "../../ui/Input"
 import { Modal } from "../../Modal"
+import { SuperSelect } from "@/components/ui/SuperSelect"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { createSenior } from "../../../lib/actions"
 import { SeniorSchemas } from "../../../lib/schemas"
@@ -21,6 +22,14 @@ const CreateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => {
 					<Input name="name" label="Nombre" type="text" placeholder="Juan Perez" />
 					<Input name="email" label="Correo Electrónico" type="email" placeholder="JohnD@provider.com" />
 					<Input name="address" label="Dirección" type="text" placeholder="Montt #123" />
+					<SuperSelect
+						name="gender"
+						label="Género"
+						options={[
+							{ value: "MA", label: "Masculino" },
+							{ value: "FE", label: "Femenino" },
+						]}
+					/>
 					<DatetimeSelect label="Fecha de nacimiento" name="birthDate" showTime={false} />
 				</Form>
 			</FormProvider>

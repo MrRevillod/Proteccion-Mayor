@@ -159,3 +159,7 @@ export const colorSchema = z
 	.transform((val) => {
 		return val.startsWith("#") ? val : `#${val}`
 	})
+
+export const genderSchema = z.enum(["MA", "FE"], {
+	message: "El género seleccionado no es válido",
+})

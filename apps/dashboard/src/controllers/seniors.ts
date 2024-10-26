@@ -1,6 +1,6 @@
 import { hash } from "bcrypt"
 import { prisma } from "@repo/database"
-import { Prisma, Senior } from "@prisma/client"
+import { Gender, Prisma, Senior } from "@prisma/client"
 import { Request, Response, NextFunction } from "express"
 import { AppError, constants, httpRequest } from "@repo/lib"
 import { generateSelect, generateWhere, seniorSelect } from "../utils/filters"
@@ -68,13 +68,17 @@ export const handleSeniorRequest = async (req: Request, res: Response, next: Nex
 	const validated = req.query.validate === "true"
 
 	try {
-		const { name, address, birthDate } = req.body
+		const { name, address, birthDate, gender } = req.body
 
 		// Se verifica si el adulto mayor existe
 		const senior = await prisma.senior.findUnique({ where: { id } })
 
 		if (!senior) {
 			throw new AppError(400, "Adulto mayor no encontrado")
+		}
+
+		if (gender !== "MA" || gender !== "FE") {
+			throw new AppError(400, "El género debe ser MA o FE")
 		}
 
 		// Si la solicitud es rechazada, se eliminan los archivos enviados
@@ -103,7 +107,13 @@ export const handleSeniorRequest = async (req: Request, res: Response, next: Nex
 
 		await prisma.senior.update({
 			where: { id },
-			data: { name, address, birthDate, validated },
+			data: {
+				name,
+				address,
+				birthDate,
+				validated,
+				gender: Gender[gender as keyof typeof Gender],
+			},
 		})
 
 		return res.status(200).json({ message: "La solicitud ha sido aceptada", values: {} })
@@ -120,6 +130,7 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
 	const queryToWhereMap = {
 		id: (value: any) => ({ contains: value }),
 		name: (value: any) => ({ contains: value }),
+		gender: (value: Gender) => ({ equals: value }),
 		validated: (value: any) => ({ equals: Number(value) === 1 }),
 	}
 
@@ -147,11 +158,15 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 	const { DEFAULT_SENIOR_PASSWORD } = constants
 
 	try {
-		const { id, name, email, address, birthDate } = req.body
+		const { id, name, email, address, birthDate, gender } = req.body
 		const defaulAdminPassword = await hash(DEFAULT_SENIOR_PASSWORD, 10)
 
 		const filter: Prisma.SeniorWhereInput = {
 			OR: [{ id }, { email }],
+		}
+
+		if (gender !== "MA" && gender !== "FE") {
+			throw new AppError(400, "El género debe ser MA o FE")
 		}
 
 		// Verificar si la persona mayor ya existe en la base de datos
@@ -165,16 +180,16 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 			throw new AppError(409, "La persona mayor ya existe", { conflicts })
 		}
 
+		const data = {
+			...req.body,
+			password: defaulAdminPassword,
+			validated: true,
+			birthDate: new Date(req.body.birthDate),
+			gender: Gender[req.body.gender as keyof typeof Gender],
+		}
+
 		const senior = await prisma.senior.create({
-			data: {
-				id,
-				name,
-				email,
-				password: defaulAdminPassword,
-				address,
-				birthDate: new Date(birthDate),
-				validated: true,
-			},
+			data: data,
 			select: seniorSelect,
 		})
 

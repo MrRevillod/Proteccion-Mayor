@@ -26,6 +26,7 @@ export const isValidRut = (rut: string): boolean => {
 
 	return verifier === expectedVerifier
 }
+
 export const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
 export const rutSchema = z.string().refine(isValidRut, {
@@ -80,6 +81,7 @@ export const birthDateSchema = z.date({
 	invalid_type_error: "La fecha de nacimiento ingresada no es válida",
 	required_error: "La fecha de nacimiento es obligatoria ",
 })
+
 export const dateTimeSchema = z.string().refine(
 	(value) => {
 		const date = new Date(value)
@@ -135,3 +137,7 @@ export const phoneSchema = z
 export const colorSchema = z
 	.string()
 	.regex(/^#?[0-9A-Fa-f]{6}$/, "El color debe ser un código hexadecimal válido")
+
+export const genderSchema = z.enum(["MA", "FE"], {
+	message: "El género debe ser MA o FE",
+})

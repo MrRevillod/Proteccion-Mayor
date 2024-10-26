@@ -14,6 +14,7 @@ export const SeniorSchemas = {
 		name: rules.nameSchema,
 		address: rules.addressSchema,
 		birthDate: rules.dateTimeSchema,
+		gender: rules.genderSchema,
 	}),
 
 	Update: z
