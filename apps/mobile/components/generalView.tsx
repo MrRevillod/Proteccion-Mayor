@@ -10,23 +10,32 @@ type GeneralViewProps = {
 	textCircle?: string
 	textTitle?: string
 	textDescription?: string
+	noBorders?: boolean
+	hasImage?: boolean
 }
 
-const GeneralView = ({ title, children, textCircle, textTitle, textDescription }: GeneralViewProps) => {
+const GeneralView = ({ title, children, textCircle, textTitle, textDescription, noBorders = false, hasImage = false }: GeneralViewProps) => {
 	return (
 		<KeyboardAvoidingView
 			style={{ backgroundColor: Colors.green, flex: 1 }}
 			behavior={Platform.OS === "ios" ? "padding" : "height"}
 			enabled={true}
 		>
-			<View style={styles.greenContainer}>
-				<Text style={styles.title}>{title} </Text>
+			<View style={[!noBorders && styles.greenContainer, noBorders && styles.noBorderGreenContainer]}>
+				{hasImage ? (
+					<View style={styles.hasImageStyles}>
+						<Text style={styles.title}>🖕¡Hola Juan!</Text>
+						<View style={styles.imageCircle}></View>
+					</View>
+				) : (
+					<Text style={styles.title}>{title} </Text>
+				)}
 			</View>
-			<View style={styles.whiteContainer}>
+			<View style={[!noBorders && styles.whiteContainer, noBorders && styles.noBorderWhiteContainer]}>
 				<View style={styles.description}>
 					{textCircle && textTitle && (
 						<>
-							<View style={styles.circle}>
+							<View style={[styles.circle, noBorders && { borderWidth: 0 }]}>
 								<Text style={styles.circleText}>{textCircle}</Text>
 							</View>
 							<Text style={{ fontSize: 18, fontWeight: "500", flex: 1, alignSelf: "center" }}>{textTitle}</Text>
@@ -43,6 +52,13 @@ const GeneralView = ({ title, children, textCircle, textTitle, textDescription }
 
 const styles = StyleSheet.create({
 	greenContainer: {
+		flex: 1,
+		backgroundColor: Colors.green,
+		justifyContent: "center",
+		alignItems: "center",
+		height: "20%",
+	},
+	noBorderGreenContainer: {
 		flex: 1,
 		backgroundColor: Colors.green,
 		justifyContent: "center",
@@ -67,6 +83,13 @@ const styles = StyleSheet.create({
 		borderTopRightRadius: 20,
 		padding: "10%",
 	},
+	noBorderWhiteContainer: {
+		width: "100%",
+		height: "80%",
+		backgroundColor: "#FFFFFF",
+		paddingHorizontal: "10%",
+		paddingVertical: "5%",
+	},
 	description: {
 		flexDirection: "row",
 		height: "auto",
@@ -86,6 +109,23 @@ const styles = StyleSheet.create({
 		color: Colors.green,
 		fontWeight: "bold",
 		fontSize: 16,
+	},
+	imageCircle: {
+		width: width * 0.2,
+		height: width * 0.2,
+		borderRadius: 100,
+		borderColor: Colors.white,
+		borderWidth: 2,
+		backgroundColor: Colors.gray,
+	},
+	hasImageStyles: {
+		flex: 1,
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
+		alignContent: "center",
+		alignSelf: "center",
+		width: "80%",
 	},
 })
 

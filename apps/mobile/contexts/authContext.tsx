@@ -1,17 +1,17 @@
 import { SERVER_URL } from "@/utils/request"
 import { makeAuthenticatedRequest } from "@/utils/request"
-import { storeTokens, storeUser, removeTokens, removeUser } from "@/utils/storage" // Importamos removeTokens y removeUser
+import { storeTokens, storeUser, removeTokens, removeUser, getExpTime } from "@/utils/storage"
 import { loginSeniorFormData, User } from "@/utils/types"
+import { isTokenExp } from "@/utils/validation"
 import axios from "axios"
 import { createContext, ReactNode, useContext, useEffect, useState } from "react"
-import { Alert, AppState, AppStateStatus } from "react-native" // Importamos AppState y AppStateStatus
+import { Alert, AppState, AppStateStatus } from "react-native"
 import { set } from "zod"
 
 interface authContextProps {
 	isAuthenticated: boolean
 	user: User | null
 	role: "SENIOR" | null
-	tokens: { accessToken: string; refreshToken: string } | null
 	loading: boolean
 	login: (credentials: loginSeniorFormData) => Promise<void>
 	logout: () => void
@@ -23,7 +23,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
 	const [user, setUser] = useState<User | null>(null)
 	const [role, setRole] = useState<"SENIOR" | null>(null)
-	const [tokens, setTokens] = useState<{ accessToken: string; refreshToken: string } | null>(null)
 	const [loading, setLoading] = useState<boolean>(true)
 
 	const login = async (credentials: loginSeniorFormData) => {
@@ -40,8 +39,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 				storeUser(publicUser)
 				setRole("SENIOR")
 				Alert.alert("Éxito", message)
+				console.log(getExpTime())
 			}
-
 		} catch (error: any) {
 			error.response.data.message && Alert.alert("Error", error.response.data.message)
 		}
@@ -91,10 +90,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 	useEffect(() => {
 		checkAuth()
-		console.warn(isAuthenticated)
 	}, [])
 
-	return <AuthContext.Provider value={{ isAuthenticated, user, role, tokens, loading, login, logout }}>{children}</AuthContext.Provider>
+	return <AuthContext.Provider value={{ isAuthenticated, user, role, loading, login, logout }}>{children}</AuthContext.Provider>
 }
 
 export const useAuth = (): authContextProps => {

@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { z } from "zod"
+import { getExpTime } from "./storage"
 
 const isValidRutFormat = (rut: string): boolean => {
 	const rutRegex = /^[0-9]+[0-9Kk]$/
@@ -67,11 +68,11 @@ export const profileSchema = z.object({
 export default registerSchema
 
 export const isTokenExp = async (): Promise<boolean> => {
-	const exp = await AsyncStorage.getItem("tokenExp")
+	const exp = await getExpTime()
 	if (!exp) {
 		return true
 	}
-
 	const currentTime = Date.now()
-	return currentTime > parseInt(exp, 10)
+	console.log("Current time:", exp)
+	return currentTime > exp
 }

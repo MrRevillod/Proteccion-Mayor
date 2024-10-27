@@ -20,11 +20,7 @@ const Menu = ({ navigation }: commonProps) => {
 				onPress={() => navigation.navigate("Profile")}
 				style={{ marginTop: 20, width: "85%", alignSelf: "center" }}
 			/>
-			<CustomButton
-				title="Nueva Foto de Perfil"
-				onPress={() => navigation.navigate("NewProfile")}
-				style={{ marginTop: 20, width: "85%", alignSelf: "center" }}
-			/>
+			<CustomButton title="Home" onPress={() => navigation.navigate("Home")} style={{ marginTop: 20, width: "85%", alignSelf: "center" }} />
 		</GeneralView>
 	)
 }

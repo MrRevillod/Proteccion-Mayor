@@ -34,6 +34,7 @@ import { log, services, errorHandler, constants, AppError } from "@repo/lib"
 // Un upload de una imagen con el mismo nombre sobreescribe la anterior
 
 const verifyStorageKey: RequestHandler = (req, res, next) => {
+	console.log(req.headers.authorization)
 	if (req.headers["x-storage-key"] !== constants.STORAGE_KEY) {
 		next(new AppError(403, "No tiene permisos para acceder al servicio"))
 	}

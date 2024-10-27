@@ -9,6 +9,7 @@ import Camera from "@/components/camera"
 import { NavigationContainer } from "@react-navigation/native"
 import { AuthProvider } from "@/contexts/authContext"
 import ProtectedRoute from "@/components/protectedRoute"
+import Home from "@/screens/home/home"
 
 const Stack = createNativeStackNavigator()
 
@@ -27,13 +28,7 @@ const App = () => {
 							</ProtectedRoute>
 						)}
 					</Stack.Screen>
-					<Stack.Screen name="NewProfile">
-						{(props) => (
-							<ProtectedRoute navigation={props.navigation}>
-								<NewProfile {...props} />
-							</ProtectedRoute>
-						)}
-					</Stack.Screen>
+					<Stack.Screen name="Home" component={Home} />
 
 					<Stack.Screen name="Camera" component={Camera} options={{ headerShown: true }} />
 				</Stack.Navigator>
