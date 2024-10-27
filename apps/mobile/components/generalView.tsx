@@ -1,7 +1,7 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { View, StyleSheet, Text, Dimensions, KeyboardAvoidingView, Platform, Image } from "react-native"
 import Colors from "@/components/colors"
-import GoBackButton from "@/components/goBack"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 const { width, height } = Dimensions.get("window")
 
 type GeneralViewProps = {
@@ -11,10 +11,29 @@ type GeneralViewProps = {
 	textTitle?: string
 	textDescription?: string
 	noBorders?: boolean
-	hasImage?: boolean
+	hTitle?: boolean
 }
 
-const GeneralView = ({ title, children, textCircle, textTitle, textDescription, noBorders = false, hasImage = false }: GeneralViewProps) => {
+const GeneralView = ({ title, children, textCircle, textTitle, textDescription, noBorders = false, hTitle = false }: GeneralViewProps) => {
+	const [user, setUser] = useState<any>(null)
+	useEffect(() => {
+		const getUser = async () => {
+			try {
+				const user = await AsyncStorage.getItem("user")
+				if (!user) {
+					throw new Error("El usuario no existe")
+				}
+				const parsedUser = JSON.parse(user)
+				setUser(parsedUser)
+			} catch (error) {
+				console.error("Error al obtener el usuario", error)
+			}
+		}
+		getUser()
+	}, [])
+
+	const name = user?.name || "Juan"
+
 	return (
 		<KeyboardAvoidingView
 			style={{ backgroundColor: Colors.green, flex: 1 }}
@@ -22,10 +41,9 @@ const GeneralView = ({ title, children, textCircle, textTitle, textDescription, 
 			enabled={true}
 		>
 			<View style={[!noBorders && styles.greenContainer, noBorders && styles.noBorderGreenContainer]}>
-				{hasImage ? (
+				{hTitle ? (
 					<View style={styles.hasImageStyles}>
-						<Text style={styles.title}>🖕¡Hola Juan!</Text>
-						<View style={styles.imageCircle}></View>
+						<Text style={styles.title}>👋 ¡Hola {name}!</Text>
 					</View>
 				) : (
 					<Text style={styles.title}>{title} </Text>
@@ -68,7 +86,7 @@ const styles = StyleSheet.create({
 	title: {
 		alignSelf: "center",
 		fontWeight: "700",
-		fontSize: 24,
+		fontSize: 22,
 		color: "#FFFFFF",
 		textAlign: "center",
 		textShadowColor: "rgba(0, 0, 0, 0.25)",
@@ -88,7 +106,7 @@ const styles = StyleSheet.create({
 		height: "80%",
 		backgroundColor: "#FFFFFF",
 		paddingHorizontal: "10%",
-		paddingVertical: "5%",
+		paddingVertical: "10%",
 	},
 	description: {
 		flexDirection: "row",

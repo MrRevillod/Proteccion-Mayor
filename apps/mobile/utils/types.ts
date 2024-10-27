@@ -1,4 +1,3 @@
-import { Service } from "@prisma/client"
 import { Control, FieldValues } from "react-hook-form"
 
 export type commonProps = {
