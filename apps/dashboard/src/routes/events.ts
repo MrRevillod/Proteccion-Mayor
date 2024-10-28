@@ -17,4 +17,6 @@ router.patch("/:id/cancel", events.cancelReserve)
 
 router.delete("/:id", events.deleteById) //updateEvent
 
+router.get("/:serviceId", validateRole(["ADMIN", "PROFESSIONAL", "SENIOR"]), events.getByService)
+
 export default router

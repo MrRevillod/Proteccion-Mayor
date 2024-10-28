@@ -34,8 +34,6 @@ const Home: React.FC<{ navigation: any }> = ({ navigation }) => {
 					const data: ResponseData = response.data
 					setServices(data.values)
 				}
-				const events = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events/`, "GET")
-				console.warn("Events:", events?.data)
 			} catch (error) {
 				console.error("Error fetching services:", error)
 			}
@@ -55,7 +53,11 @@ const Home: React.FC<{ navigation: any }> = ({ navigation }) => {
 					>
 						<View style={styles.gridContainer}>
 							{services.map((service) => (
-								<TouchableOpacity key={service.id} style={styles.gridItem}>
+								<TouchableOpacity
+									key={service.id}
+									style={styles.gridItem}
+									onPress={() => navigation.navigate("Centers", { serviceId: service.id })} // Navegación con el ID del servicio
+								>
 									<View style={[styles.iconContainer, { backgroundColor: service.color }]}>
 										<Image
 											source={{ uri: `${SERVER_URL}/api/storage/public/services/${service.id}.webp` }}

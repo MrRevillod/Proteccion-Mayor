@@ -1,6 +1,7 @@
 import React from "react"
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, ImageSourcePropType } from "react-native"
 import Colors from "@/components/colors"
+import { Ionicons } from "@expo/vector-icons"
 const { width } = Dimensions.get("window")
 
 type DataDisplayerProps = {
@@ -9,15 +10,21 @@ type DataDisplayerProps = {
 	descriptionField?: String | number
 	actionButton?: "Ingresar" | "Cambiar" | "ELIMINAR"
 	onPress?: () => void
+	isCC?: boolean
 }
 
-const DataDisplayer = ({ imgPath, titleField, descriptionField, actionButton, onPress }: DataDisplayerProps) => {
+const DataDisplayer = ({ imgPath, titleField, descriptionField, actionButton, onPress, isCC = false }: DataDisplayerProps) => {
 	return (
 		<View style={styles.dataContainer}>
 			<View style={{ flexDirection: "row", alignItems: "center", padding: width * 0.01 }}>
-				<Image source={imgPath} style={{ width: width * 0.11, height: width * 0.11 }} />
+				{isCC ? (
+					<Ionicons name="home-outline" color="black" size={width * 0.11} />
+				) : (
+					<Image source={imgPath} style={{ width: width * 0.11, height: width * 0.11 }} />
+				)}
+
 				{!descriptionField && !actionButton && (
-					<View style={{ flexDirection: "column", marginLeft: 10, maxWidth: "auto" }}>
+					<View style={{ flexDirection: "column", marginLeft: 10, maxWidth: "80%" }}>
 						<Text style={styles.textTitle}>{titleField}</Text>
 					</View>
 				)}
@@ -27,7 +34,7 @@ const DataDisplayer = ({ imgPath, titleField, descriptionField, actionButton, on
 					</View>
 				)}
 				{descriptionField && !actionButton && (
-					<View style={{ flexDirection: "column", marginLeft: 10, maxWidth: "auto" }}>
+					<View style={{ flexDirection: "column", marginLeft: 10, maxWidth: "80%" }}>
 						<Text style={styles.textTitle}>{titleField}</Text>
 						<Text style={{ fontSize: 16, color: Colors.gray, margin: 0, padding: 0, fontWeight: "bold" }}>{descriptionField}</Text>
 					</View>

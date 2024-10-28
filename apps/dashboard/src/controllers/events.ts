@@ -280,3 +280,23 @@ export const cancelReserve = async (req: Request, res: Response, next: NextFunct
 		next(error)
 	}
 }
+
+export const getByService = async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const { serviceId } = req.params
+
+		const centers = await prisma.event.findMany({
+			where: { serviceId: Number(serviceId) },
+			select: {
+				center: true,
+			},
+			distinct: ["centerId"],
+		})
+
+		console.log(centers)
+
+		return res.status(200).json({ centers })
+	} catch (error) {
+		next(error)
+	}
+}

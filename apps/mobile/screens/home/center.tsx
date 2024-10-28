@@ -1,11 +1,42 @@
+import React, { useEffect, useState } from "react"
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native"
 import CustomButton from "@/components/button"
 import Colors from "@/components/colors"
 import DataDisplayer from "@/components/dataDisplayer"
 import GeneralView from "@/components/generalView"
 import MenuBar from "@/components/menuBar"
-import { View, Text, StyleSheet } from "react-native"
+import { makeAuthenticatedRequest, SERVER_URL } from "@/utils/request" // Usa tu función de petición
+import { useRoute } from "@react-navigation/native" // Para obtener parámetros de navegación
 
-const Center = ({ navigation }: any) => {
+interface Center {
+	id: number
+	name: string
+	address: string
+}
+
+const CenterScreen = ({ navigation }: any) => {
+	const [centers, setCenters] = useState<Center[]>([])
+	const route = useRoute()
+	const { serviceId } = route.params as { serviceId: number }
+
+	useEffect(() => {
+		const fetchCenters = async () => {
+			try {
+				const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events/${serviceId}`, "GET")
+				if (response?.data) {
+					const centerList = response.data.centers.map((item: { center: Center }) => item.center)
+					setCenters(centerList)
+				}
+			} catch (error) {
+				console.error("Error fetching centers:", error)
+			}
+		}
+
+		if (serviceId) {
+			fetchCenters()
+		}
+	}, [serviceId])
+
 	return (
 		<>
 			<GeneralView title="Agendar Servicio">
@@ -14,12 +45,11 @@ const Center = ({ navigation }: any) => {
 						<Text style={styles.textStyle}>Seleccione Centro Comunitario</Text>
 					</View>
 					<View style={styles.midContainer}>
-						<DataDisplayer titleField="CC PEDRO DE VALDIVIA" />
-						<DataDisplayer titleField="CC PEDRO DE VALDIVIA" />
-						<DataDisplayer titleField="CC PEDRO DE VALDIVIA" />
-						<DataDisplayer titleField="CC PEDRO DE VALDIVIA" />
-						<DataDisplayer titleField="CC PEDRO DE VALDIVIA" />
-						<DataDisplayer titleField="CC PEDRO DE VALDIVIA" />
+						{centers.map((center) => (
+							<TouchableOpacity>
+								<DataDisplayer key={center.id} titleField={center.name} descriptionField={center.address} isCC />
+							</TouchableOpacity>
+						))}
 					</View>
 					<View style={styles.bottomContainer}></View>
 				</View>
@@ -33,7 +63,7 @@ const Center = ({ navigation }: any) => {
 	)
 }
 
-export default Center
+export default CenterScreen
 
 const styles = StyleSheet.create({
 	bigContainer: {
