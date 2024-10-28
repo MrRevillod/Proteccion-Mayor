@@ -16,7 +16,7 @@ import { useState, useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { createEvent, getSeniors } from "../../../lib/actions"
 import { getIdsFromUrl, selectDataFormatter } from "../../../lib/formatters"
-import { FormProps, Professional, Senior, SuperSelectField } from "../../../lib/types"
+import { Professional, Senior, SuperSelectField } from "../../../lib/types"
 
 // El formulario recibe refetch, ya que en este caso es más conveniente que
 // filtrar los evento en el cliente, se vuelvan a obtener los eventos desde el servidor
@@ -40,7 +40,7 @@ const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, service
 	const methods = useForm({ resolver: zodResolver(EventSchemas.Create) })
 
 	const { watch, setValue } = methods
-	const { isModalOpen, modalType } = useModal()
+	const { isModalOpen, modalType, selectedData } = useModal()
 
 	// Se obtiene el id del centro de la url, con el fin de seleccionarlo por defecto
 	// ya que es posible crear un evento desde la url de un centro
@@ -59,9 +59,7 @@ const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, service
 	// del input en tiempo real y se puede utilizar para realizar peticiones
 	// en un orden específico
 
-	const selectedCenter = watch("centerId")
 	const selectedService = watch("serviceId")
-	const selectedProfessional = watch("professionalId")
 
 	// Los hooks useRequest se utilizan para obtener los servicios, profesionales y centros
 	// reciben un trigger que actua como un disparador de un useEffect
@@ -81,6 +79,7 @@ const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, service
 
 	// Se obtienen las personas mayores cuando se abre el modal y
 	// se selecciona un servicio, un profesional y un centro
+
 	useRequest<Senior[]>({
 		action: getSeniors,
 		query: `name=${seniorsSearch}&id=${seniorsSearch}&select=name,id&limit=5`,
@@ -103,6 +102,12 @@ const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, service
 			setValue("serviceId", (user as Professional)?.service.id)
 		}
 	}, [])
+
+	useEffect(() => {
+		if (selectedData && selectedData.dateStr) {
+			setValue("start", dayjs(selectedData.dateStr).toISOString())
+		}
+	}, [selectedData])
 
 	return (
 		<Modal type="Create" title="Crear un nuevo evento">

@@ -9,30 +9,30 @@
 
 .fc-event {
 	@apply bg-light text-dark;
-	/* Color para modo claro */
+	cursor: pointer;
 }
 
 .dark .fc-event {
-	@apply bg-gray-dark text-light;
-	/* Color para modo oscuro */
+	@apply bg-primary-dark text-light;
+}
+
+.dark .fc-timegrid-slot-label-cushion,
+.dark .fc-timegrid-axis-cushion,
+.dark .fc-toolbar h2 {
+	@apply text-light;
 }
 
 .fc-toolbar h2 {
 	@apply text-dark;
-	/* Color para modo claro */
-}
-
-.dark .fc-toolbar h2 {
-	@apply text-light;
-	/* Color para modo oscuro */
 }
 
 .dark .fc-daygrid-day {
-	@apply bg-gray-dark;
+	background-color: #243342;
+	color: white;
 	/* Color para modo oscuro */
 }
 
-.fc-daygrid-day.fc-day-today {
+.dark .fc-daygrid-day .fc-daygrid-day.fc-day-today {
 	@apply bg-gray-medium;
 	/* Color para el día actual en modo claro */
 }

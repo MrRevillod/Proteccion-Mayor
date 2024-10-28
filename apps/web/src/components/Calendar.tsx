@@ -54,6 +54,10 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 		setPopoverInfo({ ...popoverInfo, visible: false })
 	}
 
+	const handleDateClick = (info: any) => {
+		showModal("Create", info)
+	}
+
 	return (
 		<div className="w-3/5 bg-white dark:bg-primary-dark p-4 rounded-lg max-h-[70vh] overflow-y-auto overflow-x-auto relative">
 			<FullCalendar
@@ -72,6 +76,7 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 				editable={false}
 				droppable={false}
 				selectable={true}
+				dateClick={(info) => handleDateClick(info)}
 				height="auto"
 				timeZone="local"
 				views={{
