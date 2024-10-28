@@ -13,7 +13,7 @@ const Pin = ({ navigation }: any) => {
 
 	const onSubmit = async (data: any) => {
 		await login(data)
-		navigation.navigate("Menu")
+		navigation.navigate("Home")
 	}
 
 	return (

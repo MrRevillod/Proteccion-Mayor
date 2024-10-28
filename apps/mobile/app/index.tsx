@@ -4,12 +4,12 @@ import Register from "./register"
 import Login from "./login"
 import Menu from "../screens/menu"
 import Profile from "../screens/myProfile"
-import NewProfile from "@/screens/newProfile"
 import Camera from "@/components/camera"
 import { NavigationContainer } from "@react-navigation/native"
 import { AuthProvider } from "@/contexts/authContext"
 import ProtectedRoute from "@/components/protectedRoute"
 import Home from "@/screens/home/home"
+import Center from "@/screens/home/center"
 
 const Stack = createNativeStackNavigator()
 
@@ -28,7 +28,14 @@ const App = () => {
 							</ProtectedRoute>
 						)}
 					</Stack.Screen>
-					<Stack.Screen name="Home" component={Home} />
+					<Stack.Screen name="Home">
+						{(props) => (
+							<ProtectedRoute navigation={props.navigation}>
+								<Home {...props} />
+							</ProtectedRoute>
+						)}
+					</Stack.Screen>
+					<Stack.Screen name="Centers" component={Center} />
 
 					<Stack.Screen name="Camera" component={Camera} options={{ headerShown: true }} />
 				</Stack.Navigator>

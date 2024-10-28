@@ -8,7 +8,6 @@ import { AntDesign } from "@expo/vector-icons"
 
 const { width } = Dimensions.get("window")
 const itemSize = width * 0.32 // Tamaño del grid item
-const numRows = 3
 const spacing = 20 // Espacio entre elementos
 
 // Define la interfaz para un servicio
@@ -35,6 +34,8 @@ const Home: React.FC<{ navigation: any }> = ({ navigation }) => {
 					const data: ResponseData = response.data
 					setServices(data.values)
 				}
+				const events = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events/`, "GET")
+				console.warn("Events:", events?.data)
 			} catch (error) {
 				console.error("Error fetching services:", error)
 			}
@@ -48,9 +49,9 @@ const Home: React.FC<{ navigation: any }> = ({ navigation }) => {
 				<View>
 					<ScrollView
 						style={{
-							height: "89%", // Altura ajustada para 2 filas
+							height: "89%",
 						}}
-						showsVerticalScrollIndicator={false} // Oculta la barra de scroll
+						showsVerticalScrollIndicator={false}
 					>
 						<View style={styles.gridContainer}>
 							{services.map((service) => (
@@ -65,24 +66,22 @@ const Home: React.FC<{ navigation: any }> = ({ navigation }) => {
 									<Text style={styles.serviceText}>{service.name}</Text>
 								</TouchableOpacity>
 							))}
-							<TouchableOpacity style={styles.gridItem}>
+							<TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate("Profile")}>
 								<View style={styles.iconContainer}>
 									<AntDesign name="user" size={width * 0.2} color="white" />
 								</View>
-								<Text style={styles.serviceText}>Perfil</Text>
+								<Text style={styles.serviceText}>Mi Perfil</Text>
 							</TouchableOpacity>
 						</View>
 					</ScrollView>
 				</View>
 			</GeneralView>
-			<MenuBar
-				onPress={() => {
-					navigation.navigate("Menu")
-				}}
-			/>
+			<MenuBar navigation={navigation} />
 		</>
 	)
 }
+
+export default Home
 
 const styles = StyleSheet.create({
 	gridContainer: {
@@ -123,5 +122,3 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 	},
 })
-
-export default Home

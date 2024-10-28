@@ -15,12 +15,16 @@ const Menu = ({ navigation }: commonProps) => {
 				textStyle={styles.customButtonText}
 				onPress={() => navigation.navigate("Login")}
 			/>
-			<CustomButton
+			{/* <CustomButton
 				title="Mi Perfil"
 				onPress={() => navigation.navigate("Profile")}
 				style={{ marginTop: 20, width: "85%", alignSelf: "center" }}
+			/> */}
+			<CustomButton
+				title="Centros"
+				onPress={() => navigation.navigate("Centers")}
+				style={{ marginTop: 20, width: "85%", alignSelf: "center" }}
 			/>
-			<CustomButton title="Home" onPress={() => navigation.navigate("Home")} style={{ marginTop: 20, width: "85%", alignSelf: "center" }} />
 		</GeneralView>
 	)
 }
