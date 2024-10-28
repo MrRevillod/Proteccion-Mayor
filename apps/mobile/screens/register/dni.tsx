@@ -4,10 +4,18 @@ import GeneralView from "@/components/generalView"
 import CustomButton from "@/components/button"
 import Colors from "@/components/colors"
 import { commonProps } from "../../utils/types"
-import { Controller } from "react-hook-form"
+import { Controller, useFormContext } from "react-hook-form"
 import Feather from "@expo/vector-icons/Feather"
 
-const DNI = ({ navigation, route, control, errors, setValue, getValues, trigger }: commonProps) => {
+const DNI = ({ navigation, route }: commonProps) => {
+	const {
+		setValue,
+		getValues,
+		trigger,
+		control,
+		formState: { errors },
+	} = useFormContext()
+
 	const [isCapturingFront, setIsCapturingFront] = useState<boolean>(true)
 	const [arePhotosValid, setPhotosValid] = useState<boolean>(false)
 
@@ -29,7 +37,7 @@ const DNI = ({ navigation, route, control, errors, setValue, getValues, trigger 
 	}, [getValues(["dni_a", "dni_b"])])
 
 	const openCamera = (type: "front" | "back") => {
-		navigation.navigate("Camera", { from: "DNI" })
+		navigation.navigate("Camera", { from: "DNI", isDNI: true, type })
 	}
 
 	const validatePhotosAndNavigate = async () => {
@@ -48,7 +56,6 @@ const DNI = ({ navigation, route, control, errors, setValue, getValues, trigger 
 		>
 			<View>
 				<Controller
-					control={control}
 					name="dni_a"
 					render={({ field: { value } }) => (
 						<View style={styles.takePhotoContainer}>
@@ -66,7 +73,9 @@ const DNI = ({ navigation, route, control, errors, setValue, getValues, trigger 
 						</View>
 					)}
 				/>
-				{errors["dni_a"] && <Text style={{ color: "red", alignSelf: "center" }}>{errors["dni_a"].message}</Text>}
+				{errors["dni_a"] && typeof errors["dni_a"].message === "string" && (
+					<Text style={{ color: "red", alignSelf: "center" }}>{errors["dni_a"].message}</Text>
+				)}
 
 				<Controller
 					control={control}
@@ -87,7 +96,9 @@ const DNI = ({ navigation, route, control, errors, setValue, getValues, trigger 
 						</View>
 					)}
 				/>
-				{errors["dni_b"] && <Text style={{ color: "red", alignSelf: "center" }}>{errors["dni_b"].message}</Text>}
+				{errors["dni_b"] && typeof errors["dni_b"].message === "string" && (
+					<Text style={{ color: "red", alignSelf: "center" }}>{errors["dni_b"].message}</Text>
+				)}
 
 				<>
 					{arePhotosValid ? (

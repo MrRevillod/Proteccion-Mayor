@@ -5,8 +5,11 @@ import CustomButton from "@/components/button"
 import Colors from "@/components/colors"
 import { commonProps } from "@/utils/types"
 import { checkUniqueField } from "@/utils/request"
+import { useFormContext } from "react-hook-form"
 
-const Email = ({ navigation, control, errors, getValues, trigger, setError }: commonProps) => {
+const Email = ({ navigation }: commonProps) => {
+	const { getValues, trigger, setError } = useFormContext()
+
 	const onSubmit = async () => {
 		const request = await checkUniqueField("email", getValues, trigger, setError)
 		if (request) {
@@ -21,7 +24,7 @@ const Email = ({ navigation, control, errors, getValues, trigger, setError }: co
 			textDescription="Debe ingresar un correo real y al que usted tenga acceso."
 		>
 			<View style={styles.container}>
-				<Input name="email" placeholder="TuCorreo@gmail.com" control={control} errors={errors} />
+				<Input name="email" placeholder="TuCorreo@gmail.com" />
 				<CustomButton title="Siguiente" onPress={onSubmit} />
 				<CustomButton
 					style={{ backgroundColor: Colors.white }}

@@ -5,7 +5,7 @@ import CustomButton from "@/components/button"
 import Colors from "@/components/colors"
 import { commonProps } from "@/utils/types"
 
-const Pin = ({ navigation, control, errors, validateAndNavigate }: commonProps) => {
+const Pin = ({ navigation, validateAndNavigate }: commonProps) => {
 	return (
 		<GeneralView
 			title="Datos del Registro"
@@ -14,7 +14,7 @@ const Pin = ({ navigation, control, errors, validateAndNavigate }: commonProps) 
 			textDescription="Su pin no debe repetir números, ni usar secuencias (1234). Además, debe ser un pin que recuerde fácilmente."
 		>
 			<View style={styles.container}>
-				<Input name="pin" placeholder="Ingrese su pin aquí" control={control} errors={errors} secureTextEntry />
+				<Input name="pin" placeholder="Ingrese su pin aquí" secureTextEntry />
 				<CustomButton title="Siguiente" onPress={() => validateAndNavigate("pin", navigation, "ConfirmPin")} />
 				<CustomButton
 					style={{ backgroundColor: Colors.white }}

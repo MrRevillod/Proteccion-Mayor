@@ -9,9 +9,6 @@ type InputFieldProps = {
 	placeholder: string
 	secureTextEntry?: boolean
 	children?: React.ReactNode
-	// Props para evitar problemas con use form context, eliminar cuando se aplique a registro tambien (por eso estan)
-	control?: any
-	errors?: any
 }
 
 const Input = ({ name, placeholder, secureTextEntry = false, children }: InputFieldProps) => {

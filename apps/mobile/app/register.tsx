@@ -1,6 +1,6 @@
 import React from "react"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { useForm } from "react-hook-form"
+import { FormProvider, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Camera from "@/components/camera"
 import RUT from "@/screens/register/rut"
@@ -30,60 +30,10 @@ const FormNavigator = ({
 	trigger: any
 	setError: any
 	getValues: any
-}) => {
-	const validateAndNavigate = async (field: string, navigation: any, nextScreen: string) => {
-		const isValid = await trigger(field)
-		if (isValid) {
-			navigation.navigate(nextScreen)
-		}
-	}
-
-	return (
-		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			<Stack.Screen name="RUT">
-				{(props) => <RUT {...props} control={control} errors={errors} getValues={getValues} setError={setError} trigger={trigger} />}
-			</Stack.Screen>
-			<Stack.Screen name="Email">
-				{(props) => <Email {...props} control={control} getValues={getValues} errors={errors} setError={setError} trigger={trigger} />}
-			</Stack.Screen>
-			<Stack.Screen name="Pin">
-				{(props) => <Pin {...props} control={control} errors={errors} validateAndNavigate={validateAndNavigate} />}
-			</Stack.Screen>
-			<Stack.Screen name="ConfirmPin">
-				{(props) => <ConfirmPin {...props} control={control} errors={errors} validateAndNavigate={validateAndNavigate} />}
-			</Stack.Screen>
-			<Stack.Screen name="DNI">
-				{(props) => <DNI {...props} control={control} errors={errors} setValue={setValue} getValues={getValues} trigger={trigger} />}
-			</Stack.Screen>
-			<Stack.Screen name="Social">
-				{(props) => (
-					<Social
-						{...props}
-						control={control}
-						errors={errors}
-						setValue={setValue}
-						getValues={getValues}
-						handleSubmit={handleSubmit}
-						trigger={trigger}
-					/>
-				)}
-			</Stack.Screen>
-			<Stack.Screen name="Final">{(props) => <Final {...props} />}</Stack.Screen>
-			<Stack.Screen name="Camera" component={Camera} options={{ headerShown: true }} />
-		</Stack.Navigator>
-	)
-}
+}) => {}
 
 const Register = () => {
-	const {
-		control,
-		handleSubmit,
-		setValue,
-		getValues,
-		trigger,
-		setError,
-		formState: { errors },
-	} = useForm({
+	const methods = useForm({
 		defaultValues: {
 			rut: "",
 			email: "",
@@ -96,16 +46,28 @@ const Register = () => {
 		resolver: zodResolver(registerSchema),
 	})
 
+	const { trigger } = methods
+
+	const validateAndNavigate = async (field: any, navigation: any, nextScreen: string) => {
+		const isValid = await trigger(field)
+		if (isValid) {
+			navigation.navigate(nextScreen)
+		}
+	}
+
 	return (
-		<FormNavigator
-			control={control}
-			handleSubmit={handleSubmit}
-			errors={errors}
-			setValue={setValue}
-			getValues={getValues}
-			trigger={trigger}
-			setError={setError}
-		/>
+		<FormProvider {...methods}>
+			<Stack.Navigator screenOptions={{ headerShown: false }}>
+				<Stack.Screen name="RUT" component={RUT} />
+				<Stack.Screen name="Email" component={Email} />
+				<Stack.Screen name="Pin">{(props) => <Pin {...props} validateAndNavigate={validateAndNavigate} />}</Stack.Screen>
+				<Stack.Screen name="ConfirmPin">{(props) => <ConfirmPin {...props} validateAndNavigate={validateAndNavigate} />}</Stack.Screen>
+				<Stack.Screen name="DNI" component={DNI} />
+				<Stack.Screen name="Social" component={Social} />
+				<Stack.Screen name="Final" component={Final} />
+				<Stack.Screen name="Camera" component={Camera} options={{ headerShown: true }} />
+			</Stack.Navigator>
+		</FormProvider>
 	)
 }
 
