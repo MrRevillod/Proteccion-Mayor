@@ -36,7 +36,7 @@ const UpdateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => {
 	return (
 		<Modal type="Edit" title={`Editar la información de ${selectedData?.name}`}>
 			<FormProvider {...methods}>
-				<Form<Senior> data={data} setData={setData} action={updateSenior} actionType="update">
+				<Form<Senior> data={data as Senior[]} setData={setData} action={updateSenior} actionType="update">
 					<Input name="name" label="Nombre" type="text" placeholder="Nombre" />
 					<Input name="email" label="Correo Electrónico" type="email" placeholder="Correo Electrónico" />
 					<Input name="address" label="Dirección" type="text" placeholder="Dirección" />

@@ -52,7 +52,7 @@ export const Input: React.FC<InputProps> = (props) => {
 					<InputLabel label={label} />
 					<Link
 						to="/auth/reset-password"
-						className="text-neutral-950 text-sm hover:underline hover:text-blue-500"
+						className="text-neutral-950 dark:text-neutral-300 text-sm hover:underline hover:text-blue-500"
 					>
 						¿Olvidaste tu contraseña?
 					</Link>
@@ -107,7 +107,7 @@ export const Input: React.FC<InputProps> = (props) => {
 								onClick={handleTogglePasswordVisibility}
 								className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-neutral-600 hover:text-blue-500"
 							>
-								<AiFillEye className="text-neutral-600 dark:text-gray text-xl mr-1" />
+								<AiFillEye className="text-neutral-600 dark:text-neutral-300 dark:text-gray text-xl mr-1" />
 							</button>
 						</Show>
 					</div>

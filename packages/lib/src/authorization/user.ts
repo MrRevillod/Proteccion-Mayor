@@ -26,7 +26,25 @@ export const findUser = async (filter: any, role: UserRole) => {
 			return await prisma.senior.findFirst({ where: filter })
 		})
 		.with("PROFESSIONAL", async () => {
-			return await prisma.professional.findFirst({ where: filter })
+			return await prisma.professional.findFirst({
+				where: filter,
+				select: {
+					id: true,
+					email: true,
+					name: true,
+					createdAt: true,
+					updatedAt: true,
+					serviceId: true,
+					password: true,
+					service: {
+						select: {
+							id: true,
+							name: true,
+							title: true,
+						},
+					},
+				},
+			})
 		})
 		.run()
 }

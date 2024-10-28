@@ -2,21 +2,21 @@ import dayjs from "dayjs"
 import React from "react"
 import DatetimeSelect from "../../ui/DatetimeSelect"
 
-import "react-datetime/css/react-datetime.css"
-
 import { Form } from "../Form"
+import { Show } from "../../ui/Show"
 import { Modal } from "../../Modal"
+import { useAuth } from "../../../context/AuthContext"
 import { useModal } from "../../../context/ModalContext"
-import { useRequest } from "../../../hooks/useRequest"
+import { useRequest } from "@/hooks/useRequest"
 import { SuperSelect } from "../../ui/SuperSelect"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { EventSchemas } from "../../../lib/schemas"
 import { BooleanSelect } from "../../ui/BooleanSelect"
+import { selectDataFormatter } from "@/lib/formatters"
 import { useState, useEffect } from "react"
-import { selectDataFormatter } from "../../../lib/formatters"
 import { FormProvider, useForm } from "react-hook-form"
-import { getCenters, getProfessionals, updateEvent } from "../../../lib/actions"
-import { Center, Event, FormProps, Professional, SuperSelectField } from "../../../lib/types"
+import { getSeniors, updateEvent } from "../../../lib/actions"
+import { Professional, Senior, SuperSelectField } from "../../../lib/types"
 
 // Este formulario corresponde a la actualización de un evento
 // Se utiliza el componente Modal para mostrar el formulario
@@ -24,40 +24,31 @@ import { Center, Event, FormProps, Professional, SuperSelectField } from "../../
 
 // Recibe una función refetch que permite volver a obtener los eventos al actualizar un evento
 
-const UpdateEvent: React.FC<FormProps<Event>> = ({ refetch }) => {
-	const [centers, setCenters] = useState<SuperSelectField[]>([])
-	const [professionals, setProfessionals] = useState<SuperSelectField[]>([])
+type EventFormProps = {
+	centers: SuperSelectField[]
+	services?: SuperSelectField[]
+	professionals?: Professional[]
+	refetch?: () => void
+}
 
-	const methods = useForm({
-		resolver: zodResolver(EventSchemas.Update),
-	})
+const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, refetch }) => {
+	const [seniors, setSeniors] = useState<SuperSelectField[]>([])
+	const [seniorsSearch, setSeniorsSearch] = useState<string>("")
+	const [selectProfessionals, setSelectProfessionals] = useState<SuperSelectField[]>([])
 
-	const { selectedData, isModalOpen, modalType } = useModal()
+	const methods = useForm({ resolver: zodResolver(EventSchemas.Update) })
 
-	// Se obtienen los profesionales y centros de atención para mostrarlos en los select
-	// Solo se obtienen si el modal está abierto y es de tipo Edit
-	// y si el evento seleccionado tiene una Id.
+	const { role } = useAuth()
+	const { selectedData } = useModal()
 
-	useRequest<Professional[]>({
-		action: getProfessionals,
-		query: `serviceId=${selectedData?.serviceId}&select=name,id`,
-		onSuccess: (data) => selectDataFormatter({ data, setData: setProfessionals }),
-		trigger: isModalOpen && modalType === "Edit" && selectedData?.serviceId,
-	})
+	const { isModalOpen, modalType } = useModal()
 
-	// En ambos casos se utiliza una query para obtener solo los campos necesarios
-	// esto se hace para evitar traer información innecesaria de la base de datos
-	// además mejorando el rendimiento de la aplicación.
-
-	useRequest<Center[]>({
-		action: getCenters,
-		query: "select=name,id",
-		onSuccess: (data) => selectDataFormatter({ data, setData: setCenters }),
+	useRequest<Senior[]>({
+		action: getSeniors,
+		query: `name=${seniorsSearch}&id=${seniorsSearch}&select=name,id`,
+		onSuccess: (data) => selectDataFormatter({ data, setData: setSeniors }),
 		trigger: isModalOpen && modalType === "Edit",
 	})
-
-	// selectDataFormatter es una función que recibe un array de objetos
-	// y devuelve un array de objetos con la estructura necesaria para los select
 
 	useEffect(() => {
 		if (!selectedData) return
@@ -67,42 +58,72 @@ const UpdateEvent: React.FC<FormProps<Event>> = ({ refetch }) => {
 			centerId: selectedData?.centerId,
 			serviceId: selectedData?.serviceId,
 			assistance: selectedData?.assistance,
-			startsAt: dayjs(selectedData?.startsAt).toISOString(),
-			endsAt: dayjs(selectedData?.endsAt).toISOString(),
+			seniorId: selectedData?.seniorId || undefined,
+			start: dayjs(selectedData?.start).toISOString(),
+			end: dayjs(selectedData?.end).toISOString(),
 		})
+
+		if (role === "ADMIN") {
+			const serviceProfessionals = professionals?.filter(
+				(professional) => professional.serviceId === selectedData?.serviceId,
+			)
+			selectDataFormatter({ data: serviceProfessionals as Professional[], setData: setSelectProfessionals })
+		}
+
+		setSeniorsSearch(selectedData?.seniorId)
 	}, [selectedData])
 
 	return (
 		<Modal type="Edit" title="Editar un evento">
 			<FormProvider {...methods}>
-				<Form action={updateEvent} actionType="update" refetch={refetch} deletable>
-					<SuperSelect label="Seleccione el profesional" name="professionalId" options={professionals} />
+				<Form action={updateEvent} actionType="update" deletable refetch={refetch}>
+					<Show when={role === "ADMIN"}>
+						<SuperSelect
+							label="Seleccione el profesional"
+							name="professionalId"
+							options={selectProfessionals}
+						/>
+					</Show>
+
 					<SuperSelect
 						label="Seleccione el centro de atención (opcional)"
 						name="centerId"
 						options={centers}
 					/>
+
 					<SuperSelect
-						label="Seleccione el servicio"
-						name="serviceId"
-						options={[
-							{
-								label: selectedData?.service?.name,
-								value: selectedData?.serviceId,
-							},
-						]}
+						label="Seleccione la persona mayor"
+						name="seniorId"
+						options={seniors}
+						setSearch={setSeniorsSearch}
 					/>
+
+					<Show when={role === "ADMIN"}>
+						<SuperSelect
+							label="Seleccione el servicio"
+							name="serviceId"
+							options={[
+								{
+									label: selectedData?.service?.name,
+									value: selectedData?.serviceId,
+								},
+							]}
+						/>
+					</Show>
 					<div className="flex gap-2 justify-between">
-						<DatetimeSelect label="Inicio del evento" name="startsAt" />
-						<DatetimeSelect label="Finalización del evento" name="endsAt" />
+						<DatetimeSelect label="Inicio del evento" name="start" />
+						<DatetimeSelect label="Finalización del evento" name="end" />
 					</div>
-					<BooleanSelect
-						name="assistance"
-						options={[
-							{ label: "Asistió", value: true },
-							{ label: "No asistió", value: false },
-						]}
-					/>
+
+					<Show when={selectedData?.seniorId}>
+						<BooleanSelect
+							name="assistance"
+							options={[
+								{ label: "Asistió", value: true },
+								{ label: "No asistió", value: false },
+							]}
+						/>
+					</Show>
 				</Form>
 			</FormProvider>
 		</Modal>

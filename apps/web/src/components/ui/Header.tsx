@@ -1,29 +1,38 @@
+import clsx from "clsx"
 import React from "react"
-
 import { Show } from "./Show"
 import { Link } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext"
-import { API_URL } from "../../lib/axios"
+import { useState } from "react"
 import { useTheme } from "../../context/ThemeContext"
+import { IMAGE_BASE_URL } from "../../lib/axios"
 import { Avatar, Dropdown, Navbar } from "flowbite-react"
 
 const Header: React.FC = () => {
 	const { toggleTheme, isDarkMode } = useTheme()
-	const { isAuthenticated, user, logout, role } = useAuth()
-
-	const [imageSrc, setImageSrc] = React.useState<string>(
-		`${API_URL}/storage/public/users/${user?.id}/${user?.id}.webp`,
-	)
+	const { isAuthenticated, user, logout, role, profilePicture, setProfilePicture } = useAuth()
+	const [selectedPage, setSelectedPage] = useState<string>("Inicio")
 
 	const handleImageError = () => {
-		setImageSrc(`${API_URL}/storage/public/users/default-profile.webp`)
+		setProfilePicture(`${IMAGE_BASE_URL}/users/default-profile.webp`)
 	}
 
 	const logoutHandler = async () => {
 		await logout()
 	}
 
-	const linkClasses = `text-neutral-200 font-base hover:text-neutral-50`
+	const linkClasses = (page: string, isDropdownItem: boolean = false) => {
+		return clsx(
+			!isDropdownItem && selectedPage === page
+				? "text-neutral-50 underline decoration-2 underline-offset-8"
+				: "text-neutral-200",
+			"hover:text-neutral-50 cursor-pointer",
+		)
+	}
+
+	const handlePageSelected = (page: string) => {
+		setSelectedPage(page)
+	}
 
 	return (
 		<Navbar fluid className="py-4 h-18 w-full bg-primary dark:bg-primary-darker rounded-none">
@@ -37,7 +46,14 @@ const Header: React.FC = () => {
 						arrowIcon={false}
 						inline
 						className="relative z-50"
-						label={<Avatar alt="User settings" img={imageSrc} onError={handleImageError} rounded />}
+						label={
+							<Avatar
+								alt="User settings"
+								img={profilePicture?.toString()}
+								onError={handleImageError}
+								rounded
+							/>
+						}
 					>
 						<Dropdown.Header>
 							<span className="block text-sm">{user?.name}</span>
@@ -50,7 +66,7 @@ const Header: React.FC = () => {
 						</Dropdown.Item>
 						<Dropdown.Divider />
 						<Link to="/perfil">
-							<Dropdown.Item>Mi perfíl</Dropdown.Item>
+							<Dropdown.Item>Mi perfil</Dropdown.Item>
 						</Link>
 						<Dropdown.Divider />
 						<Dropdown.Item onClick={() => logoutHandler()}>Cerrar sesión</Dropdown.Item>
@@ -62,13 +78,22 @@ const Header: React.FC = () => {
 						<Dropdown
 							label=""
 							dismissOnClick={false}
-							renderTrigger={() => <span className={`${linkClasses} cursor-pointer`}>Usuarios</span>}
+							onClick={() => handlePageSelected("Personas")}
+							renderTrigger={() => <span className={linkClasses("Personas")}>Personas</span>}
 						>
-							<Link to="/administradores" className={linkClasses}>
+							<Link
+								to="/administracion/administradores"
+								className={linkClasses("Personas", true)}
+								onClick={() => handlePageSelected("Personas")}
+							>
 								<Dropdown.Item>Administradores</Dropdown.Item>
 							</Link>
 
-							<Link to="/profesionales" className={linkClasses}>
+							<Link
+								to="/administracion/profesionales"
+								className={linkClasses("Personas", true)}
+								onClick={() => handlePageSelected("Personas")}
+							>
 								<Dropdown.Item>Profesionales</Dropdown.Item>
 							</Link>
 
@@ -80,31 +105,55 @@ const Header: React.FC = () => {
 									renderTrigger={() => <span className={`cursor-pointer`}>Personas Mayores</span>}
 									className="w-48"
 								>
-									<Link to="/personas-mayores">
+									<Link
+										to="/administracion/personas-mayores"
+										onClick={() => handlePageSelected("Personas")}
+										className={linkClasses("Personas", true)}
+									>
 										<Dropdown.Item as="div">Todos</Dropdown.Item>
 									</Link>
 
-									<Link to="/personas-mayores/nuevos">
-										<Dropdown.Item as="div">Solicitudes de registro</Dropdown.Item>{" "}
+									<Link
+										to="/administracion/personas-mayores/nuevos"
+										onClick={() => handlePageSelected("Personas")}
+										className={linkClasses("Personas", true)}
+									>
+										<Dropdown.Item as="div">Solicitudes de registro</Dropdown.Item>
 									</Link>
 								</Dropdown>
 							</Dropdown.Item>
 						</Dropdown>
 
-						<Link to="/agenda" className={linkClasses}>
-							Eventos
+						<Link
+							to="/agenda/administradores"
+							className={linkClasses("Agenda")}
+							onClick={() => handlePageSelected("Agenda")}
+						>
+							Agenda
 						</Link>
 
-						<Link to="/servicios" className={linkClasses}>
+						<Link
+							to="/administracion/servicios"
+							className={linkClasses("Servicios")}
+							onClick={() => handlePageSelected("Servicios")}
+						>
 							Servicios
 						</Link>
 
-						<Link to="/centros-de-atencion" className={linkClasses}>
+						<Link
+							to="/administracion/centros-de-atencion"
+							className={linkClasses("Centros de atención")}
+							onClick={() => handlePageSelected("Centros de atención")}
+						>
 							Centros de atención
 						</Link>
 
-						<Link to="/estadisticas" className={linkClasses}>
-							Estadisticas
+						<Link
+							to="/administracion/estadisticas"
+							className={linkClasses("Estadisticas")}
+							onClick={() => handlePageSelected("Estadisticas")}
+						>
+							Estadísticas
 						</Link>
 					</Show>
 				</Navbar.Collapse>

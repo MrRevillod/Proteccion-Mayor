@@ -88,7 +88,7 @@ export const eventOwnerValidation = async (req: Request, res: Response, next: Ne
 	try {
 		const event = await prisma.event.findUnique({
 			where: {
-				id: parseInt(eventId, 10),
+				id: Number(eventId),
 			},
 		})
 

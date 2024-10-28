@@ -16,12 +16,10 @@ const CreateService: React.FC<FormProps<Service>> = ({ data, setData }) => {
 		resolver: zodResolver(ServiceSchemas.Create),
 	})
 
-	// console.log(methods.watch())
-
 	return (
 		<Modal type="Create" title="Añadir nuevo servicio al sistema">
 			<FormProvider {...methods}>
-				<Form<Service> data={data} setData={setData} action={createService} actionType="create">
+				<Form<Service> data={data as Service[]} setData={setData} action={createService} actionType="create">
 					<Input name="name" label="Nombre del Servicio" type="text" placeholder="Asesoría Legal" />
 					<Input name="title" label="Título del Servicio" type="text" placeholder="Abogado(a)" />
 					<Input

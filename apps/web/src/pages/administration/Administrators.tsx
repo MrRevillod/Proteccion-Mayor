@@ -30,13 +30,15 @@ const AdministratorsPage: React.FC = () => {
 			setData={setAdministrators}
 			searchKeys={["id", "name", "email"]}
 		>
-			<DataTable<Administrator>
-				editable
-				deletable
-				loading={loading}
-				data={administrators}
-				columnsConfig={AdministratorColumns}
-			/>
+			<section className="w-full bg-white dark:bg-primary-dark p-4 rounded-lg">
+				<DataTable<Administrator>
+					editable
+					deletable
+					loading={loading}
+					data={administrators}
+					columnsConfig={AdministratorColumns}
+				/>
+			</section>
 
 			<CreateAdministrator data={administrators} setData={setAdministrators} />
 			<UpdateAdministrator data={administrators} setData={setAdministrators} />

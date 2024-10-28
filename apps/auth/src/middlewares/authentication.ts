@@ -63,8 +63,6 @@ export const authenticationByRole = async (req: Request, res: Response, next: Ne
 			throw new AppError(401, "No tienes permisos para acceder a este recurso")
 		}
 
-		console.log("PASO MW DE ROLE")
-
 		next()
 	} catch (error) {
 		next(error)

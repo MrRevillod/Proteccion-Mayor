@@ -16,7 +16,7 @@ const CreateCenter: React.FC<FormProps<Center>> = ({ data, setData }) => {
 	return (
 		<Modal type="Create" title="Añadir nuevo centro de atención al sistema">
 			<FormProvider {...methods}>
-				<Form<Center> data={data} setData={setData} action={createCenter} actionType="create">
+				<Form<Center> data={data as Center[]} setData={setData} action={createCenter} actionType="create">
 					<Input name="name" label="Nombre" type="text" placeholder="Centro de atención San José" />
 					<Input name="address" label="Dirección" type="text" placeholder="Pedro Montt #41" />
 					<Input name="phone" label="Teléfono" type="text" placeholder="56955473897" />

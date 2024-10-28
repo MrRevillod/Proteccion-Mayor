@@ -1,8 +1,7 @@
-import { Senior } from "@prisma/client"
+import { prisma } from "@repo/database"
 import { compare } from "bcrypt"
 import { Request, Response, NextFunction } from "express"
 import { AccessTokenOpts, AppError, RefreshTokenOpts, signJsonwebtoken, toPublicUser, findUser } from "@repo/lib"
-import { prisma } from "@repo/database"
 
 export const loginController = async (req: Request, res: Response, next: NextFunction) => {
 	const loginKind = req.query.variant

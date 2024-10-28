@@ -27,7 +27,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ pageTitle, create, data, search
 					data={data}
 					setData={setData}
 				/>
-				<section className="w-full bg-white dark:bg-primary-dark rounded-lg p-4 shadow-md">{children}</section>
+				<section className="w-full dark:bg-primary-dark rounded-lg">{children}</section>
 			</section>
 		</Fragment>
 	)

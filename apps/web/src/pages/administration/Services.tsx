@@ -10,9 +10,11 @@ import { useState } from "react"
 import { ImageCard } from "../../components/ui/ImageCard"
 import { CardLayout } from "../../components/CardLayout"
 import { useRequest } from "../../hooks/useRequest"
+import { useNavigate } from "react-router-dom"
 import { deleteService, getServices } from "../../lib/actions"
 
 const ServicesPage: React.FC = () => {
+	const navigate = useNavigate()
 	const [services, setServices] = useState<Service[]>([])
 
 	const { error, loading, data } = useRequest<Service[]>({
@@ -24,21 +26,26 @@ const ServicesPage: React.FC = () => {
 
 	return (
 		<PageLayout pageTitle="Servicios" create data={data} setData={setServices} searchKeys={["name"]}>
-			<CardLayout<Service>
-				data={services}
-				loading={loading}
-				renderCard={(service: Service) => (
-					<ImageCard
-						key={service.id}
-						item={service}
-						title={service.name}
-						description={service.description}
-						imagePath={`/services`}
-						deletable
-						updatable
-					/>
-				)}
-			/>
+			<section className="w-full bg-white dark:bg-primary-dark p-4 rounded-lg">
+				<CardLayout<Service>
+					data={services}
+					loading={loading}
+					renderCard={(service: Service) => (
+						<ImageCard
+							key={service.id}
+							item={service}
+							title={service.name}
+							description={service.description}
+							imagePath={`/services`}
+							deletable
+							updatable
+							onCardClick={() => {
+								navigate(`/agenda/administradores?serviceId=${service.id}`)
+							}}
+						/>
+					)}
+				/>
+			</section>
 
 			<CreateService data={services} setData={setServices} />
 			<UpdateService data={services} setData={setServices} />
