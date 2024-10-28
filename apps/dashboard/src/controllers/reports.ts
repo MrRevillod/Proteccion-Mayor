@@ -1,44 +1,29 @@
 import { NextFunction, Request, Response } from "express"
-import { prisma } from "@repo/database"
+import { getEventsByAssistance, reduceFunction } from "../utils/reports"
 
-export const datos = async (asistencia: boolean) => {
-	const eventos = await prisma.event.findMany({
-		select: {
-			startsAt: true,
-			assistance: true,
-			id: true,
-		},
-		where: {
-			AND: [{ endsAt: { lte: new Date() } }, { seniorId: { not: null } }, { assistance: asistencia }],
-		},
-		orderBy: {
-			startsAt: "asc",
-		},
-	})
-	const conteoPorFecha: { [key: string]: number } = {}
-
-	eventos.forEach((evento) => {
-		const fecha = evento.startsAt.toISOString().split("T")[0]
-		if (conteoPorFecha[fecha]) {
-			conteoPorFecha[fecha]++
-		} else {
-			conteoPorFecha[fecha] = 1
-		}
-	})
-
-	// Convertir el objeto en un arreglo para enviarlo
-	const resultado = Object.keys(conteoPorFecha).map((fecha) => ({
-		date: fecha,
-		count: conteoPorFecha[fecha],
-	}))
-
-	return resultado
+type FormattedDateCount = {
+	date: string
+	count: number
 }
-export const getConcurrenceForTieme = async (req: Request, res: Response, next: NextFunction) => {
+
+export const generateGeneralReport = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		let [asistencia, inasistencia] = await Promise.all([datos(true), datos(false)])
-		res.status(200).json({ values: { asistencia, inasistencia } })
-	} catch (error: unknown) {
+		const assistanceEvents = await getEventsByAssistance(true)
+		const formattedAssistanceEvents = [] as FormattedDateCount[]
+
+		assistanceEvents.reduce((acc, event) => {
+			return reduceFunction(acc, event)
+		}, formattedAssistanceEvents)
+
+		const noAssistanceEvents = await getEventsByAssistance(false)
+		const formattedNoAssistanceEvents = [] as FormattedDateCount[]
+
+		noAssistanceEvents.reduce((acc, event) => {
+			return reduceFunction(acc, event)
+		}, formattedNoAssistanceEvents)
+
+		return res.status(200).json({ values: { formattedAssistanceEvents, formattedNoAssistanceEvents } })
+	} catch (error) {
 		next(error)
 	}
 }

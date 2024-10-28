@@ -14,15 +14,32 @@ import {
 	Pie,
 } from "recharts"
 import PageLayout from "../../layouts/PageLayout"
-import { api } from "../../lib/axios" // Asegúrate de importar tu API
+import { api } from "../../lib/axios"
+import { useRequest } from "@/hooks/useRequest"
+import { message } from "antd"
 
-interface AsisenciData {
-	asistencia: any[]
-	inasistencia: any[]
+type FormattedDateCount = {
+	date: string
+	count: number
+}
+interface StatisticsResponse {
+	formattedAssistanceEvents: FormattedDateCount[]
+	formattedNoAssistanceEvents: FormattedDateCount[]
 }
 
 const StatisticsPage: React.FC = () => {
-	const [asistencia, setAsistencia] = useState<any[]>([])
+	const [asistencia, setAsistencia] = useState<FormattedDateCount[]>([])
+	const [inasistencia, setInasistencia] = useState<FormattedDateCount[]>([])
+	const { error, loading, data } = useRequest<StatisticsResponse>({
+		action: async () => await api.get("/dashboard/reports/"),
+		onSuccess: (data) => {
+			setAsistencia(data.formattedAssistanceEvents)
+			setInasistencia(data.formattedNoAssistanceEvents)
+		},
+	})
+
+	if (error) message.error("Error al cargar los datos")
+	/* 	const [asistencia, setAsistencia] = useState<any[]>([])
 	const [inasistencia, setInasistencia] = useState<any[]>([])
 	const [loading, setLoading] = useState<boolean>(true)
 	const [error, setError] = useState<string | null>(null)
@@ -30,26 +47,11 @@ const StatisticsPage: React.FC = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await api.get("/dashboard/reports/concurrencia")
+				const response = await api.get("/dashboard/reports/")
 				const data: AsisenciData = response.data.values
 
-				// Ejemplo de datos
-				const exampleAsistencia = [
-					{ date: "2024-10-01", count: 5 },
-					{ date: "2024-10-02", count: 8 },
-					{ date: "2024-10-03", count: 10 },
-					{ date: "2024-10-04", count: 7 },
-					{ date: "2024-10-05", count: 12 },
-				]
-				const exampleInasistencia = [
-					{ date: "2024-10-01", count: 3 },
-					{ date: "2024-10-02", count: 2 },
-					{ date: "2024-10-03", count: 5 },
-					{ date: "2024-10-04", count: 4 },
-					{ date: "2024-10-05", count: 1 },
-				]
-				setAsistencia(exampleAsistencia)
-				setInasistencia(exampleInasistencia)
+				setAsistencia(asistencia)
+				setInasistencia(inasistencia)
 			} catch (err: any) {
 				setError(err.message || "Error desconocido")
 			} finally {
@@ -58,7 +60,7 @@ const StatisticsPage: React.FC = () => {
 		}
 
 		fetchData()
-	}, [])
+	}, []) */
 
 	if (loading) return <div>Cargando datos...</div>
 	if (error) return <div>Error al cargar los datos: {error}</div>
