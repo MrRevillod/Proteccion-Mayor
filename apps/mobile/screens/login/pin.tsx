@@ -3,20 +3,15 @@ import Input from "@/components/input"
 import GeneralView from "@/components/generalView"
 import CustomButton from "@/components/button"
 import Colors from "@/components/colors"
+
 import { useEffect } from "react"
+import { SERVER_URL } from "@/utils/request"
 import { useAuth } from "@/contexts/authContext"
 import { useFormContext } from "react-hook-form" // Importa useFormContext
-
-const Pin = ({ navigation, route }: any) => {
-	const { rutSenior } = route.params
-	const { setValue, handleSubmit } = useFormContext()
-
-	useEffect(() => {
-		if (rutSenior) {
-			setValue("rut", rutSenior)
-		}
-	}, [rutSenior])
-
+import GoBackButton from "@/components/goBack"
+import * as Linking from "expo-linking"
+const Pin = ({ navigation }: any) => {
+	const { handleSubmit } = useFormContext()
 	const { login } = useAuth()
 
 	const onSubmit = async (data: any) => {
@@ -25,18 +20,23 @@ const Pin = ({ navigation, route }: any) => {
 	}
 
 	return (
-		<GeneralView title="Datos del Registro" textCircle="2/2" textTitle="Ingrese su Pin de 4 dígitos">
-			<View style={styles.container}>
-				<Input name="password" placeholder="Ingresa tu pin" secureTextEntry />
-				<CustomButton title="Siguiente" onPress={handleSubmit(onSubmit)} />
-				<CustomButton
-					style={{ backgroundColor: Colors.white }}
-					textStyle={styles.customButtonText}
-					title="Volver"
-					onPress={() => navigation.goBack()}
-				/>
-			</View>
-		</GeneralView>
+		<>
+			<GoBackButton navigation={navigation} visible />
+			<GeneralView title="Datos del Registro" textCircle="2/2" textTitle="Ingrese su Pin de 4 dígitos">
+				<View style={styles.container}>
+					<Input name="password" placeholder="Ingresa tu pin" secureTextEntry keyboardType="numeric" />
+
+					<CustomButton title="Siguiente" onPress={handleSubmit(onSubmit)} />
+
+					<CustomButton
+						style={{ backgroundColor: Colors.white }}
+						textStyle={styles.customButtonText}
+						title="¿Olvidaste tu pin de acceso?"
+						onPress={() => Linking.openURL(`${SERVER_URL}/auth/reset-password?variant=SENIOR`)}
+					/>
+				</View>
+			</GeneralView>
+		</>
 	)
 }
 
@@ -48,5 +48,6 @@ const styles = StyleSheet.create({
 	},
 	customButtonText: {
 		color: Colors.green,
+		textDecorationLine: "underline",
 	},
 })

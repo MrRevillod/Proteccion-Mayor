@@ -1,6 +1,6 @@
 import React from "react"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { useForm } from "react-hook-form"
+import { FormProvider, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Camera from "@/components/camera"
 import RUT from "@/screens/register/rut"
@@ -14,99 +14,44 @@ import registerSchema from "@/utils/validation"
 
 const Stack = createNativeStackNavigator()
 
-const FormNavigator = ({
-	control,
-	handleSubmit,
-	errors,
-	setValue,
-	getValues,
-	trigger,
-	setError,
-}: {
-	control: any
-	handleSubmit: any
-	errors: any
-	setValue: any
-	trigger: any
-	setError: any
-	getValues: any
-}) => {
-	const validateAndNavigate = async (field: string, navigation: any, nextScreen: string) => {
-		const isValid = await trigger(field)
-		if (isValid) {
-			navigation.navigate(nextScreen)
-		}
-	}
-
-	return (
-		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			<Stack.Screen name="RUT">
-				{(props) => <RUT {...props} control={control} errors={errors} getValues={getValues} setError={setError} trigger={trigger} />}
-			</Stack.Screen>
-			<Stack.Screen name="Email">
-				{(props) => <Email {...props} control={control} getValues={getValues} errors={errors} setError={setError} trigger={trigger} />}
-			</Stack.Screen>
-			<Stack.Screen name="Pin">
-				{(props) => <Pin {...props} control={control} errors={errors} validateAndNavigate={validateAndNavigate} />}
-			</Stack.Screen>
-			<Stack.Screen name="ConfirmPin">
-				{(props) => <ConfirmPin {...props} control={control} errors={errors} validateAndNavigate={validateAndNavigate} />}
-			</Stack.Screen>
-			<Stack.Screen name="DNI">
-				{(props) => <DNI {...props} control={control} errors={errors} setValue={setValue} getValues={getValues} trigger={trigger} />}
-			</Stack.Screen>
-			<Stack.Screen name="Social">
-				{(props) => (
-					<Social
-						{...props}
-						control={control}
-						errors={errors}
-						setValue={setValue}
-						getValues={getValues}
-						handleSubmit={handleSubmit}
-						trigger={trigger}
-					/>
-				)}
-			</Stack.Screen>
-			<Stack.Screen name="Final">{(props) => <Final {...props} />}</Stack.Screen>
-			<Stack.Screen name="Camera" component={Camera} options={{ headerShown: true }} />
-		</Stack.Navigator>
-	)
+// FormNavigator que maneja las pantallas y la navegación
+const FormNavigator = () => {
+    // Usamos trigger y otras funciones sin tener que pasarlas explícitamente
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="RUT" component={RUT} />
+            <Stack.Screen name="Email" component={Email} />
+            <Stack.Screen name="Pin" component={Pin} />
+            <Stack.Screen name="ConfirmPin" component={ConfirmPin} />
+            <Stack.Screen name="DNI" component={DNI} />
+            <Stack.Screen name="Social" component={Social} />
+            <Stack.Screen name="Final" component={Final} />
+            <Stack.Screen name="Camera" component={Camera} options={{ headerShown: true }} />
+        </Stack.Navigator>
+    )
 }
 
+// Componente principal de Registro
 const Register = () => {
-	const {
-		control,
-		handleSubmit,
-		setValue,
-		getValues,
-		trigger,
-		setError,
-		formState: { errors },
-	} = useForm({
-		defaultValues: {
-			rut: "",
-			email: "",
-			pin: "",
-			pinConfirm: "",
-			dni_a: "",
-			dni_b: "",
-			social: "",
-		},
-		resolver: zodResolver(registerSchema),
-	})
+    // Inicializamos useForm con zodResolver y defaultValues
+    const methods = useForm({
+        defaultValues: {
+            rut: "",
+            email: "",
+            pin: "",
+            pinConfirm: "",
+            dni_a: "",
+            dni_b: "",
+            social: "",
+        },
+        resolver: zodResolver(registerSchema), // Resolver de Zod
+    })
 
-	return (
-		<FormNavigator
-			control={control}
-			handleSubmit={handleSubmit}
-			errors={errors}
-			setValue={setValue}
-			getValues={getValues}
-			trigger={trigger}
-			setError={setError}
-		/>
-	)
+    return (
+        <FormProvider {...methods}>
+            <FormNavigator />
+        </FormProvider>
+    )
 }
 
 export default Register
