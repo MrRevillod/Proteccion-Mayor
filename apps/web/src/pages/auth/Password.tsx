@@ -1,11 +1,11 @@
-import React from "react"
+import React, { useState } from "react"
 import { api } from "../../lib/axios"
 import { Input } from "../../components/ui/Input"
 import { Helmet } from "react-helmet"
 import { message } from "antd"
 import { useAuth } from "../../context/AuthContext"
 import { jwtDecode } from "jwt-decode"
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { resetPasswordSchema } from "../../lib/schemas"
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form"
@@ -16,7 +16,9 @@ interface ResetPasswordFormData {
 }
 
 const ValidatePasswordPage: React.FC = () => {
+	const [error, setError] = useState("")
 	const { id, token, role } = useParams()
+	const navigate = useNavigate()
 
 	if (!id || !role || !token) throw new Error("Datos incompletos")
 
@@ -29,7 +31,7 @@ const ValidatePasswordPage: React.FC = () => {
 	})
 
 	const { handleSubmit, reset } = methods
-	const { error } = useAuth()
+	// const { error } = useAuth()
 
 	const onSubmit: SubmitHandler<ResetPasswordFormData> = async (formData) => {
 		try {
@@ -38,8 +40,13 @@ const ValidatePasswordPage: React.FC = () => {
 			})
 
 			message.success(response.data.message)
+			navigate("/auth/iniciar-sesion")
 			reset()
 		} catch (error: any) {
+			if (error.response.status === 409) {
+				setError("La contraseña no puede ser igual a la anterior")
+				return
+			}
 			message.error(error.response?.data?.message || "Error inesperado")
 		}
 	}
@@ -56,7 +63,7 @@ const ValidatePasswordPage: React.FC = () => {
 						<h2 className="text-4xl font-bold text-gray-900 text-center mb-8">Restablecer Contraseña</h2>
 						<p className="text-center text-gray-600 mb-6">Ingresa y confirma tu nueva contraseña.</p>
 
-						{error && <p className="text-red-600 text-center mb-4">{error}</p>}
+						{error && <p className="text-red text-center mb-4">{error}</p>}
 
 						<FormProvider {...methods}>
 							<form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>

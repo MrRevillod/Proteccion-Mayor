@@ -42,7 +42,7 @@ export const Input: React.FC<InputProps> = (props) => {
 		errors[name] ? "border-red" : "border-gray-dark",
 		"rounded-lg px-2 py-2 text-sm focus:outline-none focus:ring-primary-green",
 		"focus:border-primary-green w-full pl-4 placeholder-neutral-400",
-		"text-dark dark:text-light mb-1 border-1 bg-light dark:bg-primary-dark",
+		"text-dark dark:text-light mb-1 border-1 bg-light dark:bg-primary-dark"
 	)
 
 	return (
@@ -51,7 +51,7 @@ export const Input: React.FC<InputProps> = (props) => {
 				<div className="flex justify-between w-full items-center">
 					<InputLabel label={label} />
 					<Link
-						to="/auth/reset-password"
+						to="/auth/restaurar-contrasena"
 						className="text-neutral-950 dark:text-neutral-300 text-sm hover:underline hover:text-blue-500"
 					>
 						¿Olvidaste tu contraseña?
