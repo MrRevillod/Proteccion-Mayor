@@ -14,7 +14,7 @@ export const getAssistanceCounter = async (assistance: boolean) => {
 export const getEventsByAssistance = async (assistance: boolean) => {
 	const filter = genFilter(assistance)
 	if (!assistance) filter.end = { lt: new Date().toISOString() } as Prisma.DateTimeFilter
-	return await prisma.event.findMany({ where: filter })
+	return await prisma.event.findMany({ where: filter, orderBy: { start: "asc" } })
 }
 
 export const reduceFunction = (acc: FormattedDateCount[], event: Event) => {

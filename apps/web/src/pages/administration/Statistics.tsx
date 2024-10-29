@@ -8,15 +8,15 @@ import {
 	LineChart,
 	Tooltip,
 	Legend,
-	BarChart,
-	Bar,
 	PieChart,
 	Pie,
+	ScatterChart,
+	Scatter,
 } from "recharts"
 import PageLayout from "../../layouts/PageLayout"
-import { api } from "../../lib/axios"
 import { useRequest } from "@/hooks/useRequest"
-import { message } from "antd"
+import { message, Checkbox } from "antd"
+import { getReports } from "@/lib/actions"
 
 type FormattedDateCount = {
 	date: string
@@ -25,175 +25,122 @@ type FormattedDateCount = {
 interface StatisticsResponse {
 	formattedAssistanceEvents: FormattedDateCount[]
 	formattedNoAssistanceEvents: FormattedDateCount[]
+	totalAssistanceCount: number
+	totalNoAssistanceCount: number
 }
 
 const StatisticsPage: React.FC = () => {
 	const [asistencia, setAsistencia] = useState<FormattedDateCount[]>([])
 	const [inasistencia, setInasistencia] = useState<FormattedDateCount[]>([])
-	const { error, loading, data } = useRequest<StatisticsResponse>({
-		action: async () => await api.get("/dashboard/reports/"),
+	const [totalAsistencia, setTotalAsistencia] = useState<number>(0)
+	const [totalInasistencia, setTotalInacistencia] = useState<number>(0)
+	const [showAsistencia, setShowAsistencia] = useState<boolean>(true)
+	const [showInasistencia, setShowInasistencia] = useState<boolean>(false)
+
+	const { error } = useRequest<StatisticsResponse>({
+		action: getReports,
 		onSuccess: (data) => {
 			setAsistencia(data.formattedAssistanceEvents)
 			setInasistencia(data.formattedNoAssistanceEvents)
+			setTotalAsistencia(data.totalAssistanceCount)
+			setTotalInacistencia(data.totalNoAssistanceCount)
 		},
 	})
 
 	if (error) message.error("Error al cargar los datos")
-	/* 	const [asistencia, setAsistencia] = useState<any[]>([])
-	const [inasistencia, setInasistencia] = useState<any[]>([])
-	const [loading, setLoading] = useState<boolean>(true)
-	const [error, setError] = useState<string | null>(null)
 
-	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const response = await api.get("/dashboard/reports/")
-				const data: AsisenciData = response.data.values
-
-				setAsistencia(asistencia)
-				setInasistencia(inasistencia)
-			} catch (err: any) {
-				setError(err.message || "Error desconocido")
-			} finally {
-				setLoading(false)
-			}
-		}
-
-		fetchData()
-	}, []) */
-
-	if (loading) return <div>Cargando datos...</div>
-	if (error) return <div>Error al cargar los datos: {error}</div>
+	const totalEventos = totalAsistencia + totalInasistencia
+	const porcentajeAsistencia = totalEventos ? (totalAsistencia / totalEventos) * 100 : 0
+	const porcentajeInasistencia = totalEventos ? (totalInasistencia / totalEventos) * 100 : 0
 
 	return (
 		<PageLayout pageTitle="Concurrencia de eventos y Asistencia por Centros">
-			<div className="grid grid-cols-3 gap-4 p-4">
-				<div className="bg-white p-4 shadow-md rounded-lg col-span-1">
-					<h2>Total Asistidos</h2>
-					<p className="text-2xl font-bold"></p>
-				</div>
-				<div className="bg-white p-4 shadow-md rounded-lg col-span-1">
-					<h2>Total No Asistidos</h2>
-					<p className="text-2xl font-bold">Falta que funcione</p>
-				</div>
-				<div className="bg-white p-4 shadow-md rounded-lg col-span-1">
-					<h2>Promedio Diario</h2>
-					<p className="text-2xl font-bold">Falta que funcione</p>
-				</div>
+			{/* Controles de los checkboxes */}
+			<div className="flex space-x-4 p-4">
+				<Checkbox checked={showAsistencia} onChange={(e) => setShowAsistencia(e.target.checked)}>
+					Mostrar Asistencia
+				</Checkbox>
+				<Checkbox checked={showInasistencia} onChange={(e) => setShowInasistencia(e.target.checked)}>
+					Mostrar Inasistencia
+				</Checkbox>
+			</div>
 
-				<div className="bg-white p-4 shadow-md rounded-lg">
-					<h2>Asistencias por Día</h2>
-					<ResponsiveContainer width="100%" height={200}>
-						<LineChart data={asistencia}>
-							<CartesianGrid strokeDasharray="3 3" />
-							<XAxis dataKey="date" />
-							<YAxis />
-							<Tooltip />
-							<Legend />
-							<Line
-								type="monotone"
-								data={inasistencia}
-								dataKey="count"
-								stroke="#3498db"
-								name="Asistencia"
-							/>
-						</LineChart>
-					</ResponsiveContainer>
-				</div>
-				<div className="bg-white p-4 shadow-md rounded-lg">
-					<h2>Inasistencias por Día</h2>
-					<ResponsiveContainer width="100%" height={200}>
-						<LineChart data={inasistencia}>
-							<CartesianGrid strokeDasharray="3 3" />
-							<XAxis dataKey="date" />
-							<YAxis />
-							<Tooltip />
-							<Legend />
-							<Line type="monotone" dataKey="count" stroke="#e74c3c" name="Inasistencia" />
-						</LineChart>
-					</ResponsiveContainer>
-				</div>
-				<div className="bg-white p-4 shadow-md rounded-lg">
-					<h2>Asistencias vs Inasistencias</h2>
-					<ResponsiveContainer width="100%" height={200}>
-						<LineChart data={asistencia}>
-							<CartesianGrid strokeDasharray="3 3" />
-							<XAxis dataKey="date" />
-							<YAxis />
-							<Tooltip />
-							<Legend />
-							<Line
-								type="monotone"
-								data={asistencia}
-								dataKey="count"
-								stroke="#3498db"
-								name="Asistencias"
-							/>
-							<Line
-								type="monotone"
-								data={inasistencia}
-								dataKey="count"
-								stroke="#e74c3c"
-								name="Inasistencias"
-							/>
-						</LineChart>
-					</ResponsiveContainer>
-				</div>
-
+			<div className="grid grid-cols-1 gap-4 p-4">
 				<div className="col-span-3 bg-white p-4 shadow-md rounded-lg">
 					<h2>Tendencia General</h2>
 					<ResponsiveContainer width="100%" height={250}>
-						<LineChart data={asistencia}>
+						<LineChart>
 							<CartesianGrid strokeDasharray="3 3" />
 							<XAxis dataKey="date" />
 							<YAxis />
 							<Tooltip />
 							<Legend />
-							<Line type="monotone" dataKey="count" stroke="#3498db" name="Asistencias" />
-							<Line type="monotone" dataKey="inasistencia" stroke="#e74c3c" name="Inasistencias" />
+							{showAsistencia && (
+								<Line
+									type="monotone"
+									data={asistencia}
+									dataKey="count"
+									stroke="#3498db"
+									name="Asistencias"
+									isAnimationActive={true}
+								/>
+							)}
+							{showInasistencia && (
+								<Line
+									type="monotone"
+									data={inasistencia}
+									dataKey="count"
+									stroke="#e74c3c"
+									name="Inasistencias"
+									isAnimationActive={true}
+								/>
+							)}
 						</LineChart>
 					</ResponsiveContainer>
 				</div>
+			</div>
 
-				<div className="col-span-1 bg-white p-4 shadow-md rounded-lg">
-					<h2>Distribución de Asistencias</h2>
-					<ResponsiveContainer width="100%" height={250}>
-						<BarChart data={inasistencia}>
-							<CartesianGrid strokeDasharray="3 3" />
-							<XAxis dataKey="date" />
-							<YAxis />
-							<Tooltip />
-							<Legend />
-							<Bar dataKey="count" fill="#82ca9d" />
-						</BarChart>
-					</ResponsiveContainer>
-				</div>
-				<div className="col-span-1 bg-white p-4 shadow-md rounded-lg">
-					<h2>Porcentaje de Asistencias y Inasistencia</h2>
+			<div className="grid grid-cols-3 gap-4 p-4">
+				<div className="bg-white p-4 shadow-md rounded-lg col-span-1">
+					<h2>Porcentaje de Asistencias y Inasistencias</h2>
 					<ResponsiveContainer width="100%" height={250}>
 						<PieChart>
 							<Pie
 								data={[
-									{
-										name: "Asistencia",
-										value: asistencia.reduce((acc, item) => acc + item.count, 0),
-									},
-									{
-										name: "Inasistencia",
-										value: inasistencia.reduce((acc, item) => acc + item.count, 0),
-									},
+									{ name: "Asistencia", value: porcentajeAsistencia, fill: "#3498db" },
+									{ name: "Inasistencia", value: porcentajeInasistencia, fill: "#e74c3c" },
 								]}
 								dataKey="value"
 								nameKey="name"
 								cx="50%"
 								cy="50%"
 								outerRadius={80}
-								fill="#8884d8"
-								label={({ name, value }) => `${name}: ${value}`}
+								label={({ value }) => `${value.toFixed(2)}%`}
 							/>
 							<Tooltip />
 						</PieChart>
 					</ResponsiveContainer>
+
+					<div className="mt-4 flex justify-around">
+						<div className="flex items-center">
+							<div className="w-3 h-3 mr-2 bg-[#3498db]" />
+							<span>Asistencia</span>
+						</div>
+						<div className="flex items-center">
+							<div className="w-3 h-3 mr-2 bg-[#e74c3c]" />
+							<span>Inasistencia</span>
+						</div>
+					</div>
+					<div className="bg-white p-4 shadow-md rounded-lg col-span-1 flex justify-center items-center">
+						<div className="grid grid-cols-2 gap-4">
+							<p className="text-lg font-semibold text-center bg-[#3498db]">
+								Total Asistidos: <span className="text-blue-600">{totalAsistencia}</span>
+							</p>
+							<p className="text-lg font-semibold text-center  bg-[#e74c3c]">
+								Total Inasistidos: <span className="text-red-600">{totalInasistencia}</span>
+							</p>
+						</div>
+					</div>
 				</div>
 			</div>
 		</PageLayout>
