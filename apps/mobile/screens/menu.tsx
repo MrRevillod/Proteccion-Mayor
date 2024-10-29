@@ -25,6 +25,11 @@ const Menu = ({ navigation }: commonProps) => {
                 onPress={() => navigation.navigate("NewProfile")}
                 style={{ marginTop: 20, width: "85%", alignSelf: "center" }}
             />
+            <CustomButton
+                title="Cambiar tamaño de fuente"
+                onPress={() => navigation.navigate("FontSize")}
+                style={{ marginTop: 20, width: "85%", alignSelf: "center" }}
+            />
         </GeneralView>
     )
 }
