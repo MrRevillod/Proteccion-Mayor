@@ -1,26 +1,27 @@
 import React from "react"
-import HomePage from "./dashboard/Home"
+import HomePage from "./administration/Home"
 import LoginPage from "./auth/Login"
-import EventsPage from "./dashboard/Events"
-import CentersPage from "./dashboard/Centers"
-import SeniorsPage from "./dashboard/Seniors"
+import CentersPage from "./administration/Centers"
+import SeniorsPage from "./administration/seniors/Seniors"
 import ProfilePage from "./Profile"
-import ServicesPage from "./dashboard/Services"
+import ServicesPage from "./administration/Services"
 import NotFoundPage from "./NotFound"
-import NewSeniorsPage from "./dashboard/SeniorsNew"
-import StatisticsPage from "./dashboard/Statistics"
-import AdministratorPage from "./dashboard/Administrators"
-import ProfessionalsPage from "./dashboard/Professionals"
+import NewSeniorsPage from "./administration/seniors/SeniorsNew"
+import StatisticsPage from "./administration/Statistics"
+import AdministratorPage from "./administration/Administrators"
+import ProfessionalsPage from "./administration/Professionals"
 import ResetPasswordPage from "./auth/ResetPassword"
 import ValidatePasswordPage from "./auth/Password"
-import SeniorRegisterRequestPage from "./dashboard/SeniorRegisterRequest"
+import SeniorRegisterRequestPage from "./administration/seniors/SeniorRegisterRequest"
+import ProfessionalAgendaPage from "./agenda/Professional"
+import AdministrationAgendaPage from "./agenda/Administration"
 
 import { useAuth } from "../context/AuthContext"
 import { UserRole } from "../lib/types"
 import { Routes, Route, Navigate, Outlet } from "react-router-dom"
 
 interface RouteProps {
-	redirectTo: string
+	redirectTo?: string
 	allowedRoles?: UserRole[] // ["ADMIN", "PROFESSIONAL"]
 }
 
@@ -28,7 +29,7 @@ interface RouteProps {
 // Recibe ruta de dirección a la que redirigir en caso de no estar autenticado
 // o de no cumplir con los roles permitidos para ingresar a la ruta
 
-const ProtectedRoute: React.FC<RouteProps> = ({ redirectTo, allowedRoles }) => {
+const ProtectedRoute: React.FC<RouteProps> = ({ redirectTo = "/auth/iniciar-sesion", allowedRoles }) => {
 	// Obtenemos los datos de autenticación del contexto de autenticación
 	const { isAuthenticated, role, loading } = useAuth()
 
@@ -59,7 +60,7 @@ const RedirectRoute: React.FC = () => {
 	// Si el usuario está autenticado, redirigirlo dependiendo del rol
 	if (isAuthenticated) {
 		// Return el componente Navigate para que funcione correctamente
-		return role === "PROFESSIONAL" ? <Navigate to="/agenda" /> : <Navigate to="/inicio" />
+		return role === "PROFESSIONAL" ? <Navigate to="/agenda/profesionales" /> : <Navigate to="/administracion/" />
 	}
 
 	// Si no está autenticado, se renderiza la ruta hija (como el login)
@@ -69,27 +70,31 @@ const RedirectRoute: React.FC = () => {
 const Router: React.FC = () => {
 	return (
 		<Routes>
-			<Route element={<ProtectedRoute redirectTo="/auth/login" allowedRoles={["ADMIN"]} />}>
-				<Route path="/inicio" element={<HomePage />} />
+			<Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
+				<Route path="/administracion/" element={<HomePage />} />
+				<Route path="/administracion/administradores" element={<AdministratorPage />} />
+				<Route path="/administracion/profesionales" element={<ProfessionalsPage />} />
+				<Route path="/administracion/personas-mayores/" element={<SeniorsPage />} />
+				<Route path="/administracion/personas-mayores/nuevos" element={<NewSeniorsPage />} />
+				<Route
+					path="/administracion/personas-mayores/solicitud-de-registro"
+					element={<SeniorRegisterRequestPage />}
+				/>
+				<Route path="/administracion/servicios" element={<ServicesPage />} />
+				<Route path="/administracion/centros-de-atencion" element={<CentersPage />} />
+				<Route path="/agenda/administradores" element={<AdministrationAgendaPage />} />
 				<Route path="/perfil" element={<ProfilePage />} />
-				<Route path="/administradores" element={<AdministratorPage />} />
-				<Route path="/profesionales" element={<ProfessionalsPage />} />
-				<Route path="/personas-mayores" element={<SeniorsPage />} />
-				<Route path="/personas-mayores/nuevos" element={<NewSeniorsPage />} />
-				<Route path="/personas-mayores/solicitud-de-registro" element={<SeniorRegisterRequestPage />} />
-				<Route path="/servicios" element={<ServicesPage />} />
-				<Route path="/centros-de-atencion" element={<CentersPage />} />
 			</Route>
 
-			<Route element={<ProtectedRoute redirectTo="/auth/login" allowedRoles={["ADMIN", "PROFESSIONAL"]} />}>
-				<Route path="/agenda" element={<EventsPage />} />
+			<Route element={<ProtectedRoute allowedRoles={["ADMIN", "PROFESSIONAL"]} />}>
+				<Route path="/agenda/profesionales" element={<ProfessionalAgendaPage />} />
 				<Route path="/estadisticas" element={<StatisticsPage />} />
 			</Route>
 
 			<Route element={<RedirectRoute />}>
-				<Route path="/auth/login" element={<LoginPage />} />
-				<Route path="/auth/reset-password" element={<ResetPasswordPage />} />
-				<Route path="/auth/reset-password/:id/:token/:role" element={<ValidatePasswordPage />} />
+				<Route path="/auth/iniciar-sesion" element={<LoginPage />} />
+				<Route path="/auth/restaurar-contrasena" element={<ResetPasswordPage />} />
+				<Route path="/auth/restaurar-contrasena/:id/:token/:role" element={<ValidatePasswordPage />} />
 			</Route>
 
 			<Route path="*" element={<NotFoundPage />} />

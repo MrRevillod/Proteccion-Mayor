@@ -1,6 +1,8 @@
 import clsx from "clsx"
 import React from "react"
-import dayjs, { Dayjs } from "dayjs"
+import dayjs from "dayjs"
+
+import { Dayjs } from "dayjs"
 import { DatePicker } from "antd"
 import { Controller, useFormContext } from "react-hook-form"
 

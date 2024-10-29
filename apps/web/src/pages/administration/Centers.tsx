@@ -32,24 +32,28 @@ const CentersPage: React.FC = () => {
 			setData={setCenters}
 			searchKeys={["name", "address", "phone"]}
 		>
-			<CardLayout<Center>
-				data={centers}
-				loading={loading}
-				itemsPerPage={6}
-				renderCard={(center: Center) => (
-					<ImageCard
-						key={center.id}
-						item={center}
-						title={center.name}
-						description={center.address}
-						other={`Teléfono: ${center.phone}`}
-						imagePath={`/centers`}
-						deletable
-						updatable
-						onCardClick={(item) => navigate(`/agenda?centerId=${item.id}`)}
-					/>
-				)}
-			/>
+			<section className="w-full bg-white dark:bg-primary-dark p-4 rounded-lg">
+				<CardLayout<Center>
+					data={centers}
+					loading={loading}
+					itemsPerPage={6}
+					renderCard={(center: Center) => (
+						<ImageCard
+							key={center.id}
+							item={center}
+							title={center.name}
+							description={center.address}
+							other={`Teléfono: ${center.phone}`}
+							imagePath={`/centers`}
+							deletable
+							updatable
+							onCardClick={(item) => {
+								navigate(`/agenda/administradores?centerId=${item.id}`)
+							}}
+						/>
+					)}
+				/>
+			</section>
 
 			<CreateCenter data={centers} setData={setCenters} />
 			<UpdateCenter data={centers} setData={setCenters} />

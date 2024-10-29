@@ -36,7 +36,7 @@ const UpdateService: React.FC<FormProps<Service>> = ({ data, setData }) => {
 	return (
 		<Modal type="Edit" title={`Editar la información de ${selectedData?.name}`}>
 			<FormProvider {...methods}>
-				<Form<Service> data={data} setData={setData} action={updateService} actionType="update">
+				<Form<Service> data={data as Service[]} setData={setData} action={updateService} actionType="update">
 					<Input name="name" label="Nombre" type="text" placeholder="Psicología" />
 					<Input name="title" label="Servicio" type="text" placeholder="Psicólogo(a)" />
 					<Input

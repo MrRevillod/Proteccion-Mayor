@@ -1,14 +1,14 @@
 import React from "react"
-import PageLayout from "../../layouts/PageLayout"
-import DatetimeSelect from "../../components/ui/DatetimeSelect"
+import PageLayout from "@/layouts/PageLayout"
+import DatetimeSelect from "@/components/ui/DatetimeSelect"
 
-import { api } from "../../lib/axios"
-import { Input } from "../../components/ui/Input"
-import { Button } from "../../components/ui/Button"
+import { api } from "@/lib/axios"
+import { Input } from "@/components/ui/Input"
+import { Button } from "@/components/ui/Button"
 import { useEffect } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "../../hooks/useMutation"
-import { SeniorSchemas } from "../../lib/schemas"
+import { useMutation } from "@/hooks/useMutation"
+import { SeniorSchemas } from "@/lib/schemas"
 import { message, Image } from "antd"
 import { useLocation, useNavigate } from "react-router-dom"
 import { FieldValues, FormProvider, SubmitHandler, useForm } from "react-hook-form"
@@ -23,13 +23,13 @@ const SeniorRegisterRequestPage: React.FC = () => {
 	const { reset, handleSubmit } = methods
 
 	useEffect(() => {
-		if (!senior) navigate("/personas-mayores/nuevos")
+		if (!senior) navigate("/administracion/personas-mayores/nuevos")
 		else reset({ rut: senior.id, email: senior.email })
 	}, [senior])
 
 	const AcceptMutation = useMutation<void>({
 		mutateFn: async () => {
-			return await api.patch(`/seniors/${senior.id}/new?validate=true`)
+			return await api.patch(`/dashboard/seniors/${senior.id}/new?validate=true`)
 		},
 	})
 
@@ -44,12 +44,11 @@ const SeniorRegisterRequestPage: React.FC = () => {
 			params: { body: formData },
 			onSuccess: () => {
 				message.success("Solicitud aceptada")
-				navigate("/personas-mayores/nuevos")
+				navigate("/administracion/personas-mayores/nuevos")
 			},
 			onError: (error) => {
 				message.error(error.response.data.message)
-				navigate("/dashboard/personas-mayores/nuevos")
-				console.error("Error al aceptar la solicitud:", error.response)
+				navigate("/administracion/personas-mayores/nuevos")
 			},
 		})
 	}
@@ -58,11 +57,11 @@ const SeniorRegisterRequestPage: React.FC = () => {
 		await DenyMutation.mutate({
 			onSuccess: () => {
 				message.success("Solicitud denegada")
-				navigate("/personas-mayores/nuevos")
+				navigate("/administracion/personas-mayores/nuevos")
 			},
 			onError: (error) => {
 				message.error(error.response.data.message)
-				navigate("/dashboard/personas-mayores/nuevos")
+				navigate("/administracion/personas-mayores/nuevos")
 				console.error("Error al denegar la solicitud:", error)
 			},
 		})
@@ -70,9 +69,9 @@ const SeniorRegisterRequestPage: React.FC = () => {
 
 	return (
 		<PageLayout pageTitle="Solicitud de registro de persona mayor">
-			<section className="flex flex-row gap-12 items-start w-full h-full">
+			<section className="bg-white dark:bg-primary-dark p-4 rounded-lg flex flex-row gap-12">
 				<FormProvider {...methods}>
-					<form className="flex flex-col gap-4 w-2/5" onSubmit={handleSubmit(onSubmit)}>
+					<form className="flex flex-col gap-4 w-1/3" onSubmit={handleSubmit(onSubmit)}>
 						<Input
 							name="rut"
 							label="Rut (Sin puntos ni guión)"
@@ -110,7 +109,7 @@ const SeniorRegisterRequestPage: React.FC = () => {
 								<Button
 									variant="secondary"
 									type="button"
-									onClick={() => navigate("/personas-mayores/nuevos")}
+									onClick={() => navigate("/administracion/personas-mayores/nuevos")}
 								>
 									Cancelar
 								</Button>
@@ -119,35 +118,18 @@ const SeniorRegisterRequestPage: React.FC = () => {
 					</form>
 				</FormProvider>
 
-				<div className="h-1/2 w-3/5 grid grid-cols-2 gap-2">
-					<div className="col-span-1 grid grid-rows-2">
-						<div className="row-span-1 h-1/2 rounded-lg">
-							<Image
-								src="/img/frontal.jpg"
-								width="240"
-								height="152"
-								alt="Cédula Frontal"
-								style={{ objectFit: "cover" }}
-							/>
+				<div className="w-2/3 grid grid-cols-2 gap-2">
+					<div className="col-span-1 grid grid-rows-2 gap-1">
+						<div className="row-span-1 rounded-lg dni-container bg-red max-h-[280px] overflow-hidden">
+							<Image src="/img/frontal.jpg" alt="Cédula Frontal" className="object-cover w-full h-full" />
 						</div>
-						<div className="row-span-1 h-1/2 rounded-lg">
-							<Image
-								src="/img/reverso.jpg"
-								width="240"
-								height="152"
-								alt="Cédula Reverso"
-								style={{ objectFit: "cover" }}
-							/>
+						<div className="row-span-1 rounded-lg dni-container bg-green max-h-[280px] overflow-hidden">
+							<Image src="/img/reverso.jpg" alt="Cédula Reverso" className="object-cover w-full h-full" />
 						</div>
 					</div>
-					<div className="col-span-1">
-						<Image
-							src="/img/rsh.png"
-							width="575"
-							height="800"
-							alt="Cartola Hogar"
-							style={{ objectFit: "cover" }}
-						/>
+
+					<div className="col-span-1 rounded-lg dni-container bg-blue overflow-hidden max-h-[580px]">
+						<Image src="/img/rsh.png" alt="Cartola Hogar" className="object-cover w-full h-full" />
 					</div>
 				</div>
 			</section>

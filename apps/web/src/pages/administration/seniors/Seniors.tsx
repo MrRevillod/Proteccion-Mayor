@@ -1,16 +1,16 @@
 import React from "react"
-import DataTable from "../../components/Table"
-import PageLayout from "../../layouts/PageLayout"
-import CreateSenior from "../../components/forms/create/Senior"
-import UpdateSenior from "../../components/forms/update/Senior"
-import ConfirmAction from "../../components/ConfirmAction"
+import DataTable from "@/components/Table"
+import PageLayout from "@/layouts/PageLayout"
+import CreateSenior from "@/components/forms/create/Senior"
+import UpdateSenior from "@/components/forms/update/Senior"
+import ConfirmAction from "@/components/ConfirmAction"
 
-import { Senior } from "../../lib/types"
+import { Senior } from "@/lib/types"
 import { message } from "antd"
 import { useState } from "react"
-import { useRequest } from "../../hooks/useRequest"
-import { SeniorsColumns } from "../../lib/columns"
-import { deleteSenior, getSeniors } from "../../lib/actions"
+import { useRequest } from "@/hooks/useRequest"
+import { SeniorsColumns } from "@/lib/columns"
+import { deleteSenior, getSeniors } from "@/lib/actions"
 
 const SeniorsPage: React.FC = () => {
 	const [seniors, setSeniors] = useState<Senior[]>([])
@@ -31,14 +31,16 @@ const SeniorsPage: React.FC = () => {
 			setData={setSeniors}
 			searchKeys={["id", "name", "email"]}
 		>
-			<DataTable<Senior>
-				data={seniors}
-				columnsConfig={SeniorsColumns}
-				editable
-				deletable
-				loading={loading}
-				viewable={false}
-			/>
+			<section className="w-full bg-white dark:bg-primary-dark p-4 rounded-lg">
+				<DataTable<Senior>
+					data={seniors}
+					columnsConfig={SeniorsColumns}
+					editable
+					deletable
+					loading={loading}
+					viewable={false}
+				/>
+			</section>
 
 			<CreateSenior data={seniors} setData={setSeniors} />
 			<UpdateSenior data={seniors} setData={setSeniors} />

@@ -19,7 +19,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ pageTitle, create, searchKeys, 
 	const { showModal } = useModal()
 
 	return (
-		<section className="flex flex-col gap-4 w-full mb-4 px-4 py-4 bg-white dark:bg-primary-dark rounded-lg shadow-sm">
+		<section className="flex flex-col gap-4 w-full mb-4 px-4 py-4 bg-white dark:bg-primary-dark rounded-lg">
 			<div
 				className={clsx(
 					"flex w-full gap-4 justify-between",
@@ -29,7 +29,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ pageTitle, create, searchKeys, 
 			>
 				<div className="flex flex-col w-full md:w-3/6 xl:w-4/6 gap-2">
 					<h1 className="text-2xl font-bold text-dark dark:text-light">{pageTitle}</h1>
-					<p className="text-sm text-gray-medium">
+					<p className="text-sm text-gray-medium dark:text-gray-light">
 						Dirección de personas mayores de la municipalidad de Temuco
 					</p>
 				</div>

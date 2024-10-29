@@ -1,6 +1,6 @@
 import React from "react"
 
-import { api } from "../lib/axios"
+import { api, IMAGE_BASE_URL } from "../lib/axios"
 import { Dispatch, SetStateAction } from "react"
 import { LoginFormData, Nullable, User, UserRole } from "../lib/types"
 import { createContext, ReactNode, useEffect, useState } from "react"
@@ -19,6 +19,8 @@ interface AuthContextType {
 	logout: () => Promise<void>
 	refreshToken: () => Promise<void>
 	setUser: Dispatch<SetStateAction<User | null>>
+	profilePicture: string | null
+	setProfilePicture: Dispatch<SetStateAction<string | null>>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -35,6 +37,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	const [loading, setLoading] = useState<boolean>(true)
 	const [error, setError] = useState<string | null>(null)
 	const [role, setRole] = useState<Nullable<UserRole>>(null)
+	const [profilePicture, setProfilePicture] = useState<string | null>("")
 
 	// login: Función para iniciar sesión en la aplicación
 	const login = async (credentials: LoginFormData) => {
@@ -52,6 +55,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 			setIsAuthenticated(true)
 			setError(null)
 			setRole(res.role)
+
+			// Se actualiza la imagen de perfil del usuario
+			setProfilePicture(`${IMAGE_BASE_URL}/users/${res.user.id}/${res.user.id}.webp`)
 
 			// Se almacena el token de autenticación en el localStorage
 			// para utilizarlo en caso de cerrar sesión y mantener
@@ -91,9 +97,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 		try {
 			const response = await api.get("/auth/validate-auth")
+			const res = response.data.values
 			setIsAuthenticated(true)
-			setUser(response.data.values.user)
-			setRole(response.data.values.role)
+			setUser(res.user)
+			setRole(res.role)
+			setProfilePicture(`${IMAGE_BASE_URL}/users/${res.user.id}/${res.user.id}.webp`)
 		} catch (error) {
 			setUser(null)
 			setIsAuthenticated(false)
@@ -122,7 +130,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 	return (
 		<AuthContext.Provider
-			value={{ role, user, setUser, login, error, logout, refreshToken, loading, isAuthenticated }}
+			value={{
+				role,
+				user,
+				setUser,
+				login,
+				error,
+				logout,
+				refreshToken,
+				loading,
+				isAuthenticated,
+				profilePicture,
+				setProfilePicture,
+			}}
 		>
 			{children}
 		</AuthContext.Provider>

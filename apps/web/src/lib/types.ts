@@ -28,6 +28,7 @@ interface IUser {
 export interface Administrator extends IUser {}
 export interface Professional extends IUser {
 	service: Partial<Service>
+	serviceId: number
 }
 
 export type Service = {
@@ -73,27 +74,35 @@ export type TableColumnType<T> = Array<{
 }>
 
 export type FormProps<T> = {
-	data: T[]
-	setData: Dispatch<SetStateAction<T[]>>
+	data: T[] | T
+	setData?: Dispatch<SetStateAction<T[]>>
 	refetch?: () => void
 }
 
 export type Event = {
 	id: string
-	startsAt: string
-	endsAt: string
+	start: string
+	end: string
 	assistance: boolean
+	backgroundColor: HexColor
+	title: string
 
 	seniorId?: string | null
 	professionalId: string
 	centerId?: number | null
 	serviceId?: number | null
 
-	service: Partial<Service>
-	center: Partial<Center>
+	service?: Partial<Service>
+	center?: Partial<Center>
+	senior?: Partial<Senior>
 
 	createdAt: Date
 	updatedAt: Date
+}
+
+export type Events = {
+	formatted: Event[]
+	byId: Record<string, Event>
 }
 
 export type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0]

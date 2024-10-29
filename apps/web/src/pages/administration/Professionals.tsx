@@ -31,13 +31,15 @@ const ProfessionalsPage: React.FC = () => {
 			setData={setProfessionals}
 			searchKeys={["id", "name", "email"]}
 		>
-			<DataTable<Professional>
-				editable
-				deletable
-				loading={loading}
-				data={professionals}
-				columnsConfig={ProfessionalColumns}
-			/>
+			<section className="w-full bg-white dark:bg-primary-dark p-4 rounded-lg">
+				<DataTable<Professional>
+					editable
+					deletable
+					loading={loading}
+					data={professionals}
+					columnsConfig={ProfessionalColumns}
+				/>
+			</section>
 
 			<CreateProfessional data={professionals} setData={setProfessionals} />
 			<UpdateProfessional data={professionals} setData={setProfessionals} />

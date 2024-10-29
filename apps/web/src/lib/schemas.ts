@@ -21,6 +21,7 @@ export const SeniorSchemas = {
 			name: rules.nameSchema,
 			address: rules.addressSchema,
 			birthDate: z.string({ message: "La fecha de nacimiento es requerida" }),
+			gender: rules.genderSchema,
 		})
 		.refine((data) => rules.isValidDate(data.birthDate), {
 			message: "La fecha de ingresada no es válida",
@@ -141,55 +142,55 @@ export const CentersSchemas = {
 export const EventSchemas = {
 	Create: z
 		.object({
-			startsAt: z.string({ message: "La fecha de inicio es requerida" }),
-			endsAt: z.string({ message: "La fecha de término es requerida" }),
+			start: z.string({ message: "La fecha de inicio es requerida" }),
+			end: z.string({ message: "La fecha de término es requerida" }),
 			professionalId: z.string({ message: "El profesional es requerido" }),
 			serviceId: z.number({ message: "El servicio es requerido" }),
 			seniorId: z.optional(rules.rutSchema),
 			centerId: z.number({ message: "El centro es requerido" }),
 		})
-		.refine((data) => data.startsAt < data.endsAt, {
-			path: ["endsAt", "startsAt"],
+		.refine((data) => data.start < data.end, {
 			message: "Rango de tiempo invalido",
+			path: ["end", "start"],
 		})
 		.refine((data) => rules.isValidRut(data.professionalId), {
 			message: "El campo no es válido",
 			path: ["professionalId"],
 		})
-		.refine((data) => rules.isValidDate(data.startsAt), {
+		.refine((data) => rules.isValidDate(data.start), {
 			message: "La fecha de ingresada no es válida",
-			path: ["startsAt"],
+			path: ["start"],
 		})
-		.refine((data) => rules.isValidDate(data.endsAt), {
+		.refine((data) => rules.isValidDate(data.end), {
 			message: "La fecha de ingresada no es válida",
-			path: ["endsAt"],
+			path: ["end"],
 		}),
 
 	Update: z
 		.object({
-			startsAt: z.string({ message: "La fecha de inicio es requerida" }),
-			endsAt: z.string({ message: "La fecha de término es requerida" }),
+			start: z.string({ message: "La fecha de inicio es requerida" }),
+			end: z.string({ message: "La fecha de término es requerida" }),
 			professionalId: rules.rutSchema,
 			serviceId: z.number(),
 			assistance: z.boolean(),
 			seniorId: z.optional(rules.rutSchema),
 			centerId: z.number(),
 		})
-		.refine((data) => data.startsAt < data.endsAt, {
-			path: ["endsAt", "startsAt"],
+		.refine((data) => data.start < data.end, {
+			path: ["end", "start"],
 			message: "Rango de tiempo invalido",
 		})
 		.refine((data) => rules.isValidRut(data.professionalId), {
 			message: "El campo no es válido",
 			path: ["professionalId"],
 		})
-		.refine((data) => rules.isValidDate(data.startsAt), {
+		.refine((data) => rules.isValidDate(data.start), {
 			message: "La fecha de ingresada no es válida",
-			path: ["startsAt"],
+			path: ["start"],
 		})
-		.refine((data) => rules.isValidDate(data.endsAt), {
+		.refine((data) => rules.isValidDate(data.end), {
 			message: "La fecha de ingresada no es válida",
-			path: ["endsAt"],
+			path: ["end"],
 		}),
 }
 
