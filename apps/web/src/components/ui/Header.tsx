@@ -149,7 +149,7 @@ const Header: React.FC = () => {
 						</Link>
 
 						<Link
-							to="/administracion/estadisticas"
+							to="/estadisticas"
 							className={linkClasses("Estadisticas")}
 							onClick={() => handlePageSelected("Estadisticas")}
 						>

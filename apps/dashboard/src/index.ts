@@ -11,7 +11,7 @@ import serviceRouter from "./routes/services"
 import seniorsRouter from "./routes/seniors"
 import professionalsRouter from "./routes/professionals"
 import administrarorsRouter from "./routes/administrators"
-
+import reportsRouter from "./routes/reports"
 import { Server } from "socket.io"
 import { createServer } from "http"
 import { initSocket } from "./utils/socket"
@@ -31,10 +31,10 @@ export const createServer_ = (): express.Express => {
 			credentials: true,
 		}),
 	)
-  
+
 	app.use(cookieParser())
 	app.use(extensions)
-
+	app.use("/api/dashboard/reports", reportsRouter)
 	app.use("/api/dashboard/centers", centerRouter)
 	app.use("/api/dashboard/seniors", seniorsRouter)
 	app.use("/api/dashboard/services", serviceRouter)

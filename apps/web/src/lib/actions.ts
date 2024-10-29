@@ -134,3 +134,7 @@ export const updateEvent = async (props: MutateActionProps) => {
 export const deleteEvent = async (props: MutateActionProps) => {
 	return await apiRequest.delete("/dashboard/events", props)
 }
+
+export const getReports = async (props: QueryActionProps) => {
+	return await apiRequest.get(`/dashboard/reports${props.query ? "?" + props.query : ""}`)
+}
