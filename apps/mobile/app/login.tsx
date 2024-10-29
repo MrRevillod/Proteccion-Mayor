@@ -15,20 +15,20 @@ const Login = () => {
 			password: "",
 		},
 	})
+	const { setValue } = methods
 	const [rut, setRUT] = useState<string | null>(null)
 	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
-		const getRUT = async () => {
-			try {
-				const id = await getStorageRUT()
-
-				setRUT(id)
-				setLoading(false)
-			} catch (error) {}
-		}
-		getRUT()
-	}, [])
+		getStorageRUT()
+			.then((id) => {
+				if (id) {
+					setRUT(id) // Guarda el RUT en el estado local
+					setValue("rut", id) // Asigna el RUT al formulario global
+				}
+			})
+			.finally(() => setLoading(false)) // Cambia el estado de carga después de completar la promesa
+	}, [setValue])
 
 	if (loading) {
 		return (
@@ -42,8 +42,10 @@ const Login = () => {
 		<FormProvider {...methods}>
 			<Stack.Navigator screenOptions={{ headerShown: false }}>
 				{rut !== null ? (
+					// Si el RUT existe, salta a la pantalla Pin y pasa el rut como initialParams
 					<Stack.Screen name="Pin" component={Pin} initialParams={{ rutSenior: rut }} />
 				) : (
+					// Si no existe, muestra la pantalla RUT para ingresar manualmente
 					<>
 						<Stack.Screen name="RUT" component={RUT} />
 						<Stack.Screen name="Pin" component={Pin} />

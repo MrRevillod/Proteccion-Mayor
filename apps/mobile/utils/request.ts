@@ -20,6 +20,7 @@ export const makeAuthenticatedRequest = async (
 		const refreshToken = await getRefreshToken()
 
 		// Si el token ha expirado, intentamos renovarlo
+		// && method !== "DELETE"
 		if (isExp && accessToken) {
 			try {
 				accessToken = await renewAccessToken()
@@ -35,7 +36,7 @@ export const makeAuthenticatedRequest = async (
 
 		const headers = {
 			...options.headers,
-			Authorization: `Bearer ${accessToken}, Bearer ${refreshToken}`,
+			Authorization: `Bearer ${accessToken},${refreshToken}`,
 		}
 
 		const response = await axios({
@@ -92,7 +93,7 @@ const renewAccessToken = async () => {
 		if (!refreshToken) throw new Error("No hay refresh token disponible")
 
 		const response = await axios.get(`${SERVER_URL}/api/auth/refresh`, {
-			headers: { Authorization: `Bearer ${accessToken}, Bearer ${refreshToken}` },
+			headers: { Authorization: `Bearer ${accessToken},${refreshToken}` },
 		})
 		const { newAccessToken } = response.data
 

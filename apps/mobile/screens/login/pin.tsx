@@ -3,25 +3,17 @@ import Input from "@/components/input"
 import GeneralView from "@/components/generalView"
 import CustomButton from "@/components/button"
 import Colors from "@/components/colors"
-import { useEffect } from "react"
 import { useAuth } from "@/contexts/authContext"
 import { useFormContext } from "react-hook-form" // Importa useFormContext
 
-const Pin = ({ navigation, route }: any) => {
-	const { rutSenior } = route.params
-	const { setValue, handleSubmit } = useFormContext()
-
-	useEffect(() => {
-		if (rutSenior) {
-			setValue("rut", rutSenior)
-		}
-	}, [rutSenior])
+const Pin = ({ navigation }: any) => {
+	const { handleSubmit } = useFormContext()
 
 	const { login } = useAuth()
 
 	const onSubmit = async (data: any) => {
 		await login(data)
-		navigation.navigate("Menu")
+		navigation.navigate("Home")
 	}
 
 	return (

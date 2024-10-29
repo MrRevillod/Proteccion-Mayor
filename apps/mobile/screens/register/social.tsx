@@ -4,13 +4,21 @@ import GeneralView from "@/components/generalView"
 import CustomButton from "@/components/button"
 import Colors from "@/components/colors"
 import { commonProps } from "@/utils/types"
-import { Controller } from "react-hook-form"
+import { Controller, useFormContext } from "react-hook-form"
 import * as mime from "react-native-mime-types"
 import axios from "axios"
 import Feather from "@expo/vector-icons/Feather"
 import { SERVER_URL } from "@/utils/request"
 
-const Social = ({ navigation, route, control, setValue, errors, getValues, trigger, handleSubmit }: commonProps) => {
+const Social = ({ navigation, route }: commonProps) => {
+	const {
+		setValue,
+		getValues,
+		trigger,
+		control,
+		handleSubmit,
+		formState: { errors },
+	} = useFormContext()
 	const [isPhotoValid, setPhotoValid] = useState<boolean>(false)
 
 	useEffect(() => {
@@ -27,7 +35,7 @@ const Social = ({ navigation, route, control, setValue, errors, getValues, trigg
 	}, [getValues(["social"])])
 
 	const openCamera = () => {
-		navigation.navigate("Camera", { from: "Social" })
+		navigation.navigate("Camera", { from: "Social", isRSH: true })
 	}
 
 	const onSubmit = async (data: any) => {
@@ -103,7 +111,7 @@ const Social = ({ navigation, route, control, setValue, errors, getValues, trigg
 						</View>
 					)}
 				/>
-				{errors["social"] && <Text style={{ color: "red", alignSelf: "center" }}>{errors["social"].message}</Text>}
+				{errors["social"] && <Text style={{ color: "red", alignSelf: "center" }}>{String(errors["social"].message)}</Text>}
 
 				<>
 					{isPhotoValid ? (

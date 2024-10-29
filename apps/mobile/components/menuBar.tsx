@@ -3,14 +3,10 @@ import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image } from "rea
 import Colors from "@/components/colors"
 const { width } = Dimensions.get("window")
 
-type MenuBarProps = {
-	onPress: () => void
-}
-
-const MenuBar = ({ onPress }: MenuBarProps) => {
+const MenuBar = ({ navigation }: any) => {
 	return (
 		<View style={styles.menuContainer}>
-			<TouchableOpacity style={styles.menuCircle} onPress={onPress}>
+			<TouchableOpacity style={styles.menuCircle} onPress={() => navigation.navigate("Home")}>
 				<Image
 					source={require("@/assets/images/menu/home.png")}
 					style={{

@@ -9,6 +9,8 @@ import MenuBar from "@/components/menuBar"
 import { SERVER_URL } from "@/utils/request"
 import axios from "axios"
 import { makeAuthenticatedRequest } from "@/utils/request"
+import { useAuth } from "@/contexts/authContext"
+import GoBackButton from "@/components/goBack"
 
 const rutImg = require("@/assets/images/profile/rut.png")
 const emailImg = require("@/assets/images/profile/email.png")
@@ -22,6 +24,8 @@ const Profile = ({ navigation }: any) => {
 	const [user, setUser] = useState<any>(null)
 	const [loading, setLoading] = useState(true)
 	const [profileUri, setProfileUri] = useState<string | null>(null)
+
+	const { logout } = useAuth()
 
 	useEffect(() => {
 		const getUser = async () => {
@@ -77,6 +81,7 @@ const Profile = ({ navigation }: any) => {
 		try {
 			const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/seniors/${id}`, "DELETE")
 			if (response?.status === 200) {
+				logout()
 				Alert.alert("Cuenta Eliminada", "Su cuenta ha sido eliminada exitosamente")
 				await AsyncStorage.removeItem("user")
 				navigation.navigate("Login")
@@ -99,6 +104,7 @@ const Profile = ({ navigation }: any) => {
 
 	return (
 		<>
+			<GoBackButton navigation={navigation} visible />
 			<View style={styles.greenContainer}>
 				<>
 					<TouchableOpacity style={styles.circle} onPress={() => navigation.navigate("NewProfile")}>
@@ -128,11 +134,7 @@ const Profile = ({ navigation }: any) => {
 					<DataDisplayer titleField="Eliminar Cuenta" actionButton="ELIMINAR" onPress={deleteAlert} />
 				</View>
 			</View>
-			<MenuBar
-				onPress={() => {
-					navigation.navigate("Menu")
-				}}
-			/>
+			<MenuBar navigation={navigation} />
 		</>
 	)
 }

@@ -5,8 +5,11 @@ import CustomButton from "@/components/button"
 import { commonProps } from "@/utils/types"
 import { checkUniqueField } from "@/utils/request"
 import GoBackButton from "@/components/goBack"
+import { useFormContext } from "react-hook-form"
 
-const RUT = ({ navigation, control, errors, getValues, setError, trigger }: commonProps) => {
+const RUT = ({ navigation }: commonProps) => {
+	const { getValues, setError, trigger } = useFormContext()
+
 	const onSubmit = async () => {
 		const request = await checkUniqueField("rut", getValues, trigger, setError)
 		if (request) {
@@ -24,7 +27,7 @@ const RUT = ({ navigation, control, errors, getValues, setError, trigger }: comm
 				textDescription="Debe ingresar su RUT sin puntos ni guión."
 			>
 				<View style={styles.container}>
-					<Input name="rut" placeholder="Ingrese su RUT aquí" control={control} errors={errors} />
+					<Input name="rut" placeholder="Ingrese su RUT aquí" />
 					<CustomButton title="Siguiente" onPress={onSubmit} />
 				</View>
 			</GeneralView>

@@ -10,7 +10,7 @@ const { Create, Update } = ServiceSchemas
 
 const router: Router = Router()
 
-router.get("/", validateRole(["ADMIN", "PROFESSIONAL"]), services.getAll)
+router.get("/", validateRole(["ADMIN", "PROFESSIONAL", "SENIOR"]), services.getAll)
 router.post("/", validateRole(["ADMIN"]), singleImageupload, validateSchema(Create), services.create)
 
 router.patch("/:id", validateRole(["ADMIN"]), singleImageupload, validateSchema(Update), services.updateById)

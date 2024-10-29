@@ -1,14 +1,15 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import * as SecureStore from "expo-secure-store"
 
-export const expTime = process.env.TOKEN_EXPIRE_TIME
+export const expTime = process.env.TOKEN_EXPIRE_TIME || "14"
+export const STORAGE_KEY = process.env.STORAGE_KEY_SECRET || "secret"
 
 export const storeTokens = async (accessToken: string, refreshToken: string) => {
 	try {
-		const expirationTime = Date.now() + 14 * 60 * 1000
+		const expirationTime = Date.now() + parseInt(expTime, 10) * 60 * 1000
 		await AsyncStorage.setItem("accessToken", accessToken)
 		await AsyncStorage.setItem("refreshToken", refreshToken)
-		await SecureStore.setItemAsync("tokenExp", expirationTime.toString())
+		await AsyncStorage.setItem("expTime", JSON.stringify(expirationTime))
 	} catch (error) {
 		console.error("No se pudieron almacenar los tokens", error)
 	}
@@ -19,6 +20,16 @@ export const replaceAccessToken = async (newAccessToken: string) => {
 		await AsyncStorage.setItem("accessToken", newAccessToken)
 	} catch (error) {
 		console.error("No se pudo reemplazar el access token", error)
+	}
+}
+
+export const getExpTime = async (): Promise<number | null> => {
+	try {
+		const expTime = await AsyncStorage.getItem("expTime")
+		return expTime ? JSON.parse(expTime) : null
+	} catch (error) {
+		console.error("Error al obtener el tiempo de expiración", error)
+		return null
 	}
 }
 
