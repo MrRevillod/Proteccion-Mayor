@@ -60,7 +60,6 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
 
 		if (!user) throw new AppError(404, "Usuario no econtrado.")
 		verifyJsonwebtoken(token, CustomTokenOpts(user?.password || "", "30d"))
-		// log(user.password)
 
 		if (await compare(password, user.password)) throw new AppError(409, "Conflicto")
 
@@ -100,6 +99,26 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
 			message: "Contraseña actualizada correctamente",
 			type: "success",
 		})
+	} catch (error) {
+		next(error)
+	}
+}
+
+export const compareLinkToken = async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const { id, token, role } = req.params
+
+		const rolePayload = verifyJsonwebtoken(role, AccessTokenOpts)
+
+		if (!rolePayload.role || !isValidUserRole(rolePayload.role)) throw new AppError(401, "No autorizado.")
+
+		const user = await findUser({ id }, rolePayload.role)
+
+		if (!user) throw new AppError(404, "Usuario no econtrado.")
+
+		verifyJsonwebtoken(token, CustomTokenOpts(user?.password || "", "30d"))
+
+		return res.status(200)
 	} catch (error) {
 		next(error)
 	}
