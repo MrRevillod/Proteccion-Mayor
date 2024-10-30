@@ -60,7 +60,7 @@ export const EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) => {
 	useEffect(() => {
 		if (professionals) {
 			const serviceProfessionals = professionals.filter(
-				(professional) => professional.serviceId === selectedService,
+				(professional) => professional.serviceId === selectedService
 			)
 			selectDataFormatter({ data: serviceProfessionals, setData: setSelectProfessionals })
 		}

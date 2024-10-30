@@ -4,16 +4,18 @@ import { useModal } from "../context/ModalContext"
 import { Table, Space } from "antd"
 import { tableColumnsFormatters } from "../lib/formatters"
 import { BaseDataType, TableColumnType } from "../lib/types"
-import { AiFillEdit, AiFillDelete, AiFillEye } from "react-icons/ai"
+import { AiFillEdit, AiFillDelete, AiFillEye, AiOutlineContacts } from "react-icons/ai"
 
 interface TableProps<T> {
 	data: T[]
 	columnsConfig: TableColumnType<T>
 	loading?: boolean
 	viewable?: boolean
+	history?: boolean
 	editable?: boolean
 	deletable?: boolean
 	onView?: (record: T) => void
+	onHistory?: (record: T) => void
 }
 
 const DataTable = <T extends BaseDataType>({
@@ -21,9 +23,11 @@ const DataTable = <T extends BaseDataType>({
 	columnsConfig,
 	loading,
 	viewable,
+	history,
 	editable,
 	deletable,
 	onView,
+	onHistory,
 }: TableProps<T>) => {
 	const { showModal } = useModal()
 
@@ -64,6 +68,11 @@ const DataTable = <T extends BaseDataType>({
 						{deletable && (
 							<a title="Eliminar" onClick={() => showModal("Confirm", record)}>
 								<AiFillDelete className="text-red dark:text-light text-md font-light h-6 w-6" />
+							</a>
+						)}
+						{history && onHistory && (
+							<a title="Historial" onClick={() => onHistory(record)}>
+								<AiOutlineContacts className="text-blue dark:text-light text-md font-light h-6 w-6" />
 							</a>
 						)}
 						{viewable && onView && (
