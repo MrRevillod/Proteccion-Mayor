@@ -148,6 +148,7 @@ export const EventSchemas = {
 			serviceId: z.number({ message: "El servicio es requerido" }),
 			seniorId: z.optional(rules.rutSchema),
 			centerId: z.number({ message: "El centro es requerido" }),
+			repeat: z.optional(z.enum(["daily", "weekly"])),
 		})
 		.refine((data) => data.start < data.end, {
 			message: "Rango de tiempo invalido",

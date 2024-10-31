@@ -58,6 +58,7 @@ export const SuperSelect = ({ name, label, options, setSearch, width }: SuperSel
 						onChange={(value) => {
 							field.onChange(value)
 						}}
+						allowClear={true}
 					/>
 				)}
 			/>

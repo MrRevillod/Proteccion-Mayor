@@ -47,12 +47,7 @@ const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, service
 
 	useEffect(() => {
 		const selectedUrlCenter = getIdsFromUrl(location).centerId
-
-		if (selectedUrlCenter) {
-			setValue("centerId", Number(selectedUrlCenter))
-		} else {
-			setValue("centerId", undefined)
-		}
+		setValue("centerId", selectedUrlCenter ? Number(selectedUrlCenter) : undefined)
 	}, [location.search])
 
 	// Se obtiene valores de los input, al utilizar watch se obtiene el valor
@@ -134,6 +129,14 @@ const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, service
 						<DatetimeSelect label="Inicio del evento" name="start" />
 						<DatetimeSelect label="Término del evento" name="end" />
 					</div>
+					<SuperSelect
+						label="Seleccione una repetición"
+						name="repeat"
+						options={[
+							{ label: "Diario", value: "daily" },
+							{ label: "Semanal", value: "weekly" },
+						]}
+					/>
 				</Form>
 			</FormProvider>
 		</Modal>

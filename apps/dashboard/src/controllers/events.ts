@@ -1,7 +1,10 @@
+import dayjs from "dayjs"
+
 import { io } from ".."
 import { prisma } from "@repo/database"
 import { Senior } from "@prisma/client"
 import { AppError } from "@repo/lib"
+import { createEvents } from "../utils/events"
 import { Request, Response, NextFunction } from "express"
 import { EventQuery, eventSelect, generateWhere } from "../utils/filters"
 
@@ -43,7 +46,6 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
 
 		return res.status(200).json({ values: { formatted: formattedEvents, byId: eventsById } })
 	} catch (error) {
-		console.log(error)
 		next(error)
 	}
 }
@@ -51,7 +53,7 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
 // Controlador para crear un nuevo evento
 export const create = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const { start, end, professionalId, serviceId, centerId, seniorId } = req.body
+		const { start, end, professionalId, serviceId, centerId, seniorId, repeat } = req.body
 
 		// Se buscan los datos a utilizar con Promise.all
 		const [professional, service, senior, center] = await Promise.all([
@@ -67,49 +69,21 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 		if (seniorId && !senior) throw new AppError(400, "Adulto mayor no encontrado")
 		if (!center) throw new AppError(400, "Centro no encontrado")
 
-		// Convertir las fechas a objetos Date
-		const startDate = new Date(start)
-		const endDate = new Date(end)
-
-		const orDateSuperposition = {
-			start: { lte: endDate },
-			end: { gte: startDate },
+		const event = {
+			start: dayjs(start),
+			end: dayjs(end),
+			professionalId,
+			serviceId: Number(serviceId),
+			seniorId: seniorId || null,
+			centerId: Number(centerId),
 		}
 
-		const events = await prisma.event.findMany({
-			where: {
-				OR: [
-					{
-						professionalId: professionalId,
-						OR: [orDateSuperposition],
-					},
-					seniorId && {
-						seniorId: seniorId,
-						OR: [orDateSuperposition],
-					},
-				],
-			},
+		await createEvents({ ...event, repeat }).catch((error) => {
+			throw new AppError(409, error.message)
 		})
 
-		if (events.length > 0) throw new AppError(409, "Superposición de horas")
-
-		let event = await prisma.event.create({
-			data: {
-				start: startDate,
-				end: endDate,
-				professionalId,
-				serviceId: Number(serviceId),
-				seniorId: seniorId || null,
-				centerId: Number(centerId),
-			},
-			select: eventSelect,
-		})
-
-		event = formatEvent(event)
-
-		io.to("ADMIN").emit("newEvent", event)
-
-		return res.status(201).json({ values: { modified: event } })
+		io.to("ADMIN").emit("newEvent", null as any)
+		return res.status(201).json({ values: { modified: null } })
 	} catch (error) {
 		next(error)
 	}

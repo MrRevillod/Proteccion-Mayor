@@ -1,5 +1,6 @@
-import { Prisma, Event } from "@prisma/client"
 import { prisma } from "@repo/database"
+import { Prisma, Event } from "@prisma/client"
+import { FormattedDateCount } from "@repo/lib"
 
 const genFilter = (assistance: boolean): Prisma.EventWhereInput => {
 	return { seniorId: { not: null }, assistance: { equals: assistance } }
