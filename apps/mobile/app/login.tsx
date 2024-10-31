@@ -1,20 +1,20 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import React from "react"
 import RUT from "@/screens/login/rut"
 import Pin from "@/screens/login/pin"
-import { FormProvider, useForm } from "react-hook-form"
-import React, { useEffect, useState } from "react"
+
 import { getStorageRUT } from "@/utils/storage"
+import { useEffect, useState } from "react"
+import { FormProvider, useForm } from "react-hook-form"
 import { View, ActivityIndicator } from "react-native"
+import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
 const Stack = createNativeStackNavigator()
 
 const Login = () => {
 	const methods = useForm({
-		defaultValues: {
-			rut: "",
-			password: "",
-		},
+		defaultValues: { rut: "", password: "" },
 	})
+
 	const { setValue } = methods
 	const [rut, setRUT] = useState<string | null>(null)
 	const [loading, setLoading] = useState(true)

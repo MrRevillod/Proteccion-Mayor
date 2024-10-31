@@ -1,7 +1,8 @@
-import { StyleSheet } from "react-native"
+import Colors from "@/components/colors"
 import GeneralView from "@/components/generalView"
 import CustomButton from "@/components/button"
-import Colors from "@/components/colors"
+
+import { StyleSheet } from "react-native"
 import { commonProps } from "@/utils/types"
 
 const Final = ({ navigation }: commonProps) => {

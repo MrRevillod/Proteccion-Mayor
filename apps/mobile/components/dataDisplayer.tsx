@@ -1,7 +1,9 @@
 import React from "react"
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, ImageSourcePropType } from "react-native"
 import Colors from "@/components/colors"
+
 import { Ionicons } from "@expo/vector-icons"
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, ImageSourcePropType } from "react-native"
+
 const { width } = Dimensions.get("window")
 
 type DataDisplayerProps = {

@@ -2,7 +2,6 @@ import { io } from ".."
 import { prisma } from "@repo/database"
 import { Senior } from "@prisma/client"
 import { AppError } from "@repo/lib"
-import { canAddEvent } from "../utils/events"
 import { Request, Response, NextFunction } from "express"
 import { EventQuery, eventSelect, generateWhere } from "../utils/filters"
 
@@ -34,171 +33,162 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
 
 	try {
 		const events = await prisma.event.findMany({ where, select: eventSelect })
-		const formattedEvents = events.map(formatEvent)
 
 		const eventsById = events.reduce((acc: any, event) => {
 			acc[event.id] = event
 			return acc
 		}, {})
 
+		const formattedEvents = events.map(formatEvent)
+
 		return res.status(200).json({ values: { formatted: formattedEvents, byId: eventsById } })
 	} catch (error) {
+		console.log(error)
 		next(error)
 	}
 }
 
-// Controlador para crear un nuevo administrador
+// Controlador para crear un nuevo evento
 export const create = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const { start, end, professionalId, serviceId, centerId, seniorId } = req.body
 
-		const professional = await prisma.professional.findUnique({
-			where: { id: professionalId },
-		})
+		// Se buscan los datos a utilizar con Promise.all
+		const [professional, service, senior, center] = await Promise.all([
+			prisma.professional.findUnique({ where: { id: professionalId } }),
+			prisma.service.findUnique({ where: { id: Number(serviceId) } }),
+			seniorId ? prisma.senior.findUnique({ where: { id: seniorId } }) : Promise.resolve(null),
+			prisma.center.findUnique({ where: { id: Number(centerId) } }),
+		])
 
+		// Se verifica que los datos existan
 		if (!professional) throw new AppError(400, "Profesional no encontrado")
-
-		const service = await prisma.service.findUnique({
-			where: { id: Number(serviceId) },
-		})
-
-		if (!service) throw new AppError(400, "Servicio no enconrado")
-
-		if (seniorId) {
-			const senior = await prisma.senior.findUnique({
-				where: { id: seniorId },
-			})
-
-			if (!senior) throw new AppError(400, "Adulto mayor no encontrado")
-		}
-
-		const center = await prisma.center.findUnique({
-			where: { id: Number(centerId) },
-		})
-
+		if (!service) throw new AppError(400, "Servicio no encontrado")
+		if (seniorId && !senior) throw new AppError(400, "Adulto mayor no encontrado")
 		if (!center) throw new AppError(400, "Centro no encontrado")
 
-		const events = await prisma.event.findMany({
-			where: { professionalId: professionalId },
-		})
+		// Convertir las fechas a objetos Date
+		const startDate = new Date(start)
+		const endDate = new Date(end)
 
-		console.log("body", req.body)
-		console.log("events", events)
-
-		if (!canAddEvent(events, { start: new Date(start), end: new Date(end) })) {
-			throw new AppError(409, "Superposición de horas", { conflicts: [] })
+		const orDateSuperposition = {
+			start: { lte: endDate },
+			end: { gte: startDate },
 		}
 
-		const event = await prisma.event.create({
+		const events = await prisma.event.findMany({
+			where: {
+				OR: [
+					{
+						professionalId: professionalId,
+						OR: [orDateSuperposition],
+					},
+					seniorId && {
+						seniorId: seniorId,
+						OR: [orDateSuperposition],
+					},
+				],
+			},
+		})
+
+		if (events.length > 0) throw new AppError(409, "Superposición de horas")
+
+		let event = await prisma.event.create({
 			data: {
-				start: new Date(start),
-				end: new Date(end),
+				start: startDate,
+				end: endDate,
 				professionalId,
 				serviceId: Number(serviceId),
 				seniorId: seniorId || null,
 				centerId: Number(centerId),
 			},
-			select: {
-				id: true,
-				start: true,
-				end: true,
-				assistance: true,
-				seniorId: true,
-				professionalId: true,
-				serviceId: true,
-				centerId: true,
-				service: {
-					select: {
-						name: true,
-						color: true,
-					},
-				},
-			},
+			select: eventSelect,
 		})
 
-		io.to("ADMIN").emit("newEvent", event as any)
-		io.to("anyClientId").emit("newEvent", event as any)
+		event = formatEvent(event)
 
-		console.log("event", event)
+		io.to("ADMIN").emit("newEvent", event)
 
-		return res.status(200).json({ values: { modified: formatEvent(event) } })
+		return res.status(201).json({ values: { modified: event } })
 	} catch (error) {
 		next(error)
 	}
 }
 
-// Controlador para Actualizar un administrador por su id
+// Controlador para Actualizar un evento por su id
 export const updateById = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const { seniorId, professionalId, serviceId, centerId, start, end, assistance } = req.body
 
-		const professional = await prisma.professional.findUnique({
-			where: { id: professionalId },
-		})
+		// Se buscan los datos a utilizar con Promise.all
 
-		if (!professional) {
-			throw new AppError(400, "Profesional no encontrado")
+		const [professional, service, senior, center] = await Promise.all([
+			prisma.professional.findUnique({ where: { id: professionalId } }),
+			prisma.service.findUnique({ where: { id: Number(serviceId) } }),
+			seniorId ? prisma.senior.findUnique({ where: { id: seniorId } }) : Promise.resolve(null),
+			centerId ? prisma.center.findUnique({ where: { id: Number(centerId) } }) : Promise.resolve(null),
+		])
+
+		// Se verifica que los datos existan
+		if (!professional) throw new AppError(400, "Profesional no encontrado")
+		if (!service) throw new AppError(400, "Servicio no encontrado")
+		if (seniorId && !senior) throw new AppError(400, "Adulto mayor no encontrado")
+		if (centerId && !center) throw new AppError(400, "Centro no encontrado")
+
+		// Convertir las fechas a objetos Date
+		const startDate = new Date(start)
+		const endDate = new Date(end)
+
+		const orDateSuperposition = {
+			start: { lte: endDate },
+			end: { gte: startDate },
 		}
 
-		const service = await prisma.service.findUnique({
-			where: { id: Number(serviceId) },
-		})
+		// Se buscan eventos donde la id del evento sea diferente a la que se quiere actualizar
+		// Y que se superpongan con las fechas del evento a actualizar
 
-		if (!service) {
-			throw new AppError(400, "Servicio no encontrado")
-		}
-
-		if (seniorId) {
-			const senior = await prisma.senior.findUnique({
-				where: { id: seniorId },
-			})
-
-			if (!senior) {
-				throw new AppError(400, "Adulto mayor no encontrado")
-			}
-		}
-
-		if (centerId) {
-			const center = await prisma.center.findUnique({
-				where: { id: Number(centerId) },
-			})
-
-			if (!center) {
-				throw new AppError(400, "Centro no encontrado")
-			}
-		}
 		const events = await prisma.event.findMany({
 			where: {
-				professionalId: professionalId,
-				id: {
-					not: Number(req.params.id), // Excluir el evento con el `id` específico
-				},
+				AND: [
+					{
+						OR: [
+							{
+								professionalId: professionalId,
+								...orDateSuperposition,
+							},
+							seniorId && {
+								seniorId: seniorId,
+								...orDateSuperposition,
+							},
+						],
+					},
+					{
+						id: { not: Number(req.params.id) },
+					},
+				],
 			},
 		})
 
-		if (canAddEvent(events, { start: new Date(start), end: new Date(end) })) {
-			const event = await prisma.event.update({
-				where: { id: Number(req.params.id) },
-				data: {
-					start: new Date(start),
-					end: new Date(end),
-					professionalId,
-					serviceId: Number(serviceId),
-					centerId: centerId ? centerId : null,
-					seniorId: seniorId || null,
-					assistance: assistance || false,
-				},
-				select: eventSelect,
-			})
+		if (events.length !== 0) throw new AppError(409, "Superposición de horas")
 
-			io.to("ADMIN").emit("updatedEvent", formatEvent(event))
-			return res.status(200).json({ values: { modified: formatEvent(event) } })
-		} else {
-			return res.status(409).json({
-				message: "Superposición de horas",
-				type: "error",
-			})
-		}
+		let event = await prisma.event.update({
+			where: { id: Number(req.params.id) },
+			data: {
+				start: startDate,
+				end: endDate,
+				professionalId,
+				serviceId: Number(serviceId),
+				seniorId: seniorId || null,
+				centerId: Number(centerId),
+				assistance,
+			},
+			select: eventSelect,
+		})
+
+		event = formatEvent(event)
+
+		io.to("ADMIN").emit("updatedEvent", event)
+		return res.status(200).json({ values: { modified: event } })
 	} catch (error) {
 		next(error)
 	}

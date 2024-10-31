@@ -1,7 +1,7 @@
-import { TouchableOpacity, StyleSheet, Dimensions } from "react-native"
-import { AntDesign } from "@expo/vector-icons"
 import React from "react"
-const width = Dimensions.get("window")
+
+import { AntDesign } from "@expo/vector-icons"
+import { TouchableOpacity, StyleSheet } from "react-native"
 
 type GoBackButtonProps = {
 	navigation: any

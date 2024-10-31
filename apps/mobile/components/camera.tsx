@@ -1,8 +1,9 @@
-import { CameraView, useCameraPermissions } from "expo-camera"
 import { useRef } from "react"
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import { AntDesign } from "@expo/vector-icons"
 import { useRoute } from "@react-navigation/native"
+import { AntDesign } from "@expo/vector-icons"
+import { CameraView, useCameraPermissions } from "expo-camera"
+import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+
 import * as ImageManipulator from "expo-image-manipulator"
 
 type CameraProps = {

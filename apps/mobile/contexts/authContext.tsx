@@ -1,12 +1,11 @@
+import axios from "axios"
+
 import { SERVER_URL } from "@/utils/request"
 import { makeAuthenticatedRequest } from "@/utils/request"
-import { storeTokens, storeUser, removeTokens, removeUser, getExpTime } from "@/utils/storage"
 import { loginSeniorFormData, User } from "@/utils/types"
-import { isTokenExp } from "@/utils/validation"
-import axios from "axios"
-import { createContext, ReactNode, useContext, useEffect, useState } from "react"
 import { Alert, AppState, AppStateStatus } from "react-native"
-import { set } from "zod"
+import { storeTokens, storeUser, removeTokens, getExpTime } from "@/utils/storage"
+import { createContext, ReactNode, useContext, useEffect, useState } from "react"
 
 interface authContextProps {
 	isAuthenticated: boolean

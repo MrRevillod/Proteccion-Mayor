@@ -63,6 +63,7 @@ const CentersPage: React.FC = () => {
 				data={centers}
 				setData={setCenters}
 				action={deleteCenter}
+				requirePasswordConfirmation
 			/>
 		</PageLayout>
 	)

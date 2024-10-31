@@ -1,7 +1,8 @@
 import React from "react"
-import { TouchableOpacity, Text, StyleSheet, ViewStyle, TextStyle, Dimensions } from "react-native"
 import Colors from "@/components/colors"
 import AppText from "./appText"
+
+import { TouchableOpacity, StyleSheet, ViewStyle, TextStyle, Dimensions } from "react-native"
 
 const { height } = Dimensions.get("window")
 
@@ -15,7 +16,7 @@ type CustomButtonProps = {
 const CustomButton = ({ title, onPress, style, textStyle }: CustomButtonProps) => {
 	return (
 		<TouchableOpacity onPress={onPress} style={[styles.button, style]}>
-            <AppText style={[styles.buttonText, textStyle]}>{title}</AppText>
+			<AppText style={[styles.buttonText, textStyle]}>{title}</AppText>
 		</TouchableOpacity>
 	)
 }
