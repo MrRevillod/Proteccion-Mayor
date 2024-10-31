@@ -15,7 +15,7 @@ const Pin = ({ navigation, validateAndNavigate }: commonProps) => {
 			textDescription="Su pin no debe repetir números, ni usar secuencias (1234). Además, debe ser un pin que recuerde fácilmente."
 		>
 			<View style={styles.container}>
-				<Input name="pin" placeholder="Ingrese su pin aquí" secureTextEntry />
+				<Input name="pin" placeholder="Ingrese su pin aquí" secureTextEntry keyboardType="numeric" />
 				<CustomButton title="Siguiente" onPress={() => validateAndNavigate("pin", navigation, "ConfirmPin")} />
 				<CustomButton
 					style={{ backgroundColor: Colors.white }}

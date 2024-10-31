@@ -15,7 +15,7 @@ const ConfirmPin = ({ navigation, validateAndNavigate }: commonProps) => {
 			textDescription="Antes de confirmar su pin, asegúrese de que le sea fácil de recordar."
 		>
 			<View style={styles.container}>
-				<Input name="pinConfirm" placeholder="Confirme su Pin" secureTextEntry />
+				<Input name="pinConfirm" placeholder="Confirme su Pin" secureTextEntry keyboardType="numeric" />
 				<CustomButton title="Siguiente" onPress={() => validateAndNavigate("pinConfirm", navigation, "DNI")} />
 				<CustomButton
 					style={{ backgroundColor: Colors.white }}

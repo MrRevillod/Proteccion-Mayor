@@ -11,9 +11,10 @@ interface SuperSelectProps {
 	options: any
 	setSearch?: Dispatch<SetStateAction<string>>
 	defaultValue?: any
+	width?: string
 }
 
-export const SuperSelect = ({ name, label, options, setSearch }: SuperSelectProps) => {
+export const SuperSelect = ({ name, label, options, setSearch, width }: SuperSelectProps) => {
 	const {
 		control,
 		formState: { errors },
@@ -22,8 +23,9 @@ export const SuperSelect = ({ name, label, options, setSearch }: SuperSelectProp
 	const classes = clsx(
 		errors[name] ? "border-red" : "border-gray-dark",
 		"rounded-lg text-sm focus:outline-none focus:ring-primary-green",
-		"focus:border-primary-green w-full h-10 placeholder-neutral-400",
+		"focus:border-primary-green h-10 placeholder-neutral-400",
 		"text-dark dark:text-light mb-1 border-1 bg-light dark:bg-primary-dark",
+		width ? width : "w-full",
 	)
 
 	const clientFilterFn = (input: string, option: any) => {

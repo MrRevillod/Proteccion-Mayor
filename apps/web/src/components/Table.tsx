@@ -16,15 +16,9 @@ interface TableProps<T> {
 	onView?: (record: T) => void
 }
 
-const DataTable = <T extends BaseDataType>({
-	data,
-	columnsConfig,
-	loading,
-	viewable,
-	editable,
-	deletable,
-	onView,
-}: TableProps<T>) => {
+const DataTable = <T extends BaseDataType>({ data, ...props }: TableProps<T>) => {
+	const { columnsConfig, loading, editable, deletable, viewable, onView } = props
+
 	const { showModal } = useModal()
 
 	return (

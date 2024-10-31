@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import PageLayout from "@/layouts/PageLayout"
 import DatetimeSelect from "@/components/ui/DatetimeSelect"
 
@@ -12,10 +12,15 @@ import { SeniorSchemas } from "@/lib/schemas"
 import { message, Image } from "antd"
 import { useLocation, useNavigate } from "react-router-dom"
 import { FieldValues, FormProvider, SubmitHandler, useForm } from "react-hook-form"
+import { useRequest } from "@/hooks/useRequest"
+import { getRegisterImages } from "@/lib/actions"
+import { SuperSelect } from "@/components/ui/SuperSelect"
 
 const SeniorRegisterRequestPage: React.FC = () => {
 	const location = useLocation()
 	const navigate = useNavigate()
+
+	const [images, setImages] = useState<string[]>([])
 
 	const { senior } = location.state || {}
 
@@ -26,6 +31,14 @@ const SeniorRegisterRequestPage: React.FC = () => {
 		if (!senior) navigate("/administracion/personas-mayores/nuevos")
 		else reset({ rut: senior.id, email: senior.email })
 	}, [senior])
+
+	useRequest({
+		action: getRegisterImages,
+		params: { id: senior.id },
+		onSuccess: (data) => {
+			Array.isArray(data) && setImages(data)
+		},
+	})
 
 	const AcceptMutation = useMutation<void>({
 		mutateFn: async () => {
@@ -88,10 +101,25 @@ const SeniorRegisterRequestPage: React.FC = () => {
 							readOnly={true}
 						/>
 						<Input name="address" label="Dirección" type="text" placeholder="Dirección" />
-						<DatetimeSelect name="birthDate" label="Fecha de nacimiento" showTime={false} />
+
+						<div className="flex flex-row gap-4 w-full items-center justify-center">
+							<div className="w-1/2">
+								<SuperSelect
+									name="gender"
+									label="Género"
+									options={[
+										{ value: "MA", label: "Masculino" },
+										{ value: "FE", label: "Femenino" },
+									]}
+								/>
+							</div>
+							<div className="w-1/2">
+								<DatetimeSelect name="birthDate" label="Fecha de nacimiento" showTime={false} />
+							</div>
+						</div>
 
 						<div className="flex flex-col gap-8">
-							<p>
+							<p className="text-dark dark:text-light">
 								<strong>Nota:</strong> Al aceptar esta solicitud, la persona mayor podrá iniciar sesión
 								en la aplicación móvil, solicitar servicios y asistir a las horas de atención
 								solicitadas.
@@ -121,15 +149,27 @@ const SeniorRegisterRequestPage: React.FC = () => {
 				<div className="w-2/3 grid grid-cols-2 gap-2">
 					<div className="col-span-1 grid grid-rows-2 gap-1">
 						<div className="row-span-1 rounded-lg dni-container bg-red max-h-[280px] overflow-hidden">
-							<Image src="/img/frontal.jpg" alt="Cédula Frontal" className="object-cover w-full h-full" />
+							<Image
+								src={images[0]}
+								alt="Cédula Frontal"
+								className="object-cover object-center w-full h-full"
+							/>
 						</div>
 						<div className="row-span-1 rounded-lg dni-container bg-green max-h-[280px] overflow-hidden">
-							<Image src="/img/reverso.jpg" alt="Cédula Reverso" className="object-cover w-full h-full" />
+							<Image
+								src={images[1]}
+								alt="Cédula Reverso"
+								className="object-cover object-center w-full h-full"
+							/>
 						</div>
 					</div>
 
 					<div className="col-span-1 rounded-lg dni-container bg-blue overflow-hidden max-h-[580px]">
-						<Image src="/img/rsh.png" alt="Cartola Hogar" className="object-cover w-full h-full" />
+						<Image
+							src={images[2]}
+							alt="Cartola Hogar"
+							className="object-cover object-center w-full h-full"
+						/>
 					</div>
 				</div>
 			</section>

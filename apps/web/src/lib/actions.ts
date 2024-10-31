@@ -138,3 +138,7 @@ export const deleteEvent = async (props: MutateActionProps) => {
 export const getReports = async (props: QueryActionProps) => {
 	return await apiRequest.get(`/dashboard/reports${props.query ? "?" + props.query : ""}`)
 }
+
+export const getRegisterImages = async (props: QueryActionProps) => {
+	return await apiRequest.get(`/storage/public/seniors/${props?.params?.id}/register-files`)
+}
