@@ -80,7 +80,7 @@ const Router: React.FC = () => {
 				<Route path="/administracion/personas-mayores/historial" element={<SeniorHistoryRequestPage />} />
 				<Route
 					path="/administracion/personas-mayores/solicitud-de-registro"
-					element={<SeniorRegisterRequestPage />}
+					element={<SeniorHistoryRequestPage />}
 				/>
 				<Route path="/administracion/servicios" element={<ServicesPage />} />
 				<Route path="/administracion/centros-de-atencion" element={<CentersPage />} />
