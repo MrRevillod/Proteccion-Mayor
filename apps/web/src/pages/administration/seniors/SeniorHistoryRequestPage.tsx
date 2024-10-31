@@ -26,9 +26,15 @@ const SeniorHistoryRequestPage: React.FC = () => {
 
 	return (
 		<PageLayout pageTitle="Historial Personal">
-			<div className="flex flex-row gap-4 w-full bg-gray-50 dark:bg-primary-dark">
+			<div className="w-full dark:bg-primary-dark">
 				{loading && <Loading />}
-				<UpcomingEvents title={"Historial"} events={events} professional={true} dateEvent={true} />
+				<UpcomingEvents
+					title={senior?.name}
+					events={events}
+					professional={true}
+					dateEvent={true}
+					width="100%"
+				/>
 			</div>
 		</PageLayout>
 	)

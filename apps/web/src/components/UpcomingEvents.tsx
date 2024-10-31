@@ -15,6 +15,7 @@ interface UpcomingEventsProps {
 	center?: boolean
 	professional?: boolean
 	dateEvent?: boolean
+	width?: string
 }
 
 export const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
@@ -23,6 +24,7 @@ export const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
 	center = false,
 	professional = false,
 	dateEvent = false,
+	width = "20%",
 }) => {
 	const paginationClasses = clsx(
 		events.length > 5 ? "fixed bottom-28 right-24" : "hidden",
@@ -40,7 +42,7 @@ export const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
 	)
 
 	return (
-		<section className="w-1/5 bg-white dark:bg-primary-dark p-4 rounded-lg">
+		<section className="bg-white dark:bg-primary-dark p-4 rounded-lg" style={{ width: width }}>
 			<h2 className="text-xl font-bold text-dark dark:text-light">{title}</h2>
 			<div className="flex flex-col gap-2 h-full py-4 justify-between">
 				<div className={containerClasses}>
