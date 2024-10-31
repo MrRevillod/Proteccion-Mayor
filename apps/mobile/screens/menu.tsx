@@ -1,9 +1,10 @@
 import React from "react"
-import { StyleSheet } from "react-native"
-import { commonProps } from "@/utils/types"
+import Colors from "@/components/colors"
 import GeneralView from "@/components/generalView"
 import CustomButton from "@/components/button"
-import Colors from "@/components/colors"
+
+import { StyleSheet } from "react-native"
+import { commonProps } from "@/utils/types"
 
 const Menu = ({ navigation }: commonProps) => {
 	return (
@@ -15,14 +16,9 @@ const Menu = ({ navigation }: commonProps) => {
 				textStyle={styles.customButtonText}
 				onPress={() => navigation.navigate("Login")}
 			/>
-			{/* <CustomButton
-				title="Mi Perfil"
-				onPress={() => navigation.navigate("Profile")}
-				style={{ marginTop: 20, width: "85%", alignSelf: "center" }}
-			/> */}
 			<CustomButton
-				title="Centros"
-				onPress={() => navigation.navigate("Centers")}
+				title="Cambiar tamaño de fuente"
+				onPress={() => navigation.navigate("FontSize")}
 				style={{ marginTop: 20, width: "85%", alignSelf: "center" }}
 			/>
 		</GeneralView>

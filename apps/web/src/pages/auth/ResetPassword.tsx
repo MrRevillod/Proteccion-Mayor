@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { z } from "zod"
 import { api } from "../../lib/axios"
 import { Input } from "../../components/ui/Input"
@@ -6,6 +6,8 @@ import { Helmet } from "react-helmet"
 import { message } from "antd"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FormProvider, useForm } from "react-hook-form"
+import { useParams, useSearchParams } from "react-router-dom"
+import { UserRole } from "../../lib/types"
 
 const ResetPasswordPage: React.FC = () => {
 	const formSchemas = z.object({
@@ -15,8 +17,8 @@ const ResetPasswordPage: React.FC = () => {
 		role: z.enum(["ADMIN", "PROFESSIONAL", "SENIOR"]),
 	})
 
+	const [searchParams] = useSearchParams()
 	const methods = useForm({ resolver: zodResolver(formSchemas) })
-
 	const { handleSubmit, reset } = methods
 
 	const onSubmit = async (data: any) => {
@@ -63,7 +65,7 @@ const ResetPasswordPage: React.FC = () => {
 									{ value: "PROFESSIONAL", label: "Profesional" },
 									{ value: "SENIOR", label: "Persona Mayor" },
 								]}
-								defaultValue="SENIOR"
+								defaultValue={searchParams.get("variant") || "ADMIN"}
 							/>
 
 							<div className="mt-4">

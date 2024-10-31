@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react"
-import { View, Text, StyleSheet } from "react-native"
+import Colors from "@/components/colors"
+import Feather from "@expo/vector-icons/Feather"
 import GeneralView from "@/components/generalView"
 import CustomButton from "@/components/button"
-import Colors from "@/components/colors"
+
 import { commonProps } from "../../utils/types"
+import { useState, useEffect } from "react"
+import { View, Text, StyleSheet } from "react-native"
 import { Controller, useFormContext } from "react-hook-form"
-import Feather from "@expo/vector-icons/Feather"
 
 const DNI = ({ navigation, route }: commonProps) => {
 	const {
@@ -22,9 +23,9 @@ const DNI = ({ navigation, route }: commonProps) => {
 	useEffect(() => {
 		if (route.params?.photoUri) {
 			if (isCapturingFront) {
-				setValue("dni_a", route.params.photoUri)
+				setValue("dni_a", route.params.photoUri) // Setea la foto frontal
 			} else {
-				setValue("dni_b", route.params.photoUri)
+				setValue("dni_b", route.params.photoUri) // Setea la foto trasera
 			}
 		}
 	}, [route.params?.photoUri])
@@ -32,7 +33,7 @@ const DNI = ({ navigation, route }: commonProps) => {
 	useEffect(() => {
 		const photos = getValues(["dni_a", "dni_b"])
 		if (photos[0] && photos[1]) {
-			setPhotosValid(true)
+			setPhotosValid(true) // Si ambas fotos están presentes, actualiza el estado de validación
 		}
 	}, [getValues(["dni_a", "dni_b"])])
 
@@ -41,9 +42,9 @@ const DNI = ({ navigation, route }: commonProps) => {
 	}
 
 	const validatePhotosAndNavigate = async () => {
-		const isValid = await trigger(["dni_a", "dni_b"])
+		const isValid = await trigger(["dni_a", "dni_b"]) // Dispara la validación de las fotos
 		if (isValid) {
-			navigation.navigate("Social")
+			navigation.navigate("Social") // Si es válido, navega a la siguiente pantalla
 		}
 	}
 
@@ -112,12 +113,6 @@ const DNI = ({ navigation, route }: commonProps) => {
 						/>
 					)}
 				</>
-				<CustomButton
-					style={{ backgroundColor: Colors.white }}
-					textStyle={styles.customButtonText}
-					title="Volver"
-					onPress={() => navigation.goBack()}
-				/>
 			</View>
 		</GeneralView>
 	)

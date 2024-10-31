@@ -77,9 +77,7 @@ const Social = ({ navigation, route }: commonProps) => {
 				},
 			})
 
-			if (isValid) {
-				navigation.navigate("Final")
-			}
+			if (isValid) navigation.navigate("Final")
 		} catch (error: any) {
 			error.response.data.message && Alert.alert("Error", error.response.data.message)
 		}
@@ -113,25 +111,16 @@ const Social = ({ navigation, route }: commonProps) => {
 				/>
 				{errors["social"] && <Text style={{ color: "red", alignSelf: "center" }}>{String(errors["social"].message)}</Text>}
 
-				<>
-					{isPhotoValid ? (
-						<CustomButton title="Siguiente" onPress={handleSubmit(onSubmit)} style={{ marginTop: 30 }} />
-					) : (
-						<CustomButton
-							style={{ backgroundColor: Colors.white, marginTop: 30 }}
-							textStyle={styles.customButtonText}
-							title="Siguiente"
-							onPress={handleSubmit(onSubmit)}
-						/>
-					)}
-				</>
-
-				<CustomButton
-					style={{ backgroundColor: Colors.white }}
-					textStyle={styles.customButtonText}
-					title="Volver"
-					onPress={() => navigation.goBack()}
-				/>
+				{isPhotoValid ? (
+					<CustomButton title="Siguiente" onPress={handleSubmit(onSubmit)} style={{ marginTop: 30 }} />
+				) : (
+					<CustomButton
+						style={{ backgroundColor: Colors.white, marginTop: 30 }}
+						textStyle={styles.customButtonText}
+						title="Siguiente"
+						onPress={handleSubmit(onSubmit)}
+					/>
+				)}
 			</View>
 		</GeneralView>
 	)

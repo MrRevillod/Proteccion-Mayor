@@ -1,9 +1,10 @@
-import { View, StyleSheet } from "react-native"
 import Input from "@/components/input"
+import Colors from "@/components/colors"
 import GeneralView from "@/components/generalView"
 import CustomButton from "@/components/button"
-import Colors from "@/components/colors"
+
 import { commonProps } from "@/utils/types"
+import { View, StyleSheet } from "react-native"
 
 const Pin = ({ navigation, validateAndNavigate }: commonProps) => {
 	return (
