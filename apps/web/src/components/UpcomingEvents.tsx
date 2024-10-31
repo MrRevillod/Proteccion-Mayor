@@ -5,17 +5,28 @@ import React from "react"
 import { Event } from "../lib/types"
 import { Pagination } from "antd"
 import { usePagination } from "../hooks/usePagination"
+import { AiOutlineCalendar, AiOutlineUser, AiFillBank } from "react-icons/ai"
 
 import "../main.css"
 
 interface UpcomingEventsProps {
 	events: Event[]
+	title: string
+	center?: boolean
+	professional?: boolean
+	dateEvent?: boolean
 }
 
-export const UpcomingEvents: React.FC<UpcomingEventsProps> = ({ events }) => {
+export const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
+	title,
+	events,
+	center = false,
+	professional = false,
+	dateEvent = false,
+}) => {
 	const paginationClasses = clsx(
 		events.length > 5 ? "fixed bottom-28 right-24" : "hidden",
-		"fixed bottom-28 right-24",
+		"fixed bottom-28 right-24"
 	)
 
 	const { paginatedData, currentPage, pageSize, total, onPageChange } = usePagination({
@@ -25,36 +36,60 @@ export const UpcomingEvents: React.FC<UpcomingEventsProps> = ({ events }) => {
 
 	const containerClasses = clsx(
 		"flex flex-col gap-2 h-full",
-		events.length === 0 ? "justify-center items-center" : "",
+		events.length === 0 ? "justify-center items-center" : ""
 	)
 
 	return (
 		<section className="w-1/5 bg-white dark:bg-primary-dark p-4 rounded-lg">
-			<h2 className="text-xl font-bold text-dark dark:text-light">Próximas atenciones</h2>
+			<h2 className="text-xl font-bold text-dark dark:text-light">{title}</h2>
 			<div className="flex flex-col gap-2 h-full py-4 justify-between">
 				<div className={containerClasses}>
 					{events.length === 0 && (
 						<div className="text-center text-neutral-400">No hay atenciones próximas</div>
 					)}
-
-					{paginatedData.map((event) => {
-						return (
+					{paginatedData.map((event) => (
+						<div
+							key={event.id}
+							className="relative flex overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 rounded-lg"
+						>
 							<div
-								key={event.id}
-								className="relative flex flex-col"
-								style={{ "--bg-color": event.backgroundColor } as React.CSSProperties}
-							>
-								<div className="py-2 flex flex-col gap-2 items-start rounded-lg p-2 event-card">
-									<p className="font-semibold text-base text-dark dark:text-light">{event.title}</p>
-									<p className="text-sm text-dark dark:text-light">{event.center?.name}</p>
-									<p className="text-sm text-dark dark:text-light">
+								className="w-2 absolute left-0 top-0 bottom-0"
+								style={{ backgroundColor: event.backgroundColor }}
+							></div>
+							<div className="flex-1 py-2 flex flex-col gap-2 items-start p-4 ml-2 event-card">
+								<p className="font-semibold text-xl text-dark dark:text-light flex items-center gap-2">
+									{event.title}
+								</p>
+								{center && (
+									<p className="text-sm text-dark dark:text-light flex items-center gap-2">
+										<AiFillBank className="h-5 w-5 text-muted-foreground" />
+										{event.center?.name}
+									</p>
+								)}
+								{professional && (
+									<p className="text-sm text-dark dark:text-light flex items-center gap-2">
+										<AiOutlineUser className="h-5 w-5 text-muted-foreground" />
+										{event.professional?.name}
+									</p>
+								)}
+								{/* FECHA DE EVENTOS */}
+								{!dateEvent && (
+									<p className="text-sm text-dark flex gap-2 dark:text-light">
+										<AiOutlineCalendar className="h-5 w-5 text-muted-foreground" />
 										{dayjs(event.start).format("DD/MM/YYYY HH:mm")}
 									</p>
-								</div>
-								<hr className="border-gray-200 dark:border-none" />
+								)}
+								{dateEvent && (
+									<p className="text-sm text-dark flex gap-2 dark:text-light">
+										<AiOutlineCalendar className="h-5 w-5 text-muted-foreground" />
+										{dayjs(event.start).format("DD/MM/YYYY HH:mm")}
+										{" - "}
+										{dayjs(event.end).format("HH:mm")}
+									</p>
+								)}
 							</div>
-						)
-					})}
+						</div>
+					))}
 				</div>
 				<Pagination
 					defaultPageSize={5}

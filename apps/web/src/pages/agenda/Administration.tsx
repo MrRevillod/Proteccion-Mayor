@@ -95,7 +95,7 @@ const AdministrationAgendaPage: React.FC = () => {
 				{loading && <Loading />}
 				<EventFilter data={{ centers, services, professionals }} onSubmit={onFilterSubmit} />
 				<Calendar events={events} />
-				<UpcomingEvents events={upcomingEvents} />
+				<UpcomingEvents title={"Próximas atenciones"} center={true} events={upcomingEvents} />
 			</div>
 
 			<CreateEvent centers={centers} services={services} professionals={professionals} />

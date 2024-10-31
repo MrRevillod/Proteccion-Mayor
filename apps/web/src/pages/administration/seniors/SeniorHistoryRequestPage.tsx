@@ -7,6 +7,7 @@ import { useRequest } from "../../../hooks/useRequest"
 import { useLocation } from "react-router-dom"
 import React, { useState } from "react"
 import { Events, Event, Senior } from "../../../lib/types"
+import { UpcomingEvents } from "@/components/UpcomingEvents"
 
 const SeniorHistoryRequestPage: React.FC = () => {
 	const location = useLocation()
@@ -27,27 +28,7 @@ const SeniorHistoryRequestPage: React.FC = () => {
 		<PageLayout pageTitle="Historial Personal">
 			<div className="flex flex-row gap-4 w-full bg-gray-50 dark:bg-primary-dark">
 				{loading && <Loading />}
-				<div className="flex flex-col w-2/5 p-4">
-					<h2 className="text-xl font-semibold mb-4">Lista de Eventos</h2>
-					<ul className="list-disc pl-4">
-						{Object.values(events || {}).map((event: Event) => (
-							<li key={event.id} className="mb-2">
-								<p>
-									<strong>Servicio:</strong> {event.service?.name}
-								</p>
-								<p>
-									<strong>Profesional:</strong> {event.professional?.name}
-								</p>
-								<p>
-									<strong>Fecha inicio:</strong> {new Date(event.start).toLocaleString()}
-								</p>
-								<p>
-									<strong>Fecha termino:</strong> {new Date(event.end).toLocaleString()}
-								</p>
-							</li>
-						))}
-					</ul>
-				</div>
+				<UpcomingEvents title={"Historial"} events={events} professional={true} dateEvent={true} />
 			</div>
 		</PageLayout>
 	)
