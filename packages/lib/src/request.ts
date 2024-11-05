@@ -72,11 +72,11 @@ export const httpRequest = async <T>({
 			throw new AppError(
 				(result as any).status || 500,
 				(result as any).message,
-				((result as any).values || {}) as Record<string, unknown>
+				((result as any).values || {}) as Record<string, unknown>,
 			)
 		}
 
-		return result
+		return result as JsonResponse<T>
 	} catch (error: unknown) {
 		throw error
 	}

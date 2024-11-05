@@ -14,7 +14,7 @@ const NewSeniorsPage: React.FC = () => {
 	const [seniors, setSeniors] = useState<Senior[]>([])
 	const navigate = useNavigate()
 
-	const { error, loading } = useRequest<Senior[]>({
+	const { error, loading, data } = useRequest<Senior[]>({
 		action: getSeniors,
 		query: "validated=0",
 		onSuccess: (data) => setSeniors(data),
@@ -29,7 +29,12 @@ const NewSeniorsPage: React.FC = () => {
 	}
 
 	return (
-		<PageLayout pageTitle="Solicitudes de registro de personas mayores">
+		<PageLayout
+			pageTitle="Solicitudes de registro de personas mayores"
+			searchKeys={["id", "name"]}
+			data={data}
+			setData={setSeniors}
+		>
 			<section className="w-full bg-white dark:bg-primary-dark p-4 rounded-lg">
 				<DataTable<UnvalidatedSenior>
 					data={seniors}

@@ -1,9 +1,10 @@
-import { View, StyleSheet } from "react-native"
 import Input from "@/components/input"
+import Colors from "@/components/colors"
 import GeneralView from "@/components/generalView"
 import CustomButton from "@/components/button"
-import Colors from "@/components/colors"
+
 import { commonProps } from "@/utils/types"
+import { View, StyleSheet } from "react-native"
 
 const Pin = ({ navigation, validateAndNavigate }: commonProps) => {
 	return (
@@ -14,7 +15,7 @@ const Pin = ({ navigation, validateAndNavigate }: commonProps) => {
 			textDescription="Su pin no debe repetir números, ni usar secuencias (1234). Además, debe ser un pin que recuerde fácilmente."
 		>
 			<View style={styles.container}>
-				<Input name="pin" placeholder="Ingrese su pin aquí" secureTextEntry />
+				<Input name="pin" placeholder="Ingrese su pin aquí" secureTextEntry keyboardType="numeric" />
 				<CustomButton title="Siguiente" onPress={() => validateAndNavigate("pin", navigation, "ConfirmPin")} />
 				<CustomButton
 					style={{ backgroundColor: Colors.white }}

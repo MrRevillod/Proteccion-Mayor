@@ -2,10 +2,10 @@ import { View, StyleSheet } from "react-native"
 import Input from "@/components/input"
 import GeneralView from "@/components/generalView"
 import CustomButton from "@/components/button"
-import { commonProps } from "@/utils/types"
+import { useFormContext } from "react-hook-form"
 import { checkUniqueField } from "@/utils/request"
 import GoBackButton from "@/components/goBack"
-import { useFormContext } from "react-hook-form"
+import { commonProps } from "@/utils/types"
 
 const RUT = ({ navigation }: commonProps) => {
 	const { getValues, setError, trigger } = useFormContext()
@@ -27,7 +27,7 @@ const RUT = ({ navigation }: commonProps) => {
 				textDescription="Debe ingresar su RUT sin puntos ni guión."
 			>
 				<View style={styles.container}>
-					<Input name="rut" placeholder="Ingrese su RUT aquí" />
+					<Input name="rut" placeholder="Ingrese su RUT aquí" keyboardType="numeric" />
 					<CustomButton title="Siguiente" onPress={onSubmit} />
 				</View>
 			</GeneralView>

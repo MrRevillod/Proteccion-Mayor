@@ -24,4 +24,6 @@ router.patch("/:id", singleImageupload, validateUserId("ADMIN"), validateRole(["
 // Eliminar un administrador por id --- Requiere rol de administrador
 router.delete("/:id", validateUserId("ADMIN"), validateRole(["ADMIN"]), administrators.deleteById)
 
+router.post("/confirm-action", validateRole(["ADMIN"]), administrators.confirmAction)
+
 export default router

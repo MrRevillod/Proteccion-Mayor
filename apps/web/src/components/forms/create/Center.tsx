@@ -3,6 +3,7 @@ import React from "react"
 import { Form } from "../Form"
 import { Input } from "../../ui/Input"
 import { Modal } from "../../Modal"
+import { ColorPicker } from "../../ColorPicker"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { createCenter } from "../../../lib/actions"
 import { ImageSelector } from "../../ImageSelector"
@@ -20,7 +21,8 @@ const CreateCenter: React.FC<FormProps<Center>> = ({ data, setData }) => {
 					<Input name="name" label="Nombre" type="text" placeholder="Centro de atención San José" />
 					<Input name="address" label="Dirección" type="text" placeholder="Pedro Montt #41" />
 					<Input name="phone" label="Teléfono" type="text" placeholder="56955473897" />
-					<ImageSelector imageLabel="Imagen del centro de atención" />
+					<ColorPicker label="Color del centro de atención" />
+					<ImageSelector imageLabel="Imagen del centro de atención" size={[400, 250]} />
 				</Form>
 			</FormProvider>
 		</Modal>

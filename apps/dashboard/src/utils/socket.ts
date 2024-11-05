@@ -40,20 +40,18 @@ export const initSocket = (io: Server) => {
 
 		// Asociar al cliente con su rol (grupo)
 		socket.join(role)
-        socket.join(userId)
+		socket.join(userId)
 
-        console.log(socket.handshake.query)
 		// Agregar el cliente al diccionario
 		//addClient({ socketId: socket.id, userId })
 
-        //console.log("Clientes",getClients())
+		//console.log("Clientes",getClients())
 		// Eliminar el cliente cuando se desconecta
 		socket.on("disconnect", () => {
-          //  removeClient(socket.id)
-            //console.log("Clientes",getClients())
-            socket.leave(role)
-            socket.leave(userId)
-            
+			//  removeClient(socket.id)
+			//console.log("Clientes",getClients())
+			socket.leave(role)
+			socket.leave(userId)
 		})
 	})
 }

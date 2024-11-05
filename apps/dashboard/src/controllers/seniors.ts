@@ -77,7 +77,7 @@ export const handleSeniorRequest = async (req: Request, res: Response, next: Nex
 			throw new AppError(400, "Adulto mayor no encontrado")
 		}
 
-		if (gender !== "MA" || gender !== "FE") {
+		if (validated && gender !== "MA" && gender !== "FE") {
 			throw new AppError(400, "El género debe ser MA o FE")
 		}
 

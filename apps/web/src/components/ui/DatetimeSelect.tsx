@@ -11,9 +11,10 @@ interface DatetimeSelectProps {
 	name: string
 	showTime?: boolean
 	defaultValue?: Dayjs
+	width?: string
 }
 
-const DatetimeSelect = ({ label, name, showTime = true, defaultValue }: DatetimeSelectProps) => {
+const DatetimeSelect = ({ label, name, showTime = true, defaultValue, width }: DatetimeSelectProps) => {
 	const {
 		control,
 		setValue,
@@ -25,12 +26,13 @@ const DatetimeSelect = ({ label, name, showTime = true, defaultValue }: Datetime
 		"rounded-lg text-sm focus:outline-none focus:ring-primary-green",
 		"focus:border-primary-green w-full h-10 placeholder-neutral-400",
 		"text-dark dark:text-light mb-1 border-1 bg-light dark:bg-primary-dark",
+		width ? width : "w-full",
 	)
 
 	return (
-		<div className="flex flex-col gap-4">
+		<div className="flex flex-col gap-2">
 			<div className="flex flex-row gap-2 items-center justify-between">
-				<label className="font-semibold">{label}</label>
+				<label className="font-semibold text-dark dark:text-light">{label}</label>
 				{errors[name] && <div className="text-red text-sm">{errors[name]?.message?.toString()}</div>}
 			</div>
 			<Controller

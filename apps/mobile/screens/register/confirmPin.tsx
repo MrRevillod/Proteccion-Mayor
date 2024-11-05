@@ -1,9 +1,10 @@
-import { View, StyleSheet } from "react-native"
 import Input from "@/components/input"
+import Colors from "@/components/colors"
 import GeneralView from "@/components/generalView"
 import CustomButton from "@/components/button"
-import Colors from "@/components/colors"
+
 import { commonProps } from "@/utils/types"
+import { View, StyleSheet } from "react-native"
 
 const ConfirmPin = ({ navigation, validateAndNavigate }: commonProps) => {
 	return (
@@ -14,7 +15,7 @@ const ConfirmPin = ({ navigation, validateAndNavigate }: commonProps) => {
 			textDescription="Antes de confirmar su pin, asegúrese de que le sea fácil de recordar."
 		>
 			<View style={styles.container}>
-				<Input name="pinConfirm" placeholder="Confirme su Pin" secureTextEntry />
+				<Input name="pinConfirm" placeholder="Confirme su Pin" secureTextEntry keyboardType="numeric" />
 				<CustomButton title="Siguiente" onPress={() => validateAndNavigate("pinConfirm", navigation, "DNI")} />
 				<CustomButton
 					style={{ backgroundColor: Colors.white }}
@@ -37,3 +38,4 @@ const styles = StyleSheet.create({
 		color: Colors.green,
 	},
 })
+1

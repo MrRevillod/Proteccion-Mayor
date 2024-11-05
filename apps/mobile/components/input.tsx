@@ -1,17 +1,21 @@
 import React from "react"
-import { View, TextInput, Text } from "react-native"
-import { Controller, useFormContext } from "react-hook-form"
-import { StyleSheet } from "react-native"
 import Colors from "@/components/colors"
+
+import { StyleSheet } from "react-native"
+import { Controller, useFormContext } from "react-hook-form"
+import { View, TextInput, Text, KeyboardTypeAndroid, KeyboardType } from "react-native"
 
 type InputFieldProps = {
 	name: string
 	placeholder: string
 	secureTextEntry?: boolean
 	children?: React.ReactNode
+	keyboardType?: KeyboardType | KeyboardTypeAndroid
 }
 
-const Input = ({ name, placeholder, secureTextEntry = false, children }: InputFieldProps) => {
+const Input = ({ name, ...props }: InputFieldProps) => {
+	const { placeholder, secureTextEntry, keyboardType = "default", children } = props
+
 	const {
 		control,
 		formState: { errors },
@@ -30,8 +34,9 @@ const Input = ({ name, placeholder, secureTextEntry = false, children }: InputFi
 							onBlur={onBlur}
 							onChangeText={onChange}
 							secureTextEntry={secureTextEntry}
+							keyboardType={keyboardType}
 						/>
-						{errors[name] && typeof errors[name].message === "string" && <Text style={{ color: "red" }}>{errors[name].message}</Text>}
+						<Text>{errors[name] && <Text style={{ color: "red" }}>{errors[name].message?.toString()}</Text>}</Text>
 					</>
 				)}
 			/>

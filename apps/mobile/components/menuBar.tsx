@@ -1,6 +1,8 @@
 import React from "react"
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image } from "react-native"
 import Colors from "@/components/colors"
+
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image } from "react-native"
+
 const { width } = Dimensions.get("window")
 
 const MenuBar = ({ navigation }: any) => {

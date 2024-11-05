@@ -14,7 +14,7 @@ const RUT = ({ navigation }: commonProps) => {
 		>
 			<View style={styles.container}>
 				<Input name="rut" placeholder="Ingresa tu RUT" />
-				<CustomButton title="Siguiente" onPress={() => navigation.navigate("Pin")} />
+                <CustomButton title="Siguiente" onPress={() => navigation.navigate("Pin")} />
 			</View>
 		</GeneralView>
 	)

@@ -1,32 +1,126 @@
-import { Event } from "@prisma/client"
-import { AppError } from "@repo/lib"
+import { Dayjs } from "dayjs"
+import { match } from "ts-pattern"
+import { prisma } from "@repo/database"
 
-export const canAddEvent = (events: Event[], newEvent: { start: Date; end: Date }): boolean => {
-	// Ordenar los eventos por la fecha de inicio
-	events.sort((a, b) => a.start.getTime() - b.start.getTime())
+// Repeat values
+// La repetición solo es ejecutada por un mes
+// Representa las opciones de repetición de un evento
 
-	// Revisar si el nuevo evento se superpone con los eventos existentes
-	for (let i = 0; i < events.length; i++) {
-		const event = events[i]
+// daily: Evento diario (se repite cada día a la misma hora)
+// weekly: Evento semanal (se repite cada semana a la misma hora)
 
-		// Si el nuevo evento termina antes de que el evento actual comience, no hay superposición
-		if (newEvent.end <= newEvent.start) {
-			throw new AppError(400, "Rango de tiempo invalido")
-		}
+export type RepeatValues = "daily" | "weekly"
 
-		if (newEvent.end <= event.start) {
-			continue
-		}
+type EventOverlapWhere = {
+	OR: {
+		professionalId?: string
+		seniorId?: string
+		OR: { start: { lte: Date }; end: { gte: Date } }[]
+	}[]
+}
 
-		// Si el nuevo evento comienza después de que el evento actual termine, no hay superposición
-		if (newEvent.start >= event.end) {
-			continue
-		}
+interface hasOverlapProps {
+	startDate: Dayjs
+	endDate: Dayjs
+	professionalId: string
+	seniorId?: string
+}
 
-		// Si cae aquí, entonces hay superposición
-		return false
+type CreateEventData = {
+	start: Dayjs
+	end: Dayjs
+	professionalId: string
+	serviceId: number
+	seniorId: string
+	centerId: number
+	repeat: RepeatValues
+}
+
+// Función que verifica si hay superposición de eventos en una fecha y hora determinada
+// para un profesional o un adulto mayor dados
+
+export const hasOverlap = async ({ startDate, endDate, ...props }: hasOverlapProps): Promise<boolean> => {
+	const { professionalId, seniorId } = props
+
+	// Para verificar si hay superposición de eventos, se busca en la base de datos
+	// si hay eventos donde la fecha de inicio sea menor o igual a la fecha de término
+	// y la fecha de término sea mayor o igual a la fecha de inicio
+
+	const orDateSuperposition = {
+		start: { lte: endDate.toDate() },
+		end: { gte: startDate.toDate() },
 	}
 
-	// Si pasa todas las validaciones, entonces se puede agregar el nuevo evento sin superposición
-	return true
+	// Se crea un objeto con las condiciones de superposición de fechas
+	// de profesionales y adultos mayores
+
+	const eventWhere: EventOverlapWhere = {
+		OR: [{ professionalId, OR: [orDateSuperposition] }],
+	}
+
+	if (seniorId) eventWhere.OR.push({ seniorId, OR: [orDateSuperposition] })
+
+	// Se buscan eventos que cumplan con las condiciones de superposición
+	// y se retorna si hay eventos que cumplan con esas condiciones
+
+	const events = await prisma.event.findMany({
+		where: eventWhere,
+	})
+
+	return events.length !== 0
+}
+
+// Función que se encarga de crear un evento en la base de datos
+
+const createEvent = async (data: CreateEventData) => {
+	const { start, end, professionalId, serviceId, seniorId, centerId, repeat } = data
+
+	const overlap = await hasOverlap({
+		startDate: start,
+		endDate: end,
+		professionalId,
+		seniorId,
+	})
+
+	if (overlap && !repeat) throw Error("Superposición de horas")
+
+	if (!overlap) {
+		await prisma.event.create({
+			data: {
+				start: start.toDate(),
+				end: end.toDate(),
+				professionalId,
+				serviceId: Number(serviceId),
+				seniorId: seniorId || null,
+				centerId: Number(centerId),
+			},
+		})
+	}
+}
+
+export const createEvents = async (data: CreateEventData) => {
+	const { start, end, professionalId, serviceId, seniorId, centerId, repeat } = data
+	const createConcurrentEvents = async (interval: "day" | "week", count: number) => {
+		Array.from({ length: count }, (_, i) => {
+			const newStart = start.add(i, interval)
+			const newEnd = end.add(i, interval)
+
+			createEvent({
+				start: newStart,
+				end: newEnd,
+				professionalId,
+				serviceId,
+				seniorId,
+				centerId,
+				repeat,
+			})
+		})
+	}
+
+	await match(repeat)
+		.with("daily", async () => createConcurrentEvents("day", 30))
+		.with("weekly", async () => createConcurrentEvents("week", 4))
+		.otherwise(async () => {
+			await createEvent({ start, end, professionalId, serviceId, seniorId, centerId, repeat })
+		})
 }

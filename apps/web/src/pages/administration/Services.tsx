@@ -12,6 +12,7 @@ import { CardLayout } from "../../components/CardLayout"
 import { useRequest } from "../../hooks/useRequest"
 import { useNavigate } from "react-router-dom"
 import { deleteService, getServices } from "../../lib/actions"
+import { useModal } from "@/context/ModalContext"
 
 const ServicesPage: React.FC = () => {
 	const navigate = useNavigate()
@@ -23,6 +24,8 @@ const ServicesPage: React.FC = () => {
 	})
 
 	if (error) message.error("Error al cargar los datos")
+
+	const { selectedData } = useModal()
 
 	return (
 		<PageLayout pageTitle="Servicios" create data={data} setData={setServices} searchKeys={["name"]}>
@@ -54,6 +57,8 @@ const ServicesPage: React.FC = () => {
 				data={services}
 				setData={setServices}
 				action={deleteService}
+				key={selectedData?.id}
+				requirePasswordConfirmation
 			/>
 		</PageLayout>
 	)

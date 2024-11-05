@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from "react"
-import { View, StyleSheet, Text, Dimensions, KeyboardAvoidingView, Platform, Image } from "react-native"
+import React from "react"
 import Colors from "@/components/colors"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+
+import { useEffect, useState } from "react"
+import { View, StyleSheet, Text, Dimensions, KeyboardAvoidingView, Platform } from "react-native"
+
 const { width, height } = Dimensions.get("window")
 
 type GeneralViewProps = {
@@ -14,7 +17,9 @@ type GeneralViewProps = {
 	hTitle?: boolean
 }
 
-const GeneralView = ({ title, children, textCircle, textTitle, textDescription, noBorders = false, hTitle = false }: GeneralViewProps) => {
+const GeneralView = ({ title, children, ...props }: GeneralViewProps) => {
+	const { textCircle, textTitle, textDescription, noBorders = false, hTitle = false } = props
+
 	const [user, setUser] = useState<any>(null)
 	useEffect(() => {
 		const getUser = async () => {

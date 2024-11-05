@@ -11,9 +11,10 @@ interface ImageSelectorProps {
 	imageLabel: string
 	imageFile?: UploadFile[]
 	setImageFile?: Dispatch<SetStateAction<UploadFile[]>>
+	size: [number, number]
 }
 
-export const ImageSelector: React.FC<ImageSelectorProps> = ({ imageLabel, imageFile, setImageFile }) => {
+export const ImageSelector: React.FC<ImageSelectorProps> = ({ imageLabel, imageFile, setImageFile, size }) => {
 	const {
 		control,
 		setValue,
@@ -45,7 +46,19 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({ imageLabel, imageF
 			control={control}
 			name="image"
 			render={() => (
-				<ImgCrop rotationSlider modalTitle="Editar imagen" modalOk="Confirmar" modalCancel="Cancelar">
+				<ImgCrop
+					rotationSlider
+					modalTitle="Editar imagen"
+					modalOk="Confirmar"
+					modalCancel="Cancelar"
+					cropperProps={{
+						cropSize: { width: size[0], height: size[1] },
+						style: {},
+						zoomSpeed: 1,
+						restrictPosition: true,
+						mediaProps: {},
+					}}
+				>
 					<Upload
 						fileList={imageFile}
 						beforeUpload={beforeUpload}

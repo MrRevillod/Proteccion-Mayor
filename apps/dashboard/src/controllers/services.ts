@@ -115,10 +115,15 @@ export const deleteById = async (req: Request, res: Response, next: NextFunction
 
 		if (!service) throw new AppError(400, "El centro no existe")
 
-		await prisma.professional.updateMany({
-			where: { serviceId: id },
-			data: { serviceId: null },
-		})
+		await prisma.$transaction([
+			prisma.professional.updateMany({
+				where: { serviceId: id },
+				data: { serviceId: null },
+			}),
+			prisma.event.deleteMany({
+				where: { serviceId: id },
+			}),
+		])
 
 		const deleted = await prisma.service.delete({ where: { id } })
 

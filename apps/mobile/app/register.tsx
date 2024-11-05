@@ -1,7 +1,4 @@
 import React from "react"
-import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { FormProvider, useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
 import Camera from "@/components/camera"
 import RUT from "@/screens/register/rut"
 import Email from "@/screens/register/email"
@@ -12,25 +9,11 @@ import Social from "@/screens/register/social"
 import Final from "@/screens/register/final"
 import registerSchema from "@/utils/validation"
 
-const Stack = createNativeStackNavigator()
+import { zodResolver } from "@hookform/resolvers/zod"
+import { FormProvider, useForm } from "react-hook-form"
+import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
-const FormNavigator = ({
-	control,
-	handleSubmit,
-	errors,
-	setValue,
-	getValues,
-	trigger,
-	setError,
-}: {
-	control: any
-	handleSubmit: any
-	errors: any
-	setValue: any
-	trigger: any
-	setError: any
-	getValues: any
-}) => {}
+const Stack = createNativeStackNavigator()
 
 const Register = () => {
 	const methods = useForm({

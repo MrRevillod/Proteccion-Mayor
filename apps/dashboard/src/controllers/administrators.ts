@@ -1,4 +1,4 @@
-import { hash } from "bcrypt"
+import { compare, hash } from "bcrypt"
 import { Administrator, Prisma } from "@prisma/client"
 import { prisma } from "@repo/database"
 import { AppError, constants } from "@repo/lib"
@@ -134,6 +134,22 @@ export const deleteById = async (req: Request, res: Response, next: NextFunction
 		}
 
 		return res.status(200).json({ values: { modified: deleted } })
+	} catch (error) {
+		next(error)
+	}
+}
+
+export const confirmAction = async (req: Request, res: Response, next: NextFunction) => {
+	const password = req.body.password
+	const user = req.getExtension("user") as Administrator
+
+	try {
+		if (!password) throw new AppError(400, "Por favor, ingrese su contraseña")
+
+		const passwordMatch = await compare(password, user.password)
+		if (!passwordMatch) throw new AppError(401, "Contraseña incorrecta")
+
+		return res.status(200).json({ message: "OK" })
 	} catch (error) {
 		next(error)
 	}

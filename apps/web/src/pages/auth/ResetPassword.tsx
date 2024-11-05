@@ -1,13 +1,18 @@
 import React from "react"
+
 import { z } from "zod"
 import { api } from "../../lib/axios"
 import { Input } from "../../components/ui/Input"
 import { Helmet } from "react-helmet"
 import { message } from "antd"
+import { useEffect } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FormProvider, useForm } from "react-hook-form"
+import { useLocation, useSearchParams } from "react-router-dom"
 
 const ResetPasswordPage: React.FC = () => {
+	const location = useLocation()
+
 	const formSchemas = z.object({
 		email: z.string().email({
 			message: "Correo electrónico inválido",
@@ -15,9 +20,16 @@ const ResetPasswordPage: React.FC = () => {
 		role: z.enum(["ADMIN", "PROFESSIONAL", "SENIOR"]),
 	})
 
+	const [searchParams] = useSearchParams()
 	const methods = useForm({ resolver: zodResolver(formSchemas) })
+	const { handleSubmit, reset, setValue } = methods
 
-	const { handleSubmit, reset } = methods
+	useEffect(() => {
+		const searchParams = new URLSearchParams(location.search)
+		if (searchParams.has("variant") && searchParams.get("variant") === "mobile") {
+			setValue("role", "SENIOR")
+		}
+	}, [])
 
 	const onSubmit = async (data: any) => {
 		try {
@@ -63,7 +75,7 @@ const ResetPasswordPage: React.FC = () => {
 									{ value: "PROFESSIONAL", label: "Profesional" },
 									{ value: "SENIOR", label: "Persona Mayor" },
 								]}
-								defaultValue="SENIOR"
+								defaultValue={searchParams.get("variant") || "ADMIN"}
 							/>
 
 							<div className="mt-4">

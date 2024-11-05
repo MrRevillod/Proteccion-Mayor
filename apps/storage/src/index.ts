@@ -7,7 +7,8 @@ import express from "express"
 import router from "./router"
 
 import { RequestHandler } from "express"
-import { log, services, errorHandler, constants, AppError } from "@repo/lib"
+import { log, services, errorHandler, constants, AppError, httpRequest, AuthResponse, getServerTokens } from "@repo/lib"
+import cookieParser from "cookie-parser"
 
 // Sistema de archivos de el microservicio de almacenamiento
 
@@ -40,6 +41,23 @@ const verifyStorageKey: RequestHandler = (req, res, next) => {
 	next()
 }
 
+const verifyAuth: RequestHandler = async (req, res, next) => {
+	const tokens = getServerTokens(req.headers, req.cookies)
+	const authResponse = await httpRequest<AuthResponse>({
+		service: "AUTH",
+		endpoint: "/validate-role/ADMIN",
+		headers: {
+			Authorization: `Bearer ${tokens?.access || null}`,
+		},
+	})
+
+	if (authResponse.type === "error") {
+		next(new AppError(authResponse.status || 500, authResponse.message))
+	}
+
+	next()
+}
+
 const initFileSystem = (): void => {
 	// __dirname => directorio actual
 	const publicPath = path.join(__dirname, "../public")
@@ -64,6 +82,7 @@ export const createServer = (): express.Express => {
 	app.use(helmet())
 	app.use(morgan("dev"))
 	app.use(express.json())
+	app.use(cookieParser())
 	app.use(express.urlencoded({ extended: true }))
 	app.use(
 		cors({
@@ -86,14 +105,19 @@ export const createServer = (): express.Express => {
 
 	const seniorRouter = express.Router()
 
-	seniorRouter.get("/:id/social.webp", verifyStorageKey, (req, res) => {
-		res.sendFile(path.join(__dirname, "../public/seniors", req.params.id, "social.webp"))
-	})
-	seniorRouter.get("/:id/dni-a.webp", verifyStorageKey, (req, res) => {
-		res.sendFile(path.join(__dirname, "../public/seniors", req.params.id, "dni-a.webp"))
-	})
-	seniorRouter.get("/:id/dni-b.webp", verifyStorageKey, (req, res) => {
-		res.sendFile(path.join(__dirname, "../public/seniors", req.params.id, "dni-b.webp"))
+	seniorRouter.get("/:id/register-files", verifyAuth, (req, res) => {
+		const imagePaths = [
+			path.join(__dirname, `../public/seniors/${req.params.id}/dni-a.webp`),
+			path.join(__dirname, `../public/seniors/${req.params.id}/dni-b.webp`),
+			path.join(__dirname, `../public/seniors/${req.params.id}/social.webp`),
+		]
+
+		const images = imagePaths.map((imagePath) => {
+			const image = fs.readFileSync(imagePath)
+			return `data:image/webp;base64,${image.toString("base64")}`
+		})
+
+		res.status(200).json({ values: images })
 	})
 
 	app.use("/api/storage/public/seniors", seniorRouter)

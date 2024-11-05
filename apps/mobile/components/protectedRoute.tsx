@@ -1,8 +1,15 @@
-import React, { useEffect } from "react"
+import React from "react"
+
 import { useAuth } from "@/contexts/authContext"
+import { useEffect } from "react"
 import { View, ActivityIndicator } from "react-native"
 
-const ProtectedRoute = ({ children, navigation }: { children: React.ReactNode; navigation: any }) => {
+interface ProtectedRouteProps {
+	children: React.ReactNode
+	navigation: any
+}
+
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, navigation }) => {
 	const { isAuthenticated, loading } = useAuth()
 
 	useEffect(() => {
@@ -23,7 +30,7 @@ const ProtectedRoute = ({ children, navigation }: { children: React.ReactNode; n
 		return null
 	}
 
-	return <>{children}</>
+	return children
 }
 
 export default ProtectedRoute

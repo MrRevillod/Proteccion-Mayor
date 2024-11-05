@@ -46,7 +46,7 @@ const UpdateService: React.FC<FormProps<Service>> = ({ data, setData }) => {
 						placeholder="¿En qué consiste el servicio?"
 					/>
 					<ColorPicker label="Color del servicio" />
-					<ImageSelector imageLabel="Imagen del servicio" />
+					<ImageSelector imageLabel="Imagen del servicio" size={[400, 250]} />
 				</Form>
 			</FormProvider>
 		</Modal>

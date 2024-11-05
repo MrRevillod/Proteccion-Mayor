@@ -1,21 +1,21 @@
-import { View, StyleSheet } from "react-native"
 import Input from "@/components/input"
+import Colors from "@/components/colors"
 import GeneralView from "@/components/generalView"
 import CustomButton from "@/components/button"
-import Colors from "@/components/colors"
+
 import { commonProps } from "@/utils/types"
-import { checkUniqueField } from "@/utils/request"
 import { useFormContext } from "react-hook-form"
+import { checkUniqueField } from "@/utils/request"
+import { View, StyleSheet } from "react-native"
 
 const Email = ({ navigation }: commonProps) => {
 	const { getValues, trigger, setError } = useFormContext()
 
 	const onSubmit = async () => {
 		const request = await checkUniqueField("email", getValues, trigger, setError)
-		if (request) {
-			navigation.navigate("Pin")
-		}
+		if (request) navigation.navigate("Pin")
 	}
+
 	return (
 		<GeneralView
 			title="Datos del Registro"
@@ -24,7 +24,7 @@ const Email = ({ navigation }: commonProps) => {
 			textDescription="Debe ingresar un correo real y al que usted tenga acceso."
 		>
 			<View style={styles.container}>
-				<Input name="email" placeholder="TuCorreo@gmail.com" />
+				<Input name="email" placeholder="TuCorreo@gmail.com" keyboardType="email-address" />
 				<CustomButton title="Siguiente" onPress={onSubmit} />
 				<CustomButton
 					style={{ backgroundColor: Colors.white }}

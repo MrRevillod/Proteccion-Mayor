@@ -13,6 +13,7 @@ import { useEffect, useState, useRef } from "react"
 interface useRequestProps<T> {
 	action: QueryAction
 	query?: string
+	params?: Record<string, any>
 	onSuccess?: (data: T) => void
 	trigger?: boolean
 }
@@ -55,7 +56,7 @@ interface useRequestResult<T> {
  */
 
 export const useRequest = <T,>({ action, ...props }: useRequestProps<T>): useRequestResult<T> => {
-	const { query, onSuccess, trigger = true } = props
+	const { params, query, onSuccess, trigger = true } = props
 
 	const [data, setData] = useState<T | null>(null)
 	const [loading, setLoading] = useState<boolean>(false)
@@ -72,7 +73,7 @@ export const useRequest = <T,>({ action, ...props }: useRequestProps<T>): useReq
 	const fetchData = async () => {
 		try {
 			setLoading(true)
-			const response = await action({ query })
+			const response = await action({ params, query })
 			setData(response.data.values as T)
 			setError(null)
 			setStatus(response.status)

@@ -49,63 +49,72 @@
 			"name": "Centro comunitario Amanecer",
 			"address": "Bramante #2121",
 			"img": "https://araucanianoticias.cl/wp-content/uploads/2014/07/DSC_2805.jpg",
-			"phone": "452973078"
+			"phone": "452973078",
+			"color": "#2E86C1"
 		},
 		{
 			"id": 2,
 			"name": "Centro comunitario Corcolén",
 			"address": "Los Jazmines S/N",
 			"img": "https://www.temucoontour.com/wp-content/uploads/2019/08/SENDEROS-1024x683.jpg",
-			"phone": "452973081"
+			"phone": "452973081",
+			"color": "#28B463"
 		},
 		{
 			"id": 3,
 			"name": "Delegación Labranza",
 			"address": "Mollulco #0880",
 			"img": "https://www.clave9.cl/wp-content/uploads/2019/09/Labranza_Araucania_Clave9cl.png",
-			"phone": "452973293"
+			"phone": "452973293",
+			"color": "#E67E22"
 		},
 		{
 			"id": 4,
 			"name": "Centro Comunitario Santa Rosa",
 			"address": "Quitratue #595",
 			"img": "https://www.superir.gob.cl/wp-content/uploads/2018/06/07-06-2018-CUERPO-CENTRO-COMUNITARIO-MUNI-TEMUCO.jpg",
-			"phone": "452973079"
+			"phone": "452973079",
+			"color": "#C0392B"
 		},
 		{
 			"id": 5,
 			"name": "Centro Comunitario Huérfanos",
 			"address": "Huérfanos #01459",
 			"img": "https://araucanianoticias.cl/wp-content/uploads/2014/12/DSC_3106.jpg",
-			"phone": "452973080"
+			"phone": "452973080",
+			"color": "#1ABC9C"
 		},
 		{
 			"id": 6,
 			"name": "Centro Comunitario Nahuelbuta",
 			"address": "Nahuelbuta #02835",
 			"img": "https://cdn.discordapp.com/attachments/1008449435933614120/1296321842960928880/image.png?ex=6711dd4b&is=67108bcb&hm=e063b473dc338dd360fbff50a7586324ce2d18b84301509bae8ea39a2c41fe19&",
-			"phone": "452973082"
+			"phone": "452973082",
+			"color": "#9B59B6"
 		},
 		{
 			"id": 7,
 			"name": "Centro Comunitario Lanin",
 			"address": "Avenida Argentina #0131",
 			"img": "https://img.soy-chile.cl/Fotos/2012/10/12/file_20121012154429.jpg",
-			"phone": "452973076"
+			"phone": "452973076",
+			"color": "#2E86C1"
 		},
 		{
 			"id": 8,
 			"name": "Centro Comunitario Curiñanco",
 			"address": "Curiñanco #040",
 			"img": "https://instagram.fzco2-1.fna.fbcdn.net/v/t39.30808-6/438818523_835831905238873_4781599932103728593_n.jpg?stp=dst-jpg_e35_s1080x1080_sh0.08&_nc_ht=instagram.fzco2-1.fna.fbcdn.net&_nc_cat=101&_nc_ohc=EITFbcLP2ewQ7kNvgFq9g0p&_nc_gid=84c947951c48475684d04b8cb8d28490&edm=ANTKIIoAAAAA&ccb=7-5&oh=00_AYBevmk9vIGl784qfyCapsI0KaJwexcEcgFtDz5jcmkEog&oe=67167768&_nc_sid=d885a2",
-			"phone": "452973077"
+			"phone": "452973077",
+			"color": "#28B463"
 		},
 		{
 			"id": 9,
 			"name": "Centro Comunitario Pedro de Valdivia",
 			"address": "Isquiña #1914",
 			"img": "https://img.soy-chile.cl/Fotos/2017/04/26/file_20170426214106.jpg",
-			"phone": "452973075"
+			"phone": "452973075",
+			"color": "#E67E22"
 		}
 	],
 	"services": [
