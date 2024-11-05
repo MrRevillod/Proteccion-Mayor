@@ -95,6 +95,7 @@ export type Event = {
 	service?: Partial<Service>
 	center?: Partial<Center>
 	senior?: Partial<Senior>
+	professional?: Partial<Professional>
 
 	createdAt: Date
 	updatedAt: Date

@@ -1,10 +1,11 @@
-import { hash } from "bcrypt"
+import { compare, hash } from "bcrypt"
 import { match } from "ts-pattern"
 import { prisma } from "@repo/database"
 import { sendMail } from "../utils/mailer"
 import { resetPasswordBody } from "../utils/emailTemplates"
 import { Request, Response, NextFunction } from "express"
 import { AppError, CustomTokenOpts, signJsonwebtoken, services, findUser, verifyJsonwebtoken, AccessTokenOpts, isValidUserRole } from "@repo/lib"
+import { log } from "console"
 
 export const requestPasswordReset = async (req: Request, res: Response, next: NextFunction) => {
 	const userRole = req.query.variant
@@ -31,7 +32,7 @@ export const requestPasswordReset = async (req: Request, res: Response, next: Ne
 		const rolePayload = { role: userRole }
 		const roleToken = signJsonwebtoken(rolePayload, CustomTokenOpts("", "30d"))
 
-		const resetLink = `${services.WEB_APP.url}auth/reset-password/${user.id}/${token}/${roleToken}`
+		const resetLink = `${services.WEB_APP.url}auth/restaurar-contrasena/${user.id}/${token}/${roleToken}`
 
 		const htmlTemplate = resetPasswordBody(user.name, resetLink)
 
@@ -52,15 +53,18 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
 		const { password } = req.body
 
 		const rolePayload = verifyJsonwebtoken(role, AccessTokenOpts)
+
 		if (!rolePayload.role || !isValidUserRole(rolePayload.role)) throw new AppError(401, "No autorizado.")
 
 		const user = await findUser({ id }, rolePayload.role)
 
 		if (!user) throw new AppError(404, "Usuario no econtrado.")
-
 		verifyJsonwebtoken(token, CustomTokenOpts(user?.password || "", "30d"))
 
+		if (await compare(password, user.password)) throw new AppError(409, "Conflicto")
+
 		const hashedPassword = await hash(password, 10)
+		if (!user) throw new AppError(404, "Usuario no econtrado.")
 
 		let updatedUser
 		const updated = await match(rolePayload.role)
@@ -95,6 +99,26 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
 			message: "Contraseña actualizada correctamente",
 			type: "success",
 		})
+	} catch (error) {
+		next(error)
+	}
+}
+
+export const compareLinkToken = async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const { id, token, role } = req.params
+
+		const rolePayload = verifyJsonwebtoken(role, AccessTokenOpts)
+
+		if (!rolePayload.role || !isValidUserRole(rolePayload.role)) throw new AppError(401, "No autorizado.")
+
+		const user = await findUser({ id }, rolePayload.role)
+
+		if (!user) throw new AppError(404, "Usuario no econtrado.")
+
+		verifyJsonwebtoken(token, CustomTokenOpts(user?.password || "", "30d"))
+
+		return res.status(200)
 	} catch (error) {
 		next(error)
 	}

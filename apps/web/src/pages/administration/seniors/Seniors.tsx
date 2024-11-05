@@ -9,11 +9,13 @@ import { Senior } from "@/lib/types"
 import { message } from "antd"
 import { useState } from "react"
 import { useRequest } from "@/hooks/useRequest"
+import { useNavigate } from "react-router-dom"
 import { SeniorsColumns } from "@/lib/columns"
 import { deleteSenior, getSeniors } from "@/lib/actions"
 
 const SeniorsPage: React.FC = () => {
 	const [seniors, setSeniors] = useState<Senior[]>([])
+	const navigate = useNavigate()
 
 	const { error, loading, data } = useRequest<Senior[]>({
 		action: getSeniors,
@@ -22,6 +24,12 @@ const SeniorsPage: React.FC = () => {
 	})
 
 	if (error) message.error("Error al cargar los datos")
+
+	const handleView = (senior: Senior) => {
+		navigate(`/administracion/personas-mayores/historial`, {
+			state: { senior },
+		})
+	}
 
 	return (
 		<PageLayout
@@ -37,6 +45,8 @@ const SeniorsPage: React.FC = () => {
 					columnsConfig={SeniorsColumns}
 					editable
 					deletable
+					history
+					onHistory={handleView}
 					loading={loading}
 					viewable={false}
 				/>
