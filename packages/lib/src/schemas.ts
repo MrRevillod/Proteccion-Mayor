@@ -51,11 +51,13 @@ export const CentersSchemas = {
 		name: rules.nameCenterSchema,
 		address: rules.addressCenterSchema,
 		phone: rules.phoneSchema,
+		color: rules.colorSchema,
 	}),
 	Update: z.object({
 		name: rules.nameCenterSchema,
 		address: rules.addressCenterSchema,
 		phone: rules.phoneSchema,
+		color: rules.colorSchema,
 	}),
 }
 

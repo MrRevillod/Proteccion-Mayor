@@ -130,12 +130,14 @@ export const CentersSchemas = {
 		address: rules.addressCenterSchema,
 		phone: rules.phoneSchema,
 		image: rules.imageSchemaCreate,
+		color: rules.colorSchema,
 	}),
 	Update: z.object({
 		name: rules.nameCenterSchema,
 		address: rules.addressCenterSchema,
 		phone: rules.phoneSchema,
 		image: rules.imageSchemaUpdate,
+		color: rules.colorSchema,
 	}),
 }
 

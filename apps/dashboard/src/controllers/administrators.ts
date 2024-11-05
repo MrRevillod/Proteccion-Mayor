@@ -143,16 +143,13 @@ export const confirmAction = async (req: Request, res: Response, next: NextFunct
 	const password = req.body.password
 	const user = req.getExtension("user") as Administrator
 
-	console.log(user)
-	console.log(password)
-
 	try {
 		if (!password) throw new AppError(400, "Por favor, ingrese su contraseña")
 
 		const passwordMatch = await compare(password, user.password)
 		if (!passwordMatch) throw new AppError(401, "Contraseña incorrecta")
 
-		return res.status(200)
+		return res.status(200).json({ message: "OK" })
 	} catch (error) {
 		next(error)
 	}

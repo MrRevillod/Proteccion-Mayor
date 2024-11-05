@@ -11,10 +11,10 @@ interface SuperSelectProps {
 	options: any
 	setSearch?: Dispatch<SetStateAction<string>>
 	defaultValue?: any
-	width?: string
+	placeholder?: string
 }
 
-export const SuperSelect = ({ name, label, options, setSearch, width }: SuperSelectProps) => {
+export const SuperSelect = ({ name, label, options, setSearch, placeholder }: SuperSelectProps) => {
 	const {
 		control,
 		formState: { errors },
@@ -25,7 +25,7 @@ export const SuperSelect = ({ name, label, options, setSearch, width }: SuperSel
 		"rounded-lg text-sm focus:outline-none focus:ring-primary-green",
 		"focus:border-primary-green h-10 placeholder-neutral-400",
 		"text-dark dark:text-light mb-1 border-1 bg-light dark:bg-primary-dark",
-		width ? width : "w-full",
+		"w-full",
 	)
 
 	const clientFilterFn = (input: string, option: any) => {
@@ -49,7 +49,7 @@ export const SuperSelect = ({ name, label, options, setSearch, width }: SuperSel
 						value={field.value}
 						className={classes}
 						showSearch
-						placeholder={"Selecciona una opcion"}
+						placeholder={placeholder ? placeholder : `Seleccione una opción`}
 						options={options}
 						filterOption={filterOption}
 						onSearch={(value) => {

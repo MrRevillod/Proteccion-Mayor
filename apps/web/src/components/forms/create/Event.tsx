@@ -132,9 +132,10 @@ const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, service
 					<SuperSelect
 						label="Seleccione una repetición"
 						name="repeat"
+						placeholder="Las repeticiones se realizarán durante un mes"
 						options={[
-							{ label: "Diario", value: "daily" },
-							{ label: "Semanal", value: "weekly" },
+							{ label: "Diario (Todos los días a la misma hora)", value: "daily" },
+							{ label: "Semanal (Repetir todas las semanas a la misma hora)", value: "weekly" },
 						]}
 					/>
 				</Form>

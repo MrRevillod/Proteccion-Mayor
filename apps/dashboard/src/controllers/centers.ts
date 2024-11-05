@@ -38,7 +38,7 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
 
 export const create = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const { name, address, phone } = req.body
+		const { name, address, phone, color } = req.body
 		const file = req.file as Express.Multer.File
 
 		if (!file) throw new AppError(400, "No se ha enviado un archivo")
@@ -52,7 +52,7 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 		}
 
 		const center = await prisma.center.create({
-			data: { name, address, phone },
+			data: { name, address, phone, color },
 		})
 
 		const response = await httpRequest<null>({
@@ -77,11 +77,11 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 export const updateById = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const { id } = req.params
-		const { name, address, phone } = req.body
+		const { name, address, phone, color } = req.body
 
 		const center = await prisma.center.update({
 			where: { id: Number(id) },
-			data: { name, address, phone },
+			data: { name, address, phone, color },
 			select: { id: true, name: true, address: true, phone: true },
 		})
 
