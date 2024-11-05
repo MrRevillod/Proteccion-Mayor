@@ -37,7 +37,7 @@ const Header: React.FC = () => {
 	return (
 		<Navbar fluid className="py-4 h-18 w-full bg-primary dark:bg-primary-darker rounded-none">
 			<Navbar.Brand className="ml-14 pl-4">
-				<img src="/logo-white.webp" alt="logo" width="50" />
+				<img src="../../../public/logo-white.webp" alt="logo" width="50" />
 			</Navbar.Brand>
 
 			<Show when={isAuthenticated && user !== null}>

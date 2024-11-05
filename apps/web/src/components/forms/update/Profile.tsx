@@ -98,7 +98,7 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({ setImageSrc, setShowUpdat
 				<Input name="password" label="Contraseña" type="password" placeholder="••••••••" />
 				<Input name="confirmPassword" label="Confirmar contraseña" type="password" placeholder="••••••••" />
 
-				<ImageSelector imageLabel="Imagen de perfil" />
+				<ImageSelector imageLabel="Imagen de perfil" size={[250, 250]} />
 
 				<div className="flex flex-row gap-4 w-full justify-end mt-4">
 					<Button variant="secondary" onClick={() => handleCancel()} className="w-1/4" type="button">

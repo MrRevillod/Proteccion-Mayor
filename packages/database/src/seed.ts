@@ -118,6 +118,7 @@ const seed = async () => {
 				name: center.name,
 				address: center.address,
 				phone: center.phone,
+				color: center.color,
 			},
 			update: {},
 		})

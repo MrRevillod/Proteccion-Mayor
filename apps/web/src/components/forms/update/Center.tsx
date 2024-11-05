@@ -5,6 +5,7 @@ import { Input } from "../../ui/Input"
 import { Modal } from "../../Modal"
 import { useModal } from "../../../context/ModalContext"
 import { useEffect } from "react"
+import { ColorPicker } from "../../ColorPicker"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { updateCenter } from "../../../lib/actions"
 import { ImageSelector } from "../../ImageSelector"
@@ -37,7 +38,8 @@ const UpdateCenter: React.FC<FormProps<Center>> = ({ data, setData }) => {
 					<Input name="name" label="Nombre" type="text" />
 					<Input name="address" label="Dirección" type="text" />
 					<Input name="phone" label="Teléfono" type="text" />
-					<ImageSelector imageLabel="Imagen del centro de atención" />
+					<ColorPicker label="Color del centro de atención" />
+					<ImageSelector imageLabel="Imagen del centro de atención" size={[400, 250]} />
 				</Form>
 			</FormProvider>
 		</Modal>

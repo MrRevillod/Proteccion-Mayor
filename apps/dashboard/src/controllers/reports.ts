@@ -1,10 +1,6 @@
+import { FormattedDateCount } from "@repo/lib"
 import { NextFunction, Request, Response } from "express"
 import { getAssistanceCounter, getEventsByAssistance, reduceFunction } from "../utils/reports"
-
-type FormattedDateCount = {
-	date: string
-	count: number
-}
 
 export const generateGeneralReport = async (req: Request, res: Response, next: NextFunction) => {
 	try {

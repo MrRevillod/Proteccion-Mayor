@@ -51,11 +51,13 @@ export const CentersSchemas = {
 		name: rules.nameCenterSchema,
 		address: rules.addressCenterSchema,
 		phone: rules.phoneSchema,
+		color: rules.colorSchema,
 	}),
 	Update: z.object({
 		name: rules.nameCenterSchema,
 		address: rules.addressCenterSchema,
 		phone: rules.phoneSchema,
+		color: rules.colorSchema,
 	}),
 }
 
@@ -87,6 +89,7 @@ export const EventSchemas = {
 		serviceId: z.number({ message: "El servicio es obligatorio" }),
 		seniorId: z.optional(rules.rutSchema),
 		centerId: z.number({ message: "El centro es obligatorio" }),
+		repeat: z.optional(z.enum(["daily", "weekly"])),
 	}),
 	Update: z
 		.object({

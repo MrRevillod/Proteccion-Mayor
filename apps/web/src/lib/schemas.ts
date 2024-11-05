@@ -130,12 +130,14 @@ export const CentersSchemas = {
 		address: rules.addressCenterSchema,
 		phone: rules.phoneSchema,
 		image: rules.imageSchemaCreate,
+		color: rules.colorSchema,
 	}),
 	Update: z.object({
 		name: rules.nameCenterSchema,
 		address: rules.addressCenterSchema,
 		phone: rules.phoneSchema,
 		image: rules.imageSchemaUpdate,
+		color: rules.colorSchema,
 	}),
 }
 
@@ -148,6 +150,7 @@ export const EventSchemas = {
 			serviceId: z.number({ message: "El servicio es requerido" }),
 			seniorId: z.optional(rules.rutSchema),
 			centerId: z.number({ message: "El centro es requerido" }),
+			repeat: z.optional(z.enum(["daily", "weekly"])),
 		})
 		.refine((data) => data.start < data.end, {
 			message: "Rango de tiempo invalido",

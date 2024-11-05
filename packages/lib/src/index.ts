@@ -30,7 +30,14 @@ export const extensions = (req: Request, res: Response, next: NextFunction) => {
 
 export { httpRequest } from "./request"
 export { services, constants } from "./config"
-export type { JsonResponse, UserRole, User, ApiResponse, AuthResponse } from "./types"
+export type {
+	JsonResponse,
+	UserRole,
+	User,
+	ApiResponse,
+	AuthResponse,
+	FormattedDateCount,
+} from "./types"
 export { AppError, AuthError, errorHandler } from "./errors"
 export { toPublicUser, findUser, isValidUserRole } from "./authorization/user"
 export { isValidRut } from "./authorization/rut"

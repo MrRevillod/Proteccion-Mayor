@@ -26,3 +26,8 @@ export type AuthResponse = {
 
 export type User = Administrator | Senior | Professional
 export type UserRole = "ADMIN" | "PROFESSIONAL" | "SENIOR"
+
+export type FormattedDateCount = {
+	date: string
+	count: number
+}
