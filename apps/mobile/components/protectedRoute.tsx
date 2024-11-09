@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 	navigation: any
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, navigation }) => {
+const ProtectedRoute = ({ children, navigation }: ProtectedRouteProps) => {
 	const { isAuthenticated, loading } = useAuth()
 
 	useEffect(() => {
@@ -30,7 +30,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, navigation })
 		return null
 	}
 
-	return children
+	return <>{children}</>
 }
 
 export default ProtectedRoute

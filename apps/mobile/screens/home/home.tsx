@@ -23,7 +23,7 @@ interface ResponseData {
 	values: Service[]
 }
 
-const Home: React.FC<{ navigation: any }> = ({ navigation }) => {
+const Home = ({ navigation }: any) => {
 	const [services, setServices] = useState<Service[]>([])
 
 	useEffect(() => {
