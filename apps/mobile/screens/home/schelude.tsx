@@ -1,14 +1,60 @@
 import React, { useEffect, useState } from "react"
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, StatusBar, Animated } from "react-native"
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, StatusBar, Animated, FlatList } from "react-native"
 import Colors from "@/components/colors"
 import GeneralView from "@/components/generalView"
 import MenuBar from "@/components/menuBar"
+import { makeAuthenticatedRequest, SERVER_URL } from "@/utils/request"
+import { getStorageRUT } from "@/utils/storage"
+import DataDisplayer from "@/components/dataDisplayer"
+import { formatDate } from "@/utils/formatter"
 
 const { width } = Dimensions.get("window")
 
-const Schelude = ({ navigation }: any) => {
+interface Event {
+	id: number
+	assistance: number
+	createdAt: string
+	updateAt: string
+	service: {
+		name: string
+		color: string
+	}
+	center: {
+		id: number
+		name: string
+		address: string
+	}
+	senior: object
+	professional: object
+	start: string
+	end: string
+}
+
+const Schedule = ({ navigation }: any) => {
+	const [eventsList, setEventsList] = useState<Event[]>([])
 	const [selectedButton, setSelectedButton] = useState<number>(0)
 	const slideAnim = new Animated.Value(0)
+
+	useEffect(() => {
+		const fetchEvents = async () => {
+			try {
+				const rut = await getStorageRUT()
+				if (!rut) {
+					console.error("No se pudo obtener el RUT")
+					return
+				}
+				const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events?senior=${rut}`, "GET")
+				if (response?.data) {
+					const eventsList = response.data.values.formatted
+					setEventsList(eventsList)
+					console.warn("Eventos obtenidos", eventsList)
+				}
+			} catch (error) {
+				console.error("Error al obtener los eventos", error)
+			}
+		}
+		fetchEvents()
+	}, [])
 
 	// Función para manejar la animación del deslizador
 	const handlePress = (index: number) => {
@@ -20,6 +66,15 @@ const Schelude = ({ navigation }: any) => {
 			duration: 300,
 			useNativeDriver: true,
 		}).start()
+	}
+
+	// Filtrar eventos según el botón seleccionado
+	const filteredEvents = eventsList.filter((event) => (selectedButton === 0 ? !event.assistance : event.assistance))
+
+	// Renderizar cada evento
+	const renderEvent = ({ item }: { item: Event }) => {
+		const date = formatDate(item.start)
+		return <DataDisplayer titleField={item.service.name} descriptionField={date} />
 	}
 
 	return (
@@ -37,7 +92,14 @@ const Schelude = ({ navigation }: any) => {
 							<Text style={[styles.buttonText, selectedButton === 1 && styles.buttonTextActive]}>Horas Finalizadas</Text>
 						</TouchableOpacity>
 					</View>
-					<View style={styles.midContainer}></View>
+
+					<View style={styles.midContainer}>
+						{filteredEvents ? (
+							<FlatList data={filteredEvents} keyExtractor={(item) => item.id.toString()} renderItem={renderEvent} />
+						) : (
+							<Text style={styles.noEventsText}>No hay eventos para mostrar</Text>
+						)}
+					</View>
 					<View style={styles.bottomContainer}></View>
 				</View>
 			</GeneralView>
@@ -46,7 +108,7 @@ const Schelude = ({ navigation }: any) => {
 	)
 }
 
-export default Schelude
+export default Schedule
 
 const styles = StyleSheet.create({
 	bigContainer: {
@@ -54,25 +116,21 @@ const styles = StyleSheet.create({
 	},
 	buttonsContainer: {
 		flexDirection: "row",
-		position: "relative",
-		width: "100%",
 		height: "10%",
-		backgroundColor: Colors.white,
 		borderColor: Colors.green,
 		borderWidth: 2,
 		borderTopLeftRadius: 20,
 		borderTopRightRadius: 20,
 		overflow: "hidden",
+		margin: 0,
+		padding: 0,
 	},
 	midContainer: {
-		height: "85%",
-		width: "100%",
-		backgroundColor: Colors.white,
+		height: "86%",
 		borderColor: Colors.green,
 		borderLeftWidth: 2,
 		borderRightWidth: 2,
 		padding: 10,
-		margin: 0,
 	},
 	bottomContainer: {
 		backgroundColor: Colors.green,
@@ -106,5 +164,21 @@ const styles = StyleSheet.create({
 		width: "50%",
 		height: "100%",
 		backgroundColor: Colors.green,
+	},
+	eventItem: {
+		padding: 10,
+		marginBottom: 10,
+		backgroundColor: Colors.green,
+		borderRadius: 10,
+	},
+	eventText: {
+		fontSize: 14,
+		color: Colors.black,
+	},
+	noEventsText: {
+		textAlign: "center",
+		marginTop: 20,
+		fontSize: 16,
+		color: Colors.gray,
 	},
 })
