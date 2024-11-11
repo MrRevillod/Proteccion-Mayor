@@ -74,7 +74,8 @@ const Schedule = ({ navigation }: any) => {
 	// Renderizar cada evento
 	const renderEvent = ({ item }: { item: Event }) => {
 		const date = formatDate(item.start)
-		return <DataDisplayer titleField={item.service.name} descriptionField={date} />
+		const concatString = date + "\n" + item.center.name
+		return <DataDisplayer titleField={item.service.name} descriptionField={concatString} event={{ bool: true, color: item.service.color }} />
 	}
 
 	return (
