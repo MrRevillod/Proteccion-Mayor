@@ -37,21 +37,16 @@ const Schedule = ({ navigation }: any) => {
 
 	useEffect(() => {
 		const fetchEvents = async () => {
-			try {
-				const rut = await getStorageRUT()
-				if (!rut) {
-					console.error("No se pudo obtener el RUT")
-					return
-				}
-				const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events?senior=${rut}`, "GET")
+			const rut = await getStorageRUT()
+			if (!rut) {
+				return
+			}
+			makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events?senior=${rut}`, "GET").then((response) => {
 				if (response?.data) {
 					const eventsList = response.data.values.formatted
 					setEventsList(eventsList)
-					console.warn("Eventos obtenidos", eventsList)
 				}
-			} catch (error) {
-				console.error("Error al obtener los eventos", error)
-			}
+			})
 		}
 		fetchEvents()
 	}, [])

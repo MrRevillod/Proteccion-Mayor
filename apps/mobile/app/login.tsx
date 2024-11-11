@@ -42,8 +42,8 @@ const Login = () => {
 		<FormProvider {...methods}>
 			<Stack.Navigator screenOptions={{ headerShown: false }}>
 				{rut !== null ? (
-					// Si el RUT existe, salta a la pantalla Pin y pasa el rut como initialParams
-					<Stack.Screen name="Pin" component={Pin} initialParams={{ rutSenior: rut }} />
+					// Si el RUT existe, salta a la pantalla Pin
+					<Stack.Screen name="Pin" component={Pin} />
 				) : (
 					// Si no existe, muestra la pantalla RUT para ingresar manualmente
 					<>

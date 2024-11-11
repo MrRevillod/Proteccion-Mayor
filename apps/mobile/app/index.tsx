@@ -41,8 +41,20 @@ const App = () => {
 							)}
 						</Stack.Screen>
 						<Stack.Screen name="FontSize" component={FontSizeSelector} />
-						<Stack.Screen name="Centers" component={Center} />
-						<Stack.Screen name="Schelude" component={Schelude} />
+						<Stack.Screen name="Centers">
+							{(props) => (
+								<ProtectedRoute navigation={props.navigation}>
+									<Center {...props} />
+								</ProtectedRoute>
+							)}
+						</Stack.Screen>
+						<Stack.Screen name="Schelude">
+							{(props) => (
+								<ProtectedRoute navigation={props.navigation}>
+									<Schelude {...props} />
+								</ProtectedRoute>
+							)}
+						</Stack.Screen>
 						<Stack.Screen name="Camera" component={Camera} options={{ headerShown: true }} />
 					</Stack.Navigator>
 				</NavigationContainer>
