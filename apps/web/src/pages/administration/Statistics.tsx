@@ -1,148 +1,155 @@
-import React, { useEffect, useState } from "react"
+import dayjs from "dayjs"
+import React from "react"
+import PageLayout from "@/layouts/PageLayout"
+
+import { useState } from "react"
+import { getReports } from "@/lib/actions"
+import { capitalize } from "@/lib/formatters"
+import { useRequest } from "@/hooks/useRequest"
+import { AssistanceSelection } from "@/components/AssistanceSelection"
+import { ChartLayout, StatisticMainLayout } from "@/layouts/StatisticLayout"
 import {
+	LineChart,
+	Line,
 	XAxis,
 	YAxis,
 	CartesianGrid,
-	ResponsiveContainer,
-	Line,
-	LineChart,
 	Tooltip,
-	Legend,
+	ResponsiveContainer,
 	PieChart,
 	Pie,
-	ScatterChart,
-	Scatter,
+	Legend,
+	Cell,
 } from "recharts"
-import PageLayout from "../../layouts/PageLayout"
-import { useRequest } from "@/hooks/useRequest"
-import { message, Checkbox } from "antd"
-import { getReports } from "@/lib/actions"
 
-type FormattedDateCount = {
-	date: string
-	count: number
-}
-interface StatisticsResponse {
-	formattedAssistanceEvents: FormattedDateCount[]
-	formattedNoAssistanceEvents: FormattedDateCount[]
-	totalAssistanceCount: number
-	totalNoAssistanceCount: number
+import "@/main.css"
+import "dayjs/locale/es"
+import { Statistic } from "antd"
+
+dayjs.locale("es")
+
+type AssistanceNumericData = {
+	totalAssistance: number
+	totalNotAssistance: number
+	totalEvents: number
 }
 
 const StatisticsPage: React.FC = () => {
-	const [asistencia, setAsistencia] = useState<FormattedDateCount[]>([])
-	const [inasistencia, setInasistencia] = useState<FormattedDateCount[]>([])
-	const [totalAsistencia, setTotalAsistencia] = useState<number>(0)
-	const [totalInasistencia, setTotalInacistencia] = useState<number>(0)
-	const [showAsistencia, setShowAsistencia] = useState<boolean>(true)
-	const [showInasistencia, setShowInasistencia] = useState<boolean>(false)
+	const [reportData, setReportData] = useState([])
+	const [assistanceNumericData, setAssistanceNumericData] = useState<AssistanceNumericData>()
+	const [assistanceSelection, setAssistanceSelection] = useState<string[]>(["assistance"])
 
-	const { error } = useRequest<StatisticsResponse>({
+	const handleAssistanceSelection = (selection: string) => {
+		if (assistanceSelection.includes(selection)) {
+			setAssistanceSelection(assistanceSelection.filter((item) => item !== selection))
+		} else {
+			setAssistanceSelection([...assistanceSelection, selection])
+		}
+	}
+
+	useRequest<any>({
 		action: getReports,
 		onSuccess: (data) => {
-			setAsistencia(data.formattedAssistanceEvents)
-			setInasistencia(data.formattedNoAssistanceEvents)
-			setTotalAsistencia(data.totalAssistanceCount)
-			setTotalInacistencia(data.totalNoAssistanceCount)
+			setReportData(data.general.data)
+			setAssistanceNumericData(data.general.numbers)
 		},
 	})
 
-	if (error) message.error("Error al cargar los datos")
-
-	const totalEventos = totalAsistencia + totalInasistencia
-	const porcentajeAsistencia = totalEventos ? (totalAsistencia / totalEventos) * 100 : 0
-	const porcentajeInasistencia = totalEventos ? (totalInasistencia / totalEventos) * 100 : 0
-
 	return (
-		<PageLayout pageTitle="Concurrencia de eventos y Asistencia por Centros">
-			{/* Controles de los checkboxes */}
-			<div className="flex space-x-4 p-4">
-				<Checkbox checked={showAsistencia} onChange={(e) => setShowAsistencia(e.target.checked)}>
-					Mostrar Asistencia
-				</Checkbox>
-				<Checkbox checked={showInasistencia} onChange={(e) => setShowInasistencia(e.target.checked)}>
-					Mostrar Inasistencia
-				</Checkbox>
-			</div>
-
-			<div className="grid grid-cols-1 gap-4 p-4">
-				<div className="col-span-3 bg-white p-4 shadow-md rounded-lg">
-					<h2>Tendencia General</h2>
-					<ResponsiveContainer width="100%" height={250}>
-						<LineChart>
+		<PageLayout pageTitle="Reporte general del sistema">
+			<StatisticMainLayout>
+				<ChartLayout title="Asistencia a través del tiempo" size="lg" yearSelect>
+					<ResponsiveContainer width="100%" height={400} style={{ marginLeft: "0px" }}>
+						<LineChart data={reportData} margin={{ top: 20, right: 20, left: -25, bottom: 40 }}>
 							<CartesianGrid strokeDasharray="3 3" />
-							<XAxis dataKey="date" />
-							<YAxis />
-							<Tooltip />
-							<Legend />
-							{showAsistencia && (
-								<Line
-									type="monotone"
-									data={asistencia}
-									dataKey="count"
-									stroke="#3498db"
-									name="Asistencias"
-									isAnimationActive={true}
-								/>
+							<XAxis
+								dataKey="month"
+								axisLine={false}
+								tickLine={false}
+								interval={0}
+								textAnchor="end"
+								dy={10}
+								angle={-45}
+								tickFormatter={(value) => capitalize(dayjs(value).format("MMM"))}
+							/>
+							<YAxis allowDecimals={false} />
+							<Tooltip labelFormatter={(str) => dayjs(str).format("MMMM YYYY")} />
+
+							{assistanceSelection.includes("assistance") && (
+								<Line type="monotone" dataKey="assistance" stroke="#008000" name="Asistencia" />
 							)}
-							{showInasistencia && (
-								<Line
-									type="monotone"
-									data={inasistencia}
-									dataKey="count"
-									stroke="#e74c3c"
-									name="Inasistencias"
-									isAnimationActive={true}
-								/>
+
+							{assistanceSelection.includes("absence") && (
+								<Line type="monotone" dataKey="notAssistance" stroke="#FF0000" name="Inasistencia" />
+							)}
+
+							{assistanceSelection.includes("unreserved") && (
+								<Line type="monotone" dataKey="notReserved" stroke="#0000FF" name="No Reservado" />
 							)}
 						</LineChart>
 					</ResponsiveContainer>
-				</div>
-			</div>
+					<AssistanceSelection
+						assistanceSelection={assistanceSelection}
+						setSelection={handleAssistanceSelection}
+					/>
+				</ChartLayout>
 
-			<div className="grid grid-cols-3 gap-4 p-4">
-				<div className="bg-white p-4 shadow-md rounded-lg col-span-1">
-					<h2>Porcentaje de Asistencias y Inasistencias</h2>
-					<ResponsiveContainer width="100%" height={250}>
-						<PieChart>
-							<Pie
-								data={[
-									{ name: "Asistencia", value: porcentajeAsistencia, fill: "#3498db" },
-									{ name: "Inasistencia", value: porcentajeInasistencia, fill: "#e74c3c" },
-								]}
-								dataKey="value"
-								nameKey="name"
-								cx="50%"
-								cy="50%"
-								outerRadius={80}
-								label={({ value }) => `${value.toFixed(2)}%`}
-							/>
-							<Tooltip />
-						</PieChart>
-					</ResponsiveContainer>
-
-					<div className="mt-4 flex justify-around">
-						<div className="flex items-center">
-							<div className="w-3 h-3 mr-2 bg-[#3498db]" />
-							<span>Asistencia</span>
+				<ChartLayout title="Información de interés" size="sm">
+					<div className="flex flex-row w-full items-center justify-center rounded-lg">
+						<div className="bg-neutral-200 w-1/2 flex justify-center ">
+							<h3>Total</h3>
 						</div>
-						<div className="flex items-center">
-							<div className="w-3 h-3 mr-2 bg-[#e74c3c]" />
-							<span>Inasistencia</span>
+						<div className="bg-neutral-200 w-1/2 flex justify-center">
+							<h3>Promedio mensual</h3>
 						</div>
 					</div>
-					<div className="bg-white p-4 shadow-md rounded-lg col-span-1 flex justify-center items-center">
-						<div className="grid grid-cols-2 gap-4">
-							<p className="text-lg font-semibold text-center bg-[#3498db]">
-								Total Asistidos: <span className="text-blue-600">{totalAsistencia}</span>
-							</p>
-							<p className="text-lg font-semibold text-center  bg-[#e74c3c]">
-								Total Inasistidos: <span className="text-red-600">{totalInasistencia}</span>
-							</p>
+					<div className="flex flex-col w-full">
+						<div className="bg-neutral-200 w-full flex justify-center">
+							<h3>Personas atendidas</h3>
+						</div>
+						<div className="flex flex-row w-full items-center">
+							<h3 className="w-1/2 flex justify-center">{assistanceNumericData?.totalAssistance}</h3>
+							<h3 className="w-1/2 flex justify-center">
+								{(assistanceNumericData?.totalAssistance ?? 0) / 12}
+							</h3>
 						</div>
 					</div>
-				</div>
-			</div>
+					<div className="flex flex-col w-full">
+						<div className="bg-neutral-200 w-full flex justify-center">
+							<h3>Inacistencia</h3>
+						</div>
+						<div className="flex flex-row w-full items-center">
+							<h3 className="w-1/2 flex justify-center">{assistanceNumericData?.totalNotAssistance}</h3>
+							<h3 className="w-1/2 flex justify-center">
+								{(assistanceNumericData?.totalNotAssistance ?? 0) / 12}
+							</h3>
+						</div>
+					</div>
+					<div className="flex flex-col w-full">
+						<div className="bg-neutral-200 w-full flex justify-center">
+							<h3>No reservado</h3>
+						</div>
+						<div className="flex flex-row w-full items-center">
+							<h3 className="w-1/2 flex justify-center">{assistanceNumericData?.totalEvents}</h3>
+							<h3 className="w-1/2 flex justify-center">
+								{(assistanceNumericData?.totalEvents ?? 0) / 12}
+							</h3>
+						</div>
+					</div>
+
+					<div className="flex flex-col w-full">
+						<div className="bg-neutral-200 w-full flex justify-center">
+							<h3>Atención creadas</h3>
+						</div>
+						<div className="flex flex-row w-full items-center">
+							<h3 className="w-1/2 flex justify-center">{assistanceNumericData?.totalEvents}</h3>
+							<h3 className="w-1/2 flex justify-center">
+								{(assistanceNumericData?.totalEvents ?? 0) / 12}
+							</h3>
+						</div>
+					</div>
+				</ChartLayout>
+			</StatisticMainLayout>
 		</PageLayout>
 	)
 }

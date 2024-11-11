@@ -94,22 +94,6 @@ const seed = async () => {
 		})
 	}
 
-	for (const professional of professionals) {
-		const ProfessionalRUT = generateRUT()
-
-		await prisma.professional.upsert({
-			where: { id: ProfessionalRUT },
-			create: {
-				id: ProfessionalRUT,
-				email: professional.email,
-				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
-				name: professional.name,
-				serviceId: professional.serviceId,
-			},
-			update: {},
-		})
-	}
-
 	for (const center of centers) {
 		await prisma.center.upsert({
 			where: { id: center.id },
@@ -185,6 +169,22 @@ const seed = async () => {
 				update: {},
 			})
 		}
+	}
+
+	for (const professional of professionals) {
+		const ProfessionalRUT = generateRUT()
+
+		await prisma.professional.upsert({
+			where: { id: ProfessionalRUT },
+			create: {
+				id: ProfessionalRUT,
+				email: professional.email,
+				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
+				name: professional.name,
+				serviceId: Math.floor(Math.random() * 6) + 1,
+			},
+			update: {},
+		})
 	}
 }
 
