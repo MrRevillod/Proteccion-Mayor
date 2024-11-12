@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { View, Text, StyleSheet, TouchableOpacity, Button, SectionList, ScrollView } from "react-native"
+import { View, Text, StyleSheet, TouchableOpacity, Button, SectionList, ScrollView, Alert } from "react-native"
 import CustomButton from "@/components/button"
 import Colors from "@/components/colors"
 import DataDisplayer from "@/components/dataDisplayer"
@@ -32,11 +32,13 @@ const HourScreen = ({ navigation }: any) => {
     const reserveEvent = async () => {
         try {
             const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events/${event.id}/reservate`, "PATCH")
-            if (response?.data) {
-                console.log(response)
+            if (response?.status === 200) {
+                // Mostrar alerta de reserva agendada
+                Alert.alert("Reserva agendada", "Tu reserva ha sido agendada correctamente", [{ text: "OK", onPress: () => navigation.navigate("Home") }])
             }
         } catch (error) {
             console.error("Error reservando evento:", error)
+            Alert.alert("Error", "Hubo un error al reservar tu evento, por favor intenta de nuevo")
         }
     }
     return (
