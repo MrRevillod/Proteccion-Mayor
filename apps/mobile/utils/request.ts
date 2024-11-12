@@ -10,7 +10,7 @@ export const SERVER_URL = `http://${process.env.EXPO_PUBLIC_SERVER_ADDRESS}`
 
 export const makeAuthenticatedRequest = async (
 	url: string,
-	method: "GET" | "POST" | "PUT" | "DELETE",
+	method: "GET" | "POST" | "PUT" | "DELETE"|"PATCH",
 	showAlert: boolean = true,
 	options: AxiosRequestConfig = {},
 ): Promise<AxiosResponse | null> => {

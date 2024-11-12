@@ -270,3 +270,19 @@ export const getByService = async (req: Request, res: Response, next: NextFuncti
 		next(error)
 	}
 }
+
+export const getByServiceCenter = async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const { serviceId,centerId } = req.params
+
+		const events = await prisma.event.findMany({
+			where: { serviceId: Number(serviceId),centerId:Number(centerId) },
+		})
+
+		console.log(events)
+
+		return res.status(200).json({ events })
+	} catch (error) {
+		next(error)
+	}
+}

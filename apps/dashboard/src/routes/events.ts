@@ -22,5 +22,6 @@ router.patch("/:id/reservate", validateRole(["SENIOR"]), events.reserveEvent)
 router.patch("/:id/cancel", validateRole(["SENIOR"]), events.cancelReserve)
 
 router.get("/:serviceId", validateRole(["ADMIN", "PROFESSIONAL", "SENIOR"]), events.getByService)
+router.get("/:serviceId/:centerId", validateRole(["ADMIN", "PROFESSIONAL", "SENIOR"]), events.getByServiceCenter)
 
 export default router
