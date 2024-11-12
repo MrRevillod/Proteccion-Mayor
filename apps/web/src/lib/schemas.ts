@@ -167,6 +167,10 @@ export const EventSchemas = {
 		.refine((data) => rules.isValidDate(data.end), {
 			message: "La fecha de ingresada no es válida",
 			path: ["end"],
+		})
+		.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
+			message: "No es posible crear eventos los fin de semana",
+			path: ["end", "start"],
 		}),
 
 	Update: z
@@ -194,6 +198,10 @@ export const EventSchemas = {
 		.refine((data) => rules.isValidDate(data.end), {
 			message: "La fecha de ingresada no es válida",
 			path: ["end"],
+		})
+		.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
+			message: "No es posible crear eventos los fin de semana",
+			path: ["end", "start"],
 		}),
 }
 

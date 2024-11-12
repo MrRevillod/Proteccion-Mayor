@@ -1,6 +1,7 @@
-import { Dayjs } from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
 import { match } from "ts-pattern"
 import { prisma } from "@repo/database"
+import { AppError } from "@repo/lib"
 
 // Repeat values
 // La repetición solo es ejecutada por un mes
@@ -74,6 +75,12 @@ export const hasOverlap = async ({ startDate, endDate, ...props }: hasOverlapPro
 
 const createEvent = async (data: CreateEventData) => {
 	const { start, end, professionalId, serviceId, seniorId, centerId, repeat } = data
+
+	const weekend = start.day() === 0 || end.day() === 6
+
+	if (weekend) {
+		throw new AppError(400, "No es posible crear eventos los fin de semana")
+	}
 
 	const overlap = await hasOverlap({
 		startDate: start,
