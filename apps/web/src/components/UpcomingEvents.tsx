@@ -14,18 +14,22 @@ interface UpcomingEventsProps {
 	title: string
 	center?: boolean
 	professional?: boolean
+	senior?: boolean
 	dateEvent?: boolean
 	width?: string
 }
 
-export const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
-	title,
-	events,
-	center = false,
-	professional = false,
-	dateEvent = false,
-	width = "20%",
-}) => {
+export const UpcomingEvents: React.FC<UpcomingEventsProps> = ({ ...props }) => {
+	const {
+		title,
+		events,
+		center = false,
+		professional = false,
+		dateEvent = false,
+		width = "20%",
+		senior = false,
+	} = props
+
 	const paginationClasses = clsx(
 		events.length > 5 ? "fixed bottom-28 right-24" : "hidden",
 		"fixed bottom-28 right-24"
@@ -59,29 +63,38 @@ export const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
 								style={{ backgroundColor: event.backgroundColor }}
 							></div>
 							<div className="flex-1 py-2 flex flex-col gap-2 items-start p-4 ml-2 event-card">
-								<p className="font-semibold text-xl text-dark dark:text-light flex items-center gap-2">
-									{event.title}
-								</p>
+								{professional ? (
+									<p className="font-semibold text-x1 text-dark dark:text-light flex items-center gap-2">
+										<AiOutlineUser className="h-5 w-5 text-muted-foreground" />
+										{event.senior?.name}
+									</p>
+								) : (
+									<p className="font-semibold text-xl text-dark dark:text-light flex items-center gap-2">
+										{event.title}
+									</p>
+								)}
+
 								{center && (
 									<p className="text-sm text-dark dark:text-light flex items-center gap-2">
 										<AiFillBank className="h-5 w-5 text-muted-foreground" />
 										{event.center?.name}
 									</p>
 								)}
-								{professional && (
+
+								{senior && (
 									<p className="text-sm text-dark dark:text-light flex items-center gap-2">
 										<AiOutlineUser className="h-5 w-5 text-muted-foreground" />
 										{event.professional?.name}
 									</p>
 								)}
+
 								{/* FECHA DE EVENTOS */}
-								{!dateEvent && (
+								{!dateEvent ? (
 									<p className="text-sm text-dark flex gap-2 dark:text-light">
 										<AiOutlineCalendar className="h-5 w-5 text-muted-foreground" />
 										{dayjs(event.start).format("DD/MM/YYYY HH:mm")}
 									</p>
-								)}
-								{dateEvent && (
+								) : (
 									<p className="text-sm text-dark flex gap-2 dark:text-light">
 										<AiOutlineCalendar className="h-5 w-5 text-muted-foreground" />
 										{dayjs(event.start).format("DD/MM/YYYY HH:mm")}

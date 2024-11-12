@@ -9,12 +9,14 @@ import UpdateProfessional from "../../components/forms/update/Professional"
 import { message } from "antd"
 import { useState } from "react"
 import { useRequest } from "../../hooks/useRequest"
+import { useNavigate } from "react-router-dom"
 import { Professional } from "../../lib/types"
 import { ProfessionalColumns } from "../../lib/columns"
 import { deleteProfessional, getProfessionals } from "../../lib/actions"
 
 const ProfessionalsPage: React.FC = () => {
 	const [professionals, setProfessionals] = useState<Professional[]>([])
+	const navigate = useNavigate()
 
 	const { error, loading, data } = useRequest<Professional[]>({
 		action: getProfessionals,
@@ -22,6 +24,13 @@ const ProfessionalsPage: React.FC = () => {
 	})
 
 	if (error) message.error("Error al cargar los datos")
+
+	const handleHistory = (professional: Professional) => {
+		console.log(professional.id)
+		navigate(`/historial?id=${professional.id}`, {
+			state: { type: "professional", data: professional },
+		})
+	}
 
 	return (
 		<PageLayout
@@ -37,6 +46,8 @@ const ProfessionalsPage: React.FC = () => {
 					deletable
 					loading={loading}
 					data={professionals}
+					history
+					onHistory={handleHistory}
 					columnsConfig={ProfessionalColumns}
 				/>
 			</section>

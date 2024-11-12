@@ -1,22 +1,23 @@
-import PageLayout from "../../../layouts/PageLayout"
+import PageLayout from "../../layouts/PageLayout"
 import { message } from "antd"
-import { Loading } from "../../../components/Loading"
-import { Calendar } from "../../../components/Calendar"
-import { getEvents } from "../../../lib/actions"
-import { useRequest } from "../../../hooks/useRequest"
+import { Loading } from "../../components/Loading"
+import { Calendar } from "../../components/Calendar"
+import { getEvents } from "../../lib/actions"
+import { useRequest } from "../../hooks/useRequest"
 import { useLocation } from "react-router-dom"
 import React, { useState } from "react"
-import { Events, Event, Senior } from "../../../lib/types"
+import { Events, Event } from "../../lib/types"
 import { UpcomingEvents } from "@/components/UpcomingEvents"
 
 const SeniorHistoryRequestPage: React.FC = () => {
 	const location = useLocation()
-	const senior = location.state?.senior as Senior
+	const data = location.state?.data as any
+	const type = location.state?.type as any
 	const [events, setEvents] = useState<Event[]>([])
 
 	const { error, loading } = useRequest<Events>({
 		action: getEvents,
-		query: `seniorId=${senior?.id}`,
+		query: `${type}Id=${data?.id}`,
 		onSuccess: (data) => {
 			setEvents(data.formatted)
 		},
@@ -29,9 +30,11 @@ const SeniorHistoryRequestPage: React.FC = () => {
 			<div className="w-full dark:bg-primary-dark">
 				{loading && <Loading />}
 				<UpcomingEvents
-					title={senior?.name}
+					title={data?.name}
 					events={events}
-					professional={true}
+					professional={type === "professional"}
+					center={type === "professional"}
+					senior={type === "senior"}
 					dateEvent={true}
 					width="100%"
 				/>

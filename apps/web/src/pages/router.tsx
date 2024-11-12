@@ -15,7 +15,7 @@ import ValidatePasswordPage from "./auth/Password"
 import SeniorRegisterRequestPage from "./administration/seniors/SeniorRegisterRequest"
 import ProfessionalAgendaPage from "./agenda/Professional"
 import AdministrationAgendaPage from "./agenda/Administration"
-import SeniorHistoryRequestPage from "./administration/seniors/SeniorHistoryRequestPage"
+import SeniorHistoryRequestPage from "./administration/History"
 
 import { useAuth } from "../context/AuthContext"
 import { UserRole } from "../lib/types"
@@ -77,7 +77,6 @@ const Router: React.FC = () => {
 				<Route path="/administracion/profesionales" element={<ProfessionalsPage />} />
 				<Route path="/administracion/personas-mayores/" element={<SeniorsPage />} />
 				<Route path="/administracion/personas-mayores/nuevos" element={<NewSeniorsPage />} />
-				<Route path="/administracion/personas-mayores/historial" element={<SeniorHistoryRequestPage />} />
 				<Route
 					path="/administracion/personas-mayores/solicitud-de-registro"
 					element={<SeniorHistoryRequestPage />}
@@ -91,6 +90,7 @@ const Router: React.FC = () => {
 			<Route element={<ProtectedRoute allowedRoles={["ADMIN", "PROFESSIONAL"]} />}>
 				<Route path="/agenda/profesionales" element={<ProfessionalAgendaPage />} />
 				<Route path="/estadisticas" element={<StatisticsPage />} />
+				<Route path="/historial" element={<SeniorHistoryRequestPage />} />
 			</Route>
 
 			<Route element={<RedirectRoute />}>
