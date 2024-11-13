@@ -7,16 +7,40 @@ import GoBackButton from "@/components/goBack"
 import { useAuth } from "@/contexts/authContext"
 import { SERVER_URL } from "@/utils/request"
 import { useFormContext } from "react-hook-form"
-import { View, StyleSheet, Linking } from "react-native"
+import { View, StyleSheet, Linking, AppState, AppStateStatus } from "react-native"
+import { useEffect } from "react"
 
 const Pin = ({ navigation }: any) => {
 	const { login } = useAuth()
-	const { handleSubmit } = useFormContext()
+	const { handleSubmit, reset } = useFormContext()
 
 	const onSubmit = async (data: any) => {
 		await login(data)
 		navigation.navigate("Home")
 	}
+
+	useEffect(() => {
+		// Listener para limpiar el PIN cuando se cambia de pantalla
+		const unsubscribe = navigation.addListener("blur", () => {
+			reset({ password: "" })
+		})
+
+		// Listener para AppState, para limpiar el PIN cuando la app va a segundo plano
+		const handleAppStateChange = (nextAppState: AppStateStatus) => {
+			if (nextAppState === "background") {
+				reset({ password: "" })
+			}
+		}
+
+		// Suscribirse a los cambios de AppState
+		const subscription = AppState.addEventListener("change", handleAppStateChange)
+
+		// Limpiar el listener en la salida
+		return () => {
+			unsubscribe()
+			subscription.remove()
+		}
+	}, [navigation, reset])
 
 	return (
 		<>

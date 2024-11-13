@@ -5,6 +5,7 @@ import Colors from "@/components/colors"
 import { makeAuthenticatedRequest, SERVER_URL } from "@/utils/request"
 import { useEffect, useState } from "react"
 import { AntDesign } from "@expo/vector-icons"
+import LogoutButton from "@/components/logoutButton"
 
 const { width } = Dimensions.get("window")
 const itemSize = width * 0.32 // Tamaño del grid item
@@ -23,31 +24,29 @@ interface ResponseData {
 	values: Service[]
 }
 
-const Home: React.FC<{ navigation: any }> = ({ navigation }) => {
+const Home = ({ navigation }: any) => {
 	const [services, setServices] = useState<Service[]>([])
 
 	useEffect(() => {
 		const getServices = async () => {
-			try {
-				const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/services/`, "GET")
+			makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/services/`, "GET").then((response) => {
 				if (response?.data) {
 					const data: ResponseData = response.data
 					setServices(data.values)
 				}
-			} catch (error) {
-				console.error("Error fetching services:", error)
-			}
+			})
 		}
 		getServices()
 	}, [])
 
 	return (
 		<>
+			<LogoutButton navigation={navigation} visible />
 			<GeneralView title="Home" noBorders={true} hTitle={true}>
 				<View>
 					<ScrollView
 						style={{
-							height: "89%",
+							height: "87%",
 						}}
 						showsVerticalScrollIndicator={false}
 					>
