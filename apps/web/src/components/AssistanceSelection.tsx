@@ -1,9 +1,11 @@
 import React from "react"
+
 import { Checkbox } from "antd"
+import { AssistanceType } from "@/lib/types"
 
 interface AssistanceSelectionProps {
-	assistanceSelection: string[]
-	setSelection: (selection: string) => void
+	assistanceSelection: AssistanceType[]
+	setSelection: (selection: AssistanceType) => void
 }
 
 export const AssistanceSelection: React.FC<AssistanceSelectionProps> = ({ assistanceSelection, setSelection }) => {

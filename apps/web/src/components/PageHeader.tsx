@@ -13,9 +13,10 @@ interface PageHeaderProps {
 	searchKeys?: string[]
 	data?: any[] | null
 	setData?: Dispatch<SetStateAction<any[]>>
+	customRightSide?: React.ReactNode
 }
 
-const PageHeader: React.FC<PageHeaderProps> = ({ pageTitle, create, searchKeys, data, setData }) => {
+const PageHeader: React.FC<PageHeaderProps> = ({ pageTitle, create, searchKeys, data, setData, customRightSide }) => {
 	const { showModal } = useModal()
 
 	return (
@@ -46,6 +47,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({ pageTitle, create, searchKeys, 
 							<AiOutlinePlus className="text-light text-lg" />
 						</button>
 					</Show>
+
+					<Show when={customRightSide != undefined}>{customRightSide}</Show>
 				</div>
 			</div>
 		</section>

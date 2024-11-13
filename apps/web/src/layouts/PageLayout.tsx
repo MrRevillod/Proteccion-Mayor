@@ -10,10 +10,12 @@ interface PageLayoutProps {
 	searchKeys?: string[]
 	data?: any[] | null
 	setData?: Dispatch<SetStateAction<any[]>>
+	customRightSide?: ReactNode
 	children: ReactNode
 }
 
-const PageLayout: React.FC<PageLayoutProps> = ({ pageTitle, create, data, searchKeys, setData, children }) => {
+const PageLayout: React.FC<PageLayoutProps> = ({ pageTitle, ...props }) => {
+	const { create, searchKeys, data, setData, customRightSide, children } = props
 	return (
 		<Fragment>
 			<Helmet>
@@ -26,6 +28,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ pageTitle, create, data, search
 					searchKeys={searchKeys}
 					data={data}
 					setData={setData}
+					customRightSide={customRightSide}
 				/>
 				<section className="w-full dark:bg-primary-dark rounded-lg">{children}</section>
 			</section>

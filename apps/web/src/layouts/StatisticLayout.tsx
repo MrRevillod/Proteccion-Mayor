@@ -1,23 +1,51 @@
+import clsx from "clsx"
 import React from "react"
 
-import "../main.css"
-import clsx from "clsx"
 import { SuperSelect } from "@/components/ui/SuperSelect"
+import { generateMonths, generateYears } from "@/lib/formatters"
 import { FormProvider, useForm } from "react-hook-form"
+import { SetStateAction, Dispatch, useEffect } from "react"
+
+import "../main.css"
+import "dayjs/locale/es"
+
+import dayjs from "dayjs"
+
+dayjs.locale("es")
 
 interface StatisticLayoutProps {
 	title?: string
 	size?: "sm" | "lg"
 	yearSelect?: boolean
+	monthSelect?: boolean
+	setDate?: Dispatch<SetStateAction<string>>
+	reportSelection?: string
 	children: React.ReactNode
 }
 
-const StatisticMainLayout: React.FC<StatisticLayoutProps> = ({ children }) => {
+export const StatisticMainLayout: React.FC<StatisticLayoutProps> = ({ children }) => {
 	return <div className="flex flex-row gap-4 w-full h-full">{children}</div>
 }
 
-const ChartLayout: React.FC<StatisticLayoutProps> = ({ title, size, yearSelect = false, children }) => {
-	const methods = useForm({})
+export const ChartLayout: React.FC<StatisticLayoutProps> = ({ title, ...props }) => {
+	const { size, yearSelect, monthSelect, setDate, reportSelection, children } = props
+	const methods = useForm({
+		defaultValues: {
+			year: dayjs().year().toString(),
+			month: dayjs().month() + 1,
+		},
+	})
+
+	const { watch } = methods
+
+	const year = watch("year") ?? new Date().getFullYear().toString()
+	const month = watch("month") ?? new Date().getMonth().toString()
+
+	useEffect(() => {
+		const date = `${year}${month && monthSelect ? `-${month.toString().padStart(2, "0")}` : ""}`
+		setDate && setDate(date)
+	}, [year, month, setDate, reportSelection])
+
 	return (
 		<div
 			className={clsx(
@@ -29,26 +57,22 @@ const ChartLayout: React.FC<StatisticLayoutProps> = ({ title, size, yearSelect =
 			<div className={clsx(size === "lg" && "px-4", "w-full flex flex-row items-center justify-between")}>
 				<h2 className="text-xl font-semibold text-dark dark:text-light">{title}</h2>
 
-				{yearSelect && (
-					<FormProvider {...methods}>
-						<form className="w-1/6">
-							<SuperSelect
-								label=""
-								placeholder="Año"
-								name="year"
-								options={[
-									{ label: "2021", value: "2021" },
-									{ label: "2020", value: "2020" },
-									{ label: "2019", value: "2019" },
-								]}
-							/>
-						</form>
-					</FormProvider>
-				)}
+				<FormProvider {...methods}>
+					<form className="w-1/4 flex flex-row gap-4">
+						{monthSelect && (
+							<div className={yearSelect ? "w-1/2" : "w-full"}>
+								<SuperSelect label="" placeholder="Mes" name="month" options={generateMonths()} />
+							</div>
+						)}
+						{yearSelect && (
+							<div className={monthSelect ? "w-1/2" : "w-full"}>
+								<SuperSelect label="" placeholder="Año" name="year" options={generateYears()} />
+							</div>
+						)}
+					</form>
+				</FormProvider>
 			</div>
 			{children}
 		</div>
 	)
 }
-
-export { StatisticMainLayout, ChartLayout }

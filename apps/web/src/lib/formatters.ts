@@ -85,3 +85,37 @@ export const filterUpcomingEvents = (events: Event[]): Event[] => {
 export const capitalize = (str: string) => {
 	return str.charAt(0).toUpperCase() + str.slice(1)
 }
+
+export const generateYears = () => {
+	const INIT_YEAR_VALUE = import.meta.env.VITE_CALENDAR_YEAR_START
+	const yearDiff = new Date().getFullYear() - Number(INIT_YEAR_VALUE)
+	const years = [] as any[]
+
+	for (let i = 0; i <= yearDiff; i++) {
+		years.push({ label: `${Number(INIT_YEAR_VALUE) + i}`, value: `${Number(INIT_YEAR_VALUE) + i}` })
+	}
+
+	return years
+}
+
+export const generateMonths = () => {
+	const months = [] as any[]
+
+	for (let i = 1; i <= 12; i++) {
+		const month = {
+			label: capitalize(
+				dayjs()
+					.month(i - 1)
+					.format("MMMM"),
+			),
+			value: i,
+		}
+		months.push(month)
+	}
+
+	return months
+}
+
+export const formatCenterName = (centerName: string) => {
+	return centerName.split(".")[0] ?? centerName
+}
