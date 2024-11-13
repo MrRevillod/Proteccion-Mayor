@@ -15,6 +15,7 @@ import ValidatePasswordPage from "./auth/Password"
 import ProfessionalAgendaPage from "./agenda/Professional"
 import AdministrationAgendaPage from "./agenda/Administration"
 import SeniorHistoryRequestPage from "./administration/History"
+import SeniorRegisterRequestPage from "./administration/seniors/SeniorRegisterRequest"
 
 import { useAuth } from "../context/AuthContext"
 import { UserRole } from "../lib/types"

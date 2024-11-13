@@ -1,13 +1,13 @@
 import React from "react"
-import PageLayout from "@layout/PageLayout"
+import PageLayout from "@/layouts/PageLayout"
 
 import { message } from "antd"
-import { Loading } from "../../../components/Loading"
+import { Loading } from "@/components/Loading"
 import { useState } from "react"
-import { getEvents } from "../../../lib/actions"
-import { useRequest } from "../../../hooks/useRequest"
+import { getEvents } from "@/lib/actions"
+import { useRequest } from "@/hooks/useRequest"
 import { useLocation } from "react-router-dom"
-import { Events, Event } from "../../lib/types"
+import { Events, Event } from "@/lib/types"
 import { UpcomingEvents } from "@/components/UpcomingEvents"
 
 const SeniorHistoryRequestPage: React.FC = () => {

@@ -1,21 +1,21 @@
-import React, { useState } from "react"
+import React from "react"
 import PageLayout from "@/layouts/PageLayout"
 import DatetimeSelect from "@/components/ui/DatetimeSelect"
 
 import { api } from "@/lib/axios"
 import { Input } from "@/components/ui/Input"
 import { Button } from "@/components/ui/Button"
-import { useEffect } from "react"
+import { useRequest } from "@/hooks/useRequest"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@/hooks/useMutation"
+import { SuperSelect } from "@/components/ui/SuperSelect"
 import { SeniorSchemas } from "@/lib/schemas"
 import { message, Image } from "antd"
+import { getRegisterImages } from "@/lib/actions"
+import { MutateActionProps } from "@/lib/types"
+import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { FieldValues, FormProvider, SubmitHandler, useForm } from "react-hook-form"
-import { useRequest } from "@/hooks/useRequest"
-import { getRegisterImages } from "@/lib/actions"
-import { SuperSelect } from "@/components/ui/SuperSelect"
-import { MutateActionProps } from "@/lib/types"
 
 const SeniorRegisterRequestPage: React.FC = () => {
 	const location = useLocation()

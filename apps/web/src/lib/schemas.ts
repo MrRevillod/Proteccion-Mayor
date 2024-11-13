@@ -63,6 +63,10 @@ export const SeniorSchemas = {
 			message: "La fecha de ingresada no es válida",
 			path: ["birthDate"],
 		})
+		.refine((data) => rules.isSeniorBirthDate(data.birthDate), {
+			message: "La fecha de nacimiento no corresponde a la de una persona mayor",
+			path: ["birthDate"],
+		})
 		.refine((data) => rules.isValidRut(data.rut), {
 			message: "El RUT ingresado no es válido",
 			path: ["rut"],

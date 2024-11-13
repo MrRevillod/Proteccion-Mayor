@@ -7,12 +7,12 @@ import ConfirmDelete from "../../components/ConfirmAction"
 import { message } from "antd"
 import { Service } from "../../lib/types"
 import { useState } from "react"
+import { useModal } from "@/context/ModalContext"
 import { ImageCard } from "../../components/ui/ImageCard"
 import { CardLayout } from "../../components/CardLayout"
 import { useRequest } from "../../hooks/useRequest"
 import { useNavigate } from "react-router-dom"
 import { deleteService, getServices } from "../../lib/actions"
-import { useModal } from "@/context/ModalContext"
 
 const ServicesPage: React.FC = () => {
 	const navigate = useNavigate()

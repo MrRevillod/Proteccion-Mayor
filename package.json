@@ -1,5 +1,5 @@
 {
-	"name": "node-workspace",
+	"name": "pm-temuco",
 	"private": true,
 	"scripts": {
 		"db:migrate:deploy": "turbo run db:migrate:deploy",
