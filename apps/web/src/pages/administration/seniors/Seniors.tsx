@@ -25,9 +25,9 @@ const SeniorsPage: React.FC = () => {
 
 	if (error) message.error("Error al cargar los datos")
 
-	const handleView = (senior: Senior) => {
-		navigate(`/administracion/personas-mayores/historial`, {
-			state: { senior },
+	const handleHistory = (senior: Senior) => {
+		navigate(`/historial?id=${senior.id}`, {
+			state: { type: "senior", data: senior },
 		})
 	}
 
@@ -46,7 +46,7 @@ const SeniorsPage: React.FC = () => {
 					editable
 					deletable
 					history
-					onHistory={handleView}
+					onHistory={handleHistory}
 					loading={loading}
 					viewable={false}
 				/>
