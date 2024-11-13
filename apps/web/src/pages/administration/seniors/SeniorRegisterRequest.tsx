@@ -15,6 +15,7 @@ import { FieldValues, FormProvider, SubmitHandler, useForm } from "react-hook-fo
 import { useRequest } from "@/hooks/useRequest"
 import { getRegisterImages } from "@/lib/actions"
 import { SuperSelect } from "@/components/ui/SuperSelect"
+import { MutateActionProps } from "@/lib/types"
 
 const SeniorRegisterRequestPage: React.FC = () => {
 	const location = useLocation()
@@ -41,8 +42,8 @@ const SeniorRegisterRequestPage: React.FC = () => {
 	})
 
 	const AcceptMutation = useMutation<void>({
-		mutateFn: async () => {
-			return await api.patch(`/dashboard/seniors/${senior.id}/new?validate=true`)
+		mutateFn: async (params: MutateActionProps) => {
+			return await api.patch(`/dashboard/seniors/${senior.id}/new?validate=true`, params.body)
 		},
 	})
 
@@ -57,27 +58,25 @@ const SeniorRegisterRequestPage: React.FC = () => {
 			params: { body: formData },
 			onSuccess: () => {
 				message.success("Solicitud aceptada")
-				navigate("/administracion/personas-mayores/nuevos")
 			},
 			onError: (error) => {
 				message.error(error.response.data.message)
-				navigate("/administracion/personas-mayores/nuevos")
 			},
 		})
+
+		navigate("/administracion/personas-mayores/nuevos")
 	}
 
 	const onDeny = async () => {
 		await DenyMutation.mutate({
 			onSuccess: () => {
 				message.success("Solicitud denegada")
-				navigate("/administracion/personas-mayores/nuevos")
 			},
 			onError: (error) => {
 				message.error(error.response.data.message)
-				navigate("/administracion/personas-mayores/nuevos")
-				console.error("Error al denegar la solicitud:", error)
 			},
 		})
+		navigate("/administracion/personas-mayores/nuevos")
 	}
 
 	return (
@@ -148,14 +147,14 @@ const SeniorRegisterRequestPage: React.FC = () => {
 
 				<div className="w-2/3 grid grid-cols-2 gap-2">
 					<div className="col-span-1 grid grid-rows-2 gap-1">
-						<div className="row-span-1 rounded-lg dni-container bg-red max-h-[280px] overflow-hidden">
+						<div className="row-span-1 rounded-lg dni-container max-h-[280px] overflow-hidden">
 							<Image
 								src={images[0]}
 								alt="Cédula Frontal"
 								className="object-cover object-center w-full h-full"
 							/>
 						</div>
-						<div className="row-span-1 rounded-lg dni-container bg-green max-h-[280px] overflow-hidden">
+						<div className="row-span-1 rounded-lg dni-container max-h-[280px] overflow-hidden">
 							<Image
 								src={images[1]}
 								alt="Cédula Reverso"
@@ -164,7 +163,7 @@ const SeniorRegisterRequestPage: React.FC = () => {
 						</div>
 					</div>
 
-					<div className="col-span-1 rounded-lg dni-container bg-blue overflow-hidden max-h-[580px]">
+					<div className="col-span-1 rounded-lg dni-container overflow-hidden max-h-[580px]">
 						<Image
 							src={images[2]}
 							alt="Cartola Hogar"

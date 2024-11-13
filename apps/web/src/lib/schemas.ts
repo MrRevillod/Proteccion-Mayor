@@ -26,6 +26,10 @@ export const SeniorSchemas = {
 		.refine((data) => rules.isValidDate(data.birthDate), {
 			message: "La fecha de ingresada no es válida",
 			path: ["birthDate"],
+		})
+		.refine((data) => rules.isSeniorBirthDate(data.birthDate), {
+			message: "La fecha de nacimiento no es válida",
+			path: ["birthDate"],
 		}),
 
 	Update: z
@@ -53,6 +57,7 @@ export const SeniorSchemas = {
 			email: rules.emailSchema,
 			address: rules.addressSchema,
 			birthDate: z.string({ message: "La fecha de nacimiento es requerida" }),
+			gender: rules.genderSchema,
 		})
 		.refine((data) => rules.isValidDate(data.birthDate), {
 			message: "La fecha de ingresada no es válida",
@@ -167,6 +172,10 @@ export const EventSchemas = {
 		.refine((data) => rules.isValidDate(data.end), {
 			message: "La fecha de ingresada no es válida",
 			path: ["end"],
+		})
+		.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
+			message: "No es posible crear eventos los fin de semana",
+			path: ["end", "start"],
 		}),
 
 	Update: z
@@ -194,6 +203,10 @@ export const EventSchemas = {
 		.refine((data) => rules.isValidDate(data.end), {
 			message: "La fecha de ingresada no es válida",
 			path: ["end"],
+		})
+		.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
+			message: "No es posible crear eventos los fin de semana",
+			path: ["end", "start"],
 		}),
 }
 

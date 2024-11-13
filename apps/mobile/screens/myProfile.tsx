@@ -32,15 +32,10 @@ const Profile = ({ navigation }: any) => {
 
 	useEffect(() => {
 		const getUser = async () => {
-			try {
-				const user = await AsyncStorage.getItem("user")
-				if (!user) {
-					throw new Error("El usuario no existe")
-				}
+			const user = await AsyncStorage.getItem("user")
+			if (user) {
 				const parsedUser = JSON.parse(user)
 				setUser(parsedUser)
-			} catch (error) {
-				console.error("Error al obtener el usuario", error)
 			}
 		}
 		getUser()
@@ -50,17 +45,11 @@ const Profile = ({ navigation }: any) => {
 		if (user) {
 			const checkProfilePhoto = async () => {
 				try {
-					await axios.get(`${SERVER_URL}/api/storage/${user.id}/profile.jpg`, {
-						headers: { "x-storage-key": "STORAGE_KEY_SECRET" },
-					})
+					await axios.get(`${SERVER_URL}/api/storage/public/seniors/${user.id}/profile.jpg`)
 					setProfileUri(`${SERVER_URL}/api/storage/${user.id}/profile.jpg`)
 				} catch (error) {
-					await axios.get(`${SERVER_URL}/api/storage/default-profile.jpg`, {
-						headers: { "x-storage-key": "STORAGE_KEY_SECRET" },
-					})
-					setProfileUri(`${SERVER_URL}/api/storage/default-profile.jpg`)
-					console.error("Error verificando la foto de perfil", error)
-					setProfileUri(null)
+					await axios.get(`${SERVER_URL}/api/storage/public/users/default-profile.webp`)
+					setProfileUri(`${SERVER_URL}/api/storage/public/users/default-profile.webp`)
 				}
 			}
 			checkProfilePhoto()
@@ -165,12 +154,14 @@ const styles = StyleSheet.create({
 	},
 	circle: {
 		margin: 20,
-		width: width * 0.25,
-		height: width * 0.25,
+		width: width * 0.26,
+		height: width * 0.26,
 		borderRadius: 100,
 		borderColor: Colors.white,
 		borderWidth: 2,
 		backgroundColor: Colors.gray,
+		alignItems: "center",
+		justifyContent: "center",
 	},
 
 	dataContainer: {

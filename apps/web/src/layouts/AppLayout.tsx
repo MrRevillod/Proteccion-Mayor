@@ -9,7 +9,7 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const { isAuthenticated, user, loading } = useAuth()
 
 	return (
-		<article className="max-h-screen h-screen w-screen bg-gray-50 dark:bg-primary-darker">
+		<article className="min-h-screen w-screen bg-gray-50 dark:bg-primary-darker">
 			<Show when={loading}>
 				<Loading />
 			</Show>

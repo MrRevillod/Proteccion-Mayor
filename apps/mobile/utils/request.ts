@@ -1,10 +1,7 @@
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry"
-import { getAccessToken, getRefreshToken, replaceAccessToken, storeTokens } from "./storage"
+import { getAccessToken, getRefreshToken, replaceAccessToken } from "./storage"
 import { isTokenExp } from "./validation"
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios"
 import { Alert } from "react-native"
-import { AuthResponse } from "./types"
-import { useAuth } from "@/contexts/authContext"
 
 export const SERVER_URL = `http://${process.env.EXPO_PUBLIC_SERVER_ADDRESS}`
 

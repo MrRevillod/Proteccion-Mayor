@@ -131,18 +131,29 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
 		id: (value: any) => ({ contains: value }),
 		name: (value: any) => ({ contains: value }),
 		gender: (value: Gender) => ({ equals: value }),
-		validated: (value: any) => ({ equals: Number(value) === 1 }),
 	}
 
-	const where = generateWhere<Prisma.SeniorWhereInput>(req.query, queryToWhereMap)
+	// Separar 'validated' del resto de los parámetros
+	const { validated, ...otherQueryParams } = req.query
+
+	// Generar las condiciones OR para 'id' y 'name'
+	const orConditions = generateWhere<Prisma.SeniorWhereInput>(otherQueryParams, queryToWhereMap, "OR")
+
+	// Construir el objeto 'where' combinando 'AND' y 'OR'
+	const where: Prisma.SeniorWhereInput = {}
+
+	if (validated !== undefined) {
+		where.validated = { equals: Number(validated) === 1 }
+	}
+
+	if (orConditions.OR && orConditions.OR.length > 0) {
+		where.OR = orConditions.OR
+	}
+
 	const selectQuery = req.query.select?.toString()
 	const select = generateSelect<Prisma.SeniorSelect>(selectQuery, seniorSelect)
 
 	const take = req.query.limit ? Number(req.query.limit) : undefined
-
-	if (where.OR && where.OR.length === 0) {
-		return res.status(200).json({ values: [] })
-	}
 
 	try {
 		const seniors = await prisma.senior.findMany({ where, select, take })
@@ -158,7 +169,7 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 	const { DEFAULT_SENIOR_PASSWORD } = constants
 
 	try {
-		const { id, name, email, address, birthDate, gender } = req.body
+		const { id, email, gender } = req.body
 		const defaulAdminPassword = await hash(DEFAULT_SENIOR_PASSWORD, 10)
 
 		const filter: Prisma.SeniorWhereInput = {

@@ -1,6 +1,7 @@
-import { Dayjs } from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
 import { match } from "ts-pattern"
 import { prisma } from "@repo/database"
+import { AppError } from "@repo/lib"
 
 // Repeat values
 // La repetición solo es ejecutada por un mes
@@ -75,6 +76,12 @@ export const hasOverlap = async ({ startDate, endDate, ...props }: hasOverlapPro
 const createEvent = async (data: CreateEventData) => {
 	const { start, end, professionalId, serviceId, seniorId, centerId, repeat } = data
 
+	const weekend = start.day() === 0 || end.day() === 6
+
+	if (weekend) {
+		throw new AppError(400, "No es posible crear eventos los fin de semana")
+	}
+
 	const overlap = await hasOverlap({
 		startDate: start,
 		endDate: end,
@@ -100,26 +107,39 @@ const createEvent = async (data: CreateEventData) => {
 
 export const createEvents = async (data: CreateEventData) => {
 	const { start, end, professionalId, serviceId, seniorId, centerId, repeat } = data
-	const createConcurrentEvents = async (interval: "day" | "week", count: number) => {
-		Array.from({ length: count }, (_, i) => {
-			const newStart = start.add(i, interval)
-			const newEnd = end.add(i, interval)
 
-			createEvent({
-				start: newStart,
-				end: newEnd,
-				professionalId,
-				serviceId,
-				seniorId,
-				centerId,
-				repeat,
-			})
-		})
+	const createConcurrentEvents = async (interval: "day" | "week", count: number) => {
+		let eventCount = 0
+		let current = start
+
+		const startMonth = start.month()
+		const startYear = start.year()
+
+		while (eventCount < count) {
+			if (current.month() !== startMonth || current.year() !== startYear) {
+				break
+			}
+
+			if (current.day() !== 0 && current.day() !== 6) {
+				await createEvent({
+					start: current,
+					end: current.add(end.diff(start, "minute"), "minute"),
+					professionalId,
+					serviceId,
+					seniorId,
+					centerId,
+					repeat,
+				})
+				eventCount++
+			}
+
+			current = interval === "week" ? current.add(1, "week") : current.add(1, "day")
+		}
 	}
 
 	await match(repeat)
 		.with("daily", async () => createConcurrentEvents("day", 30))
-		.with("weekly", async () => createConcurrentEvents("week", 4))
+		.with("weekly", async () => createConcurrentEvents("day", 5))
 		.otherwise(async () => {
 			await createEvent({ start, end, professionalId, serviceId, seniorId, centerId, repeat })
 		})

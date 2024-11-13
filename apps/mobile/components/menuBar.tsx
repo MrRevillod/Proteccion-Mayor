@@ -47,6 +47,7 @@ const MenuBar = ({ navigation }: any) => {
 							alignContent: "center",
 							alignItems: "center",
 						}}
+						onPress={() => navigation.navigate("Schelude")}
 					>
 						<Image source={require("@/assets/images/menu/calendar.png")} style={{ width: width * 0.08, height: width * 0.08 }} />
 						<Text style={{ fontSize: 16, padding: 0, margin: 0, color: Colors.white }}>Agenda</Text>

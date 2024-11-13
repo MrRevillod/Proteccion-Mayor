@@ -68,6 +68,7 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 		if (!service) throw new AppError(400, "Servicio no encontrado")
 		if (seniorId && !senior) throw new AppError(400, "Adulto mayor no encontrado")
 		if (!center) throw new AppError(400, "Centro no encontrado")
+		if (senior && !senior?.validated) throw new AppError(409, "La persona mayor no está validada")
 
 		const event = {
 			start: dayjs(start),

@@ -46,8 +46,7 @@ const CenterScreen = ({ navigation }: any) => {
 					</View>
 					<View style={styles.midContainer}>
 						{centers.map((center) => (
-                            <TouchableOpacity onPress={() => navigation.navigate("Events", { serviceId, centerId: center.id })}>
-			
+              <TouchableOpacity onPress={() => navigation.navigate("Events", { serviceId, centerId: center.id })}>
 								<DataDisplayer key={center.id} titleField={center.name} descriptionField={center.address} isCC />
 							</TouchableOpacity>
 						))}
@@ -84,7 +83,8 @@ const styles = StyleSheet.create({
 		width: "100%",
 		backgroundColor: Colors.white,
 		borderColor: Colors.green,
-		borderWidth: 2,
+		borderLeftWidth: 2,
+		borderRightWidth: 2,
 		padding: 10,
 		margin: 0,
 	},
