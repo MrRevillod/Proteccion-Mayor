@@ -3,7 +3,7 @@ import Colors from "@/components/colors"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
 import { useEffect, useState } from "react"
-import { View, StyleSheet, Text, Dimensions, KeyboardAvoidingView, Platform } from "react-native"
+import { View, StyleSheet, Text, Dimensions, KeyboardAvoidingView, Platform, StatusBar } from "react-native"
 
 const { width, height } = Dimensions.get("window")
 
@@ -40,36 +40,43 @@ const GeneralView = ({ title, children, ...props }: GeneralViewProps) => {
 	const name = user?.name || "Juan"
 
 	return (
-		<KeyboardAvoidingView
-			style={{ backgroundColor: Colors.green, flex: 1 }}
-			behavior={Platform.OS === "ios" ? "padding" : "height"}
-			enabled={true}
-		>
-			<View style={[!noBorders && styles.greenContainer, noBorders && styles.noBorderGreenContainer]}>
-				{hTitle ? (
-					<View style={styles.hasImageStyles}>
-						<Text style={styles.title}>👋 ¡Hola {name}!</Text>
-					</View>
-				) : (
-					<Text style={styles.title}>{title} </Text>
-				)}
-			</View>
-			<View style={[!noBorders && styles.whiteContainer, noBorders && styles.noBorderWhiteContainer]}>
-				<View style={styles.description}>
-					{textCircle && textTitle && (
-						<>
-							<View style={[styles.circle, noBorders && { borderWidth: 0 }]}>
-								<Text style={styles.circleText}>{textCircle}</Text>
-							</View>
-							<Text style={{ fontSize: 18, fontWeight: "500", flex: 1, alignSelf: "center" }}>{textTitle}</Text>
-						</>
+		<>
+			<StatusBar barStyle="light-content" backgroundColor={Colors.green} translucent={true} />
+			<KeyboardAvoidingView
+				style={{ backgroundColor: Colors.green, flex: 1 }}
+				behavior={Platform.OS === "ios" ? "padding" : "height"}
+				enabled={true}
+			>
+				<View style={[!noBorders && styles.greenContainer, noBorders && styles.noBorderGreenContainer]}>
+					{hTitle ? (
+						<View style={styles.hasImageStyles}>
+							<Text style={styles.title}>👋 ¡Hola {name}!</Text>
+						</View>
+					) : (
+						<Text style={styles.title}>{title} </Text>
 					)}
-					{!textCircle && textTitle && <Text style={{ fontSize: 20, fontWeight: "500", flex: 1, textAlign: "center" }}>{textTitle}</Text>}
 				</View>
-				{textDescription && <Text style={{ fontSize: 16, marginTop: 10, color: Colors.gray, textAlign: "justify" }}>{textDescription}</Text>}
-				{children}
-			</View>
-		</KeyboardAvoidingView>
+				<View style={[!noBorders && styles.whiteContainer, noBorders && styles.noBorderWhiteContainer]}>
+					<View style={styles.description}>
+						{textCircle && textTitle && (
+							<>
+								<View style={[styles.circle, noBorders && { borderWidth: 0 }]}>
+									<Text style={styles.circleText}>{textCircle}</Text>
+								</View>
+								<Text style={{ fontSize: 18, fontWeight: "500", flex: 1, alignSelf: "center" }}>{textTitle}</Text>
+							</>
+						)}
+						{!textCircle && textTitle && (
+							<Text style={{ fontSize: 20, fontWeight: "500", flex: 1, textAlign: "center" }}>{textTitle}</Text>
+						)}
+					</View>
+					{textDescription && (
+						<Text style={{ fontSize: 16, marginTop: 10, color: Colors.gray, textAlign: "justify" }}>{textDescription}</Text>
+					)}
+					{children}
+				</View>
+			</KeyboardAvoidingView>
+		</>
 	)
 }
 
@@ -79,14 +86,14 @@ const styles = StyleSheet.create({
 		backgroundColor: Colors.green,
 		justifyContent: "center",
 		alignItems: "center",
-		height: "20%",
+		height: "15%",
 	},
 	noBorderGreenContainer: {
 		flex: 1,
 		backgroundColor: Colors.green,
 		justifyContent: "center",
 		alignItems: "center",
-		height: "20%",
+		height: "15%",
 	},
 	title: {
 		alignSelf: "center",
@@ -100,7 +107,7 @@ const styles = StyleSheet.create({
 	},
 	whiteContainer: {
 		width: "100%",
-		height: "80%",
+		height: "85%",
 		backgroundColor: "#FFFFFF",
 		borderTopLeftRadius: 20,
 		borderTopRightRadius: 20,
@@ -108,7 +115,7 @@ const styles = StyleSheet.create({
 	},
 	noBorderWhiteContainer: {
 		width: "100%",
-		height: "80%",
+		height: "85%",
 		backgroundColor: "#FFFFFF",
 		paddingHorizontal: "10%",
 		paddingVertical: "10%",

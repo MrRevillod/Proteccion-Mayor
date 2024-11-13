@@ -1,8 +1,8 @@
 import { Router } from "express"
-import { generateGeneralReport } from "../controllers/reports"
+import { generateStatisticReport } from "../controllers/reports"
 
 const router: Router = Router()
 
-router.get("/", generateGeneralReport)
+router.get("/", generateStatisticReport)
 
 export default router

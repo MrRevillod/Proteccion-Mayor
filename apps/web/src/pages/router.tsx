@@ -12,7 +12,6 @@ import AdministratorPage from "./administration/Administrators"
 import ProfessionalsPage from "./administration/Professionals"
 import ResetPasswordPage from "./auth/ResetPassword"
 import ValidatePasswordPage from "./auth/Password"
-import SeniorRegisterRequestPage from "./administration/seniors/SeniorRegisterRequest"
 import ProfessionalAgendaPage from "./agenda/Professional"
 import AdministrationAgendaPage from "./agenda/Administration"
 import SeniorHistoryRequestPage from "./administration/History"
@@ -79,7 +78,7 @@ const Router: React.FC = () => {
 				<Route path="/administracion/personas-mayores/nuevos" element={<NewSeniorsPage />} />
 				<Route
 					path="/administracion/personas-mayores/solicitud-de-registro"
-					element={<SeniorHistoryRequestPage />}
+					element={<SeniorRegisterRequestPage />}
 				/>
 				<Route path="/administracion/servicios" element={<ServicesPage />} />
 				<Route path="/administracion/centros-de-atencion" element={<CentersPage />} />

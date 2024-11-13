@@ -1,11 +1,12 @@
-import PageLayout from "../../layouts/PageLayout"
+import React from "react"
+import PageLayout from "@layout/PageLayout"
+
 import { message } from "antd"
-import { Loading } from "../../components/Loading"
-import { Calendar } from "../../components/Calendar"
-import { getEvents } from "../../lib/actions"
-import { useRequest } from "../../hooks/useRequest"
+import { Loading } from "../../../components/Loading"
+import { useState } from "react"
+import { getEvents } from "../../../lib/actions"
+import { useRequest } from "../../../hooks/useRequest"
 import { useLocation } from "react-router-dom"
-import React, { useState } from "react"
 import { Events, Event } from "../../lib/types"
 import { UpcomingEvents } from "@/components/UpcomingEvents"
 

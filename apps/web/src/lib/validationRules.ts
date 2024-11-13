@@ -1,3 +1,4 @@
+import dayjs from "dayjs"
 import { z } from "zod"
 
 export const isValidRutFormat = (rut: string): boolean => {
@@ -97,6 +98,14 @@ export const isValidDate = (value: string): boolean => {
 	return !isNaN(date.getTime())
 }
 
+export const isSeniorBirthDate = (date: string) => {
+	const birthDate = new Date(date)
+	const now = new Date()
+	const age = now.getFullYear() - birthDate.getFullYear()
+
+	return age >= 60
+}
+
 export const nameServiceSchema = z
 	.string()
 	.min(2, "El nombre debe tener al menos 2 caracteres")
@@ -163,3 +172,8 @@ export const colorSchema = z
 export const genderSchema = z.enum(["MA", "FE"], {
 	message: "El género seleccionado no es válido",
 })
+
+export const isWeekend = (date: string) => {
+	const day = dayjs(date).day()
+	return day !== 0 && day !== 6
+}

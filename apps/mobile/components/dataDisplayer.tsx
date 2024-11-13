@@ -13,13 +13,24 @@ type DataDisplayerProps = {
 	actionButton?: "Ingresar" | "Cambiar" | "ELIMINAR"
 	onPress?: () => void
 	isCC?: boolean
+	event?: { bool: boolean; color?: string }
 }
 
-const DataDisplayer = ({ imgPath, titleField, descriptionField, actionButton, onPress, isCC = false }: DataDisplayerProps) => {
+const DataDisplayer = ({
+	imgPath,
+	titleField,
+	descriptionField,
+	actionButton,
+	onPress,
+	isCC = false,
+	event = { bool: false },
+}: DataDisplayerProps) => {
 	return (
 		<View style={styles.dataContainer}>
 			<View style={{ flexDirection: "row", alignItems: "center", padding: width * 0.01 }}>
-				{isCC ? (
+				{event.bool ? (
+					<View style={[styles.colorBar, { backgroundColor: event.color || Colors.gray }]} />
+				) : isCC ? (
 					<Ionicons name="home-outline" color="black" size={width * 0.11} />
 				) : (
 					<Image source={imgPath} style={{ width: width * 0.11, height: width * 0.11 }} />
@@ -36,7 +47,7 @@ const DataDisplayer = ({ imgPath, titleField, descriptionField, actionButton, on
 					</View>
 				)}
 				{descriptionField && !actionButton && (
-					<View style={{ flexDirection: "column", marginLeft: 10, maxWidth: "80%" }}>
+					<View style={{ flexDirection: "column", marginLeft: 10, maxWidth: "88%" }}>
 						<Text style={styles.textTitle}>{titleField}</Text>
 						<Text style={{ fontSize: 16, color: Colors.gray, margin: 0, padding: 0, fontWeight: "bold" }}>{descriptionField}</Text>
 					</View>
@@ -77,5 +88,11 @@ const styles = StyleSheet.create({
 		margin: 0,
 		padding: 0,
 		fontWeight: "400",
+	},
+	colorBar: {
+		width: 7,
+		height: 100,
+		borderTopLeftRadius: 5,
+		borderBottomLeftRadius: 5,
 	},
 })

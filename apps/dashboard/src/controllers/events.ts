@@ -68,6 +68,7 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 		if (!service) throw new AppError(400, "Servicio no encontrado")
 		if (seniorId && !senior) throw new AppError(400, "Adulto mayor no encontrado")
 		if (!center) throw new AppError(400, "Centro no encontrado")
+		if (senior && !senior?.validated) throw new AppError(409, "La persona mayor no está validada")
 
 		const event = {
 			start: dayjs(start),
@@ -266,6 +267,22 @@ export const getByService = async (req: Request, res: Response, next: NextFuncti
 		console.log(centers)
 
 		return res.status(200).json({ centers })
+	} catch (error) {
+		next(error)
+	}
+}
+
+export const getByServiceCenter = async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const { serviceId,centerId } = req.params
+
+		const events = await prisma.event.findMany({
+			where: { serviceId: Number(serviceId),centerId:Number(centerId) },
+		})
+
+		console.log(events)
+
+		return res.status(200).json({ events })
 	} catch (error) {
 		next(error)
 	}

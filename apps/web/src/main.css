@@ -26,6 +26,14 @@
 	@apply text-dark;
 }
 
+.weekend-calendar-cell {
+	@apply bg-rose-50;
+}
+
+.fc-more-popover {
+	z-index: 1 !important;
+}
+
 .dark .fc-daygrid-day {
 	background-color: #243342;
 	color: white;
@@ -83,6 +91,17 @@ body {
 
 .profile-container {
 	height: calc(100vh - 4.5rem);
+	background:
+		linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+		/* Oscurecimiento */
+		url("/seniors.jpg");
+	/* Imagen de fondo */
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.landing-img-container {
 	background:
 		linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
 		/* Oscurecimiento */
@@ -156,7 +175,6 @@ body {
 .image-wrapper:hover .edit-button {
 	display: block;
 }
-
 
 .event-card {
 	position: relative;

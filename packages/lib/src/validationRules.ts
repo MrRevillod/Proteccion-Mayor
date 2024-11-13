@@ -1,3 +1,4 @@
+import dayjs from "dayjs"
 import { z } from "zod"
 
 export const isValidRutFormat = (rut: string): boolean => {
@@ -141,3 +142,8 @@ export const colorSchema = z
 export const genderSchema = z.enum(["MA", "FE"], {
 	message: "El género debe ser MA o FE",
 })
+export const isWeekend = (date: string) => {
+	const day = dayjs(date).day()
+	console.log(day)
+	return day !== 0 && day !== 6
+}

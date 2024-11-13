@@ -32,7 +32,7 @@ export const UpcomingEvents: React.FC<UpcomingEventsProps> = ({ ...props }) => {
 
 	const paginationClasses = clsx(
 		events.length > 5 ? "fixed bottom-28 right-24" : "hidden",
-		"fixed bottom-28 right-24"
+		"fixed bottom-28 right-24",
 	)
 
 	const { paginatedData, currentPage, pageSize, total, onPageChange } = usePagination({
@@ -42,7 +42,7 @@ export const UpcomingEvents: React.FC<UpcomingEventsProps> = ({ ...props }) => {
 
 	const containerClasses = clsx(
 		"flex flex-col gap-2 h-full",
-		events.length === 0 ? "justify-center items-center" : ""
+		events.length === 0 ? "justify-center items-center" : "",
 	)
 
 	return (
