@@ -40,6 +40,7 @@ const Login = () => {
 
 	return (
 		<FormProvider {...methods}>
+
 			<Stack.Navigator screenOptions={{ headerShown: false }}>
 				{rut !== null ? (
 					// Si el RUT existe, salta a la pantalla Pin

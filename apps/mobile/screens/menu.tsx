@@ -15,12 +15,7 @@ const Menu = ({ navigation }: commonProps) => {
 				style={{ backgroundColor: Colors.white, borderColor: Colors.green, borderWidth: 2, width: "85%", alignSelf: "center", marginTop: 20 }}
 				textStyle={styles.customButtonText}
 				onPress={() => navigation.navigate("Login")}
-			/>
-			<CustomButton
-				title="Cambiar tamaño de fuente"
-				onPress={() => navigation.navigate("FontSize")}
-				style={{ marginTop: 20, width: "85%", alignSelf: "center" }}
-			/>
+            />
 		</GeneralView>
 	)
 }

@@ -11,12 +11,15 @@ import axios from "axios"
 import { makeAuthenticatedRequest } from "@/utils/request"
 import { useAuth } from "@/contexts/authContext"
 import GoBackButton from "@/components/goBack"
+import CustomButton from "@/components/button"
 
 const rutImg = require("@/assets/images/profile/rut.png")
 const emailImg = require("@/assets/images/profile/email.png")
 const birthImg = require("@/assets/images/profile/birth.png")
 const ccImg = require("@/assets/images/profile/cc.png")
 const keyImg = require("@/assets/images/profile/key.png")
+const fontImg = require("@/assets/images/profile/font.png")
+
 
 const { width } = Dimensions.get("window")
 
@@ -120,7 +123,9 @@ const Profile = ({ navigation }: any) => {
 					/>
 					<DataDisplayer imgPath={birthImg} titleField="Edad" descriptionField={`${age} Años`} />
 					<DataDisplayer imgPath={keyImg} titleField="Cambiar Contraseña" actionButton="Cambiar" />
-					<DataDisplayer titleField="Eliminar Cuenta" actionButton="ELIMINAR" onPress={deleteAlert} />
+                    <DataDisplayer imgPath={fontImg} titleField="Cambiar tamaño de fuente" onPress={() => navigation.navigate("FontSize")} actionButton="Cambiar" />
+
+                    <DataDisplayer titleField="Eliminar Cuenta" actionButton="ELIMINAR" onPress={deleteAlert} />
 				</View>
 			</View>
 			<MenuBar navigation={navigation} />
