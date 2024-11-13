@@ -42,7 +42,16 @@ const DatetimeSelect = ({ label, name, showTime = true, defaultValue, width }: D
 					<DatePicker
 						{...field}
 						className={classes}
-						showTime={showTime}
+						showTime={
+							showTime && {
+								hideDisabledOptions: true,
+							}
+						}
+						disabledTime={(_) => {
+							return {
+								disabledHours: () => [0, 1, 2, 3, 4, 4, 5, 6, 7, 19, 20, 21, 22, 23],
+							}
+						}}
 						value={field.value ? dayjs(field.value) : null}
 						defaultValue={defaultValue ? dayjs(defaultValue) : null}
 						onChange={(event) => setValue(name, event ? dayjs(event).toISOString() : null)}

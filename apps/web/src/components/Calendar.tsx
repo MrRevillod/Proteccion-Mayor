@@ -39,7 +39,7 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 				y: rect.top - calendarRect.top,
 				center: event?.center?.name as string,
 				time: (
-					<div>
+					<div className="z-50">
 						<p>{event?.seniorId ? event?.senior?.name : "Sin reserva"}</p>
 						<p>
 							{dayjs(event?.start).format("HH:mm")} - {dayjs(event?.end).format("HH:mm")}
@@ -56,6 +56,11 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 
 	const handleDateClick = (info: any) => {
 		showModal("Create", info)
+	}
+
+	const isWeekend = (date: Date) => {
+		const day = date.getDay()
+		return day === 0 || day === 6
 	}
 
 	return (
@@ -79,10 +84,12 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 				dateClick={(info) => handleDateClick(info)}
 				height="auto"
 				timeZone="local"
+				dayCellClassNames={(info) => {
+					return isWeekend(info.date) ? "weekend-calendar-cell" : ""
+				}}
 				views={{
 					dayGridMonth: {
-						display: "auto",
-						dayMaxEventRows: true,
+						dayMaxEventRows: 3,
 					},
 					timeGridWeek: {
 						display: "auto",
@@ -93,6 +100,7 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 					timeGridDay: {
 						display: "auto",
 						dayMaxEvents: true,
+						dayMaxEventRows: 3,
 						slotMinTime: "08:00:00",
 						slotMaxTime: "20:00:00",
 					},
@@ -105,7 +113,7 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 					content={popoverInfo.time}
 					title={popoverInfo.center}
 					open={popoverInfo.visible}
-					overlayClassName="z-50"
+					overlayClassName="z-100"
 				>
 					<div
 						style={{

@@ -1,7 +1,6 @@
 import PageLayout from "../../../layouts/PageLayout"
 import { message } from "antd"
 import { Loading } from "../../../components/Loading"
-import { Calendar } from "../../../components/Calendar"
 import { getEvents } from "../../../lib/actions"
 import { useRequest } from "../../../hooks/useRequest"
 import { useLocation } from "react-router-dom"

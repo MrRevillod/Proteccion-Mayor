@@ -77,7 +77,7 @@ const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, service
 
 	useRequest<Senior[]>({
 		action: getSeniors,
-		query: `name=${seniorsSearch}&id=${seniorsSearch}&select=name,id&limit=5`,
+		query: `name=${seniorsSearch}&id=${seniorsSearch}&validated=1&select=name,id&limit=5`,
 		onSuccess: (data) => selectDataFormatter({ data, setData: setSeniors }),
 		trigger: baseTrigger,
 	})
@@ -100,7 +100,7 @@ const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, service
 
 	useEffect(() => {
 		if (selectedData && selectedData.dateStr) {
-			setValue("start", dayjs(selectedData.dateStr).toISOString())
+			setValue("start", dayjs(selectedData.dateStr).hour(8).toISOString())
 		}
 	}, [selectedData])
 

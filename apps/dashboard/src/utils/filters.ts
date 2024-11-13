@@ -13,6 +13,8 @@ export const generateWhere = <T extends Query>(query: T, queryMap: QueryMap<T>, 
 	const conditions = [] as any[]
 
 	Object.keys(query).forEach((key) => {
+		const value = query[key as keyof T]
+		if (value === "") return
 		if (queryMap[key as keyof T]) {
 			const filter = queryMap[key as keyof T](query[key as keyof T])
 			if (filter !== null) conditions.push({ [key]: filter })

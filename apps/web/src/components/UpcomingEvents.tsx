@@ -28,7 +28,7 @@ export const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
 }) => {
 	const paginationClasses = clsx(
 		events.length > 5 ? "fixed bottom-28 right-24" : "hidden",
-		"fixed bottom-28 right-24"
+		"fixed bottom-28 right-24",
 	)
 
 	const { paginatedData, currentPage, pageSize, total, onPageChange } = usePagination({
@@ -38,7 +38,7 @@ export const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
 
 	const containerClasses = clsx(
 		"flex flex-col gap-2 h-full",
-		events.length === 0 ? "justify-center items-center" : ""
+		events.length === 0 ? "justify-center items-center" : "",
 	)
 
 	return (
@@ -74,7 +74,6 @@ export const UpcomingEvents: React.FC<UpcomingEventsProps> = ({
 										{event.professional?.name}
 									</p>
 								)}
-								{/* FECHA DE EVENTOS */}
 								{!dateEvent && (
 									<p className="text-sm text-dark flex gap-2 dark:text-light">
 										<AiOutlineCalendar className="h-5 w-5 text-muted-foreground" />

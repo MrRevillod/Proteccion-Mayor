@@ -4,7 +4,7 @@ import { useModal } from "../context/ModalContext"
 import { Table, Space } from "antd"
 import { tableColumnsFormatters } from "../lib/formatters"
 import { BaseDataType, TableColumnType } from "../lib/types"
-import { AiFillEdit, AiFillDelete, AiFillEye, AiOutlineContacts, AiOutlineHistory } from "react-icons/ai"
+import { AiFillEdit, AiFillDelete, AiFillEye, AiOutlineHistory } from "react-icons/ai"
 
 interface TableProps<T> {
 	data: T[]

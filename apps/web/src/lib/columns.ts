@@ -3,7 +3,6 @@ import { Administrator, Professional, Senior, TableColumnType, UnvalidatedSenior
 export const UnvalidatedSeniorsColumns: TableColumnType<UnvalidatedSenior> = [
 	{ title: "RUT", dataIndex: "id", key: "id" },
 	{ title: "Correo Electrónico", dataIndex: "email", key: "email" },
-	{ title: "Verificado", dataIndex: "validated", key: "validated" },
 	{ title: "Fecha de registro", dataIndex: "createdAt", key: "createdAt" },
 ]
 

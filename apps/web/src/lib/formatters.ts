@@ -1,7 +1,8 @@
-import { Dispatch, SetStateAction } from "react"
-import { Event, UserRole } from "./types"
-import { Location } from "react-router-dom"
 import dayjs from "dayjs"
+
+import { Location } from "react-router-dom"
+import { Event, UserRole } from "./types"
+import { Dispatch, SetStateAction } from "react"
 
 export const formatRut = (rut: string) => {
 	return rut.replace(/(\d{1,3})(\d{3})(\d{3})(\w{1})/, "$1.$2.$3-$4")
@@ -72,6 +73,49 @@ export const getIdsFromUrl = (location: Location<any>): QueryIdsValues => {
 
 export const filterUpcomingEvents = (events: Event[]): Event[] => {
 	return events.filter((event) => {
-		return !event.assistance && event.seniorId !== null && dayjs(event.start).day() === dayjs().day()
+		return (
+			!event.assistance &&
+			event.seniorId !== null &&
+			dayjs(event.start).isSame(dayjs(), "day") &&
+			dayjs(event.start).isAfter(dayjs())
+		)
 	})
+}
+
+export const capitalize = (str: string) => {
+	return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+export const generateYears = () => {
+	const INIT_YEAR_VALUE = import.meta.env.VITE_CALENDAR_YEAR_START
+	const yearDiff = new Date().getFullYear() - Number(INIT_YEAR_VALUE)
+	const years = [] as any[]
+
+	for (let i = 0; i <= yearDiff; i++) {
+		years.push({ label: `${Number(INIT_YEAR_VALUE) + i}`, value: `${Number(INIT_YEAR_VALUE) + i}` })
+	}
+
+	return years
+}
+
+export const generateMonths = () => {
+	const months = [] as any[]
+
+	for (let i = 1; i <= 12; i++) {
+		const month = {
+			label: capitalize(
+				dayjs()
+					.month(i - 1)
+					.format("MMMM"),
+			),
+			value: i,
+		}
+		months.push(month)
+	}
+
+	return months
+}
+
+export const formatCenterName = (centerName: string) => {
+	return centerName.split(".")[0] ?? centerName
 }

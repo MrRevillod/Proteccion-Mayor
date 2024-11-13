@@ -70,7 +70,7 @@ const ProfessionalAgendaPage: React.FC = () => {
 				{loading && <Loading />}
 				<EventFilter data={{ centers }} onSubmit={onFilterSubmit} />
 				<Calendar events={events} />
-				<UpcomingEvents events={upcomingEvents} />
+				<UpcomingEvents title="Próximas atenciones" center={true} events={upcomingEvents} />
 			</div>
 
 			<CreateEvent centers={centers} refetch={refetch} />
