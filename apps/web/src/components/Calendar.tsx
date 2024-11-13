@@ -7,7 +7,7 @@ import timeGridPlugin from "@fullcalendar/timegrid"
 import interactionPlugin from "@fullcalendar/interaction"
 
 import { Events } from "@/lib/types"
-import { Popover } from "antd"
+import { message, Popover } from "antd"
 import { useState } from "react"
 import { useModal } from "@/context/ModalContext"
 
@@ -55,6 +55,13 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 	}
 
 	const handleDateClick = (info: any) => {
+		const day = dayjs(info.date).day()
+		const isWeekend = day === 0 || day === 6
+		if (isWeekend) {
+			console.log(info.date)
+			message.error("No es posible crear eventos los fin de semana")
+			return
+		}
 		showModal("Create", info)
 	}
 

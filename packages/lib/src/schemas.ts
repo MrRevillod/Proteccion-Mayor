@@ -82,15 +82,20 @@ export const AdministratorSchemas = {
 }
 
 export const EventSchemas = {
-	Create: z.object({
-		start: rules.dateTimeSchema,
-		end: rules.dateTimeSchema,
-		professionalId: rules.rutSchema,
-		serviceId: z.number({ message: "El servicio es obligatorio" }),
-		seniorId: z.optional(rules.rutSchema),
-		centerId: z.number({ message: "El centro es obligatorio" }),
-		repeat: z.optional(z.enum(["daily", "weekly"])),
-	}),
+	Create: z
+		.object({
+			start: rules.dateTimeSchema,
+			end: rules.dateTimeSchema,
+			professionalId: rules.rutSchema,
+			serviceId: z.number({ message: "El servicio es obligatorio" }),
+			seniorId: z.optional(rules.rutSchema),
+			centerId: z.number({ message: "El centro es obligatorio" }),
+			repeat: z.optional(z.enum(["daily", "weekly"])),
+		})
+		.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
+			message: "No es posible crear eventos los fin de semana",
+			path: ["end", "start"],
+		}),
 	Update: z
 		.object({
 			start: rules.dateTimeSchema,
@@ -104,6 +109,11 @@ export const EventSchemas = {
 		.refine((data) => data.start < data.end, {
 			message: "La fecha de inicio no puede ser mayor a la fecha de finalización",
 			path: ["start", "end"],
+		})
+
+		.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
+			message: "No es posible crear eventos los fin de semana",
+			path: ["end", "start"],
 		}),
 }
 
