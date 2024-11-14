@@ -3,8 +3,10 @@ import dayjs from "dayjs"
 import { io } from ".."
 import { prisma } from "@repo/database"
 import { Senior } from "@prisma/client"
+import { sendMail } from "../utils/mailer"
 import { AppError } from "@repo/lib"
 import { createEvents } from "../utils/events"
+import { appointmentNotification } from "../utils/emailTemplates"
 import { Request, Response, NextFunction } from "express"
 import { EventQuery, eventSelect, generateWhere } from "../utils/filters"
 
@@ -83,6 +85,11 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 			throw new AppError(409, error.message)
 		})
 
+		// Test email
+		const htmlTemplate = appointmentNotification(professional.name, service.name, senior?.name, dayjs(start), dayjs(end), center.name)
+		await sendMail(professional.email, `Aviso de cita confirmada para ${service.name}`, htmlTemplate)
+
+		// AGREGAR MAIL A EL USUARIO PARA CONFIRMAR LA ASISTENCIA.
 		io.to("ADMIN").emit("newEvent", null as any)
 		return res.status(201).json({ values: { modified: null } })
 	} catch (error) {
@@ -274,10 +281,10 @@ export const getByService = async (req: Request, res: Response, next: NextFuncti
 
 export const getByServiceCenter = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const { serviceId,centerId } = req.params
+		const { serviceId, centerId } = req.params
 
 		const events = await prisma.event.findMany({
-			where: { serviceId: Number(serviceId),centerId:Number(centerId) },
+			where: { serviceId: Number(serviceId), centerId: Number(centerId) },
 		})
 
 		console.log(events)

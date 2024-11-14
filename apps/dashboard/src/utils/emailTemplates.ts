@@ -21,3 +21,30 @@ export const resetPasswordBody = (name: string, resetLink: string) => `
   <p>Este enlace expirará en 30 días. Si no solicitaste este cambio, simplemente ignora este correo.</p>
   ${footerTemplate}
 `
+// El template tiene que ser dirijido a el prfessional, entonces:
+// Hola, NOMBRE_PROFESSIONAL
+// Se a reservado una consulta a PELUQUERIA, con el pasiente NOMBRE_PERSONA_MAYOR a la hora: HORA a tal hora.
+// falta el centro comunitario
+export const appointmentNotification = (
+	nameProfessional: string,
+	nameService: string,
+	nameSenior: string | undefined,
+	start: any,
+	end: any,
+	nameCenter: string,
+) => `
+  ${headerTemplate("Cita Confirmada")}
+  <p>Hola, <strong>${nameProfessional}</strong>.</p>
+  <p>Le informamos que se ha confirmado una cita para el servicio de <strong>${nameService}</strong>.</p>
+  <ul>
+    <li><strong>Cliente:</strong> ${nameSenior}</li>
+    <li><strong>Hora:</strong> ${start} a ${end}</li>
+    <li><strong>Ubicación:</strong> ${nameCenter}</li>
+  </ul>
+  <p>Por favor, contáctenos si necesita más detalles.</p>
+`
+
+// De esta misma manera enviariamos el mail
+// pero tiene que ser cuando se reserve una hora, osea en controllers/event
+// const htmlTemplate = resetPasswordBody(user.name, resetLink)
+// await sendMail(email, "Restablecimiento de contraseña", htmlTemplate)

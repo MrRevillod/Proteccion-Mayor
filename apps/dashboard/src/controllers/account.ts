@@ -5,7 +5,6 @@ import { sendMail } from "../utils/mailer"
 import { resetPasswordBody } from "../utils/emailTemplates"
 import { Request, Response, NextFunction } from "express"
 import { AppError, CustomTokenOpts, signJsonwebtoken, services, findUser, verifyJsonwebtoken, AccessTokenOpts, isValidUserRole } from "@repo/lib"
-import { log } from "console"
 
 export const requestPasswordReset = async (req: Request, res: Response, next: NextFunction) => {
 	const userRole = req.query.variant
