@@ -26,7 +26,7 @@ export const validateUserId = (role: UserRole) => async (req: Request, res: Resp
 // Middleware de validación de campos en formularios
 // Valida si los campos en el cuerpo de la petición son válidos
 // según el rol del usuario y el tipo de formulario (fichero lib/schemas.ts)
-export const validateSchema = (schema: SomeZodObject | ZodEffects<ZodObject<any, any>>) => {
+export const validateSchema = (schema: SomeZodObject | ZodEffects<ZodObject<any, any>>|any) => {
 	return async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			schema.parse(req.body)

@@ -85,6 +85,7 @@ const EventScreen = ({ navigation }: any) => {
                     })
                     if (eventos.length === 0) {
                         alert("No hay eventos disponibles para esta fecha")
+                        setEvents(eventos)
                         return
                     }
                     setEvents(eventos)
@@ -121,10 +122,18 @@ const EventScreen = ({ navigation }: any) => {
 
                                 }}
                                 onChange={async (event, selectedDate) => {
-                                    const currentDate = selectedDate || date
-                                    setDate(currentDate)
-                                    await mostrarEventos(currentDate)
-                                }} />}
+                                    if (event.type === "dismissed") {
+                                        setShowPicker(false)
+                                    } else {
+
+
+                                        const currentDate = selectedDate || date
+                                        setDate(currentDate)
+                                        await mostrarEventos(currentDate)
+                                    }
+                                }}
+
+                            />}
                         {
                             events.length > 0 ?
                                 <CustomButton title={date.toLocaleDateString()} onPress={() => setShowPicker(true)} />

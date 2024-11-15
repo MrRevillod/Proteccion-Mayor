@@ -50,6 +50,8 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
 	}
 }
 
+
+
 // Controlador para crear un nuevo evento
 export const create = async (req: Request, res: Response, next: NextFunction) => {
 	try {
@@ -259,7 +261,7 @@ export const getByService = async (req: Request, res: Response, next: NextFuncti
 		const { serviceId } = req.params
 
 		const centers = await prisma.event.findMany({
-			where: { serviceId: Number(serviceId) },
+			where: { serviceId: Number(serviceId),seniorId:null,start:{gte:new Date()} },
 			select: {
 				center: true,
 			},
@@ -279,7 +281,7 @@ export const getByServiceCenter = async (req: Request, res: Response, next: Next
 		const { serviceId,centerId } = req.params
 
 		const events = await prisma.event.findMany({
-			where: { serviceId: Number(serviceId),centerId:Number(centerId) },
+			where: { serviceId: Number(serviceId),centerId:Number(centerId),seniorId:null,start:{gte:new Date()} },
             select:eventSelect
 		})
 
