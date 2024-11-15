@@ -12,6 +12,7 @@ import seniorsRouter from "./routes/seniors"
 import professionalsRouter from "./routes/professionals"
 import administrarorsRouter from "./routes/administrators"
 import reportsRouter from "./routes/reports"
+
 import { Server } from "socket.io"
 import { createServer } from "http"
 import { initSocket } from "./utils/socket"

@@ -77,8 +77,8 @@ const StatisticsPage: React.FC = () => {
 					reportSelection={reportSelection}
 					setDate={setSelectedDate}
 					title={titles(reportSelection)}
-					yearSelect
 					monthSelect={reportSelection !== "general"}
+					yearSelect
 				>
 					<Show when={reportSelection === "general"}>
 						<ResponsiveContainer width="100%" height={400} style={{ marginLeft: "0px" }}>
@@ -93,6 +93,7 @@ const StatisticsPage: React.FC = () => {
 									dy={10}
 									angle={-45}
 									tickFormatter={(value) => capitalize(dayjs(value).format("MMM"))}
+									tick={{ fill: "#6B7280" }}
 								/>
 								<YAxis allowDecimals={false} />
 								<Tooltip labelFormatter={(str) => dayjs(str).format("MMMM YYYY")} />
@@ -116,10 +117,10 @@ const StatisticsPage: React.FC = () => {
 							<BarChart data={reportData} margin={{ top: 20, right: 20, left: -25, bottom: 20 }}>
 								<CartesianGrid strokeDasharray="3 3" />
 								<XAxis
+									dataKey={reportSelection === "byCenter" ? "center" : "service"}
 									tickFormatter={
 										reportSelection === "byCenter" ? (value) => formatCenterName(value) : undefined
 									}
-									dataKey={reportSelection === "byCenter" ? "center" : "service"}
 								/>
 								<YAxis allowDecimals={false} />
 								<Tooltip />
@@ -143,13 +144,6 @@ const StatisticsPage: React.FC = () => {
 
 				<ChartLayout title="" size="sm">
 					<></>
-					{/* <Table
-						columns={columns}
-						dataSource={data}
-						pagination={false}
-						bordered
-						rowClassName={(record, index) => (index % 2 === 0 ? "table-row-light" : "table-row-dark")}
-					/> */}
 				</ChartLayout>
 			</StatisticMainLayout>
 		</PageLayout>
