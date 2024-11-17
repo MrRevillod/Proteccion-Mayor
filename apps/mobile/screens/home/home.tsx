@@ -53,7 +53,7 @@ const Home = ({ navigation }: any) => {
 								<TouchableOpacity
 									key={service.id}
 									style={styles.gridItem}
-									onPress={() => navigation.navigate("Centers", { serviceId: service.id })} // Navegación con el ID del servicio
+									onPress={() => navigation.navigate("Centers", { serviceId: service.id })}
 								>
 									<View style={[styles.iconContainer, { backgroundColor: service.color }]}>
 										<Image

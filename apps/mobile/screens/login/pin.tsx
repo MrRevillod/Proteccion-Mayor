@@ -61,31 +61,3 @@ const styles = StyleSheet.create({
 		textDecorationLine: "underline",
 	},
 })
-
-
-// useEffect(() => {
-// 	let isActive = true // Bandera para evitar acciones en pantallas desmontadas
-
-// 	// Listener para limpiar el PIN cuando se cambia de pantalla
-// 	const unsubscribe = navigation.addListener("blur", () => {
-// 		if (isActive) {
-// 			reset({ password: "" })
-// 		}
-// 	})
-
-// 	// Listener para AppState
-// 	const handleAppStateChange = (nextAppState: AppStateStatus) => {
-// 		if (isActive && nextAppState === "background") {
-// 			reset({ password: "" })
-// 		}
-// 	}
-
-// 	const subscription = AppState.addEventListener("change", handleAppStateChange)
-
-// 	// Limpiar listeners en la salida
-// 	return () => {
-// 		isActive = false
-// 		unsubscribe()
-// 		subscription.remove()
-// 	}
-// }, [navigation, reset])
