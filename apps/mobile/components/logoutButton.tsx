@@ -21,7 +21,10 @@ const LogoutButton = ({ navigation, visible, style }: GoBackButtonProps) => {
 	return (
 		<>
 			{visible && (
-				<TouchableOpacity onPress={handleLogout} style={style}>
+				<TouchableOpacity
+					onPress={handleLogout}
+					style={{ zIndex: 1, ...style }}
+				>
 					<MaterialIcons name="logout" size={30} color="white" />
 				</TouchableOpacity>
 			)}
@@ -30,3 +33,8 @@ const LogoutButton = ({ navigation, visible, style }: GoBackButtonProps) => {
 }
 
 export default LogoutButton
+
+const styles = StyleSheet.create({
+	logoutButton: {
+	},
+})

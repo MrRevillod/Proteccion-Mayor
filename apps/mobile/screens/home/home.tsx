@@ -5,7 +5,6 @@ import Colors from "@/components/colors"
 import { makeAuthenticatedRequest, SERVER_URL } from "@/utils/request"
 import { useEffect, useState } from "react"
 import { AntDesign } from "@expo/vector-icons"
-import LogoutButton from "@/components/logoutButton"
 
 const { width } = Dimensions.get("window")
 const itemSize = width * 0.32 // Tamaño del grid item
@@ -41,8 +40,7 @@ const Home = ({ navigation }: any) => {
 
 	return (
 		<>
-			<LogoutButton navigation={navigation} visible />
-			<GeneralView title="Home" noBorders={true} hTitle={true}>
+			<GeneralView title="Home" noBorders={true} hTitle={true} navigation={navigation}>
 				<View>
 					<ScrollView
 						style={{

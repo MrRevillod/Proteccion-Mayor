@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 
 import { useEffect, useState } from "react"
 import { View, StyleSheet, Text, Dimensions, KeyboardAvoidingView, Platform, StatusBar } from "react-native"
+import LogoutButton from "./logoutButton"
 
 const { width, height } = Dimensions.get("window")
 
@@ -15,24 +16,18 @@ type GeneralViewProps = {
 	textDescription?: string
 	noBorders?: boolean
 	hTitle?: boolean
+	navigation?: any
 }
 
 const GeneralView = ({ title, children, ...props }: GeneralViewProps) => {
-	const { textCircle, textTitle, textDescription, noBorders = false, hTitle = false } = props
+	const { textCircle, textTitle, textDescription, noBorders = false, hTitle = false, navigation } = props
 
 	const [user, setUser] = useState<any>(null)
 	useEffect(() => {
 		const getUser = async () => {
-			try {
-				const user = await AsyncStorage.getItem("user")
-				if (!user) {
-					throw new Error("El usuario no existe")
-				}
-				const parsedUser = JSON.parse(user)
-				setUser(parsedUser)
-			} catch (error) {
-				console.error("Error al obtener el usuario", error)
-			}
+			const user = await AsyncStorage.getItem("user")
+			const parsedUser = user ? JSON.parse(user) : null
+			setUser(parsedUser)
 		}
 		getUser()
 	}, [])
@@ -51,6 +46,8 @@ const GeneralView = ({ title, children, ...props }: GeneralViewProps) => {
 					{hTitle ? (
 						<View style={styles.hasImageStyles}>
 							<Text style={styles.title}>👋 ¡Hola {name}!</Text>
+							<LogoutButton navigation={navigation} visible style={{ alignSelf: "center" }} />
+
 						</View>
 					) : (
 						<Text style={styles.title}>{title} </Text>
@@ -155,7 +152,7 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		alignContent: "center",
 		alignSelf: "center",
-		width: "80%",
+		width: "90%",
 	},
 })
 

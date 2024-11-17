@@ -10,7 +10,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
 const Stack = createNativeStackNavigator()
 
-const Login = () => {
+const Login = ({ route }: any) => {
 	const methods = useForm({
 		defaultValues: { rut: "", password: "" },
 	})
@@ -20,15 +20,28 @@ const Login = () => {
 	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
-		getStorageRUT()
-			.then((id) => {
-				if (id) {
-					setRUT(id) // Guarda el RUT en el estado local
-					setValue("rut", id) // Asigna el RUT al formulario global
+		const fetchRUT = async () => {
+			if (route?.params?.screen === "RUT") {
+				setRUT(null)
+				setValue("rut", "")
+				setLoading(false)
+				return
+			}
+
+			// Recupera el RUT de AsyncStorage si está disponible
+			try {
+				const storedRUT = await getStorageRUT()
+				if (storedRUT) {
+					setRUT(storedRUT)
+					setValue("rut", storedRUT)
 				}
-			})
-			.finally(() => setLoading(false)) // Cambia el estado de carga después de completar la promesa
-	}, [setValue])
+			} finally {
+				setLoading(false)
+			}
+		}
+
+		fetchRUT()
+	}, [route?.params, setValue])
 
 	if (loading) {
 		return (

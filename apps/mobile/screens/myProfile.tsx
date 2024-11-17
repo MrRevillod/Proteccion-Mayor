@@ -74,14 +74,16 @@ const Profile = ({ navigation }: any) => {
 			const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/seniors/${id}`, "DELETE")
 			if (response?.status === 200) {
 				logout()
-				Alert.alert("Cuenta Eliminada", "Su cuenta ha sido eliminada exitosamente")
 				await AsyncStorage.removeItem("user")
-				navigation.navigate("Login")
+				navigation.navigate("Login", { screen: "RUT" })
+
+				Alert.alert("Cuenta Eliminada", "Su cuenta ha sido eliminada exitosamente")
 			}
 		} catch (error) {
 			console.error(error)
 		}
 	}
+
 
 	const deleteAlert = () => {
 		Alert.alert("Eliminar Cuenta", "¿Está seguro que desea eliminar su cuenta?", [
@@ -123,9 +125,9 @@ const Profile = ({ navigation }: any) => {
 					/>
 					<DataDisplayer imgPath={birthImg} titleField="Edad" descriptionField={`${age} Años`} />
 					<DataDisplayer imgPath={keyImg} titleField="Cambiar Contraseña" actionButton="Cambiar" />
-                    <DataDisplayer imgPath={fontImg} titleField="Cambiar tamaño de fuente" onPress={() => navigation.navigate("FontSize")} actionButton="Cambiar" />
+					<DataDisplayer imgPath={fontImg} titleField="Cambiar tamaño de fuente" onPress={() => navigation.navigate("FontSize")} actionButton="Cambiar" />
 
-                    <DataDisplayer titleField="Eliminar Cuenta" actionButton="ELIMINAR" onPress={deleteAlert} />
+					<DataDisplayer titleField="Eliminar Cuenta" actionButton="ELIMINAR" onPress={deleteAlert} />
 				</View>
 			</View>
 			<MenuBar navigation={navigation} />
