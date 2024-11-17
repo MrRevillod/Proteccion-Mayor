@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { MutateActionProps } from "../lib/types"
 
 interface useMutationProps {
@@ -11,7 +12,13 @@ interface MutationOptions<T> {
 }
 
 export const useMutation = <T,>({ mutateFn }: useMutationProps) => {
+
+	const [loading, setLoading] = useState(false)
+
 	const mutate = async ({ params, onSuccess, onError }: MutationOptions<T>) => {
+
+		setLoading(true)
+
 		try {
 			const response = await mutateFn(params || {})
 			if (response && response.data && response.data.values) {
@@ -22,6 +29,9 @@ export const useMutation = <T,>({ mutateFn }: useMutationProps) => {
 				throw new Error("No se encontraron datos en la respuesta")
 			}
 		} catch (err: any) {
+
+			setLoading(false)
+
 			if (onError && err.response) {
 				onError(err)
 			} else {
@@ -30,5 +40,5 @@ export const useMutation = <T,>({ mutateFn }: useMutationProps) => {
 		}
 	}
 
-	return { mutate }
+	return { mutate, loading }
 }

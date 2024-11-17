@@ -50,7 +50,7 @@ export const ChartLayout: React.FC<StatisticLayoutProps> = ({ title, ...props })
 		<div
 			className={clsx(
 				size === "sm" && "w-1/4",
-				size === "lg" && "w-3/4",
+				size === "lg" && "w-full",
 				"flex flex-col gap-4 items-start justify-center bg-white dark:bg-primary-dark rounded-lg p-4",
 			)}
 		>

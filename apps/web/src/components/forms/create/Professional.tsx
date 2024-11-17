@@ -16,13 +16,14 @@ import { FormProps, Professional, Service } from "../../../lib/types"
 const CreateProfessional: React.FC<FormProps<Professional>> = ({ data, setData }) => {
 	const methods = useForm({ resolver: zodResolver(ProfessionalSchemas.Create) })
 
+	const [loading, setLoading] = useState(false)
 	const [services, setServices] = useState<Service[]>([])
 
 	// Se obtienen los servicios al abrir el modal
 	// Se utiliza el hook useRequest para realizar la petición
 	// Se utiliza el formatter selectDataFormatter para darle el formato
 
-	const { loading } = useRequest<Service[]>({
+	useRequest<Service[]>({
 		action: getServices,
 		query: "select=id,title",
 		onSuccess: (data) => {
@@ -42,6 +43,7 @@ const CreateProfessional: React.FC<FormProps<Professional>> = ({ data, setData }
 					setData={setData}
 					action={createProfessional}
 					actionType="create"
+					setLoading={setLoading}
 				>
 					<Input name="id" label="Rut (sin puntos ni guión)" type="text" placeholder="123456789" />
 					<Input name="name" label="Nombre" type="text" placeholder="Juan Perez" />

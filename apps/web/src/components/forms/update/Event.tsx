@@ -32,6 +32,8 @@ type EventFormProps = {
 }
 
 const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, refetch }) => {
+
+	const [loading, setLoading] = useState(false)
 	const [seniors, setSeniors] = useState<SuperSelectField[]>([])
 	const [seniorsSearch, setSeniorsSearch] = useState<string>("")
 	const [selectProfessionals, setSelectProfessionals] = useState<SuperSelectField[]>([])
@@ -40,7 +42,6 @@ const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, refetch
 
 	const { role } = useAuth()
 	const { selectedData } = useModal()
-
 	const { isModalOpen, modalType } = useModal()
 
 	useRequest<Senior[]>({
@@ -74,9 +75,9 @@ const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, refetch
 	}, [selectedData])
 
 	return (
-		<Modal type="Edit" title="Editar un evento">
+		<Modal type="Edit" title="Editar un evento" loading={loading}>
 			<FormProvider {...methods}>
-				<Form action={updateEvent} actionType="update" deletable refetch={refetch}>
+				<Form action={updateEvent} actionType="update" deletable refetch={refetch} setLoading={setLoading}>
 					<Show when={role === "ADMIN"}>
 						<SuperSelect
 							label="Seleccione el profesional"

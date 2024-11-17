@@ -6,14 +6,16 @@ import { Form } from "../Form"
 import { Modal } from "../../Modal"
 import { Input } from "../../ui/Input"
 import { useModal } from "../../../context/ModalContext"
-import { useEffect } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { updateSenior } from "../../../lib/actions"
 import { SeniorSchemas } from "../../../lib/schemas"
 import { Senior, FormProps } from "../../../lib/types"
+import { useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 
 const UpdateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => {
+
+	const [loading, setLoading] = useState(false)
 	const { selectedData } = useModal()
 
 	const methods = useForm({
@@ -34,9 +36,15 @@ const UpdateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => {
 	}, [selectedData])
 
 	return (
-		<Modal type="Edit" title={`Editar la información de ${selectedData?.name}`}>
+		<Modal type="Edit" title={`Editar la información de ${selectedData?.name}`} loading={loading}>
 			<FormProvider {...methods}>
-				<Form<Senior> data={data as Senior[]} setData={setData} action={updateSenior} actionType="update">
+				<Form<Senior>
+					data={data as Senior[]}
+					setData={setData}
+					action={updateSenior}
+					actionType="update"
+					setLoading={setLoading}
+				>
 					<Input name="name" label="Nombre" type="text" placeholder="Nombre" />
 					<Input name="email" label="Correo Electrónico" type="email" placeholder="Correo Electrónico" />
 					<Input name="address" label="Dirección" type="text" placeholder="Dirección" />

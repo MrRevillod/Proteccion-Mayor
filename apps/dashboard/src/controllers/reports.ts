@@ -45,26 +45,24 @@ const getMonthlyEventCount = (events: Event[], month: string) => {
 	return events.filter((event) => dayjs(event.start).format("YYYY-MM") === month).reduce((count, _) => count + 1, 0)
 }
 
-const getBaseEvents = async (date: Dayjs, filter: Prisma.EventWhereInput) => {
-	return await Promise.all([getEventsWith("assistance", filter), getEventsWith("absence", filter), getEventsWith("unreserved", filter)])
+const getBaseEvents = async (filter: Prisma.EventWhereInput) => {
+	const assistance = getEventsWith("assistance", filter)
+	const absence = getEventsWith("absence", filter)
+	const unreserved = getEventsWith("unreserved", filter)
+
+	return await Promise.all([assistance, absence, unreserved])
 }
 
-const yearFilter = (date: Dayjs) => {
+const makeFilter = (date: Dayjs, dateType: "year" | "month", other?: Prisma.EventWhereInput) => {
 	return {
-		start: { gte: date.startOf("year").toISOString() },
-		end: { lt: date.endOf("year").toISOString() },
-	}
-}
-
-const monthFilter = (date: Dayjs) => {
-	return {
-		start: { gte: date.startOf("month").toISOString() },
-		end: { lt: date.endOf("month").toISOString() },
+		start: { gte: date.startOf(dateType).toISOString() },
+		end: { lt: date.endOf(dateType).toISOString() },
+		...other,
 	}
 }
 
 const getGeneralReport = async (date: Dayjs) => {
-	const [assistance, absence, unreserved] = await getBaseEvents(date, yearFilter(date))
+	const [assistance, absence, unreserved] = await getBaseEvents(makeFilter(date, "year"))
 	const months = genMonthsArray(date.year())
 
 	return months.map((month) => {
@@ -78,39 +76,39 @@ const getGeneralReport = async (date: Dayjs) => {
 }
 
 const getByCenterReport = async (date: Dayjs) => {
-	const [assistance, absence, unreserved] = await getBaseEvents(date, monthFilter(date))
 	const centers = await prisma.center.findMany({ select: { name: true, id: true } })
 
-	return centers.map((center, index) => {
-		const centerAssistance = assistance.filter((event) => event.centerId === center.id)
-		const centerAbsence = absence.filter((event) => event.centerId === center.id)
-		const centerUnreserved = unreserved.filter((event) => event.centerId === center.id)
+	return await Promise.all(
+		centers.map(async (center) => {
+			const filter = makeFilter(date, "month", { centerId: center.id })
+			const [assistance, absence, unreserved] = await getBaseEvents(filter)
 
-		return {
-			center: `${index + 1}. ${center.name}`,
-			assistances: centerAssistance.length,
-			absences: centerAbsence.length,
-			unreserved: centerUnreserved.length,
-		}
-	})
+			return {
+				center: center.name,
+				assistances: assistance.length,
+				absences: absence.length,
+				unreserved: unreserved.length,
+			}
+		}),
+	)
 }
 
 const getByServiceReport = async (date: Dayjs) => {
-	const [assistance, absence, unreserved] = await getBaseEvents(date, monthFilter(date))
 	const services = await prisma.service.findMany({ select: { name: true, id: true } })
 
-	return services.map((service, index) => {
-		const serviceAssistance = assistance.filter((event) => event.serviceId === service.id)
-		const serviceAbsence = absence.filter((event) => event.serviceId === service.id)
-		const serviceUnreserved = unreserved.filter((event) => event.serviceId === service.id)
+	return await Promise.all(
+		services.map(async (service) => {
+			const filter = makeFilter(date, "month", { serviceId: service.id })
+			const [assistance, absence, unreserved] = await getBaseEvents(filter)
 
-		return {
-			service: service.name,
-			assistances: serviceAssistance.length,
-			absences: serviceAbsence.length,
-			unreserved: serviceUnreserved.length,
-		}
-	})
+			return {
+				service: service.name,
+				assistances: assistance.length,
+				absences: absence.length,
+				unreserved: unreserved.length,
+			}
+		}),
+	)
 }
 
 export const generateStatisticReport = async (req: Request, res: Response, next: NextFunction) => {
@@ -134,7 +132,7 @@ export const generateStatisticReport = async (req: Request, res: Response, next:
 			.with("byService", async () => await getByServiceReport(date))
 			.run()
 
-		res.json({ values: { report: data, numbers: {} } })
+		res.json({ values: { report: data } })
 	} catch (error) {
 		next(error)
 	}
