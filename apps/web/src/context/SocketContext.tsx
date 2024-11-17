@@ -5,6 +5,8 @@ import { useEffect } from "react"
 import { io, Socket } from "socket.io-client"
 import { createContext, ReactNode, useState } from "react"
 
+const DASHBOARD_SOCKET_SERVER = `${import.meta.env.VITE_API_URL}/dashboard`
+
 interface SocketState {
 	socket: Socket | undefined
 }
@@ -17,19 +19,17 @@ export const SocketProvider = ({ children }: { children?: ReactNode }) => {
 
 	useEffect(() => {
 		if (isAuthenticated && !socket) {
-			const newSocket = io(import.meta.env.DASHBOARD_SERVICE_URL || "http://localhost:5000", {
+			const newSocket = io(DASHBOARD_SOCKET_SERVER, {
 				query: { userId: user?.id, userRole: role },
 			})
 
-			newSocket.on("connect", () => {})
+			newSocket.on("connect", () => { })
 
 			newSocket.on("disconnect", (reason) => {
 				if (newSocket.active) {
 					console.log("....reconectando socket")
 				} else {
-					// La conexión se cerró forzosamente por el cliente o el servidor
-					// para volver a conectar se debe ejecutar`socket.connect()`
-					console.log(reason) //Ver https://socket.io/docs/v4/client-socket-instance#disconnect
+					console.log(reason)
 				}
 			})
 

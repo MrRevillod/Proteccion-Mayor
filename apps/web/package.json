@@ -7,7 +7,8 @@
 		"build": "vite build",
 		"clean": "rm -rf dist",
 		"dev": "vite --clearScreen false",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"preview": "vite preview"
 	},
 	"dependencies": {
 		"@ant-design/cssinjs": "^1.21.1",

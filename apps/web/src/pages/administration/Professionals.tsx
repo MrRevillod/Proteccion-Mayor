@@ -26,7 +26,6 @@ const ProfessionalsPage: React.FC = () => {
 	if (error) message.error("Error al cargar los datos")
 
 	const handleHistory = (professional: Professional) => {
-		console.log(professional.id)
 		navigate(`/historial?id=${professional.id}`, {
 			state: { type: "professional", data: professional },
 		})
