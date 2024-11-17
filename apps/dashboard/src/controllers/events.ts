@@ -4,7 +4,7 @@ import { io } from ".."
 import { prisma } from "@repo/database"
 import { Senior } from "@prisma/client"
 import { AppError } from "@repo/lib"
-import { createEvents } from "../utils/events"
+import { createEvents, eventsById, formatEvent } from "../utils/events"
 import { Request, Response, NextFunction } from "express"
 import { EventQuery, eventSelect, generateWhere } from "../utils/filters"
 
@@ -12,14 +12,6 @@ import { EventQuery, eventSelect, generateWhere } from "../utils/filters"
 // y para filtrar por claves foraneas
 
 // Un ejemplo de query sería: /events?select=startsAt,endsAt&professionalId=1
-
-const formatEvent = (event: any) => {
-	return {
-		...event,
-		backgroundColor: event.service.color,
-		title: event.service.name,
-	}
-}
 
 export const getAll = async (req: Request, res: Response, next: NextFunction) => {
 	// Mapa de query a where
@@ -36,15 +28,9 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
 
 	try {
 		const events = await prisma.event.findMany({ where, select: eventSelect })
-
-		const eventsById = events.reduce((acc: any, event) => {
-			acc[event.id] = event
-			return acc
-		}, {})
-
 		const formattedEvents = events.map(formatEvent)
 
-		return res.status(200).json({ values: { formatted: formattedEvents, byId: eventsById } })
+		return res.status(200).json({ values: { formatted: formattedEvents, byId: eventsById(events) } })
 	} catch (error) {
 		next(error)
 	}
@@ -180,20 +166,38 @@ export const deleteById = async (req: Request, res: Response, next: NextFunction
 	}
 }
 
+// Controlador para reservar un evento desde la aplicación móvil
+
 export const reserveEvent = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const { id } = req.params
+		// Se obtiene el id del evento a reservar y el adulto mayor que lo reserva
+		// desde el middleware de autenticación
 
+		const id = req.params.id
 		const senior = req.getExtension("user") as Senior
 
+		// Se busca el evento por su id en busca de existencia
 		const event = await prisma.event.findUnique({
 			where: { id: Number(id) },
 		})
 
+		// Si el evento no existe o si ya está reservado por otro adulto mayor
+		// se lanza un error 404 o 409 respectivamente
+
 		if (!event) throw new AppError(404, "Evento no encontrado")
 
-		const twoMonthsAgo = new Date()
-		twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2)
+		if (event.seniorId) {
+			throw new AppError(409, "Este evento ya está reservado")
+		}
+
+		// Validación de que la persona mayor no haya reservado el
+		// mismo servicio dentro de los 2 meses anteriores.
+
+		// Para ello debemos obtener una fecha 2 meses atrás con respecto a la fecha actual
+		const twoMonthsAgo = dayjs().subtract(2, "months").toDate()
+
+		// Y buscar si existe un evento con el mismo servicio y adulto mayor que tenga una
+		// ultima actualización (por reserva/asistencia) dentro de los 2 meses anteriores.
 
 		const previousReservation = await prisma.event.findFirst({
 			where: {
@@ -205,19 +209,16 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 			},
 		})
 
+		// Si existe un evento con las condiciones anteriores se lanza un error 409
+		// que indica un conflicto con la reserva
+
 		if (previousReservation) {
 			throw new AppError(409, "Ya reservaste este servicio en los ultimos 2 meses")
 		}
 
-		if (event.seniorId) {
-			throw new AppError(409, "Este evento ya está reservado")
-		}
-
 		const updatedEvent = await prisma.event.update({
 			where: { id: Number(id) },
-			data: {
-				seniorId: senior.id,
-			},
+			data: { seniorId: senior.id },
 		})
 
 		return res.status(200).json({ values: updatedEvent })
@@ -274,10 +275,10 @@ export const getByService = async (req: Request, res: Response, next: NextFuncti
 
 export const getByServiceCenter = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const { serviceId,centerId } = req.params
+		const { serviceId, centerId } = req.params
 
 		const events = await prisma.event.findMany({
-			where: { serviceId: Number(serviceId),centerId:Number(centerId) },
+			where: { serviceId: Number(serviceId), centerId: Number(centerId) },
 		})
 
 		console.log(events)

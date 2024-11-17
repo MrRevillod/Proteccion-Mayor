@@ -46,7 +46,7 @@ const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, refetch
 
 	useRequest<Senior[]>({
 		action: getSeniors,
-		query: `name=${seniorsSearch}&id=${seniorsSearch}&select=name,id`,
+		query: `name=${seniorsSearch}&id=${seniorsSearch}&select=name,id&limit=5`,
 		onSuccess: (data) => selectDataFormatter({ data, setData: setSeniors }),
 		trigger: isModalOpen && modalType === "Edit",
 	})
