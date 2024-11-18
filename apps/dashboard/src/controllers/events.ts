@@ -6,9 +6,10 @@ import { Senior } from "@prisma/client"
 import { sendMail } from "../utils/mailer"
 import { AppError } from "@repo/lib"
 import { createEvents } from "../utils/events"
-import { appointmentNotification } from "../utils/emailTemplates"
+import { appointmentNotification, cancelEventNotification } from "../utils/emailTemplates"
 import { Request, Response, NextFunction } from "express"
 import { EventQuery, eventSelect, generateWhere } from "../utils/filters"
+import { boolean, string } from "zod"
 
 // Controlador de tipo select puede recibir un query para seleccionar campos específicos
 // y para filtrar por claves foraneas
@@ -84,10 +85,6 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 		await createEvents({ ...event, repeat }).catch((error) => {
 			throw new AppError(409, error.message)
 		})
-
-		// Test email
-		const htmlTemplate = appointmentNotification(professional.name, service.name, senior?.name, dayjs(start), dayjs(end), center.name)
-		await sendMail(professional.email, `Aviso de cita confirmada para ${service.name}`, htmlTemplate)
 
 		// AGREGAR MAIL A EL USUARIO PARA CONFIRMAR LA ASISTENCIA.
 		io.to("ADMIN").emit("newEvent", null as any)
@@ -195,17 +192,25 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 
 		const event = await prisma.event.findUnique({
 			where: { id: Number(id) },
+			select: {
+				professional: true,
+				seniorId: true,
+				service: true,
+				center: true,
+			},
 		})
 
 		if (!event) throw new AppError(404, "Evento no encontrado")
+		if (!event.service) throw new AppError(404, "Service no encontrado")
 
 		const twoMonthsAgo = new Date()
 		twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2)
 
+		console.log(event)
 		const previousReservation = await prisma.event.findFirst({
 			where: {
 				seniorId: senior.id,
-				serviceId: event.serviceId,
+				serviceId: event.service.id,
 				updatedAt: {
 					gte: twoMonthsAgo,
 				},
@@ -227,6 +232,13 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 			},
 		})
 
+		if (!event.professional) throw new AppError(404, "Professional no encontrado")
+		// if (!event.center) throw new AppError(404, "Center no encontrado")
+
+		// Test email
+		const htmlTemplate = appointmentNotification(event.professional.name)
+		await sendMail(event.professional.email, `Test email cancelado`, htmlTemplate)
+
 		return res.status(200).json({ values: updatedEvent })
 	} catch (error) {
 		next(error)
@@ -237,13 +249,17 @@ export const cancelReserve = async (req: Request, res: Response, next: NextFunct
 	try {
 		const { id } = req.params
 
-		// const senior = req.getExtension("user") as Senior
+		const senior = req.getExtension("user") as Senior
 
-		// const event = await prisma.event.findUnique({
-		// 	where: { id: Number(id), seniorId: senior.id },
-		// })
+		const event = await prisma.event.findUnique({
+			where: { id: Number(id), seniorId: senior.id },
+			select: {
+				professional: true,
+				senior: true,
+			},
+		})
 
-		// if (!event) throw new AppError(404, "Evento no encontrado")/
+		if (!event) throw new AppError(404, "Evento no encontrado")
 
 		const updatedEvent = await prisma.event.update({
 			where: { id: Number(id) },
@@ -251,6 +267,13 @@ export const cancelReserve = async (req: Request, res: Response, next: NextFunct
 				seniorId: null,
 			},
 		})
+
+		if (!event.professional) throw new AppError(404, "Professional no encontrado")
+		if (!event.senior) throw new AppError(404, "Senior no encontrado")
+
+		// Test email
+		const htmlTemplate = cancelEventNotification(event.professional.name, event.senior?.name)
+		await sendMail(event.professional.email, `Test email cancelado`, htmlTemplate)
 
 		io.to("ADMIN").emit("updatedEvent", formatEvent(updatedEvent))
 		return res.status(200).json({ modified: formatEvent(updatedEvent) })

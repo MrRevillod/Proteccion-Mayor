@@ -25,26 +25,34 @@ export const resetPasswordBody = (name: string, resetLink: string) => `
 // Hola, NOMBRE_PROFESSIONAL
 // Se a reservado una consulta a PELUQUERIA, con el pasiente NOMBRE_PERSONA_MAYOR a la hora: HORA a tal hora.
 // falta el centro comunitario
-export const appointmentNotification = (
-	nameProfessional: string,
-	nameService: string,
-	nameSenior: string | undefined,
-	start: any,
-	end: any,
-	nameCenter: string,
-) => `
-  ${headerTemplate("Cita Confirmada")}
-  <p>Hola, <strong>${nameProfessional}</strong>.</p>
-  <p>Le informamos que se ha confirmado una cita para el servicio de <strong>${nameService}</strong>.</p>
-  <ul>
-    <li><strong>Cliente:</strong> ${nameSenior}</li>
-    <li><strong>Hora:</strong> ${start} a ${end}</li>
-    <li><strong>Ubicación:</strong> ${nameCenter}</li>
-  </ul>
-  <p>Por favor, contáctenos si necesita más detalles.</p>
-`
+// export const appointmentNotification = (
+// 	nameProfessional: string,
+// 	nameService: string,
+// 	nameSenior: string | undefined,
+// 	nameCenter: string,
+// 	start: any,
+// 	end: any,
+// ) => `
+// ${headerTemplate("Cita Confirmada")}
+//   <p>Hola, <strong>${nameProfessional}</strong>.</p>
+//   <p>Le informamos que se ha confirmado una cita para el servicio de <strong>${nameService}</strong>.</p>
+//   <ul>
+//     <li><strong>Cliente:</strong> ${nameSenior}</li>
+//     <li><strong>Hora:</strong> ${start} a ${end}</li>
+//     <li><strong>Ubicación:</strong> ${nameCenter}</li>
+//   </ul>
+//   <p>Por favor, contáctenos si necesita más detalles.</p>
+// `
 
-// De esta misma manera enviariamos el mail
-// pero tiene que ser cuando se reserve una hora, osea en controllers/event
-// const htmlTemplate = resetPasswordBody(user.name, resetLink)
-// await sendMail(email, "Restablecimiento de contraseña", htmlTemplate)
+export const appointmentNotification = (nameProfessional: string) => `
+${headerTemplate("Cita Confirmada")}
+  <p>Hola, <strong>${nameProfessional}</strong>.</p>
+  <p>Esto es una prueba cuando se reserva un evento.</p>
+
+`
+export const cancelEventNotification = (nameProfessional: string, nameSenior: string) => `
+${headerTemplate("Cancel Event Notificate")}
+  <p>Hola, <strong>${nameProfessional} and ${nameSenior}</strong>.</p>
+  <p>Esto es una prueba cuando se cancela el evento.</p>
+
+`
