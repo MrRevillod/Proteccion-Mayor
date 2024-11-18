@@ -1,15 +1,25 @@
 
 #!/bin/bash
 
+# Usage: ./deployment.sh [mode] [migrate] [seed]
+# mode: prod-nginx | prod-preview
+
+mode=$1
+
+migrate=$2
+seed=$3
+
 pnpm install
 pnpm run build --filter=!mobile-app
 
-sudo mkdir -p /var/www/pmtemuco
-sudo rm -rf /var/www/pmtemuco/*
-sudo mv ./apps/web/dist/* /var/www/pmtemuco/
+if [ "$mode" = "prod-nginx" ]; then
+    sudo mkdir -p /var/www/pmtemuco
+    sudo rm -rf /var/www/pmtemuco/*
+    sudo mv ./apps/web/dist/* /var/www/pmtemuco/
 
-sudo chown -R www-data:www-data /var/www/pmtemuco
-sudo chmod -R 755 /var/www/pmtemuco
+    sudo chown -R www-data:www-data /var/www/pmtemuco
+    sudo chmod -R 755 /var/www/pmtemuco
+fi
 
 pm2 stop all
 pm2 delete all
@@ -24,11 +34,22 @@ pm2 start "./dist/index.js" --name "Dashboard Service" -i 3
 cd ../../apps/storage/
 pm2 start "./dist/index.js" --name "Storage Service" -i 1
 
+if [ "$mode" = "prod-preview" ]; then
+    cd ../../apps/web/
+    pm2 start npm --name "Web App" -- run preview
+fi
+
 cd ../../packages/database/
 
-pnpm run db:migrate:dev
-pnpm run db:generate
-pnpm run db:seed
+if [ "$migrate" = "migrate" ]; then
+    pnpm run db:migrate:dev
+    pnpm run db:generate
+fi
+
+if [ "$seed" = "seed" ]; then
+    echo "Seeding database..."
+    pnpm run db:seed
+fi
 
 cd ../../
 

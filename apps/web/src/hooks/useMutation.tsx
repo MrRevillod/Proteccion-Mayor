@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { MutateActionProps } from "../lib/types"
 
 interface useMutationProps {
@@ -13,11 +12,8 @@ interface MutationOptions<T> {
 
 export const useMutation = <T,>({ mutateFn }: useMutationProps) => {
 
-	const [loading, setLoading] = useState(false)
 
 	const mutate = async ({ params, onSuccess, onError }: MutationOptions<T>) => {
-
-		setLoading(true)
 
 		try {
 			const response = await mutateFn(params || {})
@@ -30,7 +26,6 @@ export const useMutation = <T,>({ mutateFn }: useMutationProps) => {
 			}
 		} catch (err: any) {
 
-			setLoading(false)
 
 			if (onError && err.response) {
 				onError(err)
@@ -40,5 +35,5 @@ export const useMutation = <T,>({ mutateFn }: useMutationProps) => {
 		}
 	}
 
-	return { mutate, loading }
+	return { mutate }
 }
