@@ -194,9 +194,11 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 			where: { id: Number(id) },
 			select: {
 				professional: true,
-				seniorId: true,
+				senior: true,
 				service: true,
 				center: true,
+				start: true,
+				end: true,
 			},
 		})
 
@@ -206,7 +208,6 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 		const twoMonthsAgo = new Date()
 		twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2)
 
-		console.log(event)
 		const previousReservation = await prisma.event.findFirst({
 			where: {
 				seniorId: senior.id,
@@ -221,7 +222,7 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 			throw new AppError(409, "Ya reservaste este servicio en los ultimos 2 meses")
 		}
 
-		if (event.seniorId) {
+		if (event.senior?.id) {
 			throw new AppError(409, "Este evento ya está reservado")
 		}
 
@@ -233,11 +234,17 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 		})
 
 		if (!event.professional) throw new AppError(404, "Professional no encontrado")
-		// if (!event.center) throw new AppError(404, "Center no encontrado")
+		if (!event.center) throw new AppError(404, "Center no encontrado")
 
-		// Test email
-		const htmlTemplate = appointmentNotification(event.professional.name)
-		await sendMail(event.professional.email, `Test email cancelado`, htmlTemplate)
+		const htmlTemplate = appointmentNotification(
+			event.professional.name,
+			event.service.name,
+			senior.name,
+			event.center?.name,
+			event.start,
+			event.end,
+		)
+		await sendMail(event.professional.email, `Cita de ${event.service.name} reservada`, htmlTemplate)
 
 		return res.status(200).json({ values: updatedEvent })
 	} catch (error) {
@@ -256,6 +263,8 @@ export const cancelReserve = async (req: Request, res: Response, next: NextFunct
 			select: {
 				professional: true,
 				senior: true,
+				start: true,
+				end: true,
 			},
 		})
 
@@ -271,9 +280,8 @@ export const cancelReserve = async (req: Request, res: Response, next: NextFunct
 		if (!event.professional) throw new AppError(404, "Professional no encontrado")
 		if (!event.senior) throw new AppError(404, "Senior no encontrado")
 
-		// Test email
-		const htmlTemplate = cancelEventNotification(event.professional.name, event.senior?.name)
-		await sendMail(event.professional.email, `Test email cancelado`, htmlTemplate)
+		const htmlTemplate = cancelEventNotification(event.professional.name, event.senior?.name, event.start, event.end)
+		await sendMail(event.professional.email, `Hora cancelada`, htmlTemplate)
 
 		io.to("ADMIN").emit("updatedEvent", formatEvent(updatedEvent))
 		return res.status(200).json({ modified: formatEvent(updatedEvent) })
