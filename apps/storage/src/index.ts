@@ -5,10 +5,10 @@ import helmet from "helmet"
 import morgan from "morgan"
 import express from "express"
 import router from "./router"
+import cookieParser from "cookie-parser"
 
 import { RequestHandler } from "express"
 import { log, services, errorHandler, constants, AppError, httpRequest, AuthResponse, getServerTokens } from "@repo/lib"
-import cookieParser from "cookie-parser"
 
 // Sistema de archivos de el microservicio de almacenamiento
 
@@ -69,9 +69,7 @@ const initFileSystem = (): void => {
 	const paths = [publicPath, seniorsPath, usersPath, servicesPath, centersPath]
 
 	paths.forEach((path) => {
-		if (!fs.existsSync(path)) {
-			fs.mkdirSync(path, { recursive: true })
-		}
+		if (!fs.existsSync(path)) fs.mkdirSync(path, { recursive: true })
 	})
 }
 
@@ -84,12 +82,7 @@ export const createServer = (): express.Express => {
 	app.use(express.json())
 	app.use(cookieParser())
 	app.use(express.urlencoded({ extended: true }))
-	app.use(
-		cors({
-			origin: "*",
-			credentials: true,
-		}),
-	)
+	app.use(cors({ origin: "*", credentials: true }))
 
 	// ----------------- Rutas privadas ------------------
 	// /api/storage/upload
@@ -113,18 +106,31 @@ export const createServer = (): express.Express => {
 		]
 
 		const images = imagePaths.map((imagePath) => {
-			const image = fs.readFileSync(imagePath)
-			return `data:image/webp;base64,${image.toString("base64")}`
+			if (fs.existsSync(imagePath)) {
+				const image = fs.readFileSync(imagePath)
+				return `data:image/webp;base64,${image.toString("base64")}`
+			}
 		})
 
 		res.status(200).json({ values: images })
 	})
 
 	app.use("/api/storage/public/seniors", seniorRouter)
-	app.use("/api/storage/public/", express.static(path.join(__dirname, "../public")))
+	app.use(
+		"/api/storage/public/",
+		(req, res, next) => {
+			const filePath = path.join(__dirname, "../public", req.path.replace("/api/storage/public/", ""))
+			if (!fs.existsSync(filePath)) {
+				return res.status(404).json({ message: "Archivo no encontrado" })
+			}
+			next()
+		},
+		express.static(path.join(__dirname, "../public"), {
+			fallthrough: false,
+		}),
+	)
 
 	app.use("/api/storage/", verifyStorageKey, router)
-
 	app.use(errorHandler)
 
 	return app

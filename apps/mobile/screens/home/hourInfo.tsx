@@ -18,12 +18,13 @@ const HourScreen = ({ navigation }: any) => {
 
     const startDate = new Date(event.start)
     const endDate = new Date(event.end)
-    const reserveEvent = async () => {
+    const cancelEvent = async () => {
         try {
-            const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events/${event.id}/reservate`, "PATCH")
+
+            const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events/${event.id}/cancel`, "PATCH")
             if (response?.status === 200) {
                 // Mostrar alerta de reserva agendada
-                Alert.alert("Reserva agendada", "Tu reserva ha sido agendada correctamente", [{ text: "OK", onPress: () => navigation.navigate("Home") }])
+                Alert.alert("Hora cancelada", "Tu hora ha sido cancelada", [{ text: "OK", onPress: () => navigation.navigate("Schelude") }])
             }
         } catch (error) {
             console.error("Error reservando evento:", error)
@@ -32,10 +33,10 @@ const HourScreen = ({ navigation }: any) => {
     }
     return (
         <>
-            <GeneralView title="Agendar Servicio">
+            <GeneralView title="Información de la hora">
                 <View style={styles.bigContainer}>
                     <View style={styles.topContainer}>
-                        <Text style={styles.textStyle}>Confirmar</Text>
+                        <Text style={styles.textStyle}>Hora agendada</Text>
                     </View>
 
                     <View style={styles.midContainer}>
@@ -55,12 +56,12 @@ const HourScreen = ({ navigation }: any) => {
                         </View>
                     </View>
                     <View style={styles.dateContainer}>
-                        <CustomButton title="Reservar" onPress={reserveEvent} style={{ width: "50%", borderRadius: 10 }} />
+                        <CustomButton title="Cancelar hora" onPress={() => { Alert.alert("¿Estás seguro de que deseas cancelar esta hora?", "", [{ text: "Cancelar Hora", onPress: cancelEvent, style: "cancel" }]) }} style={{ width: "50%", borderRadius: 10 }} />
                     </View>
                     <View style={styles.bottomContainer}></View>
                 </View>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 10 }}>
-                    <CustomButton title="Volver" onPress={() => navigation.navigate("Events", { serviceId: event.serviceId, centerId: event.centerId })} style={{ width: "40%", borderRadius: 20 }} />
+                    <CustomButton title="Volver" onPress={() => navigation.navigate("Schelude")} style={{ width: "40%", borderRadius: 20 }} />
                 </View>
             </GeneralView>
             <MenuBar navigation={navigation} />

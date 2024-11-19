@@ -12,9 +12,14 @@ interface SuperSelectProps {
 	setSearch?: Dispatch<SetStateAction<string>>
 	defaultValue?: any
 	placeholder?: string
+	disabled?: boolean
+	allowClear?: boolean
 }
 
-export const SuperSelect = ({ name, label, options, setSearch, placeholder }: SuperSelectProps) => {
+export const SuperSelect = ({ name, label, ...props }: SuperSelectProps) => {
+
+	const { options, setSearch, placeholder, disabled = false, allowClear = true } = props
+
 	const {
 		control,
 		formState: { errors },
@@ -58,7 +63,8 @@ export const SuperSelect = ({ name, label, options, setSearch, placeholder }: Su
 						onChange={(value) => {
 							field.onChange(value)
 						}}
-						allowClear={true}
+						allowClear={allowClear}
+						disabled={disabled}
 					/>
 				)}
 			/>

@@ -1,5 +1,4 @@
 import React from "react"
-import HomePage from "./administration/Home"
 import LoginPage from "./auth/Login"
 import CentersPage from "./administration/Centers"
 import SeniorsPage from "./administration/seniors/Seniors"
@@ -55,24 +54,23 @@ const ProtectedRoute: React.FC<RouteProps> = ({ redirectTo = "/auth/iniciar-sesi
 	return <Outlet />
 }
 
-const RedirectRoute: React.FC = () => {
+const RedirectRoute: React.FC<{ redirectTo?: string }> = ({ redirectTo }) => {
 	const { isAuthenticated, role } = useAuth()
 
 	// Si el usuario está autenticado, redirigirlo dependiendo del rol
 	if (isAuthenticated) {
 		// Return el componente Navigate para que funcione correctamente
-		return role === "PROFESSIONAL" ? <Navigate to="/agenda/profesionales" /> : <Navigate to="/administracion/" />
+		return role === "PROFESSIONAL" ? <Navigate to="/agenda/profesionales" /> : <Navigate to="/agenda/administradores" />
 	}
 
 	// Si no está autenticado, se renderiza la ruta hija (como el login)
-	return <Outlet />
+	return redirectTo ? <Navigate to={redirectTo} /> : <Outlet />
 }
 
 const Router: React.FC = () => {
 	return (
 		<Routes>
 			<Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
-				<Route path="/administracion/" element={<HomePage />} />
 				<Route path="/administracion/administradores" element={<AdministratorPage />} />
 				<Route path="/administracion/profesionales" element={<ProfessionalsPage />} />
 				<Route path="/administracion/personas-mayores/" element={<SeniorsPage />} />
@@ -84,14 +82,19 @@ const Router: React.FC = () => {
 				<Route path="/administracion/servicios" element={<ServicesPage />} />
 				<Route path="/administracion/centros-de-atencion" element={<CentersPage />} />
 				<Route path="/agenda/administradores" element={<AdministrationAgendaPage />} />
-				<Route path="/perfil" element={<ProfilePage />} />
+			</Route>
+
+			<Route element={<ProtectedRoute allowedRoles={["PROFESSIONAL"]} />}>
+				<Route path="/agenda/profesionales" element={<ProfessionalAgendaPage />} />
 			</Route>
 
 			<Route element={<ProtectedRoute allowedRoles={["ADMIN", "PROFESSIONAL"]} />}>
-				<Route path="/agenda/profesionales" element={<ProfessionalAgendaPage />} />
 				<Route path="/estadisticas" element={<StatisticsPage />} />
 				<Route path="/historial" element={<SeniorHistoryRequestPage />} />
+				<Route path="/perfil" element={<ProfilePage />} />
 			</Route>
+
+			<Route path="/" element={<RedirectRoute redirectTo="/auth/iniciar-sesion" />} />
 
 			<Route element={<RedirectRoute />}>
 				<Route path="/auth/iniciar-sesion" element={<LoginPage />} />

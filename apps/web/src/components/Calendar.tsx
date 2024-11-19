@@ -7,9 +7,9 @@ import timeGridPlugin from "@fullcalendar/timegrid"
 import interactionPlugin from "@fullcalendar/interaction"
 
 import { Events } from "@/lib/types"
-import { message, Popover } from "antd"
 import { useState } from "react"
 import { useModal } from "@/context/ModalContext"
+import { message, Popover } from "antd"
 
 interface CalendarProps {
 	events: Events
@@ -55,14 +55,34 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 	}
 
 	const handleDateClick = (info: any) => {
+
+		const date = dayjs(info.date)
+
+		if (date.isBefore(dayjs(), "day")) {
+			message.error("No es posible crear eventos en fechas pasadas")
+			return
+		}
+
 		const day = dayjs(info.date).day()
 		const isWeekend = day === 0 || day === 6
+
 		if (isWeekend) {
-			console.log(info.date)
 			message.error("No es posible crear eventos los fin de semana")
 			return
 		}
+
 		showModal("Create", info)
+	}
+
+	const handleEdit = (info: any) => {
+		const event = getEvent(info.event.id)
+
+		if (!event.seniorId && dayjs(event.start).isBefore(dayjs())) {
+			message.info("No es posible editar eventos pasados sin reserva")
+			return
+		}
+
+		showModal("Edit", event)
 	}
 
 	const isWeekend = (date: Date) => {
@@ -76,7 +96,7 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 				plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
 				initialView="dayGridMonth"
 				events={events.formatted}
-				eventClick={(event) => showModal("Edit", getEvent(event.event.id))}
+				eventClick={(event) => handleEdit(event)}
 				eventMouseEnter={handleEventMouseEnter}
 				eventMouseLeave={handleEventMouseLeave}
 				headerToolbar={{

@@ -144,6 +144,5 @@ export const genderSchema = z.enum(["MA", "FE"], {
 })
 export const isWeekend = (date: string) => {
 	const day = dayjs(date).day()
-	console.log(day)
 	return day !== 0 && day !== 6
 }

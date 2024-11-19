@@ -9,18 +9,19 @@ import { useRequest } from "@/hooks/useRequest"
 import { StatisticSelection } from "@/components/StatisticSelection"
 import { AssistanceSelection } from "@/components/AssistanceSelection"
 import { AssistanceType, ReportType } from "@/lib/types"
-import { capitalize, formatCenterName } from "@/lib/formatters"
+import { abbreviateCenterName, capitalize } from "@/lib/formatters"
 import { ChartLayout, StatisticMainLayout } from "@/layouts/StatisticLayout"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts"
 
 import "@/main.css"
 import "dayjs/locale/es"
+import { Statistic, Table } from "antd"
+import { statisticColumns } from "@/lib/columns"
 
 dayjs.locale("es")
 
 type StatisticResponse = {
 	report: any[]
-	numbers: Record<string, number>
 }
 
 const StatisticsPage: React.FC = () => {
@@ -46,7 +47,6 @@ const StatisticsPage: React.FC = () => {
 		action: getReports,
 		query: `type=${reportSelection}&date=${selectedDate}`,
 		onSuccess: (data) => {
-			console.log(data.report)
 			setReportData(data.report)
 		},
 	})
@@ -77,11 +77,11 @@ const StatisticsPage: React.FC = () => {
 					reportSelection={reportSelection}
 					setDate={setSelectedDate}
 					title={titles(reportSelection)}
-					yearSelect
 					monthSelect={reportSelection !== "general"}
+					yearSelect
 				>
 					<Show when={reportSelection === "general"}>
-						<ResponsiveContainer width="100%" height={400} style={{ marginLeft: "0px" }}>
+						<ResponsiveContainer width="100%" height={500} style={{ marginLeft: "0px" }}>
 							<LineChart data={reportData} margin={{ top: 20, right: 20, left: -25, bottom: 40 }}>
 								<CartesianGrid strokeDasharray="3 3" />
 								<XAxis
@@ -93,6 +93,7 @@ const StatisticsPage: React.FC = () => {
 									dy={10}
 									angle={-45}
 									tickFormatter={(value) => capitalize(dayjs(value).format("MMM"))}
+									tick={{ fill: "#6B7280" }}
 								/>
 								<YAxis allowDecimals={false} />
 								<Tooltip labelFormatter={(str) => dayjs(str).format("MMMM YYYY")} />
@@ -112,14 +113,14 @@ const StatisticsPage: React.FC = () => {
 						</ResponsiveContainer>
 					</Show>
 					<Show when={reportSelection !== "general"}>
-						<ResponsiveContainer width="100%" height={400} style={{ marginLeft: "0px" }}>
+						<ResponsiveContainer width="100%" height={500} style={{ marginLeft: "0px" }}>
 							<BarChart data={reportData} margin={{ top: 20, right: 20, left: -25, bottom: 20 }}>
 								<CartesianGrid strokeDasharray="3 3" />
 								<XAxis
-									tickFormatter={
-										reportSelection === "byCenter" ? (value) => formatCenterName(value) : undefined
-									}
 									dataKey={reportSelection === "byCenter" ? "center" : "service"}
+									tickFormatter={
+										reportSelection === "byCenter" ? (value) => abbreviateCenterName(value) : undefined
+									}
 								/>
 								<YAxis allowDecimals={false} />
 								<Tooltip />
@@ -141,16 +142,6 @@ const StatisticsPage: React.FC = () => {
 					/>
 				</ChartLayout>
 
-				<ChartLayout title="" size="sm">
-					<></>
-					{/* <Table
-						columns={columns}
-						dataSource={data}
-						pagination={false}
-						bordered
-						rowClassName={(record, index) => (index % 2 === 0 ? "table-row-light" : "table-row-dark")}
-					/> */}
-				</ChartLayout>
 			</StatisticMainLayout>
 		</PageLayout>
 	)
