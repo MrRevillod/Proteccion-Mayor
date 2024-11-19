@@ -1,13 +1,13 @@
-import { compare, hash } from "bcrypt"
 import { match } from "ts-pattern"
 import { prisma } from "@repo/database"
 import { sendMail } from "../utils/mailer"
+import { compare, hash } from "bcrypt"
 import { resetPasswordBody } from "../utils/emailTemplates"
 import { Request, Response, NextFunction } from "express"
 import { AppError, CustomTokenOpts, signJsonwebtoken, services, findUser, verifyJsonwebtoken, AccessTokenOpts, isValidUserRole } from "@repo/lib"
-import { log } from "console"
 
 export const requestPasswordReset = async (req: Request, res: Response, next: NextFunction) => {
+	const email = req.body.email
 	const userRole = req.query.variant
 
 	if (userRole !== "ADMIN" && userRole !== "PROFESSIONAL" && userRole !== "SENIOR") {
@@ -15,14 +15,8 @@ export const requestPasswordReset = async (req: Request, res: Response, next: Ne
 	}
 
 	try {
-		const { email } = req.body
-
-		if (!email) {
-			throw new AppError(400, "Se requiere un correo electrónico")
-		}
-
+		if (!email) throw new AppError(400, "Se requiere un correo electrónico")
 		const user = await findUser({ email }, userRole)
-
 		if (!user) throw new AppError(404, "El usuario no existe.")
 
 		const payload = { id: user.id, email: email }
@@ -33,15 +27,10 @@ export const requestPasswordReset = async (req: Request, res: Response, next: Ne
 		const roleToken = signJsonwebtoken(rolePayload, CustomTokenOpts("", "30d"))
 
 		const resetLink = `${services.WEB_APP.url}auth/restaurar-contrasena/${user.id}/${token}/${roleToken}`
-
 		const htmlTemplate = resetPasswordBody(user.name, resetLink)
 
 		await sendMail(email, "Restablecimiento de contraseña", htmlTemplate)
-
-		return res.status(200).json({
-			message: "Correo de restauración enviado correctamente",
-			type: "success",
-		})
+		return res.status(200).json({ message: "Se ha enviado un correo electrónico con las instrucciones para restablecer la contraseña." })
 	} catch (error) {
 		next(error)
 	}
@@ -108,17 +97,23 @@ export const compareLinkToken = async (req: Request, res: Response, next: NextFu
 	try {
 		const { id, token, role } = req.params
 
+		try {
+			verifyJsonwebtoken(role, AccessTokenOpts)
+		} catch (error) {
+			console.log("error validating role", role)
+		}
+
 		const rolePayload = verifyJsonwebtoken(role, AccessTokenOpts)
 
-		if (!rolePayload.role || !isValidUserRole(rolePayload.role)) throw new AppError(401, "No autorizado.")
+		if (!rolePayload.role || !isValidUserRole(rolePayload.role)) {
+			throw new AppError(401, "No autorizado.")
+		}
 
 		const user = await findUser({ id }, rolePayload.role)
-
 		if (!user) throw new AppError(404, "Usuario no econtrado.")
 
 		verifyJsonwebtoken(token, CustomTokenOpts(user?.password || "", "30d"))
-
-		return res.status(200)
+		return res.status(200).json({ message: "OK" })
 	} catch (error) {
 		next(error)
 	}

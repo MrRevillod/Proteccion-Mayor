@@ -9,9 +9,10 @@ import accountRouter from "./routes/account"
 import eventsRouter from "./routes/events"
 import serviceRouter from "./routes/services"
 import seniorsRouter from "./routes/seniors"
+import reportsRouter from "./routes/reports"
 import professionalsRouter from "./routes/professionals"
 import administrarorsRouter from "./routes/administrators"
-import reportsRouter from "./routes/reports"
+
 import { Server } from "socket.io"
 import { createServer } from "http"
 import { initSocket } from "./utils/socket"
@@ -25,12 +26,7 @@ export const createServer_ = (): express.Express => {
 	app.use(morgan("dev"))
 	app.use(express.urlencoded({ extended: true }))
 	app.use(express.json())
-	app.use(
-		cors({
-			origin: services.WEB_APP.url,
-			credentials: true,
-		}),
-	)
+	app.use(cors({ origin: services.WEB_APP.url, credentials: true }))
 
 	app.use(cookieParser())
 	app.use(extensions)
@@ -50,7 +46,6 @@ export const createServer_ = (): express.Express => {
 }
 
 const server = createServer_()
-
 const http = createServer(server)
 
 export const io = new Server<ServerToClientEvents>(http, {
@@ -58,6 +53,8 @@ export const io = new Server<ServerToClientEvents>(http, {
 		origin: "*",
 		methods: ["GET", "POST"],
 	},
+	path: "/api/dashboard/socket.io",
+	transports: ["websocket"],
 })
 
 initSocket(io)

@@ -96,6 +96,7 @@ export const EventSchemas = {
 			message: "No es posible crear eventos los fin de semana",
 			path: ["end", "start"],
 		}),
+
 	Update: z
 		.object({
 			start: rules.dateTimeSchema,
@@ -114,7 +115,7 @@ export const EventSchemas = {
 		.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
 			message: "No es posible crear eventos los fin de semana",
 			path: ["end", "start"],
-		}),
+		}) as any,
 }
 
 export const ProfessionalSchemas = {

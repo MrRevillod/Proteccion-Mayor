@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import React from "react"
+
 import { Show } from "./Show"
 import { Link } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext"
@@ -37,7 +38,7 @@ const Header: React.FC = () => {
 	return (
 		<Navbar fluid className="py-4 h-18 w-full bg-primary dark:bg-primary-darker rounded-none">
 			<Navbar.Brand className="ml-14 pl-4">
-				<img src="../../../public/logo-white.webp" alt="logo" width="50" />
+				<img src="/logo.webp" alt="logo" width="50" />
 			</Navbar.Brand>
 
 			<Show when={isAuthenticated && user !== null}>
