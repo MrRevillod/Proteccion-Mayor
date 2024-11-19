@@ -6,8 +6,8 @@ import { io, Socket } from "socket.io-client"
 import { createContext, ReactNode, useState } from "react"
 
 interface SocketState {
-    socket: Socket | undefined
-    listenEvent: (event: string | string[], callback?: (...args: any[]) => void) => void
+	socket: Socket | undefined
+	listenEvent: (event: string | string[], callback?: (...args: any[]) => void) => void
 }
 
 const SocketContext = createContext<SocketState | undefined>(undefined)
@@ -16,17 +16,17 @@ export const SocketProvider = ({ children }: { children?: ReactNode }) => {
 	const { user, role, isAuthenticated } = useAuth()
 	const [socket, setSocket] = useState<Socket>()
 
-    const listenEvent = (event: string | string[], callback?: (...args: any[]) => void) => {
-        if (event instanceof Array) {
-            event.forEach((e) => {
-                socket?.off(e)
-                socket?.on(e, callback || (() => { }))
-            })
-        } else {
-            socket?.off(event)
-            socket?.on(event, callback || (() => { }))
-        }
-    }
+	const listenEvent = (event: string | string[], callback?: (...args: any[]) => void) => {
+		if (event instanceof Array) {
+			event.forEach((e) => {
+				socket?.off(e)
+				socket?.on(e, callback || (() => { }))
+			})
+		} else {
+			socket?.off(event)
+			socket?.on(event, callback || (() => { }))
+		}
+	}
 	useEffect(() => {
 		if (isAuthenticated && !socket) {
 			const newSocket = io({
@@ -35,21 +35,14 @@ export const SocketProvider = ({ children }: { children?: ReactNode }) => {
 				transports: ["websocket"],
 			})
 
-			newSocket.on("connect", () => { })
-
-			newSocket.on("disconnect", (reason) => {
-				if (newSocket.active) {
-					console.log("....reconectando socket")
-				} else {
-					console.log(reason)
-				}
-			})
+			newSocket.on("connect", () => { return })
+			newSocket.on("disconnect", () => { return })
 
 			setSocket(newSocket)
 		}
 	}, [user, role, isAuthenticated])
 
-    return <SocketContext.Provider value={{ socket: socket, listenEvent }}>{children}</SocketContext.Provider>
+	return <SocketContext.Provider value={{ socket: socket, listenEvent }}>{children}</SocketContext.Provider>
 }
 
 export const useSocket = (): SocketState => {

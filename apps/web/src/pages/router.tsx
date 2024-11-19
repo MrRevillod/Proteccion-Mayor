@@ -82,7 +82,6 @@ const Router: React.FC = () => {
 				<Route path="/administracion/servicios" element={<ServicesPage />} />
 				<Route path="/administracion/centros-de-atencion" element={<CentersPage />} />
 				<Route path="/agenda/administradores" element={<AdministrationAgendaPage />} />
-				<Route path="/perfil" element={<ProfilePage />} />
 			</Route>
 
 			<Route element={<ProtectedRoute allowedRoles={["PROFESSIONAL"]} />}>
@@ -92,6 +91,7 @@ const Router: React.FC = () => {
 			<Route element={<ProtectedRoute allowedRoles={["ADMIN", "PROFESSIONAL"]} />}>
 				<Route path="/estadisticas" element={<StatisticsPage />} />
 				<Route path="/historial" element={<SeniorHistoryRequestPage />} />
+				<Route path="/perfil" element={<ProfilePage />} />
 			</Route>
 
 			<Route path="/" element={<RedirectRoute redirectTo="/auth/iniciar-sesion" />} />

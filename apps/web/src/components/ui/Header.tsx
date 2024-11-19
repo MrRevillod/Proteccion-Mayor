@@ -2,14 +2,17 @@ import clsx from "clsx"
 import React from "react"
 
 import { Show } from "./Show"
-import { Link } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext"
-import { useState } from "react"
 import { useTheme } from "../../context/ThemeContext"
 import { IMAGE_BASE_URL } from "../../lib/axios"
+import { Link, useLocation } from "react-router-dom"
+import { useState, useEffect } from "react"
 import { Avatar, Dropdown, Navbar } from "flowbite-react"
 
 const Header: React.FC = () => {
+
+	const location = useLocation()
+
 	const { toggleTheme, isDarkMode } = useTheme()
 	const { isAuthenticated, user, logout, role, profilePicture, setProfilePicture } = useAuth()
 	const [selectedPage, setSelectedPage] = useState<string>("Inicio")
@@ -34,6 +37,17 @@ const Header: React.FC = () => {
 	const handlePageSelected = (page: string) => {
 		setSelectedPage(page)
 	}
+
+	useEffect(() => {
+
+		const path = location.pathname.split("/")[1]
+
+		if (path === "agenda") {
+			setSelectedPage("Agenda")
+			return
+		}
+
+	}, [location])
 
 	return (
 		<Navbar fluid className="py-4 h-18 w-full bg-primary dark:bg-primary-darker rounded-none">

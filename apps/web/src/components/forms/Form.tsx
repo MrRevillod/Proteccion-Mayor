@@ -63,6 +63,7 @@ export const Form = <T extends BaseDataType>({ data, setData, ...props }: FormPr
 	})
 
 	const onSubmit: SubmitHandler<FieldValues> = async (formData) => {
+
 		// Se construye el body a partir de los datos del formulario
 		// necesario ya que el body puede contener un archivo y debe
 		// estructurarse de forma diferente

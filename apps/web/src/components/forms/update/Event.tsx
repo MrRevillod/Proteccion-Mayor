@@ -38,6 +38,9 @@ const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, refetch
 	const [seniorsSearch, setSeniorsSearch] = useState<string>("")
 	const [selectProfessionals, setSelectProfessionals] = useState<SuperSelectField[]>([])
 
+	const isAfterToday = (date: string) => dayjs(date).isAfter(dayjs())
+	const isBeforeToday = (date: string) => dayjs(date).isBefore(dayjs())
+
 	const methods = useForm({ resolver: zodResolver(EventSchemas.Update) })
 
 	const { role } = useAuth()
@@ -78,28 +81,36 @@ const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, refetch
 		<Modal type="Edit" title="Editar un evento" loading={loading}>
 			<FormProvider {...methods}>
 				<Form action={updateEvent} actionType="update" deletable refetch={refetch} setLoading={setLoading}>
-					<Show when={role === "ADMIN"}>
-						<SuperSelect
-							label="Seleccione el profesional"
-							name="professionalId"
-							options={selectProfessionals}
-						/>
-					</Show>
+					<Show when={isAfterToday(selectedData?.start)}>
 
-					<SuperSelect
-						label="Seleccione el centro de atención (opcional)"
-						name="centerId"
-						options={centers}
-					/>
+						<Show when={role === "ADMIN"}>
+							<SuperSelect
+								label="Seleccione el profesional"
+								name="professionalId"
+								options={selectProfessionals}
+							/>
+						</Show>
+
+						<SuperSelect
+							label="Seleccione el centro de atención (opcional)"
+							name="centerId"
+							options={centers}
+						/>
+
+					</Show>
 
 					<SuperSelect
 						label="Seleccione la persona mayor"
 						name="seniorId"
 						options={seniors}
 						setSearch={setSeniorsSearch}
+						placeholder="Buscar por nombre o su Rut"
+						disabled={
+							!!selectedData?.seniorId
+						}
 					/>
 
-					<Show when={role === "ADMIN"}>
+					<Show when={role === "ADMIN" && isAfterToday(selectedData?.start)}>
 						<SuperSelect
 							label="Seleccione el servicio"
 							name="serviceId"
@@ -111,12 +122,16 @@ const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, refetch
 							]}
 						/>
 					</Show>
-					<div className="flex gap-2 justify-between">
-						<DatetimeSelect label="Inicio del evento" name="start" />
-						<DatetimeSelect label="Finalización del evento" name="end" />
-					</div>
 
-					<Show when={selectedData?.seniorId}>
+					<Show when={isAfterToday(selectedData?.start)}>
+						<div className="flex gap-2 justify-between">
+							<DatetimeSelect label="Inicio del evento" name="start" />
+							<DatetimeSelect label="Finalización del evento" name="end" />
+						</div>
+
+					</Show>
+
+					<Show when={selectedData?.seniorId && isBeforeToday(selectedData?.end)}>
 						<BooleanSelect
 							name="assistance"
 							options={[

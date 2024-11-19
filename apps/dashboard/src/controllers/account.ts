@@ -97,11 +97,7 @@ export const compareLinkToken = async (req: Request, res: Response, next: NextFu
 	try {
 		const { id, token, role } = req.params
 
-		try {
-			verifyJsonwebtoken(role, AccessTokenOpts)
-		} catch (error) {
-			console.log("error validating role", role)
-		}
+		verifyJsonwebtoken(role, AccessTokenOpts)
 
 		const rolePayload = verifyJsonwebtoken(role, AccessTokenOpts)
 

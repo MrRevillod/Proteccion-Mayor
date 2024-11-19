@@ -38,6 +38,7 @@ export const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
 	// showModal: Función que abre el modal. Recibe el tipo de modal y los datos a mostrar
 	const showModal = (type: ModalType, data: any) => {
+		setSelectedData(null)
 		setModalType(type)
 		setSelectedData(data)
 		setCachedData(data)

@@ -29,16 +29,16 @@ type EventFormProps = {
 }
 
 const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, services, refetch }) => {
-	const location = useLocation()
-	const { user, role } = useAuth()
 
 	const [loading, setLoading] = useState(false)
 	const [seniors, setSeniors] = useState<SuperSelectField[]>([])
 	const [seniorsSearch, setSeniorsSearch] = useState<string>("")
 	const [selectProfessionals, setSelectProfessionals] = useState<SuperSelectField[]>([])
 
+	const location = useLocation()
 	const methods = useForm({ resolver: zodResolver(EventSchemas.Create) })
 
+	const { user, role } = useAuth()
 	const { watch, setValue } = methods
 	const { isModalOpen, modalType, selectedData } = useModal()
 
@@ -92,11 +92,13 @@ const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, service
 	}, [startsAt])
 
 	useEffect(() => {
-		if (role === "PROFESSIONAL") {
+
+		if (role === "PROFESSIONAL" && baseTrigger) {
 			setValue("professionalId", user?.id)
 			setValue("serviceId", (user as Professional)?.service.id)
 		}
-	}, [])
+
+	}, [isModalOpen, modalType])
 
 	useEffect(() => {
 		if (selectedData && selectedData.dateStr) {
