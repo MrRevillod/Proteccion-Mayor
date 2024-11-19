@@ -36,6 +36,8 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
 	}
 }
 
+
+
 // Controlador para crear un nuevo evento
 export const create = async (req: Request, res: Response, next: NextFunction) => {
 	try {
@@ -220,6 +222,7 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 			where: { id: Number(id) },
 			data: { seniorId: senior.id },
 		})
+        io.to("ADMIN").emit("updatedEvent", formatEvent(updatedEvent))
 
 		return res.status(200).json({ values: updatedEvent })
 	} catch (error) {
@@ -231,24 +234,26 @@ export const cancelReserve = async (req: Request, res: Response, next: NextFunct
 	try {
 		const { id } = req.params
 
-		// const senior = req.getExtension("user") as Senior
+		const senior = req.getExtension("user") as Senior
+        console.log(senior)
+		const event = await prisma.event.findUnique({
+			where: { id: Number(id),seniorId:senior.id },
+		})
 
-		// const event = await prisma.event.findUnique({
-		// 	where: { id: Number(id), seniorId: senior.id },
-		// })
-
-		// if (!event) throw new AppError(404, "Evento no encontrado")/
+		if (!event) throw new AppError(404, "Evento no encontrado")
 
 		const updatedEvent = await prisma.event.update({
 			where: { id: Number(id) },
 			data: {
 				seniorId: null,
-			},
+            },
+            select:eventSelect
 		})
 
-		io.to("ADMIN").emit("updatedEvent", formatEvent(updatedEvent))
+        io.to(["ADMIN",updatedEvent.professionalId || ""]).emit("updatedEvent", formatEvent(updatedEvent))
 		return res.status(200).json({ modified: formatEvent(updatedEvent) })
-	} catch (error) {
+    } catch (error) {
+        console.log("error cancelReserve", error)
 		next(error)
 	}
 }
@@ -258,7 +263,7 @@ export const getByService = async (req: Request, res: Response, next: NextFuncti
 		const { serviceId } = req.params
 
 		const centers = await prisma.event.findMany({
-			where: { serviceId: Number(serviceId) },
+			where: { serviceId: Number(serviceId),seniorId:null,start:{gte:new Date()} },
 			select: {
 				center: true,
 			},
@@ -278,7 +283,8 @@ export const getByServiceCenter = async (req: Request, res: Response, next: Next
 		const { serviceId, centerId } = req.params
 
 		const events = await prisma.event.findMany({
-			where: { serviceId: Number(serviceId), centerId: Number(centerId) },
+			where: { serviceId: Number(serviceId), centerId: Number(centerId), seniorId: null, start : { gte: new Date() } },
+            select:eventSelect
 		})
 
 		console.log(events)
