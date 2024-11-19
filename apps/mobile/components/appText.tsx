@@ -4,14 +4,15 @@ import { Text, TextProps, StyleSheet } from "react-native"
 import { useFontSize } from "@/contexts/fontSizeContext"
 
 interface AppTextProps extends TextProps {
-	children: React.ReactNode
+    children: React.ReactNode
+    extra?: number
 }
 
-const AppText: React.FC<AppTextProps> = ({ children, style, ...props }) => {
+const AppText: React.FC<AppTextProps> = ({ children, style, extra = 0, ...props }) => {
 	const { fontSize } = useFontSize()
 
 	return (
-		<Text style={[styles.text, { fontSize }, style]} {...props}>
+        <Text style={[styles.text, { fontSize: fontSize + extra }, style]} {...props}>
 			{children}
 		</Text>
 	)

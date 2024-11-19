@@ -6,7 +6,7 @@
 		"db:migrate:dev": "turbo run db:migrate:dev",
 		"db:push": "turbo run db:push",
 		"db:seed": "turbo run db:seed",
-		"generate": "turbo run generate",
+		"db:generate": "turbo run db:generate",
 		"build": "turbo run build",
 		"clean": "turbo run clean",
 		"dev": "turbo run dev",
@@ -23,7 +23,8 @@
 		"@types/multer": "^1.4.12",
 		"dotenv-cli": "^7.4.2",
 		"eslint": "^9.9.0",
-		"turbo": "^2.1.1"
+		"pm2": "^5.4.2",
+		"turbo": "^2.2.3"
 	},
 	"packageManager": "pnpm@8.15.6",
 	"engines": {
@@ -33,7 +34,6 @@
 		"@prisma/client": "5.10.2",
 		"cookie-parser": "^1.4.6",
 		"jsonwebtoken": "^9.0.2",
-		"recharts": "^2.13.0",
 		"zod": "^3.23.8"
 	}
 }

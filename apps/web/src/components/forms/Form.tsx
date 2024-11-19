@@ -26,6 +26,7 @@ interface FormProps<T> {
 	children: ReactNode
 	actionType: "update" | "create"
 	deletable?: boolean
+	setLoading?: Dispatch<SetStateAction<boolean>>
 	refetch?: () => void
 }
 
@@ -34,7 +35,7 @@ interface FormProps<T> {
 // (opcional ya que se pueden filtrar en el cliente)
 
 export const Form = <T extends BaseDataType>({ data, setData, ...props }: FormProps<T>) => {
-	const { action, children, actionType, deletable, refetch } = props
+	const { action, children, actionType, deletable, setLoading, refetch } = props
 
 	const { handleSubmit, reset, setError, clearErrors } = useFormContext()
 	const { handleOk, handleCancel, selectedData, handleDelete } = useModal()
@@ -62,6 +63,7 @@ export const Form = <T extends BaseDataType>({ data, setData, ...props }: FormPr
 	})
 
 	const onSubmit: SubmitHandler<FieldValues> = async (formData) => {
+
 		// Se construye el body a partir de los datos del formulario
 		// necesario ya que el body puede contener un archivo y debe
 		// estructurarse de forma diferente
@@ -93,6 +95,8 @@ export const Form = <T extends BaseDataType>({ data, setData, ...props }: FormPr
 		// Se realiza la acción con los datos del recurso y el body
 		// onSuccess se ejecuta si la acción se realiza correctamente
 		// onError se ejecuta si ocurre un error
+
+		setLoading && setLoading(true)
 
 		await mutation.mutate({
 			params: { id: selectedData?.id || null, body },
@@ -126,6 +130,7 @@ export const Form = <T extends BaseDataType>({ data, setData, ...props }: FormPr
 				// y se actualizan los datos desde el servidor
 
 				refetch && refetch()
+				setLoading && setLoading(false)
 
 				message.success("Hecho")
 				setImageFile([])
@@ -133,6 +138,7 @@ export const Form = <T extends BaseDataType>({ data, setData, ...props }: FormPr
 				reset()
 			},
 			onError: (error) => {
+				setLoading && setLoading(false)
 				handleFormError(error, setError)
 			},
 		})

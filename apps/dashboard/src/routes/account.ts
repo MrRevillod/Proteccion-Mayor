@@ -4,9 +4,7 @@ import { compareLinkToken, requestPasswordReset, resetPassword } from "../contro
 const router: Router = Router()
 
 router.post("/reset-password", requestPasswordReset)
-
 router.post("/reset-password/:id/:token/:role", resetPassword)
-
 router.get("/reset-password/:id/:token/:role", compareLinkToken)
 
 export default router

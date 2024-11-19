@@ -11,7 +11,10 @@ interface MutationOptions<T> {
 }
 
 export const useMutation = <T,>({ mutateFn }: useMutationProps) => {
+
+
 	const mutate = async ({ params, onSuccess, onError }: MutationOptions<T>) => {
+
 		try {
 			const response = await mutateFn(params || {})
 			if (response && response.data && response.data.values) {
@@ -22,6 +25,8 @@ export const useMutation = <T,>({ mutateFn }: useMutationProps) => {
 				throw new Error("No se encontraron datos en la respuesta")
 			}
 		} catch (err: any) {
+
+
 			if (onError && err.response) {
 				onError(err)
 			} else {

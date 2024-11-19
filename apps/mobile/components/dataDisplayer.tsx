@@ -10,7 +10,7 @@ type DataDisplayerProps = {
 	imgPath?: ImageSourcePropType
 	titleField: string | number
 	descriptionField?: String | number
-	actionButton?: "Ingresar" | "Cambiar" | "ELIMINAR"
+    actionButton?: "Ingresar" | "Cambiar" | "ELIMINAR" | "Más..."
 	onPress?: () => void
 	isCC?: boolean
 	event?: { bool: boolean; color?: string }

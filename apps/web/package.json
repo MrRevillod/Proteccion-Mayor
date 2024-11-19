@@ -7,7 +7,8 @@
 		"build": "vite build",
 		"clean": "rm -rf dist",
 		"dev": "vite --clearScreen false",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"preview": "vite preview"
 	},
 	"dependencies": {
 		"@ant-design/cssinjs": "^1.21.1",
@@ -35,6 +36,7 @@
 		"react-image-crop": "^11.0.7",
 		"react-router-dom": "^6.26.1",
 		"react-select": "^5.8.1",
+		"recharts": "^2.13.3",
 		"socket.io-client": "^4.7.5",
 		"vite-tsconfig-paths": "^5.0.1",
 		"zod": "^3.23.8"
