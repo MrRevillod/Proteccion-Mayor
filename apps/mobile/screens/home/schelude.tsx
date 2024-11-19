@@ -41,7 +41,7 @@ const Schedule = ({ navigation }: any) => {
 			if (!rut) {
 				return
 			}
-			makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events?senior=${rut}`, "GET").then((response) => {
+			makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events?seniorId=${rut}`, "GET").then((response) => {
 				if (response?.data) {
 					const eventsList = response.data.values.formatted
 					setEventsList(eventsList)

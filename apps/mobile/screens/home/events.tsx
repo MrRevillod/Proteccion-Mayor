@@ -57,6 +57,7 @@ export const Pill = ({ text }: { text: string }) => {
         </View>
     )
 }
+
 const EventScreen = ({ navigation }: any) => {
     const [isLoaded, setIsLoaded] = useState(false)
     const [events, setEvents] = useState<any[]>([])
@@ -134,7 +135,6 @@ const EventScreen = ({ navigation }: any) => {
                                 display="calendar"
                                 style={{
                                     backgroundColor: Colors.green,
-
                                 }}
 
                             onChange={async (event, selectedDate) => {
@@ -161,7 +161,6 @@ const EventScreen = ({ navigation }: any) => {
                                     mostrarEventos(date, "day")
                                 }} style={{ paddingHorizontal: 15 }} />
                                 <Picker
-
                                     mode="dialog"
                                     selectedValue={month}
 
@@ -177,7 +176,6 @@ const EventScreen = ({ navigation }: any) => {
                                 >
                                     {selectValues.map((value, i) => {
                                         if (value.value >= (new Date()).getMonth()) {
-
                                             return <Picker.Item key={value.value} label={value.name} value={value.value} />
                                         }
                                     })}
@@ -193,6 +191,7 @@ const EventScreen = ({ navigation }: any) => {
                             const startDate = new Date(event.start)
                             const endDate = new Date(event.end)
                             return (
+
                                 <TouchableOpacity onPress={() => navigation.navigate("Hours", { event })} style={{ margin: 3 }}>
                                     {!perDay ? <Pill text={startDate.toLocaleDateString() + "  " + startDate.toLocaleTimeString().slice(0, 5) + " - " + endDate.toLocaleTimeString().slice(0, 5)} /> :
                                         <Pill text={startDate.toLocaleTimeString().slice(0, 5) + " - " + endDate.toLocaleTimeString().slice(0, 5)} />}
@@ -247,7 +246,6 @@ const styles = StyleSheet.create({
 
     },
     midContainer: {
-
         height: "45%",
         width: "100%",
         backgroundColor: Colors.white,

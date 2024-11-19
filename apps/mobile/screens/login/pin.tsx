@@ -9,10 +9,12 @@ import { SERVER_URL } from "@/utils/request"
 import { useFormContext } from "react-hook-form"
 import { View, StyleSheet, Linking, AppState, AppStateStatus } from "react-native"
 import { useEffect } from "react"
+import { useIsFocused } from "@react-navigation/native"
 
 const Pin = ({ navigation }: any) => {
 	const { login } = useAuth()
-	const { handleSubmit, reset } = useFormContext()
+	const { handleSubmit, setValue } = useFormContext()
+	const isFocused = useIsFocused()
 
 	const onSubmit = async (data: any) => {
 		await login(data)
@@ -20,27 +22,13 @@ const Pin = ({ navigation }: any) => {
 	}
 
 	useEffect(() => {
-		// Listener para limpiar el PIN cuando se cambia de pantalla
-		const unsubscribe = navigation.addListener("blur", () => {
-			reset({ password: "" })
-		})
-
-		// Listener para AppState, para limpiar el PIN cuando la app va a segundo plano
-		const handleAppStateChange = (nextAppState: AppStateStatus) => {
-			if (nextAppState === "background") {
-				reset({ password: "" })
-			}
+		// useIsFocused(), es un hook de react navigation que retorna true si la pantalla está enfocada, 
+		// y false si no lo está. En este caso, se utiliza para limpiar el campo de contraseña cuando 
+		// la pantalla no está enfocada.
+		if (!isFocused) {
+			setValue("password", "") // Resetea solo el campo de "password"
 		}
-
-		// Suscribirse a los cambios de AppState
-		const subscription = AppState.addEventListener("change", handleAppStateChange)
-
-		// Limpiar el listener en la salida
-		return () => {
-			unsubscribe()
-			subscription.remove()
-		}
-	}, [navigation, reset])
+	}, [isFocused])
 
 	return (
 		<>
