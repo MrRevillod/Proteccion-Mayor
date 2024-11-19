@@ -5,8 +5,6 @@ import { useEffect } from "react"
 import { io, Socket } from "socket.io-client"
 import { createContext, ReactNode, useState } from "react"
 
-const DASHBOARD_SOCKET_SERVER = `${import.meta.env.VITE_API_URL}/dashboard`
-
 interface SocketState {
 	socket: Socket | undefined
 }
@@ -19,8 +17,10 @@ export const SocketProvider = ({ children }: { children?: ReactNode }) => {
 
 	useEffect(() => {
 		if (isAuthenticated && !socket) {
-			const newSocket = io(DASHBOARD_SOCKET_SERVER, {
+			const newSocket = io({
+				path: "/api/dashboard/socket.io",
 				query: { userId: user?.id, userRole: role },
+				transports: ["websocket"],
 			})
 
 			newSocket.on("connect", () => { })

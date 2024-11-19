@@ -12,14 +12,12 @@ seed=$3
 pnpm install
 pnpm run build --filter=!mobile-app
 
-if [ "$mode" = "prod-nginx" ]; then
-    sudo mkdir -p /var/www/pmtemuco
-    sudo rm -rf /var/www/pmtemuco/*
-    sudo mv ./apps/web/dist/* /var/www/pmtemuco/
+sudo mkdir -p /var/www/pmtemuco
+sudo rm -rf /var/www/pmtemuco/*
+sudo mv ./apps/web/dist/* /var/www/pmtemuco/
 
-    sudo chown -R www-data:www-data /var/www/pmtemuco
-    sudo chmod -R 755 /var/www/pmtemuco
-fi
+sudo chown -R www-data:www-data /var/www/pmtemuco
+sudo chmod -R 755 /var/www/pmtemuco
 
 pm2 stop all
 pm2 delete all
@@ -33,11 +31,6 @@ pm2 start "./dist/index.js" --name "Dashboard Service" -i 3
 
 cd ../../apps/storage/
 pm2 start "./dist/index.js" --name "Storage Service" -i 1
-
-if [ "$mode" = "prod-preview" ]; then
-    cd ../../apps/web/
-    pm2 start npm --name "Web App" -- run preview
-fi
 
 cd ../../packages/database/
 
