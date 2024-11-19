@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 import { Show } from "./Show"
 import { useState } from "react"
 import { useFormContext } from "react-hook-form"
-import { AiFillExclamationCircle, AiFillEye } from "react-icons/ai"
+import { AiFillExclamationCircle, AiFillEye, AiFillEyeInvisible } from "react-icons/ai"
 
 type InputType = "text" | "password" | "email" | "number" | "select"
 
@@ -107,7 +107,12 @@ export const Input: React.FC<InputProps> = (props) => {
 								onClick={handleTogglePasswordVisibility}
 								className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-neutral-600 hover:text-blue-500"
 							>
-								<AiFillEye className="text-neutral-600 dark:text-neutral-300 dark:text-gray text-xl mr-1" />
+								<Show when={showPassword}>
+									<AiFillEyeInvisible className="text-neutral-600 dark:text-neutral-300 dark:text-gray text-xl mr-1" />
+								</Show>
+								<Show when={!showPassword}>
+									<AiFillEye className="text-neutral-600 dark:text-neutral-300 dark:text-gray text-xl mr-1" />
+								</Show>
 							</button>
 						</Show>
 					</div>

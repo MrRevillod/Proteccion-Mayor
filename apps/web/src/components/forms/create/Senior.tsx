@@ -4,6 +4,7 @@ import DatetimeSelect from "../../ui/DatetimeSelect"
 import { Form } from "../Form"
 import { Input } from "../../ui/Input"
 import { Modal } from "../../Modal"
+import { useState } from "react"
 import { SuperSelect } from "@/components/ui/SuperSelect"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { createSenior } from "../../../lib/actions"
@@ -12,12 +13,19 @@ import { FormProps, Senior } from "../../../lib/types"
 import { FormProvider, useForm } from "react-hook-form"
 
 const CreateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => {
+	const [loading, setLoading] = useState(false)
 	const methods = useForm({ resolver: zodResolver(SeniorSchemas.DashboardRegister) })
 
 	return (
-		<Modal type="Create" title="Añadir nueva persona mayor al sistema">
+		<Modal type="Create" title="Añadir nueva persona mayor al sistema" loading={loading}>
 			<FormProvider {...methods}>
-				<Form<Senior> data={data as Senior[]} setData={setData} action={createSenior} actionType="create">
+				<Form<Senior>
+					data={data as Senior[]}
+					setData={setData}
+					action={createSenior}
+					actionType="create"
+					setLoading={setLoading}
+				>
 					<Input name="id" label="Rut (sin puntos ni guión)" type="text" placeholder="123456789" />
 					<Input name="name" label="Nombre" type="text" placeholder="Juan Perez" />
 					<Input name="email" label="Correo Electrónico" type="email" placeholder="JohnD@provider.com" />

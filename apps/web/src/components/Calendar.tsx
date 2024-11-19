@@ -58,7 +58,6 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 		const day = dayjs(info.date).day()
 		const isWeekend = day === 0 || day === 6
 		if (isWeekend) {
-			console.log(info.date)
 			message.error("No es posible crear eventos los fin de semana")
 			return
 		}

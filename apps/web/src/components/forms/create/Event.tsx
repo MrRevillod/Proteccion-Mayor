@@ -30,9 +30,9 @@ type EventFormProps = {
 
 const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, services, refetch }) => {
 	const location = useLocation()
-
 	const { user, role } = useAuth()
 
+	const [loading, setLoading] = useState(false)
 	const [seniors, setSeniors] = useState<SuperSelectField[]>([])
 	const [seniorsSearch, setSeniorsSearch] = useState<string>("")
 	const [selectProfessionals, setSelectProfessionals] = useState<SuperSelectField[]>([])
@@ -105,9 +105,9 @@ const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, service
 	}, [selectedData])
 
 	return (
-		<Modal type="Create" title="Crear un nuevo evento">
+		<Modal type="Create" title="Crear un nuevo evento" loading={loading}>
 			<FormProvider {...methods}>
-				<Form action={createEvent} actionType="create" refetch={refetch}>
+				<Form action={createEvent} actionType="create" refetch={refetch} setLoading={setLoading}>
 					<Show when={role === "ADMIN"}>
 						<SuperSelect label="Seleccione un servicio" name="serviceId" options={services} />
 						<SuperSelect

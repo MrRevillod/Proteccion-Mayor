@@ -27,7 +27,10 @@ api.interceptors.response.use(
 
 		const isUnauthorized = ogStatus === 401
 		const isRefresheable =
-			!originalRequest._retry && !ogUrl.includes("/auth/refresh") && !ogUrl.includes("/auth/login")
+			!originalRequest._retry &&
+			!ogUrl.includes("/auth/refresh") &&
+			!ogUrl.includes("/auth/login") &&
+			!ogUrl.includes("/account/reset-password")
 
 		// Comprobar si estamos en la página de login
 

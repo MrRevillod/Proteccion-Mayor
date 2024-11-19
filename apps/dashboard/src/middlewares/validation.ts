@@ -1,6 +1,6 @@
 import { prisma } from "@repo/database"
 import { Request, Response, NextFunction } from "express"
-import { SomeZodObject, ZodEffects, ZodObject } from "zod"
+import { AnyZodObject, SomeZodObject, ZodEffects, ZodObject } from "zod"
 import { AppError, findUser, getServerTokens, httpRequest, User, UserRole, AuthResponse } from "@repo/lib"
 
 // Middleware de validación de ID de usuario
@@ -26,7 +26,7 @@ export const validateUserId = (role: UserRole) => async (req: Request, res: Resp
 // Middleware de validación de campos en formularios
 // Valida si los campos en el cuerpo de la petición son válidos
 // según el rol del usuario y el tipo de formulario (fichero lib/schemas.ts)
-export const validateSchema = (schema: SomeZodObject | ZodEffects<ZodObject<any, any>>|any) => {
+export const validateSchema = (schema: SomeZodObject | ZodEffects<ZodObject<any, any>> | AnyZodObject) => {
 	return async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			schema.parse(req.body)
