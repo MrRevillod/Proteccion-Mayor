@@ -3,10 +3,14 @@ import dayjs from "dayjs"
 import { io } from ".."
 import { prisma } from "@repo/database"
 import { Senior } from "@prisma/client"
+import { sendMail } from "../utils/mailer"
 import { AppError } from "@repo/lib"
+import { createEvents } from "../utils/events"
+import { appointmentNotification, cancelEventNotification } from "../utils/emailTemplates"
 import { Request, Response, NextFunction } from "express"
 import { createEvents, eventsById, formatEvent } from "../utils/events"
 import { EventQuery, eventSelect, generateWhere } from "../utils/filters"
+import { boolean, string } from "zod"
 
 // Controlador de tipo select puede recibir un query para seleccionar campos específicos
 // y para filtrar por claves foraneas
@@ -69,6 +73,7 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 			throw new AppError(409, error.message)
 		})
 
+		// AGREGAR MAIL A EL USUARIO PARA CONFIRMAR LA ASISTENCIA.
 		io.to("ADMIN").emit("newEvent", null as any)
 		return res.status(201).json({ values: { modified: null } })
 	} catch (error) {
@@ -179,12 +184,21 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 		// Se busca el evento por su id en busca de existencia
 		const event = await prisma.event.findUnique({
 			where: { id: Number(id) },
+			select: {
+				professional: true,
+				senior: true,
+				service: true,
+				center: true,
+				start: true,
+				end: true,
+			},
 		})
 
 		// Si el evento no existe o si ya está reservado por otro adulto mayor
 		// se lanza un error 404 o 409 respectivamente
 
 		if (!event) throw new AppError(404, "Evento no encontrado")
+		if (!event.service) throw new AppError(404, "Service no encontrado")
 
 		if (event.seniorId) {
 			throw new AppError(409, "Este evento ya está reservado")
@@ -202,7 +216,7 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 		const previousReservation = await prisma.event.findFirst({
 			where: {
 				seniorId: senior.id,
-				serviceId: event.serviceId,
+				serviceId: event.service.id,
 				updatedAt: {
 					gte: twoMonthsAgo,
 				},
@@ -215,14 +229,30 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 		if (previousReservation) {
 			throw new AppError(409, "Ya reservaste este servicio en los ultimos 2 meses")
 		}
+    
 
 		const updatedEvent = await prisma.event.update({
 			where: { id: Number(id) },
 			data: { seniorId: senior.id },
 		})
+    
 		io.to("ADMIN").emit("updatedEvent", formatEvent(updatedEvent))
 
+		if (!event.professional) throw new AppError(404, "Professional no encontrado")
+		if (!event.center) throw new AppError(404, "Center no encontrado")
+
+		const htmlTemplate = appointmentNotification(
+			event.professional.name,
+			event.service.name,
+			senior.name,
+			event.center?.name,
+			event.start,
+			event.end,
+		)
+    
+		await sendMail(event.professional.email, `Cita de ${event.service.name} reservada`, htmlTemplate)
 		return res.status(200).json({ values: updatedEvent })
+    
 	} catch (error) {
 		next(error)
 	}
@@ -233,8 +263,15 @@ export const cancelReserve = async (req: Request, res: Response, next: NextFunct
 		const { id } = req.params
 
 		const senior = req.getExtension("user") as Senior
+
 		const event = await prisma.event.findUnique({
 			where: { id: Number(id), seniorId: senior.id },
+			select: {
+				professional: true,
+				senior: true,
+				start: true,
+				end: true,
+			},
 		})
 
 		if (!event) throw new AppError(404, "Evento no encontrado")
@@ -246,6 +283,12 @@ export const cancelReserve = async (req: Request, res: Response, next: NextFunct
 			},
 			select: eventSelect,
 		})
+
+		if (!event.professional) throw new AppError(404, "Professional no encontrado")
+		if (!event.senior) throw new AppError(404, "Senior no encontrado")
+
+		const htmlTemplate = cancelEventNotification(event.professional.name, event.senior?.name, event.start, event.end)
+		await sendMail(event.professional.email, `Hora cancelada`, htmlTemplate)
 
 		io.to(["ADMIN", updatedEvent.professionalId || ""]).emit("updatedEvent", formatEvent(updatedEvent))
 		return res.status(200).json({ modified: formatEvent(updatedEvent) })
