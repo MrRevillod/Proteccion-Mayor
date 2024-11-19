@@ -221,6 +221,7 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 				seniorId: senior.id,
 			},
 		})
+        io.to("ADMIN").emit("updatedEvent", formatEvent(updatedEvent))
 
 		return res.status(200).json({ values: updatedEvent })
 	} catch (error) {
@@ -248,7 +249,7 @@ export const cancelReserve = async (req: Request, res: Response, next: NextFunct
             select:eventSelect
 		})
 
-		io.to("ADMIN").emit("updatedEvent", formatEvent(updatedEvent))
+        io.to(["ADMIN",updatedEvent.professionalId || ""]).emit("updatedEvent", formatEvent(updatedEvent))
 		return res.status(200).json({ modified: formatEvent(updatedEvent) })
     } catch (error) {
         console.log("error cancelReserve", error)
