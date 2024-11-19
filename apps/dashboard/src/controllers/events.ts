@@ -4,8 +4,8 @@ import { io } from ".."
 import { prisma } from "@repo/database"
 import { Senior } from "@prisma/client"
 import { AppError } from "@repo/lib"
-import { createEvents, eventsById, formatEvent } from "../utils/events"
 import { Request, Response, NextFunction } from "express"
+import { createEvents, eventsById, formatEvent } from "../utils/events"
 import { EventQuery, eventSelect, generateWhere } from "../utils/filters"
 
 // Controlador de tipo select puede recibir un query para seleccionar campos específicos
@@ -35,8 +35,6 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
 		next(error)
 	}
 }
-
-
 
 // Controlador para crear un nuevo evento
 export const create = async (req: Request, res: Response, next: NextFunction) => {
@@ -222,7 +220,7 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 			where: { id: Number(id) },
 			data: { seniorId: senior.id },
 		})
-        io.to("ADMIN").emit("updatedEvent", formatEvent(updatedEvent))
+		io.to("ADMIN").emit("updatedEvent", formatEvent(updatedEvent))
 
 		return res.status(200).json({ values: updatedEvent })
 	} catch (error) {
@@ -235,9 +233,8 @@ export const cancelReserve = async (req: Request, res: Response, next: NextFunct
 		const { id } = req.params
 
 		const senior = req.getExtension("user") as Senior
-        console.log(senior)
 		const event = await prisma.event.findUnique({
-			where: { id: Number(id),seniorId:senior.id },
+			where: { id: Number(id), seniorId: senior.id },
 		})
 
 		if (!event) throw new AppError(404, "Evento no encontrado")
@@ -246,14 +243,14 @@ export const cancelReserve = async (req: Request, res: Response, next: NextFunct
 			where: { id: Number(id) },
 			data: {
 				seniorId: null,
-            },
-            select:eventSelect
+			},
+			select: eventSelect,
 		})
 
-        io.to(["ADMIN",updatedEvent.professionalId || ""]).emit("updatedEvent", formatEvent(updatedEvent))
+		io.to(["ADMIN", updatedEvent.professionalId || ""]).emit("updatedEvent", formatEvent(updatedEvent))
 		return res.status(200).json({ modified: formatEvent(updatedEvent) })
-    } catch (error) {
-        console.log("error cancelReserve", error)
+	} catch (error) {
+		console.log("error cancelReserve", error)
 		next(error)
 	}
 }
@@ -263,14 +260,12 @@ export const getByService = async (req: Request, res: Response, next: NextFuncti
 		const { serviceId } = req.params
 
 		const centers = await prisma.event.findMany({
-			where: { serviceId: Number(serviceId),seniorId:null,start:{gte:new Date()} },
+			where: { serviceId: Number(serviceId), seniorId: null, start: { gte: new Date() } },
 			select: {
 				center: true,
 			},
 			distinct: ["centerId"],
 		})
-
-		console.log(centers)
 
 		return res.status(200).json({ centers })
 	} catch (error) {
@@ -283,11 +278,9 @@ export const getByServiceCenter = async (req: Request, res: Response, next: Next
 		const { serviceId, centerId } = req.params
 
 		const events = await prisma.event.findMany({
-			where: { serviceId: Number(serviceId), centerId: Number(centerId), seniorId: null, start : { gte: new Date() } },
-            select:eventSelect
+			where: { serviceId: Number(serviceId), centerId: Number(centerId), seniorId: null, start: { gte: new Date() } },
+			select: eventSelect,
 		})
-
-		console.log(events)
 
 		return res.status(200).json({ events })
 	} catch (error) {

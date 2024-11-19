@@ -16,21 +16,36 @@ import { MutateActionProps } from "@/lib/types"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { FieldValues, FormProvider, SubmitHandler, useForm } from "react-hook-form"
+import { Loading } from "@/components/Loading"
+import clsx from "clsx"
+import dayjs from "dayjs"
 
 const SeniorRegisterRequestPage: React.FC = () => {
 	const location = useLocation()
 	const navigate = useNavigate()
 
+	const [loading, setLoading] = useState(false)
 	const [images, setImages] = useState<string[]>([])
 
-	const { senior } = location.state || {}
-
 	const methods = useForm({ resolver: zodResolver(SeniorSchemas.Validate) })
+
+	const { senior } = location.state || {}
 	const { reset, handleSubmit } = methods
 
 	useEffect(() => {
 		if (!senior) navigate("/administracion/personas-mayores/nuevos")
-		else reset({ rut: senior.id, email: senior.email })
+		else {
+
+			const seniorMinYear = dayjs().year() - 60
+
+			const defaultValues = {
+				rut: senior.id,
+				email: senior.email,
+				birthDate: dayjs().year(seniorMinYear).toISOString(),
+			}
+
+			reset(defaultValues)
+		}
 	}, [senior])
 
 	useRequest({
@@ -54,6 +69,9 @@ const SeniorRegisterRequestPage: React.FC = () => {
 	})
 
 	const onSubmit: SubmitHandler<FieldValues> = async (formData) => {
+
+		setLoading(true)
+
 		await AcceptMutation.mutate({
 			params: { body: formData },
 			onSuccess: () => {
@@ -64,10 +82,15 @@ const SeniorRegisterRequestPage: React.FC = () => {
 			},
 		})
 
+		setLoading(false)
+
 		navigate("/administracion/personas-mayores/nuevos")
 	}
 
 	const onDeny = async () => {
+
+		setLoading(true)
+
 		await DenyMutation.mutate({
 			onSuccess: () => {
 				message.success("Solicitud denegada")
@@ -76,12 +99,21 @@ const SeniorRegisterRequestPage: React.FC = () => {
 				message.error(error.response.data.message)
 			},
 		})
+
+		setLoading(false)
+
 		navigate("/administracion/personas-mayores/nuevos")
 	}
 
 	return (
 		<PageLayout pageTitle="Solicitud de registro de persona mayor">
-			<section className="bg-white dark:bg-primary-dark p-4 rounded-lg flex flex-row gap-12">
+			<section className={clsx(
+				loading && "opacity-50",
+				"bg-white dark:bg-primary-dark p-4 rounded-lg flex flex-row gap-12"
+			)}>
+
+				{loading && <Loading />}
+
 				<FormProvider {...methods}>
 					<form className="flex flex-col gap-4 w-1/3" onSubmit={handleSubmit(onSubmit)}>
 						<Input

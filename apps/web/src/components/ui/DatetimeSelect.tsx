@@ -29,6 +29,11 @@ const DatetimeSelect = ({ label, name, showTime = true, defaultValue, width }: D
 		width ? width : "w-full",
 	)
 
+	const handleValue = (value: string) => {
+
+
+	}
+
 	return (
 		<div className="flex flex-col gap-2">
 			<div className="flex flex-row gap-2 items-center justify-between">
@@ -52,6 +57,7 @@ const DatetimeSelect = ({ label, name, showTime = true, defaultValue, width }: D
 								disabledHours: () => [0, 1, 2, 3, 4, 4, 5, 6, 7, 19, 20, 21, 22, 23],
 							}
 						}}
+						showNow={showTime}
 						value={field.value ? dayjs(field.value) : null}
 						defaultValue={defaultValue ? dayjs(defaultValue) : null}
 						onChange={(event) => setValue(name, event ? dayjs(event).toISOString() : null)}

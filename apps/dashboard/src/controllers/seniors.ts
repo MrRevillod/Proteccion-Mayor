@@ -5,6 +5,8 @@ import { Request, Response, NextFunction } from "express"
 import { AppError, constants, httpRequest } from "@repo/lib"
 import { generateSelect, generateWhere, seniorSelect } from "../utils/filters"
 import { deleteProfilePicture, filesToFormData, uploadProfilePicture } from "../utils/files"
+import { sendMail } from "../utils/mailer"
+import { seniorWelcomeEmailBody } from "../utils/emailTemplates"
 
 /// Controlador para manejar el registro de adultos mayores desde la aplicación móvil
 export const registerFromMobile = async (req: Request, res: Response, next: NextFunction) => {
@@ -83,6 +85,7 @@ export const handleSeniorRequest = async (req: Request, res: Response, next: Nex
 
 		// Si la solicitud es rechazada, se eliminan los archivos enviados
 		// y se elimina el adulto mayor de la base de datos
+
 		if (senior.validated) {
 			throw new AppError(409, "Esta solicitud ya ha sido validada")
 		}
@@ -115,6 +118,8 @@ export const handleSeniorRequest = async (req: Request, res: Response, next: Nex
 				gender: Gender[gender as keyof typeof Gender],
 			},
 		})
+
+		await sendMail(senior?.email || "", "Solicitud de registro aceptada", seniorWelcomeEmailBody(senior.name))
 
 		return res.status(200).json({ message: "La solicitud ha sido aceptada", values: {} })
 	} catch (error: unknown) {

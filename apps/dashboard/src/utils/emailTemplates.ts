@@ -40,3 +40,12 @@ export const welcomeBody = (name: string, email: string, password: string) => `
   </p>
   ${footerTemplate}
 `
+
+export const seniorWelcomeEmailBody = (name: string) => `
+  ${headerTemplate("Bienvenido a la Plataforma de Protección Mayor de la Municipalidad de Temuco")}
+  <p>Estimado(a) ${name},</p>
+  <p>Nos complace informarle que su cuenta ha sido validada exitosamente. Ahora puede acceder a todos los servicios disponibles en nuestra plataforma.</p>
+  <p>Si tiene alguna pregunta o necesita asistencia, no dude en ponerse en contacto con nuestro equipo de soporte.</p>
+  <p>¡Gracias por confiar en nosotros!</p>
+  ${footerTemplate}
+`
