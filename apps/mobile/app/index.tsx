@@ -1,4 +1,5 @@
 import React from "react"
+import SplashScreen from "@/screens/splashScreen"
 import Menu from "../screens/menu"
 import Home from "@/screens/home/home"
 import Login from "./login"
@@ -24,7 +25,8 @@ const App = () => {
 		<AuthProvider>
 			<FontSizeProvider>
 				<NavigationContainer independent={true}>
-					<Stack.Navigator initialRouteName="Menu" screenOptions={{ headerShown: false }}>
+					<Stack.Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
+						<Stack.Screen name="Splash" component={SplashScreen} />
 						<Stack.Screen name="Menu" component={Menu} />
 						<Stack.Screen name="Register" component={Register} />
 						<Stack.Screen name="Login" component={Login} />

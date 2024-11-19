@@ -46,8 +46,10 @@ const CenterScreen = ({ navigation }: any) => {
 					</View>
 					<View style={styles.midContainer}>
 						{centers.map((center) => (
-              <TouchableOpacity onPress={() => navigation.navigate("Events", { serviceId, centerId: center.id })}>
-								<DataDisplayer key={center.id} titleField={center.name} descriptionField={center.address} isCC />
+							<TouchableOpacity
+								key={center.id}
+								onPress={() => navigation.navigate("Events", { serviceId, centerId: center.id })}>
+								<DataDisplayer titleField={center.name} descriptionField={center.address} isCC />
 							</TouchableOpacity>
 						))}
 					</View>

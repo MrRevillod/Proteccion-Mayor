@@ -71,9 +71,10 @@ const EventScreen = ({ navigation }: any) => {
                         {events.map((event) => {
                             const startDate = new Date(event.start)
                             return (
-                                <TouchableOpacity onPress={() => navigation.navigate("Hours", { event })}>
+                                <TouchableOpacity
+                                    key={event.id}
+                                    onPress={() => navigation.navigate("Hours", { event })}>
                                     <DataDisplayer
-                                        key={event.id}
                                         titleField={startDate.toLocaleDateString()}
                                         descriptionField={startDate.toLocaleTimeString()}
                                         imgPath={{ uri: `${SERVER_URL}/api/storage/public/services/${event.serviceId}.webp` }} />

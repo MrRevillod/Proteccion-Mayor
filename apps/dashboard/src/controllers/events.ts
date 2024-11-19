@@ -274,10 +274,10 @@ export const getByService = async (req: Request, res: Response, next: NextFuncti
 
 export const getByServiceCenter = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const { serviceId,centerId } = req.params
+		const { serviceId, centerId } = req.params
 
 		const events = await prisma.event.findMany({
-			where: { serviceId: Number(serviceId),centerId:Number(centerId) },
+			where: { serviceId: Number(serviceId), centerId: Number(centerId) },
 		})
 
 		console.log(events)
