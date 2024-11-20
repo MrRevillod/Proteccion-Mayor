@@ -17,6 +17,7 @@ import { Center, Events, Event, SuperSelectField } from "../../lib/types"
 import { deleteEvent, getCenters, getEvents } from "../../lib/actions"
 import { useAuth } from "@/context/AuthContext"
 import { useModal } from "@/context/ModalContext"
+import { useSocket } from "@/context/SocketContext"
 
 const ProfessionalAgendaPage: React.FC = () => {
 	const location = useLocation()
@@ -32,6 +33,9 @@ const ProfessionalAgendaPage: React.FC = () => {
 		const query = new URLSearchParams(location.search).toString()
 		setPageQuery(query)
 	}, [location])
+
+    const { socket, listenEvent } = useSocket()
+
 
 	const { user } = useAuth()
 
@@ -61,6 +65,11 @@ const ProfessionalAgendaPage: React.FC = () => {
 		if (centerFilter) query.append("centerId", centerFilter)
 		navigate({ search: query.toString() })
 	}
+
+    listenEvent(["newEvent", "updatedEvent", "deletedEvent"], (ev) => {
+        refetch()
+        console.log("socketEvent", ev)
+    })
 
 	if (error) message.error("Error al cargar los datos")
 

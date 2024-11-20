@@ -41,7 +41,7 @@ export const SocketProvider = ({ children }: { children?: ReactNode }) => {
 				if (newSocket.active) {
 					console.log("....reconectando socket")
 				} else {
-					console.log(reason)
+                    console.log(reason)
 				}
 			})
 

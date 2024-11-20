@@ -41,7 +41,6 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 		}
 
 		const userExists = await prisma.administrator.findFirst({ where: filter })
-
 		// Si el admin ya existe se verificará que campo está en conflicto
 		// Y se retornará un arreglo con los campos en conflicto
 

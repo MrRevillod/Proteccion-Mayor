@@ -218,10 +218,13 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 
 		const updatedEvent = await prisma.event.update({
 			where: { id: Number(id) },
-			data: { seniorId: senior.id },
-		})
-		io.to("ADMIN").emit("updatedEvent", formatEvent(updatedEvent))
-
+            data: { seniorId: senior.id },
+            select: eventSelect
+        }) 
+        console.log("profesionalId", updatedEvent)
+        io.to("ADMIN").emit("updatedEvent", formatEvent(updatedEvent))
+        io.to(updatedEvent.professionalId||"").emit("updatedEvent", formatEvent(updatedEvent))
+        
 		return res.status(200).json({ values: updatedEvent })
 	} catch (error) {
 		next(error)
@@ -257,6 +260,8 @@ export const cancelReserve = async (req: Request, res: Response, next: NextFunct
 
 export const getByService = async (req: Request, res: Response, next: NextFunction) => {
 	try {
+
+        
 		const { serviceId } = req.params
 
 		const centers = await prisma.event.findMany({
@@ -266,7 +271,7 @@ export const getByService = async (req: Request, res: Response, next: NextFuncti
 			},
 			distinct: ["centerId"],
 		})
-
+        console.log("centers", centers)
 		return res.status(200).json({ centers })
 	} catch (error) {
 		next(error)
