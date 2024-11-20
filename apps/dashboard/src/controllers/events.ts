@@ -5,12 +5,10 @@ import { prisma } from "@repo/database"
 import { Senior } from "@prisma/client"
 import { sendMail } from "../utils/mailer"
 import { AppError } from "@repo/lib"
-import { createEvents } from "../utils/events"
-import { appointmentNotification, cancelEventNotification } from "../utils/emailTemplates"
 import { Request, Response, NextFunction } from "express"
 import { createEvents, eventsById, formatEvent } from "../utils/events"
 import { EventQuery, eventSelect, generateWhere } from "../utils/filters"
-import { boolean, string } from "zod"
+import { appointmentNotification, cancelEventNotification } from "../utils/emailTemplates"
 
 // Controlador de tipo select puede recibir un query para seleccionar campos específicos
 // y para filtrar por claves foraneas
@@ -191,6 +189,7 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 				center: true,
 				start: true,
 				end: true,
+				seniorId: true,
 			},
 		})
 
@@ -229,13 +228,12 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 		if (previousReservation) {
 			throw new AppError(409, "Ya reservaste este servicio en los ultimos 2 meses")
 		}
-    
 
 		const updatedEvent = await prisma.event.update({
 			where: { id: Number(id) },
 			data: { seniorId: senior.id },
 		})
-    
+
 		io.to("ADMIN").emit("updatedEvent", formatEvent(updatedEvent))
 
 		if (!event.professional) throw new AppError(404, "Professional no encontrado")
@@ -249,10 +247,9 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 			event.start,
 			event.end,
 		)
-    
+
 		await sendMail(event.professional.email, `Cita de ${event.service.name} reservada`, htmlTemplate)
 		return res.status(200).json({ values: updatedEvent })
-    
 	} catch (error) {
 		next(error)
 	}

@@ -9,8 +9,6 @@ import { useRoute } from "@react-navigation/native" // Para obtener parámetros 
 import DateTimePicker from '@react-native-community/datetimepicker'
 import AppText from "@/components/appText"
 import { Picker } from "@react-native-picker/picker"
-import { set } from "react-hook-form"
-
 
 export type Event = {
     id: number,
@@ -88,7 +86,7 @@ const EventScreen = ({ navigation }: any) => {
             if (response?.data) {
                 const eventList = response.data.events as Event[]
                 let eventos = new Array<Event>()
-                if (typeDate === "day" && typeof currentDate === "object") { 
+                if (typeDate === "day" && typeof currentDate === "object") {
                     eventList.map((event) => {
                         const startDate = new Date(event.start)
                         if (startDate.getDate() === currentDate.getDate() && startDate.getMonth() === currentDate.getMonth()) {
@@ -137,11 +135,11 @@ const EventScreen = ({ navigation }: any) => {
                                     backgroundColor: Colors.green,
                                 }}
 
-                            onChange={async (event, selectedDate) => {
-                                setShowPicker(false)
-                                const currentDate = selectedDate || date
-                                setDate(currentDate)
-                                await mostrarEventos(currentDate, "day")
+                                onChange={async (event, selectedDate) => {
+                                    setShowPicker(false)
+                                    const currentDate = selectedDate || date
+                                    setDate(currentDate)
+                                    await mostrarEventos(currentDate, "day")
                                 }}
 
                             />}
@@ -153,7 +151,8 @@ const EventScreen = ({ navigation }: any) => {
                                     mostrarEventos(month, "month")
                                 }} style={{ paddingHorizontal: 15 }} />
                                 <CustomButton title={date.toLocaleDateString()} onPress={() => setShowPicker(true)} textStyle={{ color: Colors.green }}
-                                    style={{ paddingHorizontal: 10, marginEnd: 10, backgroundColor: "white", borderColor: Colors.green, borderWidth: 1 }} />
+                                    style={{ paddingHorizontal: 10, marginEnd: 10, backgroundColor: "white", borderColor: Colors.green, borderWidth: 1 }}
+                                />
                             </>
                             : <>
                                 <CustomButton title="Por Día" onPress={() => {
@@ -191,7 +190,6 @@ const EventScreen = ({ navigation }: any) => {
                             const startDate = new Date(event.start)
                             const endDate = new Date(event.end)
                             return (
-
                                 <TouchableOpacity onPress={() => navigation.navigate("Hours", { event })} style={{ margin: 3 }}>
                                     {!perDay ? <Pill text={startDate.toLocaleDateString() + "  " + startDate.toLocaleTimeString().slice(0, 5) + " - " + endDate.toLocaleTimeString().slice(0, 5)} /> :
                                         <Pill text={startDate.toLocaleTimeString().slice(0, 5) + " - " + endDate.toLocaleTimeString().slice(0, 5)} />}
