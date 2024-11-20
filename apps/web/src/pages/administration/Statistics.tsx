@@ -27,7 +27,7 @@ type StatisticResponse = {
 const StatisticsPage: React.FC = () => {
 	const [selectedDate, setSelectedDate] = useState<string>(dayjs().year().toString())
 	const [reportSelection, setReportSelection] = useState<ReportType>("general")
-
+	const [selectedProfessional, setSelectedProfessional] = useState<string>("")
 	const [reportData, setReportData] = useState<any[]>([])
 	const [assistanceSelection, setAssistanceSelection] = useState<AssistanceType[]>([
 		"assistance",
@@ -45,7 +45,7 @@ const StatisticsPage: React.FC = () => {
 
 	useRequest<StatisticResponse>({
 		action: getReports,
-		query: `type=${reportSelection}&date=${selectedDate}`,
+		query: `type=${reportSelection}&date=${selectedDate}${reportSelection === "byProfessional" ? `&professionalId=${selectedProfessional}` : ""}`,
 		onSuccess: (data) => {
 			setReportData(data.report)
 		},
@@ -58,18 +58,20 @@ const StatisticsPage: React.FC = () => {
 	const titles = (type: ReportType) => {
 		switch (type) {
 			case "general":
-				return `Reporte general de asistencia del año ${selectedDate}`
+				return `Reporte general de asistencia del aÃ±o ${selectedDate}`
 			case "byService":
 				return `Reporte de asistencia por servicio en ${formatStrDate(selectedDate)}`
 			case "byCenter":
 				return `Reporte de asistencia por centros en ${formatStrDate(selectedDate)}`
+			case "byProfessional":
+				return `Reporte de asistencia por profesional ${formatStrDate(selectedDate)}`
 		}
 	}
 
 	return (
 		<PageLayout
 			pageTitle="Reporte general del sistema"
-			customRightSide={<StatisticSelection setReportSelection={setReportSelection} />}
+			customRightSide={<StatisticSelection setReportSelection={setReportSelection} setSelectedProfessional={setSelectedProfessional} />}
 		>
 			<StatisticMainLayout>
 				<ChartLayout
@@ -77,10 +79,10 @@ const StatisticsPage: React.FC = () => {
 					reportSelection={reportSelection}
 					setDate={setSelectedDate}
 					title={titles(reportSelection)}
-					monthSelect={reportSelection !== "general"}
+					monthSelect={reportSelection !== "general" && reportSelection !== "byProfessional"}
 					yearSelect
 				>
-					<Show when={reportSelection === "general"}>
+					<Show when={reportSelection === "general" || reportSelection === "byProfessional"}>
 						<ResponsiveContainer width="100%" height={500} style={{ marginLeft: "0px" }}>
 							<LineChart data={reportData} margin={{ top: 20, right: 20, left: -25, bottom: 40 }}>
 								<CartesianGrid strokeDasharray="3 3" />
@@ -112,7 +114,7 @@ const StatisticsPage: React.FC = () => {
 							</LineChart>
 						</ResponsiveContainer>
 					</Show>
-					<Show when={reportSelection !== "general"}>
+					<Show when={reportSelection !== "general" && reportSelection !== "byProfessional"}>
 						<ResponsiveContainer width="100%" height={500} style={{ marginLeft: "0px" }}>
 							<BarChart data={reportData} margin={{ top: 20, right: 20, left: -25, bottom: 20 }}>
 								<CartesianGrid strokeDasharray="3 3" />

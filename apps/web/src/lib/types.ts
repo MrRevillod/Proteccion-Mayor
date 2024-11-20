@@ -132,5 +132,5 @@ export type SuperSelectField = {
 	value: string
 }
 
-export type ReportType = "general" | "byService" | "byCenter"
+export type ReportType = "general" | "byService" | "byCenter" | "byProfessional"
 export type AssistanceType = "assistance" | "absence" | "unreserved"
