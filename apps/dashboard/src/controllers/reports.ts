@@ -9,7 +9,7 @@ import { NextFunction, Request, Response } from "express"
 
 type AssistanceVariants = "assistance" | "absence" | "unreserved"
 
-const isValidReportType = (type: string) => ["general", "byCenter", "byService"].includes(type)
+const isValidReportType = (type: string) => ["general", "byCenter", "byService", "byProfessional"].includes(type)
 
 const genMonthsArray = (year: number) => {
 	return Array.from({ length: 12 }, (_, i) => dayjs().year(year).month(i).format("YYYY-MM"))
@@ -61,8 +61,10 @@ const makeFilter = (date: Dayjs, dateType: "year" | "month", other?: Prisma.Even
 	}
 }
 
-const getGeneralReport = async (date: Dayjs) => {
-	const [assistance, absence, unreserved] = await getBaseEvents(makeFilter(date, "year"))
+const getGeneralReport = async (date: Dayjs, professionalId?: string) => {
+	const professionalFilter = professionalId ? { professionalId } : undefined
+	const [assistance, absence, unreserved] = await getBaseEvents(makeFilter(date, "year", professionalFilter))
+
 	const months = genMonthsArray(date.year())
 
 	return months.map((month) => {
@@ -115,21 +117,29 @@ export const generateStatisticReport = async (req: Request, res: Response, next:
 	try {
 		const dateQuery = req.query.date as string
 		const reportType = req.query.type as string
+		const professionalId = req.query.professionalId as string
 
 		if (!isValidReportType(reportType as string)) {
 			throw new AppError(400, "Invalid report type")
 		}
 
+		if (reportType === "byProfessional" && !professionalId) {
+			throw new AppError(400, "Expected professionalId query parameter")
+		}
+
 		const date = match(reportType)
 			.with("byCenter", () => dayjs(dateQuery))
 			.with("byService", () => dayjs(dateQuery))
+
+			.with("byProfessional", () => dayjs(Number(dateQuery)))
 			.with("general", () => dayjs().year(Number(dateQuery)))
 			.run()
 
 		const data = await match(reportType)
-			.with("general", async () => await getGeneralReport(date))
 			.with("byCenter", async () => await getByCenterReport(date))
 			.with("byService", async () => await getByServiceReport(date))
+			.with("byProfessional", async () => await getGeneralReport(date, professionalId))
+			.with("general", async () => await getGeneralReport(date))
 			.run()
 
 		res.json({ values: { report: data } })
