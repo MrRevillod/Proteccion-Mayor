@@ -62,9 +62,8 @@ const makeFilter = (date: Dayjs, dateType: "year" | "month", other?: Prisma.Even
 }
 
 const getGeneralReport = async (date: Dayjs, professionalId?: string) => {
-	const professionalFilter = professionalId ? { professionalId } : undefined
+	const professionalFilter = professionalId ? { professionalId: { equals: professionalId } } : undefined
 	const [assistance, absence, unreserved] = await getBaseEvents(makeFilter(date, "year", professionalFilter))
-
 	const months = genMonthsArray(date.year())
 
 	return months.map((month) => {
@@ -131,7 +130,7 @@ export const generateStatisticReport = async (req: Request, res: Response, next:
 			.with("byCenter", () => dayjs(dateQuery))
 			.with("byService", () => dayjs(dateQuery))
 
-			.with("byProfessional", () => dayjs(Number(dateQuery)))
+			.with("byProfessional", () => dayjs().year(Number(dateQuery)))
 			.with("general", () => dayjs().year(Number(dateQuery)))
 			.run()
 

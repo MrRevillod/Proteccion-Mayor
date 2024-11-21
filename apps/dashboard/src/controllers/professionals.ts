@@ -1,13 +1,32 @@
 import { hash } from "bcrypt"
 import { prisma } from "@repo/database"
-import { AppError, constants } from "@repo/lib"
+import { AppError } from "@repo/lib"
+import { sendMail } from "../utils/mailer"
+import { welcomeBody } from "../utils/emailTemplates"
+import { generatePassword } from "../utils/password"
 import { Prisma, Professional } from "@prisma/client"
 import { Request, Response, NextFunction } from "express"
 import { deleteProfilePicture, uploadProfilePicture } from "../utils/files"
 import { generateSelect, generateWhere, ProfessionalQuery, professionalSelect } from "../utils/filters"
-import { generatePassword } from "../utils/password"
-import { sendMail } from "../utils/mailer"
-import { welcomeBody } from "../utils/emailTemplates"
+
+export const getOneById = async (req: Request, res: Response, next: NextFunction) => {
+	const selectQuery = req.query.select?.toString()
+	const select = generateSelect<Prisma.ProfessionalSelect>(selectQuery, professionalSelect)
+
+	try {
+		if (!req.query.id) throw new AppError(400, "Se esperaba un id")
+
+		const professional = await prisma.professional.findUnique({
+			select,
+			where: { id: req.query.id.toString() },
+		})
+
+		if (!professional) throw new AppError(404, "El profesional no existe")
+		return res.status(200).json({ values: professional })
+	} catch (error) {
+		next(error)
+	}
+}
 
 // Controlador de tipo select puede recibir un query para seleccionar campos específicos
 // y para filtrar por claves foraneas

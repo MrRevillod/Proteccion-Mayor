@@ -77,6 +77,7 @@ export const eventSelect: Prisma.EventSelect = {
 // --- Filtro y Query para la entidad Profesional ---
 
 export interface ProfessionalQuery extends Query {
+	id?: string
 	serviceId?: string
 	select?: string
 }

@@ -232,7 +232,10 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 		const updatedEvent = await prisma.event.update({
 			where: { id: Number(id) },
 			data: { seniorId: senior.id },
+			select: eventSelect,
 		})
+
+		console.log("updatedEvent", updatedEvent)
 
 		io.to("ADMIN").emit("updatedEvent", formatEvent(updatedEvent))
 
@@ -247,6 +250,8 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 			event.start,
 			event.end,
 		)
+
+		console.log("htmlTemplate", htmlTemplate)
 
 		await sendMail(event.professional.email, `Cita de ${event.service.name} reservada`, htmlTemplate)
 		return res.status(200).json({ values: updatedEvent })

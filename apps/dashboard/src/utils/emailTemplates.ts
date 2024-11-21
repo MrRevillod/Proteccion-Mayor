@@ -1,9 +1,7 @@
-
 import dayjs from "dayjs"
 dayjs.locale("es")
 
 import { services } from "@repo/lib"
-
 
 const headerTemplate = (title: string) => `
   <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">

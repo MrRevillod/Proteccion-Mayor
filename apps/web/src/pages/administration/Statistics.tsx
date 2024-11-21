@@ -4,19 +4,18 @@ import PageLayout from "@/layouts/PageLayout"
 
 import { Show } from "@/components/ui/Show"
 import { useState } from "react"
-import { getReports } from "@/lib/actions"
 import { useRequest } from "@/hooks/useRequest"
 import { StatisticSelection } from "@/components/StatisticSelection"
 import { AssistanceSelection } from "@/components/AssistanceSelection"
-import { AssistanceType, ReportType } from "@/lib/types"
+import { getOneProfessional, getProfessionals, getReports } from "@/lib/actions"
 import { abbreviateCenterName, capitalize } from "@/lib/formatters"
 import { ChartLayout, StatisticMainLayout } from "@/layouts/StatisticLayout"
+import { AssistanceType, Professional, QueryActionProps, ReportType } from "@/lib/types"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts"
 
 import "@/main.css"
 import "dayjs/locale/es"
-import { Statistic, Table } from "antd"
-import { statisticColumns } from "@/lib/columns"
+import { api } from "@/lib/axios"
 
 dayjs.locale("es")
 
@@ -24,10 +23,15 @@ type StatisticResponse = {
 	report: any[]
 }
 
+export type SelectedProfessional = {
+	id: string
+	name: string
+}
+
 const StatisticsPage: React.FC = () => {
 	const [selectedDate, setSelectedDate] = useState<string>(dayjs().year().toString())
 	const [reportSelection, setReportSelection] = useState<ReportType>("general")
-	const [selectedProfessional, setSelectedProfessional] = useState<string>("")
+	const [selectedProfessional, setSelectedProfessional] = useState<SelectedProfessional>({ id: "", name: "" })
 	const [reportData, setReportData] = useState<any[]>([])
 	const [assistanceSelection, setAssistanceSelection] = useState<AssistanceType[]>([
 		"assistance",
@@ -45,9 +49,18 @@ const StatisticsPage: React.FC = () => {
 
 	useRequest<StatisticResponse>({
 		action: getReports,
-		query: `type=${reportSelection}&date=${selectedDate}${reportSelection === "byProfessional" ? `&professionalId=${selectedProfessional}` : ""}`,
+		query: `type=${reportSelection}&date=${selectedDate}&${reportSelection === "byProfessional" ? `professionalId=${selectedProfessional.id}` : ""}`,
 		onSuccess: (data) => {
 			setReportData(data.report)
+		},
+	})
+
+	useRequest<Professional>({
+		action: getOneProfessional,
+		query: `id=${selectedProfessional.id}&select=name`,
+		trigger: reportSelection === "byProfessional" && selectedProfessional.id !== "",
+		onSuccess: (data) => {
+			setSelectedProfessional({ id: selectedProfessional.id, name: data.name })
 		},
 	})
 
@@ -58,13 +71,13 @@ const StatisticsPage: React.FC = () => {
 	const titles = (type: ReportType) => {
 		switch (type) {
 			case "general":
-				return `Reporte general de asistencia del aÃ±o ${selectedDate}`
+				return `Reporte general de asistencia del año ${selectedDate}`
 			case "byService":
 				return `Reporte de asistencia por servicio en ${formatStrDate(selectedDate)}`
 			case "byCenter":
 				return `Reporte de asistencia por centros en ${formatStrDate(selectedDate)}`
 			case "byProfessional":
-				return `Reporte de asistencia por profesional ${formatStrDate(selectedDate)}`
+				return `Reporte de asistencia de ${selectedProfessional.name} en el año ${selectedDate}`
 		}
 	}
 
@@ -82,7 +95,7 @@ const StatisticsPage: React.FC = () => {
 					monthSelect={reportSelection !== "general" && reportSelection !== "byProfessional"}
 					yearSelect
 				>
-					<Show when={reportSelection === "general" || reportSelection === "byProfessional"}>
+					<Show when={reportSelection === "general" || (reportSelection === "byProfessional" && !!selectedProfessional.id)}>
 						<ResponsiveContainer width="100%" height={500} style={{ marginLeft: "0px" }}>
 							<LineChart data={reportData} margin={{ top: 20, right: 20, left: -25, bottom: 40 }}>
 								<CartesianGrid strokeDasharray="3 3" />

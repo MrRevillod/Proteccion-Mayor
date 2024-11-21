@@ -15,6 +15,7 @@ const router: Router = Router()
 
 // Obtener todos los profesionales -- Requiere rol de administrador
 router.get("/", validateRole(["ADMIN"]), professionals.getAll)
+router.get("/unique", validateRole(["ADMIN"]), professionals.getOneById)
 
 // Crear un profesional -- Requiere rol de administrador
 router.post("/", validateSchema(Create), validateRole(["ADMIN"]), professionals.create)
