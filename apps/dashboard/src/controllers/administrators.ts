@@ -4,6 +4,9 @@ import { prisma } from "@repo/database"
 import { AppError, constants } from "@repo/lib"
 import { Request, Response, NextFunction } from "express"
 import { deleteProfilePicture, uploadProfilePicture } from "../utils/files"
+import { generatePassword } from "../utils/password"
+import { sendMail } from "../utils/mailer"
+import { welcomeBody } from "../utils/emailTemplates"
 
 // Controlador para obtener todos los administradores de la base de datos
 // se excluye el campo password de la respuesta
@@ -30,7 +33,6 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
 export const create = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const { id, name, email } = req.body
-		const defaulAdminPassword = await hash(constants.DEFAULT_ADMIN_PASSWORD, 10)
 
 		// Verificamos si el administrador ya existe
 
@@ -40,24 +42,26 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 
 		const userExists = await prisma.administrator.findFirst({ where: filter })
 
+		// Si el admin ya existe se verificará que campo está en conflicto
+		// Y se retornará un arreglo con los campos en conflicto
+
 		if (userExists) {
 			const conflicts = []
-
-			// Si el admin ya existe se verificará que campo está en conflicto
-
 			if (userExists?.id === id) conflicts.push("id")
 			if (userExists?.email === email) conflicts.push("email")
-
-			// Y se retornará un arreglo con los campos en conflicto
 			throw new AppError(409, "El administrador ya existe", { conflicts })
 		}
+
+		const [password, hash] = await generatePassword()
 
 		// Se crea el administrador y se retorna la respuesta
 		// excluyendo el campo password ya que no es un dato de dominio público
 
-		const { password, ...administrator } = await prisma.administrator.create({
-			data: { id, name, email, password: defaulAdminPassword },
+		const { password: pwd, ...administrator } = await prisma.administrator.create({
+			data: { id, name, email, password: hash },
 		})
+
+		await sendMail(email, "Bienvenido", welcomeBody(name, email, password))
 
 		return res.status(201).json({ values: { modified: administrator } })
 	} catch (error) {

@@ -2,6 +2,7 @@ import dayjs, { Dayjs } from "dayjs"
 import { match } from "ts-pattern"
 import { prisma } from "@repo/database"
 import { AppError } from "@repo/lib"
+import { Event } from "@prisma/client"
 
 // Repeat values
 // La repetición solo es ejecutada por un mes
@@ -82,6 +83,8 @@ const createEvent = async (data: CreateEventData) => {
 		throw new AppError(400, "No es posible crear eventos los fin de semana")
 	}
 
+	// Se verifica si hay superposición de eventos
+
 	const overlap = await hasOverlap({
 		startDate: start,
 		endDate: end,
@@ -89,7 +92,12 @@ const createEvent = async (data: CreateEventData) => {
 		seniorId,
 	})
 
+	// Si hay superposición de eventos y no hay repetición, se lanza un error
+	// ya que el evento que se quiere crear se superpone con otro evento
+
 	if (overlap && !repeat) throw Error("Superposición de horas")
+
+	// Si no hay superposición de eventos, se crea el evento en la base de datos
 
 	if (!overlap) {
 		await prisma.event.create({
@@ -103,6 +111,9 @@ const createEvent = async (data: CreateEventData) => {
 			},
 		})
 	}
+
+	// Si hay superposición y hay repetición, se salta la creación del evento
+	// ya que se prioriza la creación de eventos que no se superpongan
 }
 
 export const createEvents = async (data: CreateEventData) => {
@@ -143,4 +154,22 @@ export const createEvents = async (data: CreateEventData) => {
 		.otherwise(async () => {
 			await createEvent({ start, end, professionalId, serviceId, seniorId, centerId, repeat })
 		})
+}
+
+// Función que se encarga de dar formato a un evento con los datos necesarios
+// para ser mostrado en el calendario de la aplicación web
+
+export const formatEvent = (event: any) => {
+	return {
+		...event,
+		backgroundColor: event.service.color,
+		title: event.service.name,
+	}
+}
+
+export const eventsById = (events: Event[]) => {
+	return events.reduce((acc: any, event) => {
+		acc[event.id] = event
+		return acc
+	}, {})
 }

@@ -15,6 +15,7 @@ interface useRequestProps<T> {
 	query?: string
 	params?: Record<string, any>
 	onSuccess?: (data: T) => void
+	onError?: (error: ApiError) => void
 	trigger?: boolean
 }
 
@@ -56,7 +57,7 @@ interface useRequestResult<T> {
  */
 
 export const useRequest = <T,>({ action, ...props }: useRequestProps<T>): useRequestResult<T> => {
-	const { params, query, onSuccess, trigger = true } = props
+	const { params, query, onSuccess, onError, trigger = true } = props
 
 	const [data, setData] = useState<T | null>(null)
 	const [loading, setLoading] = useState<boolean>(false)
@@ -68,7 +69,7 @@ export const useRequest = <T,>({ action, ...props }: useRequestProps<T>): useReq
 	// es importante utilizar una ref para que el valor de la función
 	// no cambie en cada renderizado, un estado no sería adecuado
 
-	const fetchDataRef = useRef<() => void>(() => {})
+	const fetchDataRef = useRef<() => void>(() => { })
 
 	const fetchData = async () => {
 		try {
@@ -84,6 +85,7 @@ export const useRequest = <T,>({ action, ...props }: useRequestProps<T>): useReq
 				setStatus(err.response?.status)
 				setError(err.response?.data?.message || "Error desconocido")
 			}
+			if (onError) onError(err.response?.data)
 		} finally {
 			setLoading(false)
 		}

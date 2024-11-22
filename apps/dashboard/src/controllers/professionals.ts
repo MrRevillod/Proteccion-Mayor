@@ -5,6 +5,9 @@ import { Prisma, Professional } from "@prisma/client"
 import { Request, Response, NextFunction } from "express"
 import { deleteProfilePicture, uploadProfilePicture } from "../utils/files"
 import { generateSelect, generateWhere, ProfessionalQuery, professionalSelect } from "../utils/filters"
+import { generatePassword } from "../utils/password"
+import { sendMail } from "../utils/mailer"
+import { welcomeBody } from "../utils/emailTemplates"
 
 // Controlador de tipo select puede recibir un query para seleccionar campos específicos
 // y para filtrar por claves foraneas
@@ -32,7 +35,6 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
 export const create = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const { id, name, email, serviceId } = req.body
-		const DEFAULT_PASSWORD = await hash(constants.DEFAULT_PROFESSIONAL_PASSWORD, 10)
 
 		// Verificamos si el profesional ya existe
 
@@ -42,26 +44,28 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 
 		const userExists = await prisma.professional.findFirst({ where: filter })
 
+		// Si el profesional ya existe se verificará que campo está en conflicto
+		// Y se retornará un arreglo con los campos en conflicto
+
 		if (userExists) {
 			const conflicts = []
-
-			// Si el profesional ya existe se verificará que campo está en conflicto
-
 			if (userExists?.id === id) conflicts.push("id")
 			if (userExists?.email === email) conflicts.push("email")
-
-			// Y se retornará un arreglo con los campos en conflicto
 			throw new AppError(409, "El profesional ya existe", { conflicts })
 		}
+
+		const [password, hash] = await generatePassword()
 
 		if (!(await prisma.service.findFirst({ where: { id: serviceId } }))) {
 			throw new AppError(409, "El servicio no existe", { conflicts: ["serviceId"] })
 		}
 
 		const professional = await prisma.professional.create({
-			data: { id, name, email, password: DEFAULT_PASSWORD, serviceId },
+			data: { id, name, email, password: hash, serviceId },
 			select: professionalSelect,
 		})
+
+		await sendMail(email, "Bienvenido", welcomeBody(name, email, password))
 
 		return res.status(201).json({ values: { modified: professional } })
 	} catch (error) {

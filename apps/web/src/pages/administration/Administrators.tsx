@@ -15,12 +15,11 @@ import { deleteAdministrator, getAdministrators } from "../../lib/actions"
 const AdministratorsPage: React.FC = () => {
 	const [administrators, setAdministrators] = useState<Administrator[]>([])
 
-	const { error, loading, data } = useRequest<Administrator[]>({
+	const { loading, data } = useRequest<Administrator[]>({
 		action: getAdministrators,
 		onSuccess: (data) => setAdministrators(data),
+		onError: () => message.error("Error al cargar los datos"),
 	})
-
-	if (error) message.error("Error al cargar los datos")
 
 	return (
 		<PageLayout

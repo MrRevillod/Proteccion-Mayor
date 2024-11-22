@@ -8,7 +8,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { LoginFormData } from "../../lib/types"
 import { LoginFormSchema } from "../../lib/schemas"
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form"
-import { Loading } from "../../components/Loading"
 
 const LoginPage: React.FC = () => {
 	const lastLoginRole = localStorage.getItem("role")
@@ -18,7 +17,7 @@ const LoginPage: React.FC = () => {
 	})
 
 	const { handleSubmit } = methods
-	const { login, error, loading } = useAuth()
+	const { login, error } = useAuth()
 
 	const onSubmit: SubmitHandler<LoginFormData> = async (formData) => {
 		await login(formData)

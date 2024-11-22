@@ -31,7 +31,7 @@ const NewSeniorsPage: React.FC = () => {
 	return (
 		<PageLayout
 			pageTitle="Solicitudes de registro de personas mayores"
-			searchKeys={["id", "name"]}
+			searchKeys={["id", "name", "email"]}
 			data={data}
 			setData={setSeniors}
 		>

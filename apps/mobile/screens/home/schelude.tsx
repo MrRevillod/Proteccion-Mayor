@@ -70,7 +70,8 @@ const Schedule = ({ navigation }: any) => {
 	const renderEvent = ({ item }: { item: Event }) => {
 		const date = formatDate(item.start)
 		const concatString = date + "\n" + item.center.name
-		return <DataDisplayer titleField={item.service.name} descriptionField={concatString} event={{ bool: true, color: item.service.color }} />
+		return <DataDisplayer actionButton="Más..." titleField={item.service.name} descriptionField={concatString}
+			event={{ bool: true, color: item.service.color }} onPress={() => navigation.navigate("HourInfo", { event: item })} />
 	}
 
 	return (

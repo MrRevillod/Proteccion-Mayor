@@ -1,3 +1,6 @@
+import React from "react"
+import RenderPageError from "@/layouts/PageErrorLayout"
+
 import { api } from "../../lib/axios"
 import { Show } from "@/components/ui/Show"
 import { Input } from "../../components/ui/Input"
@@ -5,11 +8,12 @@ import { Helmet } from "react-helmet"
 import { message } from "antd"
 import { jwtDecode } from "jwt-decode"
 import { zodResolver } from "@hookform/resolvers/zod"
-import RenderPageError from "@/layouts/PageErrorLayout"
-import { useParams, useNavigate } from "react-router-dom"
 import { resetPasswordSchema } from "../../lib/schemas"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
+import { useParams, useNavigate } from "react-router-dom"
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form"
+import { useRequest } from "@/hooks/useRequest"
+import { Loading } from "@/components/Loading"
 
 interface ResetPasswordFormData {
 	password: string
@@ -17,22 +21,33 @@ interface ResetPasswordFormData {
 }
 
 const ValidatePasswordPage: React.FC = () => {
+	const navigate = useNavigate()
+	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState(false)
 	const [errorMessage, setErrorMessage] = useState("")
 	const { id, token, role } = useParams()
-	const navigate = useNavigate()
+
+	if (!role || !id || !token) {
+		return <RenderPageError title="Error - Enlace inválido" />
+	}
 
 	useEffect(() => {
-		api.get(`/dashboard/account/reset-password${id}/${token}/${role}`).catch(() => {
-			setError(true)
-			setErrorMessage("Error 404 - Link no válido")
-		})
+
+		setLoading(true)
+
+		api.get(`/dashboard/account/reset-password/${id}/${token}/${role}`)
+			.then(() => setError(false))
+			.catch(() => {
+				setError(true)
+				setErrorMessage("Error 404 - Enlace inválido")
+			})
+			.finally(() => setLoading(false))
+
 	}, [id, token, role])
 
-	if (!id || !role || !token) throw new Error("Datos incompletos")
-
-	const payload = jwtDecode<{ role: string }>(role)
+	const payload = jwtDecode<{ role: string }>(role as string)
 	const validationSchema = resetPasswordSchema(payload.role as any)
+
 	const methods = useForm<ResetPasswordFormData>({
 		resolver: zodResolver(validationSchema),
 	})
@@ -67,7 +82,11 @@ const ValidatePasswordPage: React.FC = () => {
 				<RenderPageError title={errorMessage} />
 			</Show>
 
-			<Show when={error === false}>
+			<Show when={loading}>
+				<Loading />
+			</Show>
+
+			<Show when={error === false && loading !== true}>
 				<div className="flex w-full login-container items-center justify-center absolute">
 					<div className="bg-white flex flex-col justify-center items-center px-12 w-11/12 md:w-1/2 lg:w-1/3 xl:w-5/12 2xl:w-1/4 rounded-lg h-4/6 login-form-container">
 						<div className="w-full max-w-md">
@@ -80,6 +99,7 @@ const ValidatePasswordPage: React.FC = () => {
 
 							<FormProvider {...methods}>
 								<form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+
 									<Input
 										name="password"
 										label="Nueva Contraseña"

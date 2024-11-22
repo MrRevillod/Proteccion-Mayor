@@ -6,6 +6,7 @@ import Login from "./login"
 import Center from "@/screens/home/center"
 import Event from "@/screens/home/events"
 import Hour from "@/screens/home/hour"
+import HourInfo from "@/screens/home/hourInfo"
 import Schelude from "@/screens/home/schelude"
 import Camera from "@/components/camera"
 import Profile from "../screens/myProfile"
@@ -46,6 +47,8 @@ const App = () => {
 						</Stack.Screen>
 						<Stack.Screen name="FontSize" component={FontSizeSelector} />
 						<Stack.Screen name="Hours" component={Hour} />
+                        <Stack.Screen name="HourInfo" component={HourInfo} />
+
 						<Stack.Screen name="Events" component={Event} />
 						<Stack.Screen name="Centers">
 							{(props) => (

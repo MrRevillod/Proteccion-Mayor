@@ -116,6 +116,7 @@ export const generateMonths = () => {
 	return months
 }
 
-export const formatCenterName = (centerName: string) => {
-	return centerName.split(".")[0] ?? centerName
+export const abbreviateCenterName = (name: string) => {
+	const words = name.split(" ")
+	return words.length > 1 ? words.map((word) => word[0]).join("") : words[0]
 }

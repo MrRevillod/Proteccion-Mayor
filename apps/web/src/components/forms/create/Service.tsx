@@ -3,6 +3,7 @@ import React from "react"
 import { Form } from "../Form"
 import { Input } from "../../ui/Input"
 import { Modal } from "../../Modal"
+import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ColorPicker } from "../../ColorPicker"
 import { createService } from "../../../lib/actions"
@@ -12,14 +13,21 @@ import { FormProps, Service } from "../../../lib/types"
 import { FormProvider, useForm } from "react-hook-form"
 
 const CreateService: React.FC<FormProps<Service>> = ({ data, setData }) => {
+	const [loading, setLoading] = useState(false)
 	const methods = useForm({
 		resolver: zodResolver(ServiceSchemas.Create),
 	})
 
 	return (
-		<Modal type="Create" title="Añadir nuevo servicio al sistema">
+		<Modal type="Create" title="Añadir nuevo servicio al sistema" loading={loading}>
 			<FormProvider {...methods}>
-				<Form<Service> data={data as Service[]} setData={setData} action={createService} actionType="create">
+				<Form<Service>
+					data={data as Service[]}
+					setData={setData}
+					action={createService}
+					actionType="create"
+					setLoading={setLoading}
+				>
 					<Input name="name" label="Nombre del Servicio" type="text" placeholder="Asesoría Legal" />
 					<Input name="title" label="Título del Servicio" type="text" placeholder="Abogado(a)" />
 					<Input
