@@ -2,7 +2,7 @@
     "extends": "@repo/typescript-config/base.json",
     "compilerOptions": {
         "lib": [
-            "ESNext"
+            "ES2015"
         ],
         "outDir": "./dist",
         "types": [

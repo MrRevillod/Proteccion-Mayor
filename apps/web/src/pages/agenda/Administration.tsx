@@ -28,7 +28,7 @@ const AdministrationAgendaPage: React.FC = () => {
 	const [professionals, setProfessionals] = useState<Professional[]>([])
 	const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([])
 
-	const { socket, listenEvent } = useSocket()
+	const { listenEvent } = useSocket()
 
 	// Se obtiene la query de la URL para utilizarla en el filtro de eventos
 	useEffect(() => {
@@ -68,9 +68,8 @@ const AdministrationAgendaPage: React.FC = () => {
 		onSuccess: (data) => setProfessionals(data),
 	})
 
-	listenEvent(["newEvent", "updatedEvent", "deletedEvent"], (ev) => {
+	listenEvent(["newEvent", "updatedEvent", "deletedEvent"], () => {
 		refetch()
-		console.log("socketEvent", ev)
 	})
 
 	const onFilterSubmit = (data: any) => {
@@ -87,7 +86,7 @@ const AdministrationAgendaPage: React.FC = () => {
 
 	return (
 		<PageLayout pageTitle="Agenda y horas de atención" create>
-			<div className="flex flex-row gap-4 w-full bg-gray-50 dark:bg-primary-darker rounded-lg">
+			<div className="flex flex-row gap-4 w-full agenda-container bg-gray-50 dark:bg-primary-darker rounded-lg">
 				{loading && <Loading />}
 				<EventFilter data={{ centers, services, professionals }} onSubmit={onFilterSubmit} />
 				<Calendar events={events} />
