@@ -70,8 +70,8 @@ const Schedule = ({ navigation }: any) => {
 	const renderEvent = ({ item }: { item: Event }) => {
 		const date = formatDate(item.start)
 		const concatString = date + "\n" + item.center.name
-        return <DataDisplayer actionButton="Más..." titleField={item.service.name} descriptionField={concatString}
-            event={{ bool: true, color: item.service.color }} onPress={() => navigation.navigate("HourInfo", { event: item })} />
+		return <DataDisplayer actionButton="Más..." titleField={item.service.name} descriptionField={concatString}
+			event={{ bool: true, color: item.service.color }} onPress={() => navigation.navigate("HourInfo", { event: item })} />
 	}
 
 	return (
@@ -91,10 +91,10 @@ const Schedule = ({ navigation }: any) => {
 					</View>
 
 					<View style={styles.midContainer}>
-                        {filteredEvents.length > 0 ? (
+						{filteredEvents.length > 0 ? (
 							<FlatList data={filteredEvents} keyExtractor={(item) => item.id.toString()} renderItem={renderEvent} />
 						) : (
-							<Text style={styles.noEventsText}>No hay eventos para mostrar</Text>
+							<Text style={styles.noEventsText}>Usted aún no ha reservado horas</Text>
 						)}
 					</View>
 					<View style={styles.bottomContainer}></View>
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
 	noEventsText: {
 		textAlign: "center",
 		marginTop: 20,
-		fontSize: 16,
+		fontSize: 20,
 		color: Colors.gray,
 	},
 })

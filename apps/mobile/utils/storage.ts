@@ -16,11 +16,7 @@ export const storeTokens = async (accessToken: string, refreshToken: string) => 
 }
 
 export const replaceAccessToken = async (newAccessToken: string) => {
-	try {
-		await AsyncStorage.setItem("accessToken", newAccessToken)
-	} catch (error) {
-		console.error("No se pudo reemplazar el access token", error)
-	}
+	await AsyncStorage.setItem("accessToken", newAccessToken)
 }
 
 export const getExpTime = async (): Promise<number | null> => {

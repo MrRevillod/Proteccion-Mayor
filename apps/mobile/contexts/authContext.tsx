@@ -37,7 +37,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 				setIsAuthenticated(true)
 				storeUser(publicUser)
 				setRole("SENIOR")
-				Alert.alert("Éxito", message)
 				console.log(getExpTime())
 			}
 		} catch (error: any) {

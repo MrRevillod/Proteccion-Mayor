@@ -65,12 +65,6 @@ const Home = ({ navigation }: any) => {
 									<Text style={styles.serviceText}>{service.name}</Text>
 								</TouchableOpacity>
 							))}
-							<TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate("Profile")}>
-								<View style={styles.iconContainer}>
-									<AntDesign name="user" size={width * 0.2} color="white" />
-								</View>
-								<Text style={styles.serviceText}>Mi Perfil</Text>
-							</TouchableOpacity>
 						</View>
 					</ScrollView>
 				</View>
