@@ -16,9 +16,8 @@ import CustomButton from "@/components/button"
 const rutImg = require("@/assets/images/profile/rut.png")
 const emailImg = require("@/assets/images/profile/email.png")
 const birthImg = require("@/assets/images/profile/birth.png")
-const ccImg = require("@/assets/images/profile/cc.png")
-const keyImg = require("@/assets/images/profile/key.png")
 const fontImg = require("@/assets/images/profile/font.png")
+const trashImg = require("@/assets/images/profile/trash.png")
 
 
 const { width } = Dimensions.get("window")
@@ -101,11 +100,11 @@ const Profile = ({ navigation }: any) => {
 			<GoBackButton navigation={navigation} visible />
 			<View style={styles.greenContainer}>
 				<>
-					<TouchableOpacity style={styles.circle} onPress={() => navigation.navigate("NewProfile")}>
+					<View style={styles.circle}>
 						{profileUri && (
 							<Image source={{ uri: profileUri }} style={{ width: width * 0.25, height: width * 0.25, borderRadius: 100 }} />
 						)}
-					</TouchableOpacity>
+					</View>
 					<Text style={{ color: Colors.white, fontSize: 18, fontWeight: "500" }}>{name}</Text>
 				</>
 			</View>
@@ -113,21 +112,14 @@ const Profile = ({ navigation }: any) => {
 				<View>
 					<DataDisplayer imgPath={rutImg} titleField="RUT" descriptionField={formattedRUT} />
 					{email ? (
-						<DataDisplayer imgPath={emailImg} titleField="Correo Eléctronico" descriptionField={email} actionButton="Cambiar" />
+						<DataDisplayer imgPath={emailImg} titleField="Correo Eléctronico" descriptionField={email} />
 					) : (
 						<DataDisplayer imgPath={emailImg} titleField="Aún no ingresa su Correo Eléctronico" actionButton="Ingresar" />
 					)}
-					<DataDisplayer
-						imgPath={ccImg}
-						titleField="Centro Comunitario Preferido"
-						descriptionField="CC Pedro de Valdivia"
-						actionButton="Cambiar"
-					/>
 					<DataDisplayer imgPath={birthImg} titleField="Edad" descriptionField={`${age} Años`} />
-					<DataDisplayer imgPath={keyImg} titleField="Cambiar Contraseña" actionButton="Cambiar" />
 					<DataDisplayer imgPath={fontImg} titleField="Cambiar tamaño de fuente" onPress={() => navigation.navigate("FontSize")} actionButton="Cambiar" />
 
-					<DataDisplayer titleField="Eliminar Cuenta" actionButton="ELIMINAR" onPress={deleteAlert} />
+					<DataDisplayer imgPath={trashImg} titleField="Eliminar Cuenta" actionButton="ELIMINAR" onPress={deleteAlert} />
 				</View>
 			</View>
 			<MenuBar navigation={navigation} />

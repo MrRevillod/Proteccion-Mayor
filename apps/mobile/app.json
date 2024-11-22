@@ -1,7 +1,7 @@
 {
 	"expo": {
-		"name": "mobile-app",
-		"slug": "mobile-app",
+		"name": "pm-temuco",
+		"slug": "pm-temuco",
 		"version": "1.0.0",
 		"orientation": "portrait",
 		"scheme": "myapp",

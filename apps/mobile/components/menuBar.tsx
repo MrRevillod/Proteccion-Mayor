@@ -2,6 +2,7 @@ import React from "react"
 import Colors from "@/components/colors"
 
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image } from "react-native"
+import { AntDesign } from "@expo/vector-icons"
 
 const { width } = Dimensions.get("window")
 
@@ -36,9 +37,11 @@ const MenuBar = ({ navigation }: any) => {
 							alignContent: "center",
 							alignItems: "center",
 						}}
+						onPress={() => navigation.navigate("Profile")}
+
 					>
-						<Image source={require("@/assets/images/menu/settings.png")} style={{ width: width * 0.08, height: width * 0.08 }} />
-						<Text style={{ fontSize: 16, padding: 0, margin: 0, color: Colors.white }}>Ajustes</Text>
+						<Image source={require("@/assets/images/menu/profile.png")} style={{ width: width * 0.08, height: width * 0.08 }} />
+						<Text style={{ fontSize: 16, padding: 0, margin: 0, color: Colors.white }}>Mi Perfil</Text>
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={{
@@ -81,4 +84,5 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 	},
+
 })

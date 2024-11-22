@@ -90,10 +90,10 @@ const Schedule = ({ navigation }: any) => {
 					</View>
 
 					<View style={styles.midContainer}>
-						{filteredEvents ? (
+						{filteredEvents.length > 0 ? (
 							<FlatList data={filteredEvents} keyExtractor={(item) => item.id.toString()} renderItem={renderEvent} />
 						) : (
-							<Text style={styles.noEventsText}>No hay eventos para mostrar</Text>
+							<Text style={styles.noEventsText}>Usted aún no ha reservado horas</Text>
 						)}
 					</View>
 					<View style={styles.bottomContainer}></View>
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
 	noEventsText: {
 		textAlign: "center",
 		marginTop: 20,
-		fontSize: 16,
+		fontSize: 20,
 		color: Colors.gray,
 	},
 })

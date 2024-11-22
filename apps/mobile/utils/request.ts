@@ -18,17 +18,17 @@ export const makeAuthenticatedRequest = async (
 
 		// Si el token ha expirado, intentamos renovarlo
 		// && method !== "DELETE"
-		if (isExp && accessToken) {
-			try {
-				accessToken = await renewAccessToken()
-			} catch (error) {
-				throw new Error("No se pudo renovar el token. Necesita autenticarse nuevamente.")
-			}
-		}
+		// if (isExp && accessToken) {
+		// 	try {
+		// 		accessToken = await renewAccessToken()
+		// 	} catch (error) {
+		// 		throw new Error("No se pudo renovar el token. Necesita autenticarse nuevamente.")
+		// 	}
+		// }
 
 		// Verifica si aún está en proceso de carga o los tokens no están disponibles
 		if (!accessToken && !refreshToken) {
-			throw new Error("Tokens no disponibles, el usuario necesita autenticarse de nuevo")
+			return null
 		}
 
 		const headers = {
