@@ -11,6 +11,8 @@ import { useState } from "react"
 import { useModal } from "@/context/ModalContext"
 import { message, Popover } from "antd"
 
+import "../main.css"
+
 interface CalendarProps {
 	events: Events
 }
@@ -99,6 +101,7 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 				eventClick={(event) => handleEdit(event)}
 				eventMouseEnter={handleEventMouseEnter}
 				eventMouseLeave={handleEventMouseLeave}
+				fixedWeekCount={false}
 				headerToolbar={{
 					left: "prev,next today",
 					center: "title",
@@ -107,9 +110,9 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 				locale={esLocale}
 				editable={false}
 				droppable={false}
-				selectable={true}
+				selectable={false}
 				dateClick={(info) => handleDateClick(info)}
-				height="auto"
+				height="100%"
 				timeZone="local"
 				dayCellClassNames={(info) => {
 					return isWeekend(info.date) ? "weekend-calendar-cell" : ""

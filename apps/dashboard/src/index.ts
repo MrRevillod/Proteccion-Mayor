@@ -13,13 +13,14 @@ import reportsRouter from "./routes/reports"
 import professionalsRouter from "./routes/professionals"
 import administrarorsRouter from "./routes/administrators"
 
-import { Server } from "socket.io"
+import { setupWorker } from "@socket.io/sticky"
 import { createServer } from "http"
-import { initSocket } from "./utils/socket"
+import { Server, Socket } from "socket.io"
+import { createAdapter } from "@socket.io/cluster-adapter"
 import { ServerToClientEvents } from "./socket"
-import { log, services, errorHandler, extensions } from "@repo/lib"
+import { log, services, errorHandler, extensions, UserRole } from "@repo/lib"
 
-export const createServer_ = (): express.Express => {
+export const createApp = (): express.Express => {
 	const app = express()
 
 	app.use(helmet())
@@ -45,19 +46,35 @@ export const createServer_ = (): express.Express => {
 	return app
 }
 
-const server = createServer_()
+const server = createApp()
 const http = createServer(server)
 
 export const io = new Server<ServerToClientEvents>(http, {
 	cors: {
-		origin: "*",
+		origin: services.WEB_APP.url,
 		methods: ["GET", "POST"],
 	},
 	path: "/api/dashboard/socket.io",
 	transports: ["websocket"],
 })
 
-initSocket(io)
+io.adapter(createAdapter())
+setupWorker(io)
+
+io.on("connection", (socket: Socket) => {
+	const role = socket.handshake.query.userRole as UserRole
+	const userId = socket.handshake.query.userId as string
+
+	console.log("socket conn", socket.client.request.url)
+
+	socket.join(role)
+	socket.join(userId)
+
+	socket.on("disconnect", () => {
+		socket.leave(role)
+		socket.leave(userId)
+	})
+})
 
 http.listen(services.DASHBOARD.port, () => {
 	log(`Dashboard service running on ${services.DASHBOARD.port}`)

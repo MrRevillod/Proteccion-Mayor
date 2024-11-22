@@ -1,10 +1,13 @@
+import clsx from "clsx"
 import React from "react"
 import PageLayout from "@/layouts/PageLayout"
 import DatetimeSelect from "@/components/ui/DatetimeSelect"
 
 import { api } from "@/lib/axios"
+import { Show } from "@/components/ui/Show"
 import { Input } from "@/components/ui/Input"
 import { Button } from "@/components/ui/Button"
+import { Loading } from "@/components/Loading"
 import { useRequest } from "@/hooks/useRequest"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@/hooks/useMutation"
@@ -16,9 +19,6 @@ import { MutateActionProps } from "@/lib/types"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { FieldValues, FormProvider, SubmitHandler, useForm } from "react-hook-form"
-import { Loading } from "@/components/Loading"
-import clsx from "clsx"
-import dayjs from "dayjs"
 
 const SeniorRegisterRequestPage: React.FC = () => {
 	const location = useLocation()
@@ -35,20 +35,17 @@ const SeniorRegisterRequestPage: React.FC = () => {
 	useEffect(() => {
 		if (!senior) navigate("/administracion/personas-mayores/nuevos")
 		else {
-
-			const seniorMinYear = dayjs().year() - 60
-
 			const defaultValues = {
 				rut: senior.id,
 				email: senior.email,
-				birthDate: dayjs().year(seniorMinYear).toISOString(),
+				birthDate: null
 			}
 
 			reset(defaultValues)
 		}
 	}, [senior])
 
-	useRequest({
+	const { loading: imageLoading } = useRequest({
 		action: getRegisterImages,
 		params: { id: senior.id },
 		onSuccess: (data) => {
@@ -83,7 +80,6 @@ const SeniorRegisterRequestPage: React.FC = () => {
 		})
 
 		setLoading(false)
-
 		navigate("/administracion/personas-mayores/nuevos")
 	}
 
@@ -101,18 +97,17 @@ const SeniorRegisterRequestPage: React.FC = () => {
 		})
 
 		setLoading(false)
-
 		navigate("/administracion/personas-mayores/nuevos")
 	}
 
 	return (
 		<PageLayout pageTitle="Solicitud de registro de persona mayor">
 			<section className={clsx(
-				loading && "opacity-50",
+				(loading || imageLoading) && "opacity-50",
 				"bg-white dark:bg-primary-dark p-4 rounded-lg flex flex-row gap-12"
 			)}>
 
-				{loading && <Loading />}
+				{(loading || imageLoading) && <Loading />}
 
 				<FormProvider {...methods}>
 					<form className="flex flex-col gap-4 w-1/3" onSubmit={handleSubmit(onSubmit)}>
@@ -180,27 +175,60 @@ const SeniorRegisterRequestPage: React.FC = () => {
 				<div className="w-2/3 grid grid-cols-2 gap-2">
 					<div className="col-span-1 grid grid-rows-2 gap-1">
 						<div className="row-span-1 rounded-lg dni-container max-h-[280px] overflow-hidden">
-							<Image
-								src={images[0]}
-								alt="Cédula Frontal"
-								className="object-cover object-center w-full h-full"
-							/>
+
+							<Show when={!!images[0]}>
+								<Image
+									src={images[0]}
+									alt="Cédula Frontal"
+									className="object-cover object-center w-full h-full"
+									fallback="/fallback.png"
+								/>
+							</Show>
+
+							<Show when={!images[0]}>
+								<div className="flex items-center justify-center w-full h-full">
+									<p>No se ha podido cargar la imagen de la cédula frontal</p>
+								</div>
+							</Show>
+
 						</div>
 						<div className="row-span-1 rounded-lg dni-container max-h-[280px] overflow-hidden">
-							<Image
-								src={images[1]}
-								alt="Cédula Reverso"
-								className="object-cover object-center w-full h-full"
-							/>
+
+							<Show when={!!images[1]}>
+								<Image
+									src={images[1]}
+									alt="Cédula Trasera"
+									className="object-cover object-center w-full h-full"
+									fallback="/fallback.png"
+								/>
+							</Show>
+
+							<Show when={!images[1]}>
+								<div className="flex items-center justify-center w-full h-full">
+									<p>No se ha podido cargar la imagen de la cédula trasera</p>
+								</div>
+							</Show>
+
 						</div>
 					</div>
 
 					<div className="col-span-1 rounded-lg dni-container overflow-hidden max-h-[580px]">
-						<Image
-							src={images[2]}
-							alt="Cartola Hogar"
-							className="object-cover object-center w-full h-full"
-						/>
+
+						<Show when={!!images[2]}>
+							<Image
+								src={images[2]}
+								alt="Foto de la persona mayor"
+								className="object-cover object-center w-full h-full"
+								fallback="/fallback.png"
+							/>
+						</Show>
+
+						<Show when={!images[2]}>
+							<div className="flex items-center justify-center w-full h-full">
+								<p>No se ha podido cargar la imagen de la persona mayor</p>
+							</div>
+						</Show>
+
 					</div>
 				</div>
 			</section>

@@ -2,7 +2,7 @@
 #!/bin/bash
 
 # Usage: ./deployment.sh [mode] [migrate] [seed]
-# mode: prod-nginx | prod-preview
+# mode: prod
 
 mode=$1
 

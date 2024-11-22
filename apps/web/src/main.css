@@ -7,6 +7,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.agenda-container {
+	height: calc(100vh - 20rem);
+}
+
 .fc-event {
 	@apply bg-light text-dark;
 	cursor: pointer;
@@ -37,12 +41,10 @@
 .dark .fc-daygrid-day {
 	background-color: #243342;
 	color: white;
-	/* Color para modo oscuro */
 }
 
 .dark .fc-daygrid-day .fc-daygrid-day.fc-day-today {
 	@apply bg-gray-medium;
-	/* Color para el día actual en modo claro */
 }
 
 .dark .fc-daygrid-day.fc-day-today {

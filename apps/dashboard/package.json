@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"start": "node dist/index.js",
-		"dev": "tsup --watch --onSuccess \"node dist/index.js\"",
+		"dev": "tsup --watch --onSuccess \"pm2 restart Dashboard || pm2 start dist/index.js --name Dashboard -i 2\"",
 		"build": "tsup",
 		"clean": "rm -rf dist",
 		"typecheck": "tsc --noEmit",
@@ -17,6 +17,8 @@
 	"dependencies": {
 		"@repo/database": "workspace:*",
 		"@repo/lib": "workspace:*",
+		"@socket.io/cluster-adapter": "^0.2.2",
+		"@socket.io/sticky": "^1.0.4",
 		"bcrypt": "^5.1.1",
 		"cors": "^2.8.5",
 		"dayjs": "^1.11.13",
