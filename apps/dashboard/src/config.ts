@@ -9,7 +9,7 @@ const storage = multer.memoryStorage()
 
 export const upload = multer({
 	storage: storage,
-	limits: { fileSize: 20 * 1048576 },
+	limits: { fileSize: 15 * 1048576 },
 	fileFilter: (req, file, cb) => {
 		if (!fileWhitelist.includes(file.mimetype)) {
 			return cb(new AppError(400, "Este tipo de archivo no esta permitido"))
@@ -23,5 +23,6 @@ export const seniorsRegisterMobileImages: RequestHandler = upload.fields([
 	{ name: "dni-b", maxCount: 1 },
 	{ name: "social", maxCount: 1 },
 ])
+
 export const singleImageupload: RequestHandler = upload.single("image")
 export const seniorsProfileImage: RequestHandler = upload.single("profile")

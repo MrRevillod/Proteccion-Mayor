@@ -65,8 +65,6 @@ io.on("connection", (socket: Socket) => {
 	const role = socket.handshake.query.userRole as UserRole
 	const userId = socket.handshake.query.userId as string
 
-	console.log("socket conn", socket.client.request.url)
-
 	socket.join(role)
 	socket.join(userId)
 

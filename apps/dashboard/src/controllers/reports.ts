@@ -123,7 +123,7 @@ export const generateStatisticReport = async (req: Request, res: Response, next:
 		}
 
 		if (reportType === "byProfessional" && !professionalId) {
-			throw new AppError(400, "Expected professionalId query parameter")
+			return res.json({ values: { report: new Array() } })
 		}
 
 		const date = match(reportType)

@@ -15,7 +15,6 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 import "@/main.css"
 import "dayjs/locale/es"
-import { api } from "@/lib/axios"
 
 dayjs.locale("es")
 

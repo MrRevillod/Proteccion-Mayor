@@ -3,6 +3,7 @@ import { log } from "."
 import { JsonResponse } from "./types"
 import { NextFunction, Request, Response } from "express"
 import { JsonWebTokenError } from "jsonwebtoken"
+import { MulterError } from "multer"
 
 export class AppError extends Error {
 	public code: number
@@ -24,9 +25,14 @@ export class AuthError extends AppError {
 export const errorHandler = (err: unknown, req: Request, res: Response, next: NextFunction) => {
 	log((err as Error).stack || "Uknown error from the error handler")
 
+	if (err instanceof MulterError && err.code === "LIMIT_FILE_SIZE") {
+		return res.status(400).json({ message: "El o las imagenes son demasiado pesadas" })
+	}
+
 	if (err instanceof ZodError) {
 		return res.status(400).json({ message: "Invalid fields", type: "error" })
 	}
+
 	if (err instanceof JsonWebTokenError) {
 		return res.status(401).json({
 			status: 401,
@@ -35,6 +41,7 @@ export const errorHandler = (err: unknown, req: Request, res: Response, next: Ne
 			values: null,
 		})
 	}
+
 	if (!(err instanceof AppError)) {
 		return res.status(500).json({ message: "Internal Server Error", type: "error" })
 	}

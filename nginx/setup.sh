@@ -15,3 +15,4 @@ else
 fi
 
 sudo nginx -s reload
+
