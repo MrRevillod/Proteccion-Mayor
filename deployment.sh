@@ -4,12 +4,10 @@
 # Usage: ./deployment.sh [mode] [install]
 # mode: build | deploy
 
-set -a && source .env && set +a
+set -a && source .env.prod && set +a
 
 mode=$1
 install=$2
-db=$3
-seed=$4
 
 ip=$VM_IP
 port=$VM_PORT
@@ -100,11 +98,11 @@ elif [ "$mode" = "deploy" ]; then
     pm2 list
 fi
 
-if [ "$db" = "db:deploy" ]; then
+if [ "$mode" = "db:deploy" ]; then
     echo "Migrating to deploy database..."
     cd ./packages/database
 
-    dotenv -e ../../.env.production -- prisma migrate deploy
+    pnpm run db:migrate:deploy
 
     echo "Generating prisma client..."
     pnpm run db:generate
@@ -114,7 +112,7 @@ if [ "$db" = "db:deploy" ]; then
     echo "Done!"
 fi
 
-if [ "$seed" = "seed:dev" ]; then
+if [ "$mode" = "seed:dev" ]; then
     echo "Seeding database..."
     pnpm run db:seed:dev
 fi
