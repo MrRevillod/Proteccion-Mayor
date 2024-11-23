@@ -45,6 +45,8 @@ const uploadImage = async (url: string, name: string, uploadPath: string) => {
 		const formData = new FormData()
 		formData.append("files", blob, `${name}.jpg`)
 
+		console.log("STORAGE_KEY", process.env.STORAGE_KEY)
+
 		const res = await fetch(`${STORAGE_URL}${uploadPath}`, {
 			method: "POST",
 			body: formData,

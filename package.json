@@ -18,22 +18,19 @@
 		"dev:mobile-app": "pnpm install && pnpm run dev --filter=mobile-app"
 	},
 	"devDependencies": {
-		"@types/cookie-parser": "^1.4.7",
-		"@types/jsonwebtoken": "^9.0.6",
-		"@types/multer": "^1.4.12",
-		"@types/node": "^20.11.24",
-		"dotenv-cli": "^7.4.2",
 		"eslint": "^9.9.0",
-		"turbo": "^2.2.3"
+		"turbo": "^2.2.3",
+		"tsup": "^8.0.2",
+		"typescript": "^5.3.3"
 	},
 	"packageManager": "pnpm@8.15.6",
 	"engines": {
 		"node": ">=18"
 	},
 	"dependencies": {
-		"@prisma/client": "5.10.2",
-		"cookie-parser": "^1.4.6",
-		"jsonwebtoken": "^9.0.2",
-		"zod": "^3.23.8"
+		"@prisma/client": "^5.10.2",
+		"dotenv-cli": "^7.4.2",
+		"ts-node": "^10.9.2",
+		"@socket.io/pm2": "^5.3.0"
 	}
 }
