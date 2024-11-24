@@ -1,4 +1,5 @@
 import Colors from "@/components/colors"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 import React, { useEffect } from "react"
 import { View, Text, StyleSheet, ActivityIndicator, Image } from "react-native"
 
@@ -7,14 +8,19 @@ const tcoLogo = require("@/assets/images/tcoLogo.png")
 
 const SplashScreen = ({ navigation }: any) => {
     useEffect(() => {
-        // Navegar al menú después de 3 segundos
-        const timer = setTimeout(() => {
-            navigation.replace("Menu"); // Reemplazar para evitar regresar al splash
-        }, 3000);
-
-        // Limpiar el temporizador si se desmonta
-        return () => clearTimeout(timer);
-    }, [navigation]);
+        const checkFirstTime = async () => {
+            const firstTime = await AsyncStorage.getItem("firstTime")
+            if (firstTime === null) {
+                // First time opening the app
+                await AsyncStorage.setItem("firstTime", "false")
+                navigation.replace("Menu")
+            } else {
+                // Not the first time
+                navigation.replace("Login")
+            }
+        }
+        checkFirstTime()
+    }, [navigation])
 
     return (
         <View style={styles.container}>

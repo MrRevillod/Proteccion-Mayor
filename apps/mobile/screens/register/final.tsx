@@ -11,7 +11,7 @@ const Final = ({ navigation }: commonProps) => {
 			title="Datos del Registro"
 			textCircle="7/7"
 			textTitle="Todo Listo!"
-			textDescription="Has completado el registro. Cuando la municipalidad valide tus datos seras notificado y podras solicitar horas"
+			textDescription="Ha completado su registro. Cuando la municipalidad valide sus datos sera notificado y podrá solicitar horas!"
 		>
 			<CustomButton
 				style={{ backgroundColor: Colors.white }}

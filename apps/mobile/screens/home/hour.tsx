@@ -1,24 +1,26 @@
-import React, { useEffect, useState } from "react"
-import { View, Text, StyleSheet, TouchableOpacity, Button, SectionList, ScrollView, Alert, Image } from "react-native"
+import React, { useState } from "react"
+import { View, Text, StyleSheet, Alert, Image } from "react-native"
 import CustomButton from "@/components/button"
 import Colors from "@/components/colors"
-import DataDisplayer from "@/components/dataDisplayer"
 import GeneralView from "@/components/generalView"
 import MenuBar from "@/components/menuBar"
 import { makeAuthenticatedRequest, SERVER_URL } from "@/utils/request" // Usa tu función de petición
 import { useRoute } from "@react-navigation/native" // Para obtener parámetros de navegación
-import { Picker } from '@react-native-picker/picker'
 import AppText from "@/components/appText"
 import { Event } from "./events"
 import Pill from "@/components/pill"
+import LoadingScreen from "@/components/loadingScreen"
 
 const HourScreen = ({ navigation }: any) => {
+    const [loading, setLoading] = useState<boolean>(false)
     const route = useRoute()
     const { event } = route.params as { event: Event }
 
     const startDate = new Date(event.start)
     const endDate = new Date(event.end)
+
     const reserveEvent = async () => {
+        setLoading(true)
         try {
             const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events/${event.id}/reservate`, "PATCH")
             if (response?.status === 200) {
@@ -28,10 +30,13 @@ const HourScreen = ({ navigation }: any) => {
         } catch (error) {
             console.error("Error reservando evento:", error)
             Alert.alert("Error", "Hubo un error al reservar tu evento, por favor intenta de nuevo")
+        } finally {
+            setLoading(false)
         }
     }
     return (
         <>
+            {loading && <LoadingScreen />}
             <GeneralView title="Agendar Servicio">
                 <View style={styles.bigContainer}>
                     <View style={styles.topContainer}>

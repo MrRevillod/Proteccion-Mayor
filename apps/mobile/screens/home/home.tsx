@@ -4,7 +4,7 @@ import GeneralView from "@/components/generalView"
 import Colors from "@/components/colors"
 import { makeAuthenticatedRequest, SERVER_URL } from "@/utils/request"
 import { useEffect, useState } from "react"
-import { AntDesign } from "@expo/vector-icons"
+import LoadingScreen from "@/components/loadingScreen"
 
 const { width } = Dimensions.get("window")
 const itemSize = width * 0.32 // Tamaño del grid item
@@ -25,21 +25,26 @@ interface ResponseData {
 
 const Home = ({ navigation }: any) => {
 	const [services, setServices] = useState<Service[]>([])
+	const [loading, setLoading] = useState<boolean>(false)
 
 	useEffect(() => {
 		const getServices = async () => {
+			setLoading(true)
+
 			makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/services/`, "GET").then((response) => {
 				if (response?.data) {
 					const data: ResponseData = response.data
 					setServices(data.values)
 				}
 			})
+			setLoading(false)
 		}
 		getServices()
 	}, [])
 
 	return (
 		<>
+			{loading && <LoadingScreen />}
 			<GeneralView title="Home" noBorders={true} hTitle={true} navigation={navigation}>
 				<View>
 					<ScrollView

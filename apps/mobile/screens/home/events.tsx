@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react"
-import { View, Text, StyleSheet, TouchableOpacity, Button, SectionList, ScrollView } from "react-native"
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native"
 import CustomButton from "@/components/button"
 import Colors from "@/components/colors"
 import GeneralView from "@/components/generalView"
 import MenuBar from "@/components/menuBar"
-import { makeAuthenticatedRequest, SERVER_URL } from "@/utils/request" // Usa tu función de petición
-import { useRoute } from "@react-navigation/native" // Para obtener parámetros de navegación
+import { makeAuthenticatedRequest, SERVER_URL } from "@/utils/request"
+import { useRoute } from "@react-navigation/native"
 import DateTimePicker from '@react-native-community/datetimepicker'
 import AppText from "@/components/appText"
 import { Picker } from "@react-native-picker/picker"
+import LoadingScreen from "@/components/loadingScreen"
 
 export type Event = {
     id: number,
@@ -62,6 +63,7 @@ const EventScreen = ({ navigation }: any) => {
     const [date, setDate] = useState(new Date())
     const [month, setMonth] = useState((new Date()).getMonth())
     const [perDay, setPerDay] = useState(0)
+    const [loading, setLoading] = useState(false)
 
     const [showPicker, setShowPicker] = useState(false)
 
@@ -79,6 +81,7 @@ const EventScreen = ({ navigation }: any) => {
 
 
     const mostrarEventos = async (currentDate: Date | number, typeDate: "day" | "month") => {
+        setLoading(true)
         setIsLoaded(false)
         try {
 
@@ -113,11 +116,12 @@ const EventScreen = ({ navigation }: any) => {
             console.error("Error fetching centers:", error)
         }
         setIsLoaded(true)
-
+        setLoading(false)
     }
 
     return (
         <>
+            {loading && <LoadingScreen />}
             <GeneralView title="Agendar Servicio">
                 <View style={styles.bigContainer}>
                     <View style={styles.topContainer}>
@@ -190,7 +194,7 @@ const EventScreen = ({ navigation }: any) => {
                             const startDate = new Date(event.start)
                             const endDate = new Date(event.end)
                             return (
-                                <TouchableOpacity onPress={() => navigation.navigate("Hours", { event })} style={{ margin: 3 }}>
+                                <TouchableOpacity key={event.id} onPress={() => navigation.navigate("Hours", { event })} style={{ margin: 3 }}>
                                     {!perDay ? <Pill text={startDate.toLocaleDateString() + "  " + startDate.toLocaleTimeString().slice(0, 5) + " - " + endDate.toLocaleTimeString().slice(0, 5)} /> :
                                         <Pill text={startDate.toLocaleTimeString().slice(0, 5) + " - " + endDate.toLocaleTimeString().slice(0, 5)} />}
                                 </TouchableOpacity>)

@@ -3,9 +3,11 @@ import axios from "axios"
 import { SERVER_URL } from "@/utils/request"
 import { makeAuthenticatedRequest } from "@/utils/request"
 import { loginSeniorFormData, User } from "@/utils/types"
-import { Alert, AppState, AppStateStatus } from "react-native"
+import { ActivityIndicator, Alert, AppState, AppStateStatus, View, StyleSheet, Text } from "react-native"
 import { storeTokens, storeUser, removeTokens, getExpTime } from "@/utils/storage"
 import { createContext, ReactNode, useContext, useEffect, useState } from "react"
+import Colors from "@/components/colors"
+import LoadingScreen from "@/components/loadingScreen"
 
 interface authContextProps {
 	isAuthenticated: boolean
@@ -26,10 +28,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 	const login = async (credentials: loginSeniorFormData) => {
 		setLoading(true)
-
 		try {
 			const response = await axios.post(`${SERVER_URL}/api/auth/login-senior`, credentials)
-			const { message, values } = response.data
+			const { values } = response.data
 			const { accessToken, refreshToken, publicUser } = values
 
 			if (response) {
@@ -37,12 +38,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 				setIsAuthenticated(true)
 				storeUser(publicUser)
 				setRole("SENIOR")
-				console.log(getExpTime())
 			}
 		} catch (error: any) {
 			error.response.data.message && Alert.alert("Error", error.response.data.message)
 		}
-
 		setLoading(false)
 	}
 
@@ -78,9 +77,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 				logout()
 			}
 		}
-
 		const subscription = AppState.addEventListener("change", handleAppStateChange)
-
 		return () => {
 			subscription.remove()
 		}
@@ -90,7 +87,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		checkAuth()
 	}, [])
 
-	return <AuthContext.Provider value={{ isAuthenticated, user, role, loading, login, logout }}>{children}</AuthContext.Provider>
+	return (
+		<AuthContext.Provider value={{ isAuthenticated, user, role, loading, login, logout }}>
+			{loading && <LoadingScreen />}
+			{children}
+		</AuthContext.Provider>
+	)
 }
 
 export const useAuth = (): authContextProps => {
