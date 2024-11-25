@@ -12,7 +12,7 @@ import seniorsRouter from "./routes/seniors"
 import reportsRouter from "./routes/reports"
 import professionalsRouter from "./routes/professionals"
 import administrarorsRouter from "./routes/administrators"
-
+import downloadsRouter from "./routes/downloads"
 import { setupWorker } from "@socket.io/sticky"
 import { createServer } from "http"
 import { Server, Socket } from "socket.io"
@@ -40,7 +40,7 @@ export const createApp = (): express.Express => {
 	app.use("/api/dashboard/administrators", administrarorsRouter)
 	app.use("/api/dashboard/seniors", seniorsRouter)
 	app.use("/api/dashboard/events", eventsRouter)
-
+	app.use("/api/dashboard/storage", downloadsRouter)
 	app.use(errorHandler)
 
 	return app

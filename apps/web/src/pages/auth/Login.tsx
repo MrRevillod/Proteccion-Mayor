@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { LoginFormData } from "../../lib/types"
 import { LoginFormSchema } from "../../lib/schemas"
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form"
-
+import DownloadApkButton from "../../components/DownloadApkButton"
 const LoginPage: React.FC = () => {
 	const lastLoginRole = localStorage.getItem("role")
 
@@ -82,6 +82,7 @@ const LoginPage: React.FC = () => {
 								</div>
 							</form>
 						</FormProvider>
+						<DownloadApkButton />
 					</div>
 				</div>
 			</div>
