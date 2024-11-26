@@ -1,13 +1,12 @@
 import { NextFunction, Request, Response } from "express"
+import { verifyJsonwebtoken, AccessTokenOpts } from "@repo/lib"
 import { AppError, findUser, isValidUserRole, UserRole } from "@repo/lib"
-import { verifyJsonwebtoken, AccessTokenOpts, getServerTokens } from "@repo/lib"
 
 // Middleware que se encarga de verificar y validar una sesión
 // de usuario mediante su token de acceso JWT
 export const sessionMiddleware = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		// // Obtener los tokens de la petición (cookies o headers)
-
 		const accessCookie = req.cookies["ACCESS_TOKEN"]
 
 		const authHeader = req.headers.authorization

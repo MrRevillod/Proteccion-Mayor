@@ -2,7 +2,7 @@ import { prisma } from "@repo/database"
 import { Prisma } from "@prisma/client"
 import { fileToFormData } from "../utils/files"
 import { AppError, httpRequest } from "@repo/lib"
-import { centerSelect, generateSelect, generateWhere } from "../utils/filters"
+import { centerSelect, generateSelect } from "../utils/filters"
 import { Request, Response, NextFunction } from "express"
 
 // Controlador de tipo select puede recibir un query para seleccionar campos específicos

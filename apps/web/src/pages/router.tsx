@@ -10,12 +10,13 @@ import StatisticsPage from "./administration/Statistics"
 import AdministratorPage from "./administration/Administrators"
 import ProfessionalsPage from "./administration/Professionals"
 import ResetPasswordPage from "./auth/ResetPassword"
+import DownloadApplication from "./DownloadApplication";
 import ValidatePasswordPage from "./auth/Password"
 import ProfessionalAgendaPage from "./agenda/Professional"
 import AdministrationAgendaPage from "./agenda/Administration"
 import SeniorHistoryRequestPage from "./administration/History"
 import SeniorRegisterRequestPage from "./administration/seniors/SeniorRegisterRequest"
-import DownloadApkButton from "../components/DownloadApkButton";
+
 import { useAuth } from "../context/AuthContext"
 import { UserRole } from "../lib/types"
 import { Routes, Route, Navigate, Outlet } from "react-router-dom"
@@ -33,9 +34,7 @@ const ProtectedRoute: React.FC<RouteProps> = ({ redirectTo = "/auth/iniciar-sesi
 	// Obtenemos los datos de autenticación del contexto de autenticación
 	const { isAuthenticated, role, loading } = useAuth()
 
-	if (loading) {
-		return null
-	}
+	if (loading) return null
 
 	// Si no se especifican roles se lanza un error (desarrollo)
 	if (allowedRoles && !allowedRoles.at(0)) {
@@ -101,7 +100,7 @@ const Router: React.FC = () => {
 				<Route path="/auth/restaurar-contrasena" element={<ResetPasswordPage />} />
 				<Route path="/auth/restaurar-contrasena/:id/:token/:role" element={<ValidatePasswordPage />} />
 			</Route>
-			<Route path="/descargar-apk" element={<DownloadApkButton />} />
+			<Route path="/aplicacion-movil" element={<DownloadApplication />} />
 			<Route path="*" element={<NotFoundPage />} />
 		</Routes>
 	)
