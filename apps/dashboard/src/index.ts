@@ -12,6 +12,7 @@ import seniorsRouter from "./routes/seniors"
 import reportsRouter from "./routes/reports"
 import professionalsRouter from "./routes/professionals"
 import administrarorsRouter from "./routes/administrators"
+import "./cron/scheduleReminder";
 
 import { Server } from "socket.io"
 import { createServer } from "http"

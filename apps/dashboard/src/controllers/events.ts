@@ -7,6 +7,8 @@ import { AppError } from "@repo/lib"
 import { Request, Response, NextFunction } from "express"
 import { createEvents, eventsById, formatEvent } from "../utils/events"
 import { EventQuery, eventSelect, generateWhere } from "../utils/filters"
+import { professionalCancellationNotificationEmail, professionalReservationNotificationEmail, reservationCancellationEmail, reservationConfirmationEmail } from "../utils/emailTemplates"
+import { sendMail } from "../utils/mailer"
 
 // Controlador de tipo select puede recibir un query para seleccionar campos específicos
 // y para filtrar por claves foraneas
@@ -170,61 +172,45 @@ export const deleteById = async (req: Request, res: Response, next: NextFunction
 
 export const reserveEvent = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		// Se obtiene el id del evento a reservar y el adulto mayor que lo reserva
-		// desde el middleware de autenticación
-
 		const id = req.params.id
 		const senior = req.getExtension("user") as Senior
 
-		// Se busca el evento por su id en busca de existencia
 		const event = await prisma.event.findUnique({
 			where: { id: Number(id) },
 		})
 
-		// Si el evento no existe o si ya está reservado por otro adulto mayor
-		// se lanza un error 404 o 409 respectivamente
-
 		if (!event) throw new AppError(404, "Evento no encontrado")
+		if (event.seniorId) throw new AppError(409, "Este evento ya está reservado")
 
-		if (event.seniorId) {
-			throw new AppError(409, "Este evento ya está reservado")
-		}
-
-		// Validación de que la persona mayor no haya reservado el
-		// mismo servicio dentro de los 2 meses anteriores.
-
-		// Para ello debemos obtener una fecha 2 meses atrás con respecto a la fecha actual
 		const twoMonthsAgo = dayjs().subtract(2, "months").toDate()
-
-		// Y buscar si existe un evento con el mismo servicio y adulto mayor que tenga una
-		// ultima actualización (por reserva/asistencia) dentro de los 2 meses anteriores.
-
 		const previousReservation = await prisma.event.findFirst({
 			where: {
 				seniorId: senior.id,
 				serviceId: event.serviceId,
-				updatedAt: {
-					gte: twoMonthsAgo,
-				},
+				updatedAt: { gte: twoMonthsAgo },
 			},
 		})
-
-		// Si existe un evento con las condiciones anteriores se lanza un error 409
-		// que indica un conflicto con la reserva
-
-		if (previousReservation) {
-			throw new AppError(409, "Ya reservaste este servicio en los ultimos 2 meses")
-		}
+		if (previousReservation) throw new AppError(409, "Ya reservaste este servicio en los últimos 2 meses")
 
 		const updatedEvent = await prisma.event.update({
 			where: { id: Number(id) },
-            data: { seniorId: senior.id },
-            select: eventSelect
-        }) 
-        console.log("profesionalId", updatedEvent)
-        io.to("ADMIN").emit("updatedEvent", formatEvent(updatedEvent))
-        io.to(updatedEvent.professionalId||"").emit("updatedEvent", formatEvent(updatedEvent))
-        
+			data: { seniorId: senior.id },
+			select: eventSelect,
+		})
+
+		io.to("ADMIN").emit("updatedEvent", formatEvent(updatedEvent))
+		io.to(updatedEvent.professionalId || "").emit("updatedEvent", formatEvent(updatedEvent))
+
+		// Enviar correos de confirmación
+		await Promise.all([
+			sendMail(senior.email || "", "Confirmación de reserva", reservationConfirmationEmail(senior.name, updatedEvent)),
+			sendMail(
+				updatedEvent.professional?.email || "",
+				"Confirmación de reserva con un nuevo paciente",
+				professionalReservationNotificationEmail(updatedEvent.professional?.name || "",updatedEvent)
+			),
+		])
+
 		return res.status(200).json({ values: updatedEvent })
 	} catch (error) {
 		next(error)
@@ -234,29 +220,37 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 export const cancelReserve = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const { id } = req.params
-
 		const senior = req.getExtension("user") as Senior
+
 		const event = await prisma.event.findUnique({
 			where: { id: Number(id), seniorId: senior.id },
 		})
-
 		if (!event) throw new AppError(404, "Evento no encontrado")
 
 		const updatedEvent = await prisma.event.update({
 			where: { id: Number(id) },
-			data: {
-				seniorId: null,
-			},
+			data: { seniorId: null },
 			select: eventSelect,
 		})
 
 		io.to(["ADMIN", updatedEvent.professionalId || ""]).emit("updatedEvent", formatEvent(updatedEvent))
+
+		// Enviar correos de cancelación
+		await Promise.all([
+			sendMail(senior.email || "", "Cancelación de reserva", reservationCancellationEmail(senior.name, updatedEvent)),
+			sendMail(
+				updatedEvent.professional?.email || "",
+				"Cancelación de reserva por parte del paciente",
+				professionalCancellationNotificationEmail(updatedEvent.professional?.name || "",updatedEvent)
+			),
+		])
+
 		return res.status(200).json({ modified: formatEvent(updatedEvent) })
 	} catch (error) {
-		console.log("error cancelReserve", error)
 		next(error)
 	}
 }
+
 
 export const getByService = async (req: Request, res: Response, next: NextFunction) => {
 	try {
