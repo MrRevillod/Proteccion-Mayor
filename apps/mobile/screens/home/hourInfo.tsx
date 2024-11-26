@@ -22,7 +22,7 @@ const HourScreen = ({ navigation }: any) => {
         setLoading(true)
         try {
 
-            const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events/${event.id}/cancel`, "PATCH")
+            const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events/${event.id}/cancel`, "PATCH", navigation)
             if (response?.status === 200) {
                 // Mostrar alerta de reserva agendada
                 Alert.alert("Hora cancelada", "Tu hora ha sido cancelada", [{ text: "OK", onPress: () => navigation.navigate("Schelude") }])

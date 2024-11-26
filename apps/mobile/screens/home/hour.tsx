@@ -22,7 +22,7 @@ const HourScreen = ({ navigation }: any) => {
     const reserveEvent = async () => {
         setLoading(true)
         try {
-            const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events/${event.id}/reservate`, "PATCH")
+            const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events/${event.id}/reservate`, "PATCH", navigation)
             if (response?.status === 200) {
                 // Mostrar alerta de reserva agendada
                 Alert.alert("Reserva agendada", "Tu reserva ha sido agendada correctamente", [{ text: "OK", onPress: () => navigation.navigate("Home") }])

@@ -4,8 +4,18 @@ import CustomButton from "@/components/button"
 
 import { StyleSheet } from "react-native"
 import { commonProps } from "@/utils/types"
+import { useEffect } from "react"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const Final = ({ navigation }: commonProps) => {
+
+	useEffect(() => {
+		const firstTime = async () => {
+			await AsyncStorage.setItem("firstTime", "false")
+		}
+		firstTime()
+	}, [])
+
 	return (
 		<GeneralView
 			title="Datos del Registro"

@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
 	const [user, setUser] = useState<User | null>(null)
 	const [role, setRole] = useState<"SENIOR" | null>(null)
-	const [loading, setLoading] = useState<boolean>(true)
+	const [loading, setLoading] = useState<boolean>(false)
 
 	const login = async (credentials: loginSeniorFormData) => {
 		setLoading(true)
@@ -55,9 +55,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	}
 
 	const checkAuth = async () => {
-		setLoading(true)
 		try {
-			const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/auth/validate-auth`, "GET", false)
+			const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/auth/validate-auth`, "GET", null, false)
 			if (response) {
 				setIsAuthenticated(true)
 				setUser(response?.data.values.user)
@@ -68,7 +67,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 			setRole(null)
 			setIsAuthenticated(false)
 		}
-		setLoading(false)
 	}
 
 	useEffect(() => {

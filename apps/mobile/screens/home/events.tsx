@@ -85,7 +85,7 @@ const EventScreen = ({ navigation }: any) => {
         setIsLoaded(false)
         try {
 
-            const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events/${serviceId}/${centerId}`, "GET")
+            const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events/${serviceId}/${centerId}`, "GET", navigation)
             if (response?.data) {
                 const eventList = response.data.events as Event[]
                 let eventos = new Array<Event>()

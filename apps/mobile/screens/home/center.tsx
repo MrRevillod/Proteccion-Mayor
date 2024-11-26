@@ -26,7 +26,7 @@ const CenterScreen = ({ navigation }: any) => {
 		const fetchCenters = async () => {
 			setLoading(true)
 			try {
-				const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events/${serviceId}`, "GET")
+				const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events/${serviceId}`, "GET", navigation)
 				if (response?.data) {
 					const centerList = response.data.centers.map((item: { center: Center }) => item.center)
 					setCenters(centerList)

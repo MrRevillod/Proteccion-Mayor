@@ -1,22 +1,43 @@
 import Colors from "@/components/colors"
+import { SERVER_URL } from "@/utils/request"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import axios from "axios"
 import React, { useEffect } from "react"
-import { View, Text, StyleSheet, ActivityIndicator, Image } from "react-native"
+import { View, Text, StyleSheet, ActivityIndicator, Image, Alert } from "react-native"
 
 const pmLogo = require("@/assets/images/pmLogo.png")
 const tcoLogo = require("@/assets/images/tcoLogo.png")
+
+const timer = async ({ navigation, screen }: { navigation: any, screen: any }) => {
+    try {
+
+        const response = await axios.get(`${SERVER_URL}/api/auth/health`, { timeout: 5000 })
+        if (response.status === 200) {
+            setTimeout(() => {
+                navigation.replace(screen)
+            }, 3000)
+        }
+    } catch (error) {
+        setTimeout(() => {
+            Alert.alert(
+                "Error",
+                "No se pudo conectar con el servidor o no posee conexión a internet. Por favor, intente nuevamente más tarde.",
+                [{ text: "OK" }],
+                { cancelable: false }
+            )
+        }, 3000)
+
+    }
+}
 
 const SplashScreen = ({ navigation }: any) => {
     useEffect(() => {
         const checkFirstTime = async () => {
             const firstTime = await AsyncStorage.getItem("firstTime")
             if (firstTime === null) {
-                // First time opening the app
-                await AsyncStorage.setItem("firstTime", "false")
-                navigation.replace("Menu")
+                timer({ navigation, screen: "Menu" })
             } else {
-                // Not the first time
-                navigation.replace("Login")
+                timer({ navigation, screen: "Login" })
             }
         }
         checkFirstTime()

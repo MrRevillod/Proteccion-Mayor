@@ -1,28 +1,30 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import * as SecureStore from "expo-secure-store"
 
 export const expTime = process.env.TOKEN_EXPIRE_TIME || "14"
 export const STORAGE_KEY = process.env.STORAGE_KEY_SECRET || "secret"
+export const expDate = Date.now() + parseInt(expTime, 10) * 60 * 1000 // 10 minutos en milisegundos
 
 export const storeTokens = async (accessToken: string, refreshToken: string) => {
 	try {
-		const expirationTime = Date.now() + parseInt(expTime, 10) * 60 * 1000
 		await AsyncStorage.setItem("accessToken", accessToken)
 		await AsyncStorage.setItem("refreshToken", refreshToken)
-		await AsyncStorage.setItem("expTime", JSON.stringify(expirationTime))
+		await AsyncStorage.setItem("expTime", JSON.stringify(expDate))
 	} catch (error) {
 		console.error("No se pudieron almacenar los tokens", error)
 	}
 }
 
-export const replaceAccessToken = async (newAccessToken: string) => {
+export const renewAccessAndTime = async (newAccessToken: string) => {
 	await AsyncStorage.setItem("accessToken", newAccessToken)
+	await AsyncStorage.removeItem("expTime")
+	await AsyncStorage.setItem("expTime", JSON.stringify(expDate))
 }
 
 export const getExpTime = async (): Promise<number | null> => {
 	try {
 		const expTime = await AsyncStorage.getItem("expTime")
-		return expTime ? JSON.parse(expTime) : null
+		const parsedExpTime = expTime ? JSON.parse(expTime) : null
+		return parsedExpTime
 	} catch (error) {
 		console.error("Error al obtener el tiempo de expiración", error)
 		return null
@@ -53,6 +55,7 @@ export const removeTokens = async () => {
 	try {
 		await AsyncStorage.removeItem("accessToken")
 		await AsyncStorage.removeItem("refreshToken")
+		await AsyncStorage.removeItem("expTime")
 		console.log("Borrando tokens...")
 	} catch (error) {
 		console.error("No se pudieron eliminar los tokens", error)

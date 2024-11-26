@@ -70,7 +70,7 @@ const Profile = ({ navigation }: any) => {
 
 	const deleteAccount = async () => {
 		try {
-			const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/seniors/${id}`, "DELETE")
+			const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/seniors/${id}`, "DELETE", navigation)
 			if (response?.status === 200) {
 				logout()
 				await AsyncStorage.removeItem("user")
