@@ -84,6 +84,9 @@ export const updateById = async (req: Request, res: Response, next: NextFunction
 	try {
 		const { seniorId, professionalId, serviceId, centerId, start, end, assistance } = req.body
 
+		console.log("start", req.body.start)
+		console.log("end", req.body.end)
+
 		// Se buscan los datos a utilizar con Promise.all
 
 		const [professional, service, senior, center] = await Promise.all([
@@ -111,6 +114,13 @@ export const updateById = async (req: Request, res: Response, next: NextFunction
 		// Se buscan eventos donde la id del evento sea diferente a la que se quiere actualizar
 		// Y que se superpongan con las fechas del evento a actualizar
 
+		let seniorOR = {} as any
+
+		if (seniorId) {
+			seniorOR["seniorId"] = seniorId
+			seniorOR = { ...seniorOR, ...orDateSuperposition }
+		}
+
 		const events = await prisma.event.findMany({
 			where: {
 				AND: [
@@ -120,10 +130,7 @@ export const updateById = async (req: Request, res: Response, next: NextFunction
 								professionalId: professionalId,
 								...orDateSuperposition,
 							},
-							seniorId && {
-								seniorId: seniorId,
-								...orDateSuperposition,
-							},
+							seniorOR,
 						],
 					},
 					{
