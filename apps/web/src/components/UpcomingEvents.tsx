@@ -46,7 +46,7 @@ export const UpcomingEvents: React.FC<UpcomingEventsProps> = ({ ...props }) => {
 	)
 
 	return (
-		<section className="bg-white dark:bg-primary-dark p-4 rounded-lg" style={{ width: width }}>
+		<section className="bg-white lg:block hidden dark:bg-primary-dark p-4 rounded-lg" style={{ width: width }}>
 			<h2 className="text-xl font-bold text-dark dark:text-light">{title}</h2>
 			<div className="flex flex-col gap-2 h-full py-4 justify-between">
 				<div className={containerClasses}>
