@@ -93,7 +93,7 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 	}
 
 	return (
-		<div className="w-3/5 bg-white dark:bg-primary-dark p-4 rounded-lg max-h-[70vh] overflow-y-auto overflow-x-auto relative">
+		<div className="lg:w-3/5 w-full bg-white dark:bg-primary-dark p-4 rounded-lg max-h-[70vh] overflow-y-auto overflow-x-auto relative">
 			<FullCalendar
 				plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
 				initialView="dayGridMonth"

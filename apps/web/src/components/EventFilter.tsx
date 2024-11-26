@@ -67,7 +67,7 @@ export const EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) => {
 	}, [selectedService])
 
 	return (
-		<section className="w-1/5 bg-white dark:bg-primary-dark p-4 flex flex-col gap-4 rounded-lg">
+		<section className="lg:w-1/5 lg:block hidden bg-white dark:bg-primary-dark p-4 flex-col gap-4 rounded-lg">
 			<h2 className="text-xl font-bold text-dark dark:text-light">Filtrar agenda</h2>
 			<FormProvider {...methods}>
 				<form className="flex flex-col gap-4 pt-4" onSubmit={handleSubmit}>
