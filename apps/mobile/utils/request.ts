@@ -1,4 +1,4 @@
-import { getAccessToken, getRefreshToken, replaceAccessToken } from "./storage"
+import { getAccessToken, getRefreshToken, removeTokens, renewAccessAndTime } from "./storage"
 import { isTokenExp } from "./validation"
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios"
 import { Alert } from "react-native"
@@ -8,6 +8,7 @@ export const SERVER_URL = `http://${process.env.EXPO_PUBLIC_SERVER_ADDRESS}`
 export const makeAuthenticatedRequest = async (
 	url: string,
 	method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH",
+	navigation?: any,
 	showAlert: boolean = true,
 	options: AxiosRequestConfig = {},
 ): Promise<AxiosResponse | null> => {
@@ -15,20 +16,14 @@ export const makeAuthenticatedRequest = async (
 		let accessToken = await getAccessToken()
 		const isExp = await isTokenExp()
 		const refreshToken = await getRefreshToken()
-
-		// Si el token ha expirado, intentamos renovarlo
-		// && method !== "DELETE"
-		// if (isExp && accessToken) {
-		// 	try {
-		// 		accessToken = await renewAccessToken()
-		// 	} catch (error) {
-		// 		throw new Error("No se pudo renovar el token. Necesita autenticarse nuevamente.")
-		// 	}
-		// }
-
-		// Verifica si aún está en proceso de carga o los tokens no están disponibles
-		if (!accessToken && !refreshToken) {
-			return null
+		if (isExp && accessToken) {
+			try {
+				accessToken = await renewAccessToken()
+			} catch (error) {
+				Alert.alert("Error", "Su sesión ha expirado")
+				removeTokens()
+				navigation.navigate("Login")
+			}
 		}
 
 		const headers = {
@@ -45,10 +40,14 @@ export const makeAuthenticatedRequest = async (
 
 		return response
 	} catch (error: any) {
-		if (showAlert && error.response?.data?.message) {
-			Alert.alert("Error", error.response.data.message)
+		if (!showAlert) {
+			const errorMessage = error.response?.data?.message || error.message
+			Alert.alert("Error", errorMessage)
+			return null
 		}
-		console.error(error)
+		removeTokens()
+		navigation.navigate("Login")
+		Alert.alert("Error", "Su sesión ha expirado")
 		return null
 	}
 }
@@ -89,16 +88,19 @@ const renewAccessToken = async () => {
 		const refreshToken = await getRefreshToken()
 		if (!refreshToken) throw new Error("No hay refresh token disponible")
 
-		const response = await axios.get(`${SERVER_URL}/api/auth/refresh`, {
-			headers: { Authorization: `Bearer ${accessToken},${refreshToken}` },
-		})
-		const { newAccessToken } = response.data
+		const bearer = `Bearer ${accessToken},${refreshToken}`
 
-		await replaceAccessToken(newAccessToken)
+		const response = await axios.get(`${SERVER_URL}/api/auth/refresh`, {
+			headers: { Authorization: bearer },
+		})
+
+		const { newAccessToken } = response.data.values
+
+		await renewAccessAndTime(newAccessToken)
 
 		return newAccessToken
 	} catch (error) {
-		console.error("Error al renovar el token", error)
+		removeTokens()
 		throw error
 	}
 }

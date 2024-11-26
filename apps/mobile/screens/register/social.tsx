@@ -9,6 +9,8 @@ import * as mime from "react-native-mime-types"
 import axios from "axios"
 import Feather from "@expo/vector-icons/Feather"
 import { SERVER_URL } from "@/utils/request"
+import LoadingScreen from "@/components/loadingScreen"
+import { useAuth } from "@/contexts/authContext"
 
 const Social = ({ navigation, route }: commonProps) => {
 	const {
@@ -20,6 +22,7 @@ const Social = ({ navigation, route }: commonProps) => {
 		formState: { errors },
 	} = useFormContext()
 	const [isPhotoValid, setPhotoValid] = useState<boolean>(false)
+	const [loading, setLoading] = useState<boolean>(false)
 
 	useEffect(() => {
 		if (route.params?.photoUri) {
@@ -39,6 +42,7 @@ const Social = ({ navigation, route }: commonProps) => {
 	}
 
 	const onSubmit = async (data: any) => {
+		setLoading(true)
 		const isValid = await trigger("social")
 
 		const formData = new FormData()
@@ -81,48 +85,52 @@ const Social = ({ navigation, route }: commonProps) => {
 		} catch (error: any) {
 			error.response.data.message && Alert.alert("Error", error.response.data.message)
 		}
+		setLoading(false)
 	}
 
 	return (
-		<GeneralView
-			title="Datos del Registro"
-			textCircle="6/7"
-			textTitle="Sube tu Registro Social de Hogares"
-			textDescription="Recuerda que la imagen debe ser legible y estar actualizada"
-		>
-			<View>
-				<Controller
-					control={control}
-					name="social"
-					render={({ field: { value } }) => (
-						<View style={styles.takePhotoContainer}>
-							<View style={{ width: "10%" }}>
-								{value ? <Feather name="check-square" size={30} color="green" /> : <Feather name="square" size={30} color="black" />}
+		<>
+			{loading && <LoadingScreen />}
+			<GeneralView
+				title="Datos del Registro"
+				textCircle="6/7"
+				textTitle="Sube tu Registro Social de Hogares"
+				textDescription="Recuerda que la imagen debe ser legible y estar actualizada"
+			>
+				<View>
+					<Controller
+						control={control}
+						name="social"
+						render={({ field: { value } }) => (
+							<View style={styles.takePhotoContainer}>
+								<View style={{ width: "10%" }}>
+									{value ? <Feather name="check-square" size={30} color="green" /> : <Feather name="square" size={30} color="black" />}
+								</View>
+								<CustomButton
+									style={{ width: "85%" }}
+									title={value ? "Re-tomar Foto" : "Tomar Foto"}
+									onPress={() => {
+										openCamera()
+									}}
+								/>
 							</View>
-							<CustomButton
-								style={{ width: "85%" }}
-								title={value ? "Re-tomar Foto" : "Tomar Foto"}
-								onPress={() => {
-									openCamera()
-								}}
-							/>
-						</View>
-					)}
-				/>
-				{errors["social"] && <Text style={{ color: "red", alignSelf: "center" }}>{String(errors["social"].message)}</Text>}
-
-				{isPhotoValid ? (
-					<CustomButton title="Siguiente" onPress={handleSubmit(onSubmit)} style={{ marginTop: 30 }} />
-				) : (
-					<CustomButton
-						style={{ backgroundColor: Colors.white, marginTop: 30 }}
-						textStyle={styles.customButtonText}
-						title="Siguiente"
-						onPress={handleSubmit(onSubmit)}
+						)}
 					/>
-				)}
-			</View>
-		</GeneralView>
+					{errors["social"] && <Text style={{ color: "red", alignSelf: "center" }}>{String(errors["social"].message)}</Text>}
+
+					{isPhotoValid ? (
+						<CustomButton title="Siguiente" onPress={handleSubmit(onSubmit)} style={{ marginTop: 30 }} />
+					) : (
+						<CustomButton
+							style={{ backgroundColor: Colors.white, marginTop: 30 }}
+							textStyle={styles.customButtonText}
+							title="Siguiente"
+							onPress={handleSubmit(onSubmit)}
+						/>
+					)}
+				</View>
+			</GeneralView>
+		</>
 	)
 }
 

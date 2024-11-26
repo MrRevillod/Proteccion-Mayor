@@ -27,6 +27,7 @@ const App = () => {
 			<FontSizeProvider>
 				<NavigationContainer independent={true}>
 					<Stack.Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
+						{/* <Stack.Screen name="Loading" component={LoadingScreen} /> */}
 						<Stack.Screen name="Splash" component={SplashScreen} />
 						<Stack.Screen name="Menu" component={Menu} />
 						<Stack.Screen name="Register" component={Register} />
@@ -47,7 +48,7 @@ const App = () => {
 						</Stack.Screen>
 						<Stack.Screen name="FontSize" component={FontSizeSelector} />
 						<Stack.Screen name="Hours" component={Hour} />
-                        <Stack.Screen name="HourInfo" component={HourInfo} />
+						<Stack.Screen name="HourInfo" component={HourInfo} />
 
 						<Stack.Screen name="Events" component={Event} />
 						<Stack.Screen name="Centers">

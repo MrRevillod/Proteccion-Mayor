@@ -24,7 +24,7 @@ const Email = ({ navigation }: commonProps) => {
 			textDescription="Debe ingresar un correo real y al que usted tenga acceso."
 		>
 			<View style={styles.container}>
-				<Input name="email" placeholder="TuCorreo@gmail.com" keyboardType="email-address" />
+				<Input name="email" placeholder="tucorreo@gmail.com" keyboardType="email-address" />
 				<CustomButton title="Siguiente" onPress={onSubmit} />
 				<CustomButton
 					style={{ backgroundColor: Colors.white }}

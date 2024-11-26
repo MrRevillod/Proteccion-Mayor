@@ -3,6 +3,7 @@ import React from "react"
 import { useAuth } from "@/contexts/authContext"
 import { useEffect } from "react"
 import { View, ActivityIndicator } from "react-native"
+import LoadingScreen from "./loadingScreen"
 
 interface ProtectedRouteProps {
 	children: React.ReactNode
@@ -20,9 +21,7 @@ const ProtectedRoute = ({ children, navigation }: ProtectedRouteProps) => {
 
 	if (loading) {
 		return (
-			<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-				<ActivityIndicator size="large" color="#0000ff" />
-			</View>
+			<LoadingScreen />
 		)
 	}
 

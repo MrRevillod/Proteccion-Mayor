@@ -10,6 +10,7 @@ import { useFormContext } from "react-hook-form"
 import { View, StyleSheet, Linking, AppState, AppStateStatus } from "react-native"
 import { useEffect } from "react"
 import { useIsFocused } from "@react-navigation/native"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const Pin = ({ navigation }: any) => {
 	const { login } = useAuth()
@@ -19,6 +20,7 @@ const Pin = ({ navigation }: any) => {
 	const onSubmit = async (data: any) => {
 		await login(data)
 		navigation.navigate("Home")
+		await AsyncStorage.setItem("firtTime", "false")
 	}
 
 	useEffect(() => {

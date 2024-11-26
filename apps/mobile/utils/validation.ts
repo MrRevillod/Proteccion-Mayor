@@ -38,9 +38,12 @@ const registerSchema = z
 		email: z.string().email({
 			message: "El formato del correo electrónico no es válido",
 		}),
-		pin: z.string().regex(/^\d+$/, 'El Pin debe contener solo números').refine((value) => value.length === 4, {
-			message: "El PIN debe tener 4 dígitos",
-        }),
+		pin: z
+			.string()
+			.regex(/^\d+$/, "El Pin debe contener solo números")
+			.refine((value) => value.length === 4, {
+				message: "El PIN debe tener 4 dígitos",
+			}),
 		pinConfirm: z.string(),
 		dni_a: z.string().refine((value) => value !== "", {
 			message: "Debe subir una foto del documento",
@@ -71,9 +74,8 @@ export default registerSchema
 export const isTokenExp = async (): Promise<boolean> => {
 	const exp = await getExpTime()
 	if (!exp) {
-		return true
+		return false
 	}
 	const currentTime = Date.now()
-	console.log("Current time:", exp)
 	return currentTime > exp
 }
