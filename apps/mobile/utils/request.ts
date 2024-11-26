@@ -40,10 +40,14 @@ export const makeAuthenticatedRequest = async (
 
 		return response
 	} catch (error: any) {
-		if (!showAlert) return null
-		Alert.alert("Error", "Su sesión ha expirado")
+		if (!showAlert) {
+			const errorMessage = error.response?.data?.message || error.message
+			Alert.alert("Error", errorMessage)
+			return null
+		}
 		removeTokens()
 		navigation.navigate("Login")
+		Alert.alert("Error", "Su sesión ha expirado")
 		return null
 	}
 }

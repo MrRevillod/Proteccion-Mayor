@@ -4,10 +4,11 @@ import { SERVER_URL } from "@/utils/request"
 import { makeAuthenticatedRequest } from "@/utils/request"
 import { loginSeniorFormData, User } from "@/utils/types"
 import { ActivityIndicator, Alert, AppState, AppStateStatus, View, StyleSheet, Text } from "react-native"
-import { storeTokens, storeUser, removeTokens, getExpTime } from "@/utils/storage"
+import { storeTokens, storeUser, removeTokens, getExpTime, getAccessToken, getRefreshToken } from "@/utils/storage"
 import { createContext, ReactNode, useContext, useEffect, useState } from "react"
 import Colors from "@/components/colors"
 import LoadingScreen from "@/components/loadingScreen"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 interface authContextProps {
 	isAuthenticated: boolean
@@ -56,11 +57,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 	const checkAuth = async () => {
 		try {
-			const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/auth/validate-auth`, "GET", null, false)
-			if (response) {
-				setIsAuthenticated(true)
-				setUser(response?.data.values.user)
-				setRole(response?.data.values.role)
+			// const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/auth/validate-auth`, "GET", null, false)
+			let accessToken = await getAccessToken()
+			const refreshToken = await getRefreshToken()
+			if (accessToken && refreshToken) {
+				const response = await axios.get(`${SERVER_URL}/api/auth/validate-auth`, {
+					headers: {
+						Authorization: `Bearer ${accessToken},${refreshToken}`
+					}
+				})
+				if (response) {
+					setIsAuthenticated(true)
+					setUser(response?.data.values.user)
+					setRole(response?.data.values.role)
+				}
 			}
 		} catch (error) {
 			setUser(null)

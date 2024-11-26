@@ -22,7 +22,7 @@ const HourScreen = ({ navigation }: any) => {
     const reserveEvent = async () => {
         setLoading(true)
         try {
-            const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events/${event.id}/reservate`, "PATCH", navigation)
+            const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events/${event.id}/reservate`, "PATCH", navigation, false)
             if (response?.status === 200) {
                 // Mostrar alerta de reserva agendada
                 Alert.alert("Reserva agendada", "Tu reserva ha sido agendada correctamente", [{ text: "OK", onPress: () => navigation.navigate("Home") }])
@@ -34,6 +34,12 @@ const HourScreen = ({ navigation }: any) => {
             setLoading(false)
         }
     }
+
+    const formatEndDate = (date: string) => {
+        const formatted = date.slice(0, 5).split(":")[0]
+        return formatted ? formatted : date.slice(0, 5)
+    }
+
     return (
         <>
             {loading && <LoadingScreen />}
@@ -55,7 +61,7 @@ const HourScreen = ({ navigation }: any) => {
                         <View style={{ display: "flex", gap: 10 }}>
                             <Pill align={"flex-start"} text={`Fecha: ${startDate.toLocaleDateString()}`} />
                             <Pill align={"flex-start"} text={`Hora de inicio: ${startDate.toLocaleTimeString().slice(0, 5)}`} />
-                            <Pill align={"flex-start"} text={`Hora de término: ${endDate.toLocaleTimeString().slice(0, 5)}`} />
+                            <Pill align={"flex-start"} text={`Hora de término: ${formatEndDate(endDate.toLocaleTimeString())}`} />
 
                         </View>
                     </View>
