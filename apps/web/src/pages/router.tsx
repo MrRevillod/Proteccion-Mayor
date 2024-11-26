@@ -15,7 +15,7 @@ import ProfessionalAgendaPage from "./agenda/Professional"
 import AdministrationAgendaPage from "./agenda/Administration"
 import SeniorHistoryRequestPage from "./administration/History"
 import SeniorRegisterRequestPage from "./administration/seniors/SeniorRegisterRequest"
-
+import DownloadApkButton from "../components/DownloadApkButton";
 import { useAuth } from "../context/AuthContext"
 import { UserRole } from "../lib/types"
 import { Routes, Route, Navigate, Outlet } from "react-router-dom"
@@ -101,7 +101,7 @@ const Router: React.FC = () => {
 				<Route path="/auth/restaurar-contrasena" element={<ResetPasswordPage />} />
 				<Route path="/auth/restaurar-contrasena/:id/:token/:role" element={<ValidatePasswordPage />} />
 			</Route>
-
+			<Route path="/descargar-apk" element={<DownloadApkButton />} />
 			<Route path="*" element={<NotFoundPage />} />
 		</Routes>
 	)
