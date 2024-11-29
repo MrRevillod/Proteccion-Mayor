@@ -11,7 +11,8 @@
 		"db:generate": "dotenv -e ../../.env -- prisma generate",
 		"db:migrate:reset": "dotenv -e ../../.env -- prisma migrate reset",
 		"db:migrate:dev": "dotenv -e ../../.env -- prisma migrate dev",
-		"db:migrate:deploy": "dotenv -e ../../.env.prod -- prisma migrate deploy",
+		"db:migrate:deploy": "dotenv -e ../../.env.production -- prisma migrate deploy",
+		"db:generate:deploy": "dotenv -e ../../.env.production -- prisma generate",
 		"db:seed": "dotenv -e ../../.env -- ts-node src/seed.ts"
 	},
 	"devDependencies": {

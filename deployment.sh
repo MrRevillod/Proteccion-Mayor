@@ -16,16 +16,19 @@ ssh_user=$VM_USER
 echo "Mode: $mode"
 echo "Install: $install"
 
+echo "$ip"
+echo "$port"
+echo "$ssh_key"
+echo "$ssh_user"
+
 export NODE_ENV=production
 
 if [ "$mode" = "build" ]; then
 
     echo "Building the project..."
 
-    if [ "$install" = "install" ]; then
-        echo "Installing the dependencies..."
-        pnpm run build --filter=!mobile-app
-    fi
+    pnpm run db:generate:deploy
+    pnpm run build
 
     echo "Copying the dist folders to the server..."
 
@@ -37,7 +40,7 @@ if [ "$mode" = "build" ]; then
     scp -i $ssh_key -P $port -r ./packages/database/dist $ssh_user@$ip:/home/$ssh_user/Proteccion-Mayor/packages/database/
     scp -i $ssh_key -P $port -r ./packages/lib/dist $ssh_user@$ip:/home/$ssh_user/Proteccion-Mayor/packages/lib/
 
-    scp -i $ssh_key -P $port -r ./.env.prod $ssh_user@$ip:/home/$ssh_user/Proteccion-Mayor/
+    scp -i $ssh_key -P $port -r ./.env.production $ssh_user@$ip:/home/$ssh_user/Proteccion-Mayor/
 
     echo "Done!"
 
@@ -47,8 +50,14 @@ elif [ "$mode" = "deploy" ]; then
 
     if [ "$install" = "dependencies" ]; then
         echo "Installing the dependencies..."
-        pnpm run build --filter=!mobile-app --max-network-concurrency=1 -P
+        pnpm install --max-network-concurrency=1 -P
     fi
+
+    echo "Generating prisma client..."
+
+    pnpm run db:generate
+
+    echo "Building the project..."
 
     echo "Copying web bundle to the nginx folder..."
 
@@ -86,7 +95,7 @@ elif [ "$mode" = "db:deploy" ]; then
     pnpm run db:migrate:deploy
 
     echo "Generating prisma client..."
-    pnpm run db:generate
+    pnpm run db:generate:deploy
 
     cd ../../
 

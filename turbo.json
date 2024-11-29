@@ -20,6 +20,7 @@
 		"db:migrate:dev": {},
 		"db:push": {},
 		"db:seed": {},
+		"db:generate:deploy": {},
 		"generate": {
 			"cache": false
 		},

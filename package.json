@@ -2,20 +2,18 @@
 	"name": "pm-temuco",
 	"private": true,
 	"scripts": {
-		"db:migrate:deploy": "turbo run db:migrate:deploy",
 		"db:migrate:dev": "turbo run db:migrate:dev",
+		"db:migrate:deploy": "turbo run db:migrate:deploy",
 		"db:push": "turbo run db:push",
 		"db:seed": "turbo run db:seed",
 		"db:generate": "turbo run db:generate",
+		"db:generate:deploy": "turbo run db:generate:deploy",
 		"build": "turbo run build",
 		"clean": "turbo run clean",
 		"dev": "turbo run dev",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
 		"test": "turbo run test",
-		"typecheck": "turbo run typecheck",
-		"dev:backend": "pnpm install && pnpm run dev --filter=!admin-web  --filter=!mobile-app",
-		"dev:web-apps": "pnpm install && pnpm run dev --filter=admin-web --filter=professional-web",
-		"dev:mobile-app": "pnpm install && pnpm run dev --filter=mobile-app"
+		"typecheck": "turbo run typecheck"
 	},
 	"devDependencies": {
 		"eslint": "^9.9.0",
