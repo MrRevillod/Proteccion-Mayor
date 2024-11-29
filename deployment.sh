@@ -1,10 +1,9 @@
-
 #!/bin/bash
 
-# Usage: ./deployment.sh [mode] [install]
-# mode: build | deploy
+# Usage: ./deployment.sh [mode] [install | dependencies]
+# mode: build | deploy | db:deploy | seed:dev
 
-set -a && source .env.prod && set +a
+set -a && source .env.production && set +a
 
 mode=$1
 install=$2
@@ -14,30 +13,12 @@ port=$VM_PORT
 ssh_key=$VM_SSH_KEY_PATH
 ssh_user=$VM_USER
 
-# Arguments:
-# Mode: "build" | "start"
+echo "Mode: $mode"
+echo "Install: $install"
 
-# Mode: "build"
-# - Build the project
-# - Copy the dist folders to the server
-
-# Mode: "start"
-# - Start the server
-
-# Mode: "db:setup:dev" | "db:setup:prod"
-# - Run the migrations
-# - Generate the prisma client
-# - Run the seeds
-
-# - dev -> use the dev database (local)
-# - prod -> use the prod database (server)
-
-# Install: "install"
-# - install -> install the dependencies
+export NODE_ENV=production
 
 if [ "$mode" = "build" ]; then
-
-    export NODE_ENV=production
 
     echo "Building the project..."
 
@@ -64,12 +45,12 @@ elif [ "$mode" = "deploy" ]; then
 
     echo "Deploying the project..."
 
-    if [ "$install" = "install" ]; then
+    if [ "$install" = "dependencies" ]; then
         echo "Installing the dependencies..."
-        pnpm run build --filter=!mobile-app
+        pnpm run build --filter=!mobile-app --max-network-concurrency=1 -P
     fi
 
-    echo "Copiying web bundle to the nginx folder..."
+    echo "Copying web bundle to the nginx folder..."
 
     sudo mkdir -p /var/www/pmtemuco
     sudo rm -rf /var/www/pmtemuco/*
@@ -96,9 +77,9 @@ elif [ "$mode" = "deploy" ]; then
     cd ../../
 
     pm2 list
-fi
 
-if [ "$mode" = "db:deploy" ]; then
+elif [ "$mode" = "db:deploy" ]; then
+
     echo "Migrating to deploy database..."
     cd ./packages/database
 
@@ -110,11 +91,14 @@ if [ "$mode" = "db:deploy" ]; then
     cd ../../
 
     echo "Done!"
-fi
 
-if [ "$mode" = "seed:dev" ]; then
+elif [ "$mode" = "seed:dev" ]; then
     echo "Seeding database..."
     pnpm run db:seed:dev
+
+else
+    echo "Unknown mode: $mode"
+    exit 1
 fi
 
 cd ../../

@@ -7,7 +7,7 @@ dist
 dist-ssr
 *.local
 .env
-.env.prod
+.env.production
 .cache
 **/dist
 */dist
