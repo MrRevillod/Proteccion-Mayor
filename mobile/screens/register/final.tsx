@@ -1,11 +1,11 @@
 import Colors from "@/components/colors"
 import GeneralView from "@/components/generalView"
 import CustomButton from "@/components/button"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 import { StyleSheet } from "react-native"
 import { commonProps } from "@/utils/types"
 import { useEffect } from "react"
-import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const Final = ({ navigation }: commonProps) => {
 

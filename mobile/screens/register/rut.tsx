@@ -1,11 +1,12 @@
-import { View, StyleSheet } from "react-native"
 import Input from "@/components/input"
 import GeneralView from "@/components/generalView"
 import CustomButton from "@/components/button"
+import GoBackButton from "@/components/goBack"
+
+import { commonProps } from "@/utils/types"
 import { useFormContext } from "react-hook-form"
 import { checkUniqueField } from "@/utils/request"
-import GoBackButton from "@/components/goBack"
-import { commonProps } from "@/utils/types"
+import { View, StyleSheet } from "react-native"
 
 const RUT = ({ navigation }: commonProps) => {
 	const { getValues, setError, trigger } = useFormContext()

@@ -1,3 +1,4 @@
+import axios from "axios"
 import { useState, useEffect } from "react"
 import { View, StyleSheet, Text, Alert } from "react-native"
 import GeneralView from "@/components/generalView"
@@ -6,11 +7,9 @@ import Colors from "@/components/colors"
 import { commonProps } from "@/utils/types"
 import { Controller, useFormContext } from "react-hook-form"
 import * as mime from "react-native-mime-types"
-import axios from "axios"
 import Feather from "@expo/vector-icons/Feather"
 import { SERVER_URL } from "@/utils/request"
 import LoadingScreen from "@/components/loadingScreen"
-import { useAuth } from "@/contexts/authContext"
 
 const Social = ({ navigation, route }: commonProps) => {
 	const {

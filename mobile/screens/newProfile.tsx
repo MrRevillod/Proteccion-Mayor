@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react"
-import { View, StyleSheet, Text, Alert, Image } from "react-native"
-import { Controller, useForm } from "react-hook-form"
 import { SERVER_URL } from "@/utils/request"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { profileSchema } from "@/utils/validation"
+import { useEffect, useState } from "react"
+import { Controller, useForm } from "react-hook-form"
+import { View, StyleSheet, Text, Alert, Image } from "react-native"
 
 import GeneralView from "@/components/generalView"
 import CustomButton from "@/components/button"
@@ -16,7 +16,7 @@ import axios from "axios"
 
 const NewProfile = ({ navigation, route }: any) => {
 	const [image, setImage] = useState("")
-	const { setValue, control, handleSubmit, getValues } = useForm({
+	const { setValue, control, handleSubmit } = useForm({
 		resolver: zodResolver(profileSchema),
 		defaultValues: {
 			profile: "",
@@ -25,7 +25,6 @@ const NewProfile = ({ navigation, route }: any) => {
 	})
 	useEffect(() => {
 		if (route.params?.photoUri) {
-			console.log("NewProfile photo URI:", route.params.photoUri)
 			setValue("profile", route.params.photoUri)
 			setImage(route.params.photoUri)
 		}
@@ -72,19 +71,12 @@ const NewProfile = ({ navigation, route }: any) => {
 			formData.append("profile", profile as any)
 		}
 		try {
-			const response = await axios.post(`${SERVER_URL}/api/dashboard/seniors/${data.id}/profile`, formData, {
+			await axios.post(`${SERVER_URL}/api/dashboard/seniors/${data.id}/profile`, formData, {
 				headers: {
 					"Content-Type": "multipart/form-data",
 				},
 			})
-
-			if (response.status !== 200) {
-				throw new Error("Error en la solicitud")
-			} else {
-				console.log(response.data)
-			}
 		} catch (error) {
-			console.error(error)
 			Alert.alert("Error", "Hubo un problema al enviar los datos. Intenta nuevamente.")
 		}
 

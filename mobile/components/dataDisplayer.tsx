@@ -2,7 +2,7 @@ import React from "react"
 import Colors from "@/components/colors"
 
 import { Ionicons } from "@expo/vector-icons"
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, ImageSourcePropType } from "react-native"
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, ImageSourcePropType, ViewStyle } from "react-native"
 
 const { width } = Dimensions.get("window")
 
@@ -10,10 +10,11 @@ type DataDisplayerProps = {
 	imgPath?: ImageSourcePropType
 	titleField: string | number
 	descriptionField?: String | number
-    actionButton?: "Ingresar" | "Cambiar" | "ELIMINAR" | "Más..."
+	actionButton?: "Ingresar" | "Cambiar" | "ELIMINAR" | "MÃ¡s..."
 	onPress?: () => void
 	isCC?: boolean
 	event?: { bool: boolean; color?: string }
+	style?: ViewStyle
 }
 
 const DataDisplayer = ({
@@ -24,9 +25,10 @@ const DataDisplayer = ({
 	onPress,
 	isCC = false,
 	event = { bool: false },
+	style,
 }: DataDisplayerProps) => {
 	return (
-		<View style={styles.dataContainer}>
+		<View style={[styles.dataContainer, style]}>
 			<View style={{ flexDirection: "row", alignItems: "center", padding: width * 0.01 }}>
 				{event.bool ? (
 					<View style={[styles.colorBar, { backgroundColor: event.color || Colors.gray }]} />
@@ -37,23 +39,23 @@ const DataDisplayer = ({
 				)}
 
 				{!descriptionField && !actionButton && (
-					<View style={{ flexDirection: "column", marginLeft: 10, maxWidth: "80%" }}>
+					<View style={{ flexDirection: "column", marginLeft: 10, minWidth: width * 0.45, maxWidth: width * 0.8 }}>
 						<Text style={styles.textTitle}>{titleField}</Text>
 					</View>
 				)}
 				{!descriptionField && actionButton && (
-					<View style={{ flexDirection: "column", marginLeft: 10, maxWidth: width * 0.6 }}>
+					<View style={{ flexDirection: "column", marginLeft: 10, minWidth: width * 0.45, maxWidth: width * 0.6 }}>
 						<Text style={styles.textTitle}>{titleField}</Text>
 					</View>
 				)}
 				{descriptionField && !actionButton && (
-					<View style={{ flexDirection: "column", marginLeft: 10, maxWidth: "88%" }}>
+					<View style={{ flexDirection: "column", marginLeft: 10, minWidth: width * 0.45, maxWidth: "88%" }}>
 						<Text style={styles.textTitle}>{titleField}</Text>
 						<Text style={{ fontSize: 16, color: Colors.gray, margin: 0, padding: 0, fontWeight: "bold" }}>{descriptionField}</Text>
 					</View>
 				)}
 				{descriptionField && actionButton && (
-					<View style={{ flexDirection: "column", marginLeft: 10, maxWidth: width * 0.6 }}>
+					<View style={{ flexDirection: "column", marginLeft: 10, minWidth: width * 0.45, maxWidth: width * 0.6 }}>
 						<Text style={styles.textTitle}>{titleField}</Text>
 						<Text style={{ fontSize: 16, color: Colors.gray, margin: 0, padding: 0, fontWeight: "bold" }}>{descriptionField}</Text>
 					</View>

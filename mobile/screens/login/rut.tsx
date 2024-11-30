@@ -1,8 +1,9 @@
-import { View, StyleSheet } from "react-native"
 import Input from "@/components/input"
 import GeneralView from "@/components/generalView"
 import CustomButton from "@/components/button"
+
 import { commonProps } from "@/utils/types"
+import { View, StyleSheet } from "react-native"
 
 const RUT = ({ navigation }: commonProps) => {
 	return (
@@ -14,7 +15,7 @@ const RUT = ({ navigation }: commonProps) => {
 		>
 			<View style={styles.container}>
 				<Input name="rut" placeholder="Ingresa tu RUT" />
-                <CustomButton title="Siguiente" onPress={() => navigation.navigate("Pin")} />
+				<CustomButton title="Siguiente" onPress={() => navigation.navigate("Pin")} />
 			</View>
 		</GeneralView>
 	)
