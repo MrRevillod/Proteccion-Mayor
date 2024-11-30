@@ -22,3 +22,9 @@ pnpm install -g @socket.io/pm2
 ```bash
 pnpm install -g dotenv-cli
 ```
+
+##### TS-Node (Ejecución de scripts TypeScript)
+
+```bash
+pnpm install -g ts-node
+```

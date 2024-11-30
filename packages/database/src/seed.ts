@@ -7,9 +7,10 @@ const prisma = new PrismaClient()
 const Gender = require("@prisma/client").Gender
 
 const DEFAULT_SENIOR_PASSWORD = process.env.DEV_DEFAULT_SENIOR_PASSWORD || "1234"
-const DEFAULT_PROFESSIONAL_PASSWORD = process.env.DEFAULT_PROFESSIONAL_PASSWORD || "pro123"
-const DEFAULT_PROFILE_PICTURE = "https://i.pinimg.com/originals/58/51/2e/58512eb4e598b5ea4e2414e3c115bef9.jpg"
+const DEFAULT_PROFESSIONAL_PASSWORD = process.env.DEV_DEFAULT_PROFESSIONAL_PASSWORD || "pro123"
 const DEV_DEFAULT_DEVELOPER_PASSWORD = process.env.DEV_DEFAULT_DEVELOPER_PASSWORD || "dev"
+
+const DEFAULT_PROFILE_PICTURE = "https://i.pinimg.com/originals/58/51/2e/58512eb4e598b5ea4e2414e3c115bef9.jpg"
 
 const generateRUT = (): string => {
 	const numero: string = Math.floor(Math.random() * 100000000)
@@ -147,7 +148,7 @@ const seed = async () => {
 			}
 		}
 
-		for (let i = 0; i < 200; i++) {
+		for (let i = 0; i < 50; i++) {
 			const SeniorRUT = generateRUT()
 			const seniorFirstName = faker.person.firstName()
 			const seniorLastName = faker.person.lastName()

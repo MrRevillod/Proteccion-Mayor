@@ -1,7 +1,11 @@
 import dotenv from "dotenv"
 import { ServiceName, ServiceInfo } from "./types"
 
-dotenv.config({ path: "../../.env" })
+console.log("NODE_ENV", process.env.NODE_ENV)
+
+dotenv.config({
+	path: process.env.NODE_ENV === "production" ? "../../.env.production" : "../../.env",
+})
 
 const envPortAsInt = (envVar: string, defaultPort: number) => {
 	return parseInt(process.env[envVar] ?? defaultPort.toString())

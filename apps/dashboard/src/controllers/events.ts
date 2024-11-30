@@ -242,8 +242,6 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 			select: eventSelect,
 		})
 
-		console.log("updatedEvent", updatedEvent)
-
 		io.to("ADMIN").emit("updatedEvent", formatEvent(updatedEvent))
 
 		if (!event.professional) throw new AppError(404, "Professional no encontrado")
@@ -257,8 +255,6 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 			event.start,
 			event.end,
 		)
-
-		console.log("htmlTemplate", htmlTemplate)
 
 		await sendMail(event.professional.email, `Cita de ${event.service.name} reservada`, htmlTemplate)
 		return res.status(200).json({ values: updatedEvent })
@@ -302,7 +298,6 @@ export const cancelReserve = async (req: Request, res: Response, next: NextFunct
 		io.to(["ADMIN", updatedEvent.professionalId || ""]).emit("updatedEvent", formatEvent(updatedEvent))
 		return res.status(200).json({ modified: formatEvent(updatedEvent) })
 	} catch (error) {
-		console.log("error cancelReserve", error)
 		next(error)
 	}
 }
