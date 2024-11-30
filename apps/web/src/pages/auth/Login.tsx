@@ -8,7 +8,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { LoginFormData } from "../../lib/types"
 import { LoginFormSchema } from "../../lib/schemas"
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form"
-
 const LoginPage: React.FC = () => {
 	const lastLoginRole = localStorage.getItem("role")
 

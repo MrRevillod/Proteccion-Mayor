@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react"
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, StatusBar, Animated, FlatList } from "react-native"
+import React, { useCallback, useEffect, useState } from "react"
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Animated, FlatList } from "react-native"
 import Colors from "@/components/colors"
 import GeneralView from "@/components/generalView"
 import MenuBar from "@/components/menuBar"
@@ -7,6 +7,8 @@ import { makeAuthenticatedRequest, SERVER_URL } from "@/utils/request"
 import { getStorageRUT } from "@/utils/storage"
 import DataDisplayer from "@/components/dataDisplayer"
 import { formatDate } from "@/utils/formatter"
+import LoadingScreen from "@/components/loadingScreen"
+import { useFocusEffect } from "@react-navigation/native"
 
 const { width } = Dimensions.get("window")
 
@@ -33,23 +35,30 @@ interface Event {
 const Schedule = ({ navigation }: any) => {
 	const [eventsList, setEventsList] = useState<Event[]>([])
 	const [selectedButton, setSelectedButton] = useState<number>(0)
+	const [loading, setLoading] = useState<boolean>(false)
 	const slideAnim = new Animated.Value(0)
 
-	useEffect(() => {
-		const fetchEvents = async () => {
-			const rut = await getStorageRUT()
-			if (!rut) {
-				return
-			}
-			makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events?seniorId=${rut}`, "GET").then((response) => {
-				if (response?.data) {
-					const eventsList = response.data.values.formatted
-					setEventsList(eventsList)
-				}
-			})
+	const fetchEvents = async () => {
+		setLoading(true)
+		const rut = await getStorageRUT()
+		if (!rut) {
+			setLoading(false)
+			return
 		}
-		fetchEvents()
-	}, [])
+		makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events?seniorId=${rut}`, "GET", navigation).then((response) => {
+			if (response?.data) {
+				const eventsList = response.data.values.formatted
+				setEventsList(eventsList)
+			}
+		})
+		setLoading(false)
+	}
+
+	useFocusEffect(
+		useCallback(() => {
+			fetchEvents()
+		}, [])
+	)
 
 	// Función para manejar la animación del deslizador
 	const handlePress = (index: number) => {
@@ -76,6 +85,7 @@ const Schedule = ({ navigation }: any) => {
 
 	return (
 		<>
+			{loading && <LoadingScreen />}
 			<GeneralView title="Agenda" noBorders>
 				<View style={styles.bigContainer}>
 					<View style={styles.buttonsContainer}>

@@ -51,7 +51,7 @@ export const getServerTokens = (headers: IncomingHttpHeaders, cookies: any) => {
 	let ACCESS_TOKEN = cookies["ACCESS_TOKEN"]
 	let REFRESH_TOKEN = cookies["REFRESH_TOKEN"]
 
-	if (!ACCESS_TOKEN && !REFRESH_TOKEN && headers.authorization) {
+	if ((!ACCESS_TOKEN || !REFRESH_TOKEN) && headers.authorization) {
 		const [bearer, tokens] = headers.authorization.split(" ")
 
 		if (bearer !== "Bearer") throw new JsonWebTokenError("Invalid token")

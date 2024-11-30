@@ -30,4 +30,8 @@ router.get("/validate-auth", sessionMiddleware, validateSession)
 // Validar rol de usuario (ADMIN, PROFESSIONAL, SENIOR)
 router.get("/validate-role/:role", sessionMiddleware, authenticationByRole, validateSession)
 
+router.get("/health", (req, res) => {
+	res.status(200).send("OK")
+})
+
 export default router

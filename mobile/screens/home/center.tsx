@@ -7,6 +7,8 @@ import GeneralView from "@/components/generalView"
 import MenuBar from "@/components/menuBar"
 import { makeAuthenticatedRequest, SERVER_URL } from "@/utils/request" // Usa tu función de petición
 import { useRoute } from "@react-navigation/native" // Para obtener parámetros de navegación
+import { useAuth } from "@/contexts/authContext"
+import LoadingScreen from "@/components/loadingScreen"
 
 interface Center {
 	id: number
@@ -16,13 +18,15 @@ interface Center {
 
 const CenterScreen = ({ navigation }: any) => {
 	const [centers, setCenters] = useState<Center[]>([])
+	const [loading, setLoading] = useState<boolean>(false)
 	const route = useRoute()
 	const { serviceId } = route.params as { serviceId: number }
 
 	useEffect(() => {
 		const fetchCenters = async () => {
+			setLoading(true)
 			try {
-				const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events/${serviceId}`, "GET")
+				const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/events/${serviceId}`, "GET", navigation)
 				if (response?.data) {
 					const centerList = response.data.centers.map((item: { center: Center }) => item.center)
 					setCenters(centerList)
@@ -30,15 +34,16 @@ const CenterScreen = ({ navigation }: any) => {
 			} catch (error) {
 				console.error("Error fetching centers:", error)
 			}
+			setLoading(false)
 		}
+		if (serviceId) fetchCenters()
 
-		if (serviceId) {
-			fetchCenters()
-		}
+
 	}, [serviceId])
 
 	return (
 		<>
+			{loading && <LoadingScreen />}
 			<GeneralView title="Agendar Servicio">
 				<View style={styles.bigContainer}>
 					<View style={styles.topContainer}>
@@ -57,7 +62,6 @@ const CenterScreen = ({ navigation }: any) => {
 				</View>
 				<View style={{ flexDirection: "row", justifyContent: "space-between", padding: 10 }}>
 					<CustomButton title="Volver" onPress={() => navigation.navigate("Home")} style={{ width: "40%", borderRadius: 20 }} />
-					<CustomButton title="Siguiente" onPress={() => navigation.navigate("Home")} style={{ width: "40%", borderRadius: 20 }} />
 				</View>
 			</GeneralView>
 			<MenuBar navigation={navigation} />

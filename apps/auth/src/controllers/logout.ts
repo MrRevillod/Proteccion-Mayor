@@ -1,11 +1,9 @@
 import { Request, Response, NextFunction } from "express"
 
-// Controlador para cerrar la sesión
-// Valido para la aplicación web
+// Controlador para cerrar la sesión (Valido para la aplicación web)
 
+// Se limpian las cookies de la respuesta mediante el metodo clearCookie
 export const logoutController = (req: Request, res: Response, next: NextFunction) => {
-	// Se limpian las cookies de la respuesta mediante el metodo clearCookie
-
 	res.clearCookie("ACCESS_TOKEN")
 	res.clearCookie("REFRESH_TOKEN")
 

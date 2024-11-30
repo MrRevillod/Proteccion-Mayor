@@ -15,11 +15,8 @@ export const createServer = (): express.Express => {
 	app.use(cookieParser())
 	app.use(express.urlencoded({ extended: true }))
 	app.use(express.json())
-    app.use(cors({
-        origin: 'http://localhost:8000', // Cambia esto por el origen del cliente
-        credentials: true // Permitir credenciales (cookies, headers, etc.)
-      }));
-    
+	app.use(cors({ origin: "*", credentials: true }))
+
 	app.use(extensions)
 	app.use("/api/auth", router)
 	app.use(errorHandler)

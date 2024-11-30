@@ -118,6 +118,15 @@ export const createServer = (): express.Express => {
 	})
 
 	app.use("/api/storage/public/seniors", seniorRouter)
+	app.get("/api/storage/public/download-mobile-app", async (req, res, next) => {
+		try {
+			const filePath = path.join(__dirname, "../public/mobile/proteccion-mayor.apk")
+			return res.download(filePath, "proteccion-mayor.apk")
+		} catch (error) {
+			next(error)
+		}
+	})
+
 	app.use(
 		"/api/storage/public/",
 		(req, res, next) => {

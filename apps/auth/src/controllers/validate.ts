@@ -25,7 +25,6 @@ export const refreshController = async (req: Request, res: Response, next: NextF
 		// Si no hay un token de refresco, lanzamos un error
 
 		const tokens = getServerTokens(req.headers, req.cookies)
-
 		if (!tokens?.refresh) throw new AppError(401, "No autorizado")
 
 		const payload = verifyJsonwebtoken(tokens.refresh, RefreshTokenOpts)
@@ -63,9 +62,7 @@ export const refreshController = async (req: Request, res: Response, next: NextF
 		return res.status(200).json({
 			message: "Token de acceso actualizado",
 			type: "success",
-			values: {
-				role: payload.role,
-			},
+			values: { role: payload.role },
 		})
 	} catch (error) {
 		next(error)

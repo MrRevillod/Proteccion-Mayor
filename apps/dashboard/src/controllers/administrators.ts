@@ -1,12 +1,12 @@
-import { compare, hash } from "bcrypt"
-import { Administrator, Prisma } from "@prisma/client"
 import { prisma } from "@repo/database"
-import { AppError, constants } from "@repo/lib"
-import { Request, Response, NextFunction } from "express"
-import { deleteProfilePicture, uploadProfilePicture } from "../utils/files"
-import { generatePassword } from "../utils/password"
+import { AppError } from "@repo/lib"
 import { sendMail } from "../utils/mailer"
 import { welcomeBody } from "../utils/emailTemplates"
+import { compare, hash } from "bcrypt"
+import { generatePassword } from "../utils/password"
+import { Administrator, Prisma } from "@prisma/client"
+import { Request, Response, NextFunction } from "express"
+import { deleteProfilePicture, uploadProfilePicture } from "../utils/files"
 
 // Controlador para obtener todos los administradores de la base de datos
 // se excluye el campo password de la respuesta

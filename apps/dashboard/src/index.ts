@@ -15,8 +15,8 @@ import administrarorsRouter from "./routes/administrators"
 
 import { setupWorker } from "@socket.io/sticky"
 import { createServer } from "http"
-import { Server, Socket } from "socket.io"
 import { createAdapter } from "@socket.io/cluster-adapter"
+import { Server, Socket } from "socket.io"
 import { ServerToClientEvents } from "./socket"
 import { log, services, errorHandler, extensions, UserRole } from "@repo/lib"
 
@@ -31,6 +31,7 @@ export const createApp = (): express.Express => {
 
 	app.use(cookieParser())
 	app.use(extensions)
+
 	app.use("/api/dashboard/reports", reportsRouter)
 	app.use("/api/dashboard/centers", centerRouter)
 	app.use("/api/dashboard/seniors", seniorsRouter)
