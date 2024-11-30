@@ -47,8 +47,12 @@ elif [ "$mode" = "deploy" ]; then
 
     cd ./packages/database
 
+    pnpm run build
+
     pnpm run db:migrate:deploy
     pnpm run db:generate:deploy
+
+    pnpm run build
 
     cd ../../
 
@@ -77,21 +81,22 @@ elif [ "$mode" = "deploy" ]; then
     pm2 flush
 
     cd ./apps/auth/
-    pm2 start "./dist/index.js" --name "Authentication Service" -i 2
-    pm2 save
+    pm2 start "./dist/index.js" --name "Authentication Service" -i 1 --env production
 
     cd ../../apps/dashboard/
-    pm2 start "./dist/index.js" --name "Dashboard Service" -i 3
-    pm2 save
+    pm2 start "./dist/index.js" --name "Dashboard Service" -i 1 --env production
 
     cd ../../apps/storage/
-    pm2 start "./dist/index.js" --name "Storage Service" -i 1
-    pm2 save
+    pm2 start "./dist/index.js" --name "Storage Service" -i 1 --env production
 
     cd ../../
 
-    pm2 list
+    pm2 status
     pm2 save
+
+    pm2 list
+
+    echo "Successfully deployed!"
 
 elif [ "$mode" = "seed:dev" ]; then
     echo "Seeding database..."
