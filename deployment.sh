@@ -27,7 +27,6 @@ if [ "$mode" = "build" ]; then
 
     echo "Building the project..."
 
-    pnpm run db:generate:deploy
     pnpm run build
 
     echo "Copying the dist folders to the server..."
@@ -37,25 +36,28 @@ if [ "$mode" = "build" ]; then
     scp -i $ssh_key -P $port -r ./apps/storage/dist $ssh_user@$ip:/home/$ssh_user/Proteccion-Mayor/apps/storage/
     scp -i $ssh_key -P $port -r ./apps/web/dist $ssh_user@$ip:/home/$ssh_user/Proteccion-Mayor/apps/web/
 
-    scp -i $ssh_key -P $port -r ./packages/database/dist $ssh_user@$ip:/home/$ssh_user/Proteccion-Mayor/packages/database/
     scp -i $ssh_key -P $port -r ./packages/lib/dist $ssh_user@$ip:/home/$ssh_user/Proteccion-Mayor/packages/lib/
-
     scp -i $ssh_key -P $port -r ./.env.production $ssh_user@$ip:/home/$ssh_user/Proteccion-Mayor/
 
     echo "Done!"
 
 elif [ "$mode" = "deploy" ]; then
 
+    echo "Migrating to deploy database..."
+
+    cd ./packages/database
+
+    pnpm run db:migrate:deploy
+    pnpm run db:generate:deploy
+
+    cd ../../
+
     echo "Deploying the project..."
 
     if [ "$install" = "dependencies" ]; then
         echo "Installing the dependencies..."
-        pnpm install --max-network-concurrency=1 -P
+        pnpm install --max-network-concurrency=1
     fi
-
-    echo "Generating prisma client..."
-
-    pnpm run db:generate
 
     echo "Building the project..."
 
@@ -76,30 +78,20 @@ elif [ "$mode" = "deploy" ]; then
 
     cd ./apps/auth/
     pm2 start "./dist/index.js" --name "Authentication Service" -i 2
+    pm2 save
 
     cd ../../apps/dashboard/
     pm2 start "./dist/index.js" --name "Dashboard Service" -i 3
+    pm2 save
 
     cd ../../apps/storage/
     pm2 start "./dist/index.js" --name "Storage Service" -i 1
+    pm2 save
 
     cd ../../
 
     pm2 list
-
-elif [ "$mode" = "db:deploy" ]; then
-
-    echo "Migrating to deploy database..."
-    cd ./packages/database
-
-    pnpm run db:migrate:deploy
-
-    echo "Generating prisma client..."
-    pnpm run db:generate:deploy
-
-    cd ../../
-
-    echo "Done!"
+    pm2 save
 
 elif [ "$mode" = "seed:dev" ]; then
     echo "Seeding database..."
