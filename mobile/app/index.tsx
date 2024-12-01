@@ -27,7 +27,7 @@ const App = () => {
 			<FontSizeProvider>
 				<NavigationContainer independent={true}>
 					<Stack.Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
-						{/* <Stack.Screen name="Loading" component={LoadingScreen} /> */}
+
 						<Stack.Screen name="Splash" component={SplashScreen} />
 						<Stack.Screen name="Menu" component={Menu} />
 						<Stack.Screen name="Register" component={Register} />

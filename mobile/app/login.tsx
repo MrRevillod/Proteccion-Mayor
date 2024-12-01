@@ -28,13 +28,13 @@ const Login = ({ route }: any) => {
 				return
 			}
 
-			// Recupera el RUT de AsyncStorage si está disponible
 			try {
 				const storedRUT = await getStorageRUT()
 				if (storedRUT) {
 					setRUT(storedRUT)
 					setValue("rut", storedRUT)
 				}
+
 			} finally {
 				setLoading(false)
 			}
@@ -53,13 +53,10 @@ const Login = ({ route }: any) => {
 
 	return (
 		<FormProvider {...methods}>
-
 			<Stack.Navigator screenOptions={{ headerShown: false }}>
-				{rut !== null ? (
-					// Si el RUT existe, salta a la pantalla Pin
+				{rut ? (
 					<Stack.Screen name="Pin" component={Pin} />
 				) : (
-					// Si no existe, muestra la pantalla RUT para ingresar manualmente
 					<>
 						<Stack.Screen name="RUT" component={RUT} />
 						<Stack.Screen name="Pin" component={Pin} />

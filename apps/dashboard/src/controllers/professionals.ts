@@ -84,7 +84,11 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 			select: professionalSelect,
 		})
 
-		await sendMail(email, "Bienvenido", welcomeBody(name, email, password))
+		await sendMail({
+			to: email,
+			subject: "Bienvenido",
+			html: welcomeBody(name, email, password),
+		})
 
 		return res.status(201).json({ values: { modified: professional } })
 	} catch (error) {

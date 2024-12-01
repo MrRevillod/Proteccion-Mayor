@@ -1,7 +1,7 @@
 import { Event } from "@prisma/client"
 
 type EventName = `event:${string}`
-export type SocketEvents = Record<EventName, (data: Event) => void>
+export type SocketEvents = Record<EventName, (data: Event | null) => void>
 
 export interface ServerToClientEvents {
 	newEvent: (event: Event) => void

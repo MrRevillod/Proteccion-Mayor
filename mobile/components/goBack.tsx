@@ -6,13 +6,20 @@ import { TouchableOpacity, StyleSheet } from "react-native"
 type GoBackButtonProps = {
 	navigation: any
 	visible?: boolean
+	onPress?: () => void
 }
 
-const GoBackButton = ({ navigation, visible }: GoBackButtonProps) => {
+const GoBackButton = ({ navigation, visible, onPress }: GoBackButtonProps) => {
+
+	const handlePress = () => {
+		onPress && onPress()
+		!onPress && navigation.goBack()
+	}
+
 	return (
 		<>
 			{visible && (
-				<TouchableOpacity onPress={() => navigation.goBack()} style={styles.button}>
+				<TouchableOpacity onPress={() => handlePress()} style={styles.button}>
 					<AntDesign name="arrowleft" size={30} color="white" />
 				</TouchableOpacity>
 			)}

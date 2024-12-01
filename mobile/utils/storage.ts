@@ -56,7 +56,6 @@ export const removeTokens = async () => {
 		await AsyncStorage.removeItem("accessToken")
 		await AsyncStorage.removeItem("refreshToken")
 		await AsyncStorage.removeItem("expTime")
-		console.log("Borrando tokens...")
 	} catch (error) {
 		console.error("No se pudieron eliminar los tokens", error)
 	}
@@ -90,7 +89,6 @@ export const getStorageRUT = async (): Promise<string | null> => {
 		}
 		return null
 	} catch (error) {
-		console.error("Error al obtener el ID del usuario", error)
 		return null
 	}
 }

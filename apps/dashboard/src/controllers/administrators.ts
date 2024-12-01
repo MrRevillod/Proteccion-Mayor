@@ -61,7 +61,11 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 			data: { id, name, email, password: hash },
 		})
 
-		await sendMail(email, "Bienvenido", welcomeBody(name, email, password))
+		await sendMail({
+			to: email,
+			subject: "Bienvenido",
+			html: welcomeBody(name, email, password),
+		})
 
 		return res.status(201).json({ values: { modified: administrator } })
 	} catch (error) {

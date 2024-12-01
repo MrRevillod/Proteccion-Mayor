@@ -1,24 +1,23 @@
-import AsyncStorage from "@react-native-async-storage/async-storage"
-import React from "react"
-import { useState, useEffect } from "react"
-import { View, Text, ActivityIndicator, StyleSheet, Dimensions, TouchableOpacity, Image, Alert } from "react-native"
-import { Colors } from "@/components/colors"
-import DataDisplayer from "@/components/dataDisplayer"
-import { calculateAge, formatRUT } from "@/utils/formatter"
-import MenuBar from "@/components/menuBar"
-import { SERVER_URL } from "@/utils/request"
 import axios from "axios"
-import { makeAuthenticatedRequest } from "@/utils/request"
-import { useAuth } from "@/contexts/authContext"
+import React from "react"
+import MenuBar from "@/components/menuBar"
 import GoBackButton from "@/components/goBack"
-import CustomButton from "@/components/button"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import DataDisplayer from "@/components/dataDisplayer"
+
+import { Colors } from "@/components/colors"
+import { useAuth } from "@/contexts/authContext"
+import { SERVER_URL } from "@/utils/request"
+import { useState, useEffect } from "react"
+import { calculateAge, formatRUT } from "@/utils/formatter"
+import { makeAuthenticatedRequest } from "@/utils/request"
+import { View, Text, ActivityIndicator, StyleSheet, Dimensions, Image, Alert } from "react-native"
 
 const rutImg = require("@/assets/images/profile/rut.png")
 const emailImg = require("@/assets/images/profile/email.png")
 const birthImg = require("@/assets/images/profile/birth.png")
 const fontImg = require("@/assets/images/profile/font.png")
 const trashImg = require("@/assets/images/profile/trash.png")
-
 
 const { width } = Dimensions.get("window")
 
@@ -30,14 +29,14 @@ const Profile = ({ navigation }: any) => {
 	const { logout } = useAuth()
 
 	useEffect(() => {
-		const getUser = async () => {
-			const user = await AsyncStorage.getItem("user")
+
+		AsyncStorage.getItem("user").then((user) => {
 			if (user) {
 				const parsedUser = JSON.parse(user)
 				setUser(parsedUser)
 			}
-		}
-		getUser()
+		})
+
 	}, [])
 
 	useEffect(() => {
@@ -69,18 +68,15 @@ const Profile = ({ navigation }: any) => {
 	const age = calculateAge(birthDate)
 
 	const deleteAccount = async () => {
-		try {
-			const response = await makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/seniors/${id}`, "DELETE", navigation)
-			if (response?.status === 200) {
-				logout()
-				await AsyncStorage.removeItem("user")
-				navigation.navigate("Login", { screen: "RUT" })
-
-				Alert.alert("Cuenta Eliminada", "Su cuenta ha sido eliminada exitosamente")
-			}
-		} catch (error) {
-			console.error(error)
-		}
+		makeAuthenticatedRequest(`${SERVER_URL}/api/dashboard/seniors/${id}`, "DELETE", navigation)
+			.then((response) => {
+				if (response?.status === 200) {
+					logout()
+					AsyncStorage.removeItem("user")
+					navigation.navigate("Login", { screen: "RUT" })
+					Alert.alert("Cuenta Eliminada", "Su cuenta ha sido eliminada exitosamente")
+				}
+			})
 	}
 
 
@@ -88,7 +84,6 @@ const Profile = ({ navigation }: any) => {
 		Alert.alert("Eliminar Cuenta", "¿Está seguro que desea eliminar su cuenta?", [
 			{
 				text: "Cancelar",
-				onPress: () => console.log("Cancel Pressed"),
 				style: "cancel",
 			},
 			{ text: "Eliminar", onPress: () => deleteAccount() },
@@ -110,16 +105,15 @@ const Profile = ({ navigation }: any) => {
 			</View>
 			<View style={styles.dataContainer}>
 				<View>
-					<DataDisplayer imgPath={rutImg} titleField="RUT" descriptionField={formattedRUT} />
+					<DataDisplayer imgPath={rutImg} titleField="RUT" descriptionField={formattedRUT} style={styles.spaceBetween} />
 					{email ? (
-						<DataDisplayer imgPath={emailImg} titleField="Correo Eléctronico" descriptionField={email} />
+						<DataDisplayer imgPath={emailImg} titleField="Correo Eléctronico" descriptionField={email} style={styles.spaceBetween} />
 					) : (
-						<DataDisplayer imgPath={emailImg} titleField="Aún no ingresa su Correo Eléctronico" actionButton="Ingresar" />
+						<DataDisplayer imgPath={emailImg} titleField="Aún no ingresa su Correo Eléctronico" actionButton="Ingresar" style={styles.spaceBetween} />
 					)}
-					<DataDisplayer imgPath={birthImg} titleField="Edad" descriptionField={`${age} Años`} />
-					<DataDisplayer imgPath={fontImg} titleField="Cambiar tamaño de fuente" onPress={() => navigation.navigate("FontSize")} actionButton="Cambiar" />
+					<DataDisplayer imgPath={birthImg} titleField="Edad" descriptionField={`${age} Años`} style={styles.spaceBetween} />
 
-					<DataDisplayer imgPath={trashImg} titleField="Eliminar Cuenta" actionButton="ELIMINAR" onPress={deleteAlert} />
+					<DataDisplayer imgPath={trashImg} titleField="Eliminar Cuenta" actionButton="ELIMINAR" onPress={deleteAlert} style={styles.spaceBetween} />
 				</View>
 			</View>
 			<MenuBar navigation={navigation} />
@@ -164,5 +158,8 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		alignContent: "center",
 		justifyContent: "center",
+	},
+	spaceBetween: {
+		marginVertical: 10,
 	},
 })

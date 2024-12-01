@@ -7,7 +7,7 @@ import { createContext, ReactNode, useState } from "react"
 
 interface SocketState {
 	socket: Socket | undefined
-	listenEvent: (event: string | string[], callback?: (...args: any[]) => void) => void
+	eventListener: (event: string | string[], callback: (...args: any[]) => void) => void
 }
 
 const SocketContext = createContext<SocketState | undefined>(undefined)
@@ -16,17 +16,18 @@ export const SocketProvider = ({ children }: { children?: ReactNode }) => {
 	const { user, role, isAuthenticated } = useAuth()
 	const [socket, setSocket] = useState<Socket>()
 
-	const listenEvent = (event: string | string[], callback?: (...args: any[]) => void) => {
+	const eventListener = (event: string | string[], callback: (...args: any[]) => void) => {
 		if (event instanceof Array) {
 			event.forEach((e) => {
 				socket?.off(e)
-				socket?.on(e, callback || (() => { }))
+				socket?.on(e, callback)
 			})
 		} else {
 			socket?.off(event)
-			socket?.on(event, callback || (() => { }))
+			socket?.on(event, callback)
 		}
 	}
+
 	useEffect(() => {
 		if (isAuthenticated && !socket) {
 			const newSocket = io({
@@ -35,14 +36,11 @@ export const SocketProvider = ({ children }: { children?: ReactNode }) => {
 				transports: ["websocket"],
 			})
 
-			newSocket.on("connect", () => { return })
-			newSocket.on("disconnect", () => { return })
-
 			setSocket(newSocket)
 		}
 	}, [user, role, isAuthenticated])
 
-	return <SocketContext.Provider value={{ socket: socket, listenEvent }}>{children}</SocketContext.Provider>
+	return <SocketContext.Provider value={{ socket: socket, eventListener }}>{children}</SocketContext.Provider>
 }
 
 export const useSocket = (): SocketState => {

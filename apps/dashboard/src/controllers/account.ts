@@ -2,7 +2,7 @@ import { match } from "ts-pattern"
 import { prisma } from "@repo/database"
 import { sendMail } from "../utils/mailer"
 import { compare, hash } from "bcrypt"
-import { resetPasswordBody } from "../utils/emailTemplates"
+import { resetPasswordTemplate } from "../utils/emailTemplates"
 import { Request, Response, NextFunction } from "express"
 import { AppError, CustomTokenOpts, signJsonwebtoken, services, findUser, verifyJsonwebtoken, AccessTokenOpts, isValidUserRole } from "@repo/lib"
 
@@ -27,9 +27,9 @@ export const requestPasswordReset = async (req: Request, res: Response, next: Ne
 		const roleToken = signJsonwebtoken(rolePayload, CustomTokenOpts("", "30d"))
 
 		const resetLink = `${services.WEB_APP.url}auth/restaurar-contrasena/${user.id}/${token}/${roleToken}`
-		const htmlTemplate = resetPasswordBody(user.name, resetLink)
+		const htmlTemplate = resetPasswordTemplate(user.name, resetLink)
 
-		await sendMail(email, "Restablecimiento de contraseña", htmlTemplate)
+		await sendMail({ to: email, subject: "Restablecimiento de contraseña", html: htmlTemplate })
 		return res.status(200).json({ message: "Se ha enviado un correo electrónico con las instrucciones para restablecer la contraseña." })
 	} catch (error) {
 		next(error)
@@ -38,11 +38,10 @@ export const requestPasswordReset = async (req: Request, res: Response, next: Ne
 
 export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const { id, token, role } = req.params
 		const { password } = req.body
+		const { id, token, role } = req.params
 
 		const rolePayload = verifyJsonwebtoken(role, AccessTokenOpts)
-
 		if (!rolePayload.role || !isValidUserRole(rolePayload.role)) throw new AppError(401, "No autorizado.")
 
 		const user = await findUser({ id }, rolePayload.role)
@@ -55,39 +54,24 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
 		const hashedPassword = await hash(password, 10)
 		if (!user) throw new AppError(404, "Usuario no econtrado.")
 
-		let updatedUser
-		const updated = await match(rolePayload.role)
+		const queryData = {
+			where: { id },
+			data: { password: hashedPassword },
+		}
+
+		await match(rolePayload.role)
 			.with("SENIOR", async () => {
-				updatedUser = await prisma.senior.update({
-					where: { id: id },
-					data: { password: hashedPassword },
-				})
+				await prisma.senior.update(queryData)
 			})
 			.with("ADMIN", async () => {
-				updatedUser = await prisma.administrator.update({
-					where: { id: id },
-					data: { password: hashedPassword },
-				})
+				await prisma.administrator.update(queryData)
 			})
 			.with("PROFESSIONAL", async () => {
-				updatedUser = await prisma.professional.update({
-					where: { id: id },
-					data: { password: hashedPassword },
-				})
+				await prisma.professional.update(queryData)
 			})
 			.run()
 
-		if (!updatedUser) {
-			return res.status(500).json({
-				message: "Error actualizando la contraseña",
-				type: "error",
-			})
-		}
-
-		return res.status(200).json({
-			message: "Contraseña actualizada correctamente",
-			type: "success",
-		})
+		return res.status(200).json({ message: "Contraseña actualizada correctamente" })
 	} catch (error) {
 		next(error)
 	}

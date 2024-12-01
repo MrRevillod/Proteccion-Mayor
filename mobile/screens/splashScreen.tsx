@@ -1,8 +1,9 @@
-import Colors from "@/components/colors"
-import { SERVER_URL } from "@/utils/request"
-import AsyncStorage from "@react-native-async-storage/async-storage"
 import axios from "axios"
+import Colors from "@/components/colors"
 import React, { useEffect } from "react"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+
+import { SERVER_URL } from "@/utils/request"
 import { View, Text, StyleSheet, ActivityIndicator, Image, Alert } from "react-native"
 
 const pmLogo = require("@/assets/images/pmLogo.png")
@@ -26,7 +27,6 @@ const timer = async ({ navigation, screen }: { navigation: any, screen: any }) =
                 { cancelable: false }
             )
         }, 3000)
-
     }
 }
 

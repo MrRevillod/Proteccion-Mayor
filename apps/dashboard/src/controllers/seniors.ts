@@ -1,12 +1,13 @@
 import { hash } from "bcrypt"
 import { prisma } from "@repo/database"
+import { sendMail } from "../utils/mailer"
 import { Gender, Prisma, Senior } from "@prisma/client"
+import { preValidatedSeniorWelcomeEmailBody, seniorWelcomeEmailBody } from "../utils/emailTemplates"
 import { Request, Response, NextFunction } from "express"
 import { AppError, constants, httpRequest } from "@repo/lib"
 import { generateSelect, generateWhere, seniorSelect } from "../utils/filters"
 import { deleteProfilePicture, filesToFormData, uploadProfilePicture } from "../utils/files"
-import { sendMail } from "../utils/mailer"
-import { seniorWelcomeEmailBody } from "../utils/emailTemplates"
+import { generatePin } from "../utils/password"
 
 /// Controlador para manejar el registro de adultos mayores desde la aplicación móvil
 export const registerFromMobile = async (req: Request, res: Response, next: NextFunction) => {
@@ -119,7 +120,11 @@ export const handleSeniorRequest = async (req: Request, res: Response, next: Nex
 			},
 		})
 
-		await sendMail(senior?.email || "", "Solicitud de registro aceptada", seniorWelcomeEmailBody(senior.name))
+		await sendMail({
+			to: senior?.email as string,
+			subject: "Solicitud de registro aceptada",
+			html: seniorWelcomeEmailBody(senior.name),
+		})
 
 		return res.status(200).json({ message: "La solicitud ha sido aceptada", values: {} })
 	} catch (error: unknown) {
@@ -171,11 +176,9 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
 // Añadir una persona mayor desde la aplicación web por parte de un administrador
 
 export const create = async (req: Request, res: Response, next: NextFunction) => {
-	const { DEFAULT_SENIOR_PASSWORD } = constants
-
 	try {
 		const { id, email, gender } = req.body
-		const defaulAdminPassword = await hash(DEFAULT_SENIOR_PASSWORD, 10)
+		const [randomPin, hashedRandomPin] = await generatePin()
 
 		const filter: Prisma.SeniorWhereInput = {
 			OR: [{ id }, { email }],
@@ -198,16 +201,24 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 
 		const data = {
 			...req.body,
-			password: defaulAdminPassword,
+			name: req.body.name,
+			password: hashedRandomPin,
 			validated: true,
 			birthDate: new Date(req.body.birthDate),
 			gender: Gender[req.body.gender as keyof typeof Gender],
 		}
 
-		const senior = await prisma.senior.create({
-			data: data,
-			select: seniorSelect,
-		})
+		const [senior, _] = await Promise.all([
+			prisma.senior.create({
+				data,
+				select: seniorSelect,
+			}),
+			sendMail({
+				to: email as string,
+				subject: "Bienvenido a Protección Mayor",
+				html: preValidatedSeniorWelcomeEmailBody(req.body.name, req.body.id, randomPin),
+			}),
+		])
 
 		return res.status(201).json({ values: { modified: senior } })
 	} catch (error) {
