@@ -25,13 +25,13 @@ const CustomButton2 = ({ title, onPress, style, textStyle }: CustomCustomButton2
 }
 
 const FontSizeSelector: React.FC = ({ navigation }: any) => {
-	const [initialFs, setInitialFs] = useState(0)
-	const { changeFontSize, fontSize } = useFontSize()
+    const [initialFs, setInitialFs] = useState(0)
+    const { changeFontSize, fontSize } = useFontSize()
 
-	useEffect(() => {
-		if (initialFs === 0) setInitialFs(fontSize)
-	}, [fontSize])
-	return (
+    useEffect(() => {
+        if (initialFs === 0) setInitialFs(fontSize)
+    }, [fontSize])
+    return (
         <View style={styles.container}>
             <View style={styles.head}>
                 <AppText style={styles.textHead}>Muestra de texto</AppText>
@@ -39,34 +39,33 @@ const FontSizeSelector: React.FC = ({ navigation }: any) => {
             <View style={styles.body}>
 
 
-			<Slider
+                <Slider
                     style={{ width: 200, height: 100 }}
                     minimumValue={20}
-				maximumValue={40}
-				step={1}
-				value={fontSize}
-				onValueChange={(value) => {
-					changeFontSize(value)
-				}}
+                    maximumValue={40}
+                    step={1}
+                    value={fontSize}
+                    onValueChange={(value) => {
+                        changeFontSize(value)
+                    }}
 
-			/>
+                />
                 <CustomButton2
-				title="Guardar"
-				onPress={() => {
-                    navigation.navigate("Profile")
-				}}
-			/>
+                    title="Guardar"
+                    onPress={() => {
+                        navigation.navigate("Profile")
+                    }}
+                />
                 <CustomButton2
-				title="Cancelar"
-				onPress={() => {
-					console.log(initialFs)
-					changeFontSize(initialFs)
-                    navigation.navigate("Profile")
-				}}
-			/>
+                    title="Cancelar"
+                    onPress={() => {
+                        changeFontSize(initialFs)
+                        navigation.navigate("Profile")
+                    }}
+                />
             </View>
         </View>
-	)
+    )
 }
 
 const styles = StyleSheet.create({

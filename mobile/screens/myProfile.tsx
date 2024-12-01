@@ -84,7 +84,6 @@ const Profile = ({ navigation }: any) => {
 		Alert.alert("Eliminar Cuenta", "¿Está seguro que desea eliminar su cuenta?", [
 			{
 				text: "Cancelar",
-				onPress: () => console.log("Cancel Pressed"),
 				style: "cancel",
 			},
 			{ text: "Eliminar", onPress: () => deleteAccount() },

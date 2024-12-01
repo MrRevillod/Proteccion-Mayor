@@ -35,8 +35,6 @@ const Login = ({ route }: any) => {
 					setValue("rut", storedRUT)
 				}
 
-				console.log("storedRUT", storedRUT)
-
 			} finally {
 				setLoading(false)
 			}

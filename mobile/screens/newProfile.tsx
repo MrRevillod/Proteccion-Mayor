@@ -38,8 +38,6 @@ const NewProfile = ({ navigation, route }: any) => {
 			quality: 1,
 		})
 
-		console.log(result)
-
 		if (!result.canceled) {
 			setValue("profile", result.assets[0].uri)
 			setImage(result.assets[0].uri)

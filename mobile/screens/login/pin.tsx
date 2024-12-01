@@ -19,8 +19,6 @@ const Pin = ({ navigation }: any) => {
 
 	const onSubmit = async (data: any) => {
 
-		console.log("login data", data)
-
 		await login(data)
 		navigation.navigate("Home")
 		await AsyncStorage.setItem("firstTime", "false")
@@ -40,8 +38,6 @@ const Pin = ({ navigation }: any) => {
 		await AsyncStorage.removeItem("user")
 		await AsyncStorage.removeItem("firstTime")
 		navigation.navigate("Menu")
-
-		console.log("Usuario eliminado", await AsyncStorage.getItem("user"))
 	}
 
 	return (
