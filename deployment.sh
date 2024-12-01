@@ -38,6 +38,7 @@ if [ "$mode" = "build" ]; then
 
     scp -i $ssh_key -P $port -r ./packages/lib/dist $ssh_user@$ip:/home/$ssh_user/Proteccion-Mayor/packages/lib/
     scp -i $ssh_key -P $port -r ./.env.production $ssh_user@$ip:/home/$ssh_user/Proteccion-Mayor/
+    scp -i $ssh_key -P $port -r ./apps/storage/public/proteccion-mayor.apk $ssh_user@$ip:/home/$ssh_user/Proteccion-Mayor/apps/storage/public/
 
     echo "Done!"
 
