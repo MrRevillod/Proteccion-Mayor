@@ -82,19 +82,20 @@ export const EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) => {
 					</Show>
 					<div className="w-full flex flex-col xl:flex-row gap-2 mt-1">
 						<button
-							className="w-full xl:w-1/2 bg-primary-dark dark:bg-gray-light text-white dark:text-dark p-2 rounded-lg border-none font-medium"
+							className="w-full xl:w-1/2 bg-primary-dark dark:bg-gray-light text-white dark:text-dark p-2 rounded-lg border-none font-medium truncate overflow-hidden whitespace-nowrap"
 							type="button"
 							onClick={handleReset}
 						>
 							Limpiar filtros
 						</button>
 						<button
-							className="w-full xl:w-1/2 bg-primary text-white p-2 rounded-lg border-none font-medium"
+							className="w-full xl:w-1/2 bg-primary text-white p-2 rounded-lg border-none font-medium truncate overflow-hidden whitespace-nowrap"
 							type="submit"
 						>
 							Filtrar
 						</button>
 					</div>
+
 				</form>
 			</FormProvider>
 		</section>

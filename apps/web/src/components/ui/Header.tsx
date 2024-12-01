@@ -50,13 +50,13 @@ const Header: React.FC = () => {
 	}, [location])
 
 	return (
-		<Navbar fluid className="py-4 h-18 w-full bg-primary dark:bg-primary-darker rounded-none">
-			<Navbar.Brand className="ml-14 pl-4">
+		<Navbar fluid className="py-4 h-18 w-full bg-primary dark:bg-primary-darker rounded-none px-8 md:px-12 lg:px-20">
+			<Navbar.Brand className="ml-2 2xl:ml-4">
 				<img src="/logo.webp" alt="logo" width="50" />
 			</Navbar.Brand>
 
 			<Show when={isAuthenticated && user !== null}>
-				<div className="flex md:order-2 mr-16">
+				<div className="flex md:order-2">
 					<Dropdown
 						arrowIcon={false}
 						inline
@@ -88,7 +88,7 @@ const Header: React.FC = () => {
 					</Dropdown>
 					<Navbar.Toggle />
 				</div>
-				<Navbar.Collapse className="-ml-4">
+				<Navbar.Collapse className="">
 					<Show when={role === "ADMIN"}>
 						<Dropdown
 							label=""

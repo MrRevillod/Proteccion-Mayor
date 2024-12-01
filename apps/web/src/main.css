@@ -20,6 +20,22 @@
 	@apply bg-primary-dark text-light;
 }
 
+.dark .fc-day {
+	border-color: gray;
+}
+
+.dark .fc-scrollgrid,
+.dark .rowgroup,
+.dark .fc-dayGridMonth-view,
+.dark .fc-view-harness,
+.dark .fc-scrollgrid-section,
+.dark .presentation,
+.dark .fc-scrollgrid-sync-table,
+.dark .fc-daygrid-body,
+.dark .fc-scroller {
+	border-color: gray;
+}
+
 .dark .fc-timegrid-slot-label-cushion,
 .dark .fc-timegrid-axis-cushion,
 .dark .fc-toolbar h2 {
@@ -51,16 +67,41 @@
 	@apply bg-gray-medium;
 }
 
+.dark .fc-col-header-cell-cushion {
+	color: white;
+}
+
+.dark .fc-more-popover {
+	background-color: #243342;
+	border-color: gray;
+}
+
+.dark .fc-popover-title {
+	color: white;
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1285px) {
+	.fc-toolbar .fc-button-group {
+		display: none;
+	}
+
+	.fc-toolbar .fc-button {
+		display: none;
+	}
+}
+
+@media screen and (min-width: 0px) and (max-width: 735px) {
+	.fc-toolbar .fc-button-group {
+		display: none;
+	}
+
+	.fc-toolbar .fc-button {
+		display: none;
+	}
+}
+
 html {
-	font-family:
-		ui-sans-serif,
-		system-ui,
-		-apple-system,
-		BlinkMacSystemFont,
-		Segoe UI,
-		Roboto,
-		Helvetica Neue,
-		Arial,
+	font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial,
 		sans-serif;
 	-webkit-text-size-adjust: 100%;
 	-webkit-font-smoothing: antialiased;
@@ -81,10 +122,7 @@ body {
 
 .login-container {
 	height: 100vh;
-	background:
-		linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-		/* Oscurecimiento */ url("/seniors.jpg");
-	/* Imagen de fondo */
+	background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/seniors.jpg");
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
@@ -92,20 +130,14 @@ body {
 
 .profile-container {
 	height: calc(100vh - 4.5rem);
-	background:
-		linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-		/* Oscurecimiento */ url("/seniors.jpg");
-	/* Imagen de fondo */
+	background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/seniors.jpg");
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
 }
 
-.landing-img-container {
-	background:
-		linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-		/* Oscurecimiento */ url("/seniors.jpg");
-	/* Imagen de fondo */
+.full-screen-container {
+	background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/seniors.jpg");
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;

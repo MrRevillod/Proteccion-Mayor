@@ -6,14 +6,13 @@ import { Show } from "@/components/ui/Show"
 import { Input } from "../../components/ui/Input"
 import { Helmet } from "react-helmet"
 import { message } from "antd"
+import { Loading } from "@/components/Loading"
 import { jwtDecode } from "jwt-decode"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { resetPasswordSchema } from "../../lib/schemas"
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form"
-import { useRequest } from "@/hooks/useRequest"
-import { Loading } from "@/components/Loading"
 
 interface ResetPasswordFormData {
 	password: string
@@ -88,9 +87,9 @@ const ValidatePasswordPage: React.FC = () => {
 
 			<Show when={error === false && loading !== true}>
 				<div className="flex w-full login-container items-center justify-center absolute">
-					<div className="bg-white flex flex-col justify-center items-center px-12 w-11/12 md:w-1/2 lg:w-1/3 xl:w-5/12 2xl:w-1/4 rounded-lg h-4/6 login-form-container">
+					<div className="bg-white dark:bg-primary-dark flex flex-col justify-center items-center px-8 md:px-12 w-11/12 sm:w-1/2 md:w-1/2 lg:w-1/3 xl:1/3 2xl:w-1/4 rounded-lg h-2/3 min-h-[550px] login-form-container dark:shadow-none">
 						<div className="w-full max-w-md">
-							<h2 className="text-4xl font-bold text-gray-900 text-center mb-8">
+							<h2 className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-8">
 								Restablecer Contraseña
 							</h2>
 							<p className="text-center text-gray-600 mb-6">Ingresa y confirma tu nueva contraseña.</p>

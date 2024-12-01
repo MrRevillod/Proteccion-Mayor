@@ -55,7 +55,7 @@ export const ChartLayout: React.FC<StatisticLayoutProps> = ({ title, ...props })
 			)}
 		>
 			<div className={clsx(size === "lg" && "px-4", "w-full flex flex-row items-center justify-between")}>
-				<h2 className="text-xl font-semibold text-dark dark:text-light">{title}</h2>
+				<h2 className="text-xl font-semibold text-dark dark:text-light truncate overflow-hidden whitespace-nowrap">{title}</h2>
 
 				<FormProvider {...methods}>
 					<form className="w-1/4 flex flex-row gap-4">

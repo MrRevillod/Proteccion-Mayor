@@ -3,9 +3,12 @@ import React from "react"
 import { Helmet } from "react-helmet"
 import { Loading } from "@/components/Loading"
 import { useState } from "react"
+import clsx from "clsx"
+import { useAuth } from "@/context/AuthContext"
 
 const DownloadApkButton: React.FC = () => {
 
+    const { user } = useAuth()
     const [loading, setLoading] = useState(false)
 
     const handleDownload = async () => {
@@ -20,8 +23,10 @@ const DownloadApkButton: React.FC = () => {
                 <title>Descargar aplicación móvil - Dirección de personas mayores de la municipalidad de Temuco</title>
             </Helmet>
 
-            <div className="flex w-full profile-container items-center justify-center absolute dark:shadow-none">
-                <div className="bg-white dark:bg-primary-dark flex flex-col justify-center items-center px-12 w-11/12 md:w-1/2 lg:w-1/3 xl:w-5/12 2xl:w-1/4 rounded-lg py-12 login-form-container dark:shadow-none">
+            <div className={
+                clsx(user ? "h-screen-without-header" : "h-screen", "flex w-full full-screen-container items-center justify-center absolute dark:shadow-none")
+            }>
+                <div className="bg-white dark:bg-primary-dark flex flex-col justify-center items-center px-8 md:px-12 w-11/12 sm:w-1/2 md:w-1/2 lg:w-1/3 xl:1/3 2xl:w-1/4 rounded-lg py-12 login-form-container dark:shadow-none">
 
                     {loading && <Loading />}
 
@@ -46,7 +51,7 @@ const DownloadApkButton: React.FC = () => {
 
                     </div>
                 </div>
-            </div>
+            </div >
         </>
     )
 }

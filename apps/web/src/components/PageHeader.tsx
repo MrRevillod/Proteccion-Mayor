@@ -30,7 +30,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ pageTitle, create, searchKeys, 
 			>
 				<div className="flex flex-col w-full md:w-3/6 xl:w-4/6 gap-2">
 					<h1 className="text-2xl font-bold text-dark dark:text-light">{pageTitle}</h1>
-					<p className="text-sm text-gray-medium dark:text-gray-light">
+					<p className="text-sm text-gray-medium dark:text-gray-light truncate overflow-hidden whitespace-nowrap">
 						Dirección de personas mayores de la municipalidad de Temuco
 					</p>
 				</div>
@@ -43,7 +43,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ pageTitle, create, searchKeys, 
 							className="bg-primary text-light font-semibold w-1/4 h-10 rounded-lg flex items-center justify-center gap-2"
 							onClick={() => create && showModal("Create", null)}
 						>
-							Nuevo
+							<span className="hidden lg:block">Nuevo</span>
 							<AiOutlinePlus className="text-light text-lg" />
 						</button>
 					</Show>

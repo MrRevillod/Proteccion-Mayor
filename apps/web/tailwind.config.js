@@ -22,6 +22,9 @@ module.exports = {
 				"primary-dark": "#1a202c",
 				"primary-darker": "#171923",
 			},
+			height: {
+				"screen-without-header": "calc(100vh - 4.5rem)",
+			},
 		},
 	},
 	plugins: [flowbite.plugin()],

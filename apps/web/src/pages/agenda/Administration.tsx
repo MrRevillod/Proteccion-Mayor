@@ -86,7 +86,7 @@ const AdministrationAgendaPage: React.FC = () => {
 
 	return (
 		<PageLayout pageTitle="Agenda y horas de atención" create>
-			<div className="flex flex-row gap-4 w-full agenda-container bg-gray-50 dark:bg-primary-darker rounded-lg">
+			<div className="flex flex-row gap-4 min-h-[70vh] w-full agenda-container bg-gray-50 dark:bg-primary-darker rounded-lg">
 				{loading && <Loading />}
 				<EventFilter data={{ centers, services, professionals }} onSubmit={onFilterSubmit} />
 				<Calendar events={events} />
