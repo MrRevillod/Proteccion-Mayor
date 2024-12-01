@@ -1,6 +1,12 @@
 import nodemailer from "nodemailer"
 import { constants } from "@repo/lib"
 
+type SendMailOpts = {
+	to: string
+	subject: string
+	html: string
+}
+
 const { PROJECT_EMAIL_ADDRESS, PROJECT_EMAIL_PASSWORD, PROJECT_EMAIL_HOST } = constants
 
 const transporter = nodemailer.createTransport({
@@ -11,7 +17,7 @@ const transporter = nodemailer.createTransport({
 	},
 })
 
-export const sendMail = async (to: string, subject: string, html: string) => {
+export const sendMail = async ({ to, subject, html }: SendMailOpts) => {
 	const mailOptions = {
 		from: PROJECT_EMAIL_ADDRESS,
 		to,

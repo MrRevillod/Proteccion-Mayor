@@ -28,7 +28,7 @@ const AdministrationAgendaPage: React.FC = () => {
 	const [professionals, setProfessionals] = useState<Professional[]>([])
 	const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([])
 
-	const { listenEvent } = useSocket()
+	const { eventListener } = useSocket()
 
 	// Se obtiene la query de la URL para utilizarla en el filtro de eventos
 	useEffect(() => {
@@ -68,7 +68,7 @@ const AdministrationAgendaPage: React.FC = () => {
 		onSuccess: (data) => setProfessionals(data),
 	})
 
-	listenEvent(["newEvent", "updatedEvent", "deletedEvent"], () => {
+	eventListener(["event:create", "event:update", "event:delete"], () => {
 		refetch()
 	})
 

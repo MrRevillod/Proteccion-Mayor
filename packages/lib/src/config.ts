@@ -1,8 +1,6 @@
 import dotenv from "dotenv"
 import { ServiceName, ServiceInfo } from "./types"
 
-console.log("NODE_ENV", process.env.NODE_ENV)
-
 dotenv.config({
 	path: process.env.NODE_ENV === "production" ? "../../.env.production" : "../../.env",
 })

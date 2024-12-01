@@ -8,7 +8,7 @@ import { AppError } from "@repo/lib"
 import { Request, Response, NextFunction } from "express"
 import { createEvents, eventsById, formatEvent } from "../utils/events"
 import { EventQuery, eventSelect, generateWhere } from "../utils/filters"
-import { appointmentNotification, cancelEventNotification } from "../utils/emailTemplates"
+import { generateCancelTemplates, generateReservationTemplates } from "../utils/emailTemplates"
 
 // Controlador de tipo select puede recibir un query para seleccionar campos específicos
 // y para filtrar por claves foraneas
@@ -31,7 +31,6 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
 	try {
 		const events = await prisma.event.findMany({ where, select: eventSelect })
 		const formattedEvents = events.map(formatEvent)
-
 		return res.status(200).json({ values: { formatted: formattedEvents, byId: eventsById(events) } })
 	} catch (error) {
 		next(error)
@@ -71,8 +70,9 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 			throw new AppError(409, error.message)
 		})
 
-		// AGREGAR MAIL A EL USUARIO PARA CONFIRMAR LA ASISTENCIA.
-		io.to("ADMIN").emit("newEvent", null as any)
+		io.to("ADMIN").emit("event:create", null)
+		io.to(professionalId as string).emit("event:create", null)
+
 		return res.status(201).json({ values: { modified: null } })
 	} catch (error) {
 		next(error)
@@ -83,9 +83,6 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 export const updateById = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const { seniorId, professionalId, serviceId, centerId, start, end, assistance } = req.body
-
-		console.log("start", req.body.start)
-		console.log("end", req.body.end)
 
 		// Se buscan los datos a utilizar con Promise.all
 
@@ -125,13 +122,7 @@ export const updateById = async (req: Request, res: Response, next: NextFunction
 			where: {
 				AND: [
 					{
-						OR: [
-							{
-								professionalId: professionalId,
-								...orDateSuperposition,
-							},
-							seniorOR,
-						],
+						OR: [{ professionalId, ...orDateSuperposition }, seniorOR],
 					},
 					{
 						id: { not: Number(req.params.id) },
@@ -158,18 +149,24 @@ export const updateById = async (req: Request, res: Response, next: NextFunction
 
 		event = formatEvent(event)
 
-		io.to("ADMIN").emit("updatedEvent", event)
+		io.to("ADMIN").emit("event:update", event)
+		io.to(event.professionalId as string).emit("event:update", event)
 		return res.status(200).json({ values: { modified: event } })
 	} catch (error) {
 		next(error)
 	}
 }
 
-// Controlador para eliminar un administrador por su id
+// Controlador para eliminar un evento por su id
 export const deleteById = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const event = await prisma.event.delete({ where: { id: Number(req.params.id) }, select: eventSelect })
-		io.emit("deletedEvent", formatEvent(event))
+		const event = await prisma.event.delete({
+			where: { id: Number(req.params.id) },
+			select: eventSelect,
+		})
+
+		io.to("ADMIN").emit("event:delete", formatEvent(event))
+		io.to(event.professionalId as string).emit("event:delete", formatEvent(event))
 		return res.status(200).json({ values: { modified: formatEvent(event) } })
 	} catch (error) {
 		next(error)
@@ -189,15 +186,7 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 		// Se busca el evento por su id en busca de existencia
 		const event = await prisma.event.findUnique({
 			where: { id: Number(id) },
-			select: {
-				professional: true,
-				senior: true,
-				service: true,
-				center: true,
-				start: true,
-				end: true,
-				seniorId: true,
-			},
+			select: eventSelect,
 		})
 
 		// Si el evento no existe o si ya está reservado por otro adulto mayor
@@ -205,10 +194,7 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 
 		if (!event) throw new AppError(404, "Evento no encontrado")
 		if (!event.service) throw new AppError(404, "Service no encontrado")
-
-		if (event.seniorId) {
-			throw new AppError(409, "Este evento ya está reservado")
-		}
+		if (event.seniorId) throw new AppError(409, "Este evento ya está reservado")
 
 		// Validación de que la persona mayor no haya reservado el
 		// mismo servicio dentro de los 2 meses anteriores.
@@ -223,9 +209,7 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 			where: {
 				seniorId: senior.id,
 				serviceId: event.service.id,
-				updatedAt: {
-					gte: twoMonthsAgo,
-				},
+				updatedAt: { gte: twoMonthsAgo },
 			},
 		})
 
@@ -242,21 +226,27 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 			select: eventSelect,
 		})
 
-		io.to("ADMIN").emit("updatedEvent", formatEvent(updatedEvent))
-
 		if (!event.professional) throw new AppError(404, "Professional no encontrado")
 		if (!event.center) throw new AppError(404, "Center no encontrado")
 
-		const htmlTemplate = appointmentNotification(
-			event.professional.name,
-			event.service.name,
-			senior.name,
-			event.center?.name,
-			event.start,
-			event.end,
-		)
+		const { professionalTemplate, seniorTemplate } = generateReservationTemplates(updatedEvent)
 
-		await sendMail(event.professional.email, `Cita de ${event.service.name} reservada`, htmlTemplate)
+		await Promise.all([
+			sendMail({
+				to: event.professional.email,
+				subject: `Cita de ${event.service.name} reservada`,
+				html: professionalTemplate,
+			}),
+			sendMail({
+				to: senior.email as string,
+				subject: `Reserva de ${event.service.name} confirmada`,
+				html: seniorTemplate,
+			}),
+		])
+
+		io.to("ADMIN").emit("event:update", formatEvent(updatedEvent))
+		io.to(event.professionalId as string).emit("event:update", formatEvent(updatedEvent))
+
 		return res.status(200).json({ values: updatedEvent })
 	} catch (error) {
 		next(error)
@@ -265,37 +255,42 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 
 export const cancelReserve = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const { id } = req.params
-
+		const id = req.params.id
 		const senior = req.getExtension("user") as Senior
 
 		const event = await prisma.event.findUnique({
+			select: eventSelect,
 			where: { id: Number(id), seniorId: senior.id },
-			select: {
-				professional: true,
-				senior: true,
-				start: true,
-				end: true,
-			},
 		})
 
 		if (!event) throw new AppError(404, "Evento no encontrado")
 
 		const updatedEvent = await prisma.event.update({
 			where: { id: Number(id) },
-			data: {
-				seniorId: null,
-			},
+			data: { seniorId: null },
 			select: eventSelect,
 		})
 
 		if (!event.professional) throw new AppError(404, "Professional no encontrado")
 		if (!event.senior) throw new AppError(404, "Senior no encontrado")
 
-		const htmlTemplate = cancelEventNotification(event.professional.name, event.senior?.name, event.start, event.end)
-		await sendMail(event.professional.email, `Hora cancelada`, htmlTemplate)
+		const { professionalTemplate, seniorTemplate } = generateCancelTemplates(updatedEvent)
 
-		io.to(["ADMIN", updatedEvent.professionalId || ""]).emit("updatedEvent", formatEvent(updatedEvent))
+		await Promise.all([
+			sendMail({
+				to: event.professional.email,
+				subject: `Cita de ${updatedEvent.service?.name} cancelada`,
+				html: professionalTemplate,
+			}),
+			sendMail({
+				to: senior.email as string,
+				subject: `Reserva de ${updatedEvent.service?.name} cancelada`,
+				html: seniorTemplate,
+			}),
+		])
+
+		io.to("ADMIN").emit("event:update", formatEvent(updatedEvent))
+		io.to(event.professionalId as string).emit("event:update", formatEvent(updatedEvent))
 		return res.status(200).json({ modified: formatEvent(updatedEvent) })
 	} catch (error) {
 		next(error)
@@ -304,14 +299,16 @@ export const cancelReserve = async (req: Request, res: Response, next: NextFunct
 
 export const getByService = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const { serviceId } = req.params
+		const serviceId = req.params.serviceId
 
 		const centers = await prisma.event.findMany({
-			where: { serviceId: Number(serviceId), seniorId: null, start: { gte: new Date() } },
-			select: {
-				center: true,
-			},
 			distinct: ["centerId"],
+			select: { center: true },
+			where: {
+				serviceId: Number(serviceId),
+				seniorId: null,
+				start: { gte: new Date() },
+			},
 		})
 
 		return res.status(200).json({ centers })
@@ -325,8 +322,13 @@ export const getByServiceCenter = async (req: Request, res: Response, next: Next
 		const { serviceId, centerId } = req.params
 
 		const events = await prisma.event.findMany({
-			where: { serviceId: Number(serviceId), centerId: Number(centerId), seniorId: null, start: { gte: new Date() } },
 			select: eventSelect,
+			where: {
+				serviceId: Number(serviceId),
+				centerId: Number(centerId),
+				seniorId: null,
+				start: { gte: new Date() },
+			},
 		})
 
 		return res.status(200).json({ events })

@@ -15,3 +15,16 @@ export const generatePassword = async (): Promise<string[]> => {
 
 	return [password, hashedPassword]
 }
+
+export const generatePin = async (): Promise<string[]> => {
+	const pin = generate({
+		length: 4,
+		numbers: true,
+		symbols: false,
+		lowercase: false,
+		uppercase: false,
+		strict: true,
+	})
+
+	return [pin, await hash(pin, 10)]
+}

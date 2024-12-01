@@ -15,9 +15,9 @@ import administrarorsRouter from "./routes/administrators"
 
 import { setupWorker } from "@socket.io/sticky"
 import { createServer } from "http"
+import { SocketEvents } from "./socket"
 import { createAdapter } from "@socket.io/cluster-adapter"
 import { Server, Socket } from "socket.io"
-import { ServerToClientEvents } from "./socket"
 import { log, services, errorHandler, extensions, UserRole } from "@repo/lib"
 
 export const createApp = (): express.Express => {
@@ -50,7 +50,7 @@ export const createApp = (): express.Express => {
 const server = createApp()
 const http = createServer(server)
 
-export const io = new Server<ServerToClientEvents>(http, {
+export const io = new Server<SocketEvents>(http, {
 	cors: {
 		origin: services.WEB_APP.url,
 		methods: ["GET", "POST"],
