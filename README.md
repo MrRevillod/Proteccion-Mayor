@@ -98,4 +98,4 @@ sudo systemctl restart nginx
 -   [Tomás Curihual - Desarrollador](https://github.com/tcurihual)
 -   [Benjamín Espinoza - Desarrollador](https://github.com/benjita2002djsjsda)
 -   [Carlos Riquelme - Desarrollador](https://github.com/SrCarlito)
--   [Cristóbal Sandoval](https://github.com/CristobalSg)
+-   [Cristóbal Sandoval - Desarrolador](https://github.com/CristobalSg)
