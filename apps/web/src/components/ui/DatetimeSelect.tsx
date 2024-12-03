@@ -52,14 +52,15 @@ const DatetimeSelect = ({ label, name, showTime = true, defaultValue, width }: D
 								disabledHours: () => [0, 1, 2, 3, 4, 4, 5, 6, 7, 19, 20, 21, 22, 23],
 							}
 						}}
-						disabledDate={(current) => {
-							return (
-								current &&
-								(current < dayjs().startOf("day") ||
-									current.day() === 0 ||
-									current.day() === 6)
-							)
-						}}
+						disabledDate={
+							showTime
+								? (current) =>
+									current &&
+									(current < dayjs().startOf("day") ||
+										current.day() === 0 ||
+										current.day() === 6)
+								: undefined
+						}
 						showNow={showTime}
 						value={field.value ? dayjs(field.value) : null}
 						defaultValue={defaultValue ? dayjs(defaultValue) : null}

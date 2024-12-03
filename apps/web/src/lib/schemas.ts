@@ -1,5 +1,6 @@
 import { z } from "zod"
 import * as rules from "./validationRules"
+import dayjs from "dayjs"
 
 export const LoginFormSchema = z.object({
 	email: z.string().email().min(1, "El correo electrónico es requerido"),
@@ -180,8 +181,17 @@ export const EventSchemas = {
 		.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
 			message: "No es posible crear eventos los fin de semana",
 			path: ["end", "start"],
-		}),
-
+		})
+		.refine(
+			(data) => {
+				const start = dayjs(data.start)
+				const end = dayjs(data.end)
+				return end.diff(start, "hours") <= 5
+			},
+			{
+				message: "La duración máxima de un evento es de 5 horas",
+			}
+		),
 	Update: z
 		.object({
 			start: z.string({ message: "La fecha de inicio es requerida" }),
