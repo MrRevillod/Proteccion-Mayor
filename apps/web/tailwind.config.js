@@ -23,7 +23,7 @@ module.exports = {
 				"primary-darker": "#171923",
 			},
 			height: {
-				"screen-without-header": "calc(100vh - 4.5rem)",
+				"screen-without-header": "100vh",
 			},
 		},
 	},
