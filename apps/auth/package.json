@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"start": "node dist/index.js",
-		"dev": "tsup --watch --onSuccess \"node dist/index.js\"",
+		"dev": "tsup --watch --onSuccess \"pm2 restart Authentication || pm2 start dist/index.js --name Authentication -i 1\"",
 		"build": "tsup",
 		"clean": "rm -rf dist",
 		"typecheck": "tsc --noEmit",
