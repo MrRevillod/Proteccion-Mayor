@@ -46,7 +46,7 @@ export const loginSeniorMobile = async (req: Request, res: Response, next: NextF
 		const user = await prisma.senior.findUnique({ where: { id: req.body.rut } })
 
 		if (!user || !(await compare(req.body.password, user.password))) {
-			throw new AppError(401, "Credenciales inválidas")
+			throw new AppError(401, "El RUT o PIN son incorrectos")
 		}
 
 		if (!user.validated) {
@@ -59,7 +59,7 @@ export const loginSeniorMobile = async (req: Request, res: Response, next: NextF
 		return res.status(200).json({
 			message: "Inicio de sesión correcto",
 			type: "success",
-			values: { accessToken, refreshToken, publicUser },
+			values: { accessToken, refreshToken, user: publicUser, publicUser },
 		})
 	} catch (error: unknown) {
 		next(error)

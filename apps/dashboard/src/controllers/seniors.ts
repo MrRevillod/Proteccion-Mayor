@@ -1,13 +1,13 @@
 import { hash } from "bcrypt"
 import { prisma } from "@repo/database"
 import { sendMail } from "../utils/mailer"
-import { Gender, Prisma, Senior } from "@prisma/client"
-import { preValidatedSeniorWelcomeEmailBody, seniorWelcomeEmailBody } from "../utils/emailTemplates"
-import { Request, Response, NextFunction } from "express"
-import { AppError, constants, httpRequest } from "@repo/lib"
-import { generateSelect, generateWhere, seniorSelect } from "../utils/filters"
-import { deleteProfilePicture, filesToFormData, uploadProfilePicture } from "../utils/files"
 import { generatePin } from "../utils/password"
+import { AppError, httpRequest } from "@repo/lib"
+import { Gender, Prisma, Senior } from "@prisma/client"
+import { Request, Response, NextFunction } from "express"
+import { generateSelect, generateWhere, seniorSelect } from "../utils/filters"
+import { preValidatedSeniorWelcomeEmailBody, seniorWelcomeEmailBody } from "../utils/emailTemplates"
+import { deleteProfilePicture, filesToFormData, uploadProfilePicture } from "../utils/files"
 
 /// Controlador para manejar el registro de adultos mayores desde la aplicación móvil
 export const registerFromMobile = async (req: Request, res: Response, next: NextFunction) => {
@@ -56,7 +56,11 @@ export const registerFromMobile = async (req: Request, res: Response, next: Next
 			throw new AppError(response.status ?? 500, response.message)
 		}
 
-		return res.status(201).json({ message: "La persona mayor se ha registrado correctamente" })
+		return res.status(201).json({
+			values: {
+				message: "Registro exitoso",
+			},
+		})
 	} catch (error: unknown) {
 		next(error)
 	}
@@ -315,11 +319,7 @@ export const checkUnique = async (req: Request, res: Response, next: NextFunctio
 	try {
 		const { rut, email } = req.body
 
-		if (!rut && !email) {
-			return res.status(400).json({
-				error: "Debe ingresar un valor en el campo.",
-			})
-		}
+		if (!rut && !email) throw new AppError(400, "Debe ingresar un valor en el campo.")
 
 		const field = rut ? rut : email
 		const senior = await prisma.senior.findFirst({
@@ -329,12 +329,28 @@ export const checkUnique = async (req: Request, res: Response, next: NextFunctio
 		})
 
 		if (senior) {
-			throw new AppError(409, "La persona mayor ya existe", {
-				rut: "Este rut ya está registrado, si se trata de un error por favor contacte a soporte.",
-				email: "Esta dirección de correo ya está registrado, por favor ingrese otro.",
-			})
+			const response = {
+				rut: "",
+				email: "",
+			}
+
+			const errorMessages = {
+				rut: "Este rut ya está registrado.",
+				email: "Este correo ya está registrado.",
+			}
+
+			if (rut && senior?.id === rut) {
+				response["rut"] = errorMessages.rut
+			}
+
+			if (email && senior?.email === email) {
+				response["email"] = errorMessages.email
+			}
+
+			return res.status(409).json({ values: response })
 		}
-		return res.status(200).send()
+
+		return res.status(200).json({ values: {} })
 	} catch (error) {
 		next(error)
 	}
