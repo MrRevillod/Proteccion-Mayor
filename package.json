@@ -12,7 +12,6 @@
 		"clean": "turbo run clean",
 		"dev": "turbo run dev",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
-		"test": "turbo run test",
 		"typecheck": "turbo run typecheck"
 	},
 	"devDependencies": {
