@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"start": "node dist/index.js",
-		"dev": "tsup --watch --onSuccess \"pm2 restart Dashboard || pm2 start dist/index.js --name Dashboard -i 2\"",
+		"dev": "tsup --watch --onSuccess \"pm2 restart Dashboard || pm2 start dist/index.js --name Dashboard -i 1\" && pm2 save",
 		"build": "tsup",
 		"clean": "rm -rf dist",
 		"typecheck": "tsc --noEmit",
