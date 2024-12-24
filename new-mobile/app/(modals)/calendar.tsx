@@ -34,7 +34,7 @@ const DateSelectionScreen = () => {
 			</View>
 			<View style={{ ...styles.dataContainer, padding: 15, height: "80%" }}>
 				<View style={{ paddingVertical: 5, height: "20%" }}>
-					<Text style={{ fontSize: 20, fontWeight: "500", marginBottom: 15 }}>
+					<Text style={{ fontSize: 20, fontWeight: "500", marginBottom: 5 }}>
 						Calendario de citas:
 					</Text>
 					<Text style={{ marginBottom: 15 }}>

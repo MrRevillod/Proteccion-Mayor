@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
 	tabBar: {
 		backgroundColor: primaryGreen,
 		paddingTop: 15,
-		height: 100,
+		height: 80,
 		borderTopWidth: 0,
 	},
 	centerTabIcon: {

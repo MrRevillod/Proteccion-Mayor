@@ -14,8 +14,8 @@ export const Header = ({ title, goBack, height, variant = "default" }: HeaderPro
 	const router = useRouter()
 	const canGoBack = router.canGoBack()
 
-	const heightStyle = variant === "modal" ? 100 : height ?? 150
 	const paddingTop = variant === "modal" ? 0 : 50
+	const heightStyle = variant === "modal" ? 100 : height ?? 120
 
 	const styles = StyleSheet.create({
 		header: {
@@ -50,7 +50,9 @@ export const Header = ({ title, goBack, height, variant = "default" }: HeaderPro
 			<View style={styles.headerTitleContainer}>
 				<Text style={styles.headerTitle}>{title}</Text>
 			</View>
-			{goBack && canGoBack && <FontAwesome name="arrow-left" style={{ fontSize: 20, color: primaryGreen }} />}
+			{goBack && canGoBack && (
+				<FontAwesome name="arrow-left" style={{ fontSize: 20, color: primaryGreen }} />
+			)}
 		</View>
 	)
 }

@@ -34,7 +34,7 @@ export const CustomDayComponent: React.FC<Props> = ({ date, state, ...props }) =
 				width: 40,
 				height: 40,
 				borderRadius: 50,
-				marginVertical: 5,
+				marginVertical: 0,
 			}}
 		>
 			{isSelected ? (
