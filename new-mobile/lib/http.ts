@@ -1,5 +1,5 @@
-import { useAuth } from "@/context/AuthContext"
 import axios from "axios"
+
 import { getSecureStore } from "./secureStore"
 
 export const SERVER_URL = process.env.EXPO_PUBLIC_SERVER_BASE_URL
@@ -14,12 +14,12 @@ export const api = axios.create({
 	baseURL: API_BASE_URL,
 })
 
-export const getContentType = (body: any) => {
-	return body instanceof FormData ? "multipart/form-data" : "application/json"
-}
-
 const getClientAuthorization = async () => {
-	const [access, refresh] = await Promise.all([getSecureStore("accessToken"), getSecureStore("refreshToken")])
+	const [access, refresh] = await Promise.all([
+		getSecureStore("accessToken"),
+		getSecureStore("refreshToken"),
+	])
+
 	return `Bearer ${access},${refresh}`
 }
 
@@ -30,5 +30,9 @@ api.interceptors.request.use(
 	},
 	(error) => {
 		return Promise.reject(error)
-	},
+	}
 )
+
+export const getContentType = (body: any) => {
+	return body instanceof FormData ? "multipart/form-data" : "application/json"
+}

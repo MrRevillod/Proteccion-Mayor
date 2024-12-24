@@ -7,7 +7,7 @@ import { primaryGreen } from "@/constants/Colors"
 import { useFormContext } from "react-hook-form"
 import { imageUriToFile } from "@/lib/files"
 import { RegisterFormData } from "@/lib/types"
-import { StyleSheet, Text, View } from "react-native"
+import { ActivityIndicator, StyleSheet, Text, View, Dimensions } from "react-native"
 
 const RshRegisterScreen = () => {
 	const {
@@ -24,7 +24,7 @@ const RshRegisterScreen = () => {
 		router.push({ pathname: "/(register)/camera", params: { fieldName } })
 	}
 
-	const { mutate } = useMutation({ mutateFn: register })
+	const { mutate, loading } = useMutation({ mutateFn: register })
 
 	const onSubmit = async (data: RegisterFormData) => {
 		if (!(await trigger("social"))) return
@@ -44,16 +44,23 @@ const RshRegisterScreen = () => {
 		await mutate({
 			params: { body: formData },
 			onSuccess: () => router.push({ pathname, params: { status: "success" } }),
-			onError: (err) =>
+			onError: (err) => {
 				router.push({
 					pathname,
 					params: { status: "error", message: err?.response?.data?.values?.message },
-				}),
+				})
+			},
 		})
 	}
 
 	return (
 		<View style={styles.container}>
+			{loading && (
+				<View style={styles.loading}>
+					<Text style={{ color: "white", marginBottom: 10, fontWeight: "semibold" }}>Procesando...</Text>
+					<ActivityIndicator size="large" color="white" />
+				</View>
+			)}
 			<View style={{ width: "80%" }}>
 				<Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>Paso 5 de 6</Text>
 			</View>
@@ -63,8 +70,19 @@ const RshRegisterScreen = () => {
 			</View>
 
 			<View style={styles.imageButtonContainer}>
-				<Button variant="primary" text={social ? "Volver a tomar" : "Tomar foto"} onPress={() => openCamera("social")} size="80%" />
-				{!social && <FontAwesome name="square-o" color={errors["social"] ? "red" : primaryGreen} style={styles.checkIcon} />}
+				<Button
+					variant="primary"
+					text={social ? "Volver a tomar" : "Tomar foto"}
+					onPress={() => openCamera("social")}
+					size="xxl"
+				/>
+				{!social && (
+					<FontAwesome
+						name="square-o"
+						color={errors["social"] ? "red" : primaryGreen}
+						style={styles.checkIcon}
+					/>
+				)}
 				{social && <FontAwesome name="check-square" color={primaryGreen} style={styles.checkIcon} />}
 			</View>
 
@@ -72,6 +90,8 @@ const RshRegisterScreen = () => {
 		</View>
 	)
 }
+
+const { width, height } = Dimensions.get("window")
 
 const styles = StyleSheet.create({
 	container: {
@@ -90,6 +110,14 @@ const styles = StyleSheet.create({
 	},
 	checkIcon: {
 		fontSize: 40,
+	},
+	loading: {
+		position: "absolute",
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "rgba(0, 0, 0, 0.5)",
+		height: height,
+		width: width,
 	},
 })
 

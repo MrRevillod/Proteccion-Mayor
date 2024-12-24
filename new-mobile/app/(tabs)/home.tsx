@@ -1,19 +1,20 @@
 import { Service } from "@/lib/types"
-import { useState } from "react"
+import { useRouter } from "expo-router"
 import { useRequest } from "@/hooks/useRequest"
 import { getServices } from "@/lib/actions"
 import { ServiceCard } from "@/components/ServiceCard"
 import { StyleSheet, FlatList, View } from "react-native"
 
 const HomeScreen = () => {
-	const [services, setServices] = useState<Service[]>([])
+	const router = useRouter()
 
-	useRequest<Service[]>({
+	const { data: services } = useRequest<Service[]>({
 		action: getServices,
-		onSuccess: (data) => {
-			setServices(data)
-		},
 	})
+
+	const handleSelectService = (service: Service) => {
+		router.push({ pathname: "/(modals)/centers", params: { serviceId: service.id } })
+	}
 
 	return (
 		<View style={styles.container}>
@@ -23,7 +24,7 @@ const HomeScreen = () => {
 				numColumns={2}
 				columnWrapperStyle={styles.column}
 				data={services}
-				renderItem={({ item }) => <ServiceCard service={item} onPress={() => null} />}
+				renderItem={({ item }) => <ServiceCard service={item} onPress={() => handleSelectService(item)} />}
 				keyExtractor={(item) => item.id.toString()}
 			/>
 		</View>

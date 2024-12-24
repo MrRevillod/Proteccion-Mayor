@@ -17,17 +17,21 @@ const FinalRegisterScreen = () => {
 
 			{status === "success" && (
 				<Text style={{ fontSize: 18, marginBottom: 20, width: "80%" }}>
-					La solicitud se ha realizado con éxito. El equipo de administración revisará los datos de registro y se le notificará por correo
-					electrónico una vez que su cuenta haya sido activada.
+					La solicitud se ha realizado con éxito. El equipo de administración revisará los datos de registro y
+					se le notificará por correo electrónico una vez que su cuenta haya sido activada.
 				</Text>
 			)}
 
 			{status === "error" && (
-				<Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}>Lo sentimos. No se ha podido completar la solicitud.</Text>
+				<Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}>
+					Lo sentimos. No se ha podido completar la solicitud.
+				</Text>
 			)}
-			{status === "error" && message && <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 20 }}>{message}</Text>}
+			{status === "error" && message && (
+				<Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 20 }}>{message}</Text>
+			)}
 
-			<Button variant="primary" text="Volver al inicio" onPress={() => router.replace("/")} />
+			<Button variant="primary" text="Volver al inicio" onPress={() => router.replace("/")} size="xxl" />
 		</View>
 	)
 }

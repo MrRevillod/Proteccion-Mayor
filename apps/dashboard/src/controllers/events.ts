@@ -297,7 +297,7 @@ export const cancelReserve = async (req: Request, res: Response, next: NextFunct
 	}
 }
 
-export const getByService = async (req: Request, res: Response, next: NextFunction) => {
+export const getCentersByService = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const serviceId = req.params.serviceId
 
@@ -311,7 +311,9 @@ export const getByService = async (req: Request, res: Response, next: NextFuncti
 			},
 		})
 
-		return res.status(200).json({ centers })
+		const formatCenters = centers.map((event) => event.center)
+
+		return res.status(200).json({ centers, values: formatCenters })
 	} catch (error) {
 		next(error)
 	}
@@ -332,6 +334,51 @@ export const getByServiceCenter = async (req: Request, res: Response, next: Next
 		})
 
 		return res.status(200).json({ events })
+	} catch (error) {
+		next(error)
+	}
+}
+
+export const getAvailableDates = async (req: Request, res: Response, next: NextFunction) => {
+	const { serviceId, centerId } = req.query
+
+	try {
+		const dates = await prisma.event
+			.findMany({
+				where: {
+					centerId: Number(centerId),
+					serviceId: Number(serviceId),
+					seniorId: null,
+					start: { gte: new Date() },
+				},
+				select: { start: true },
+			})
+			.then((events) => events.map((event) => dayjs(event.start).format("YYYY-MM-DD")))
+
+		return res.status(200).json({ values: dates })
+	} catch (error) {
+		next(error)
+	}
+}
+
+export const getEventsByDate = async (req: Request, res: Response, next: NextFunction) => {
+	const { date, serviceId, centerId } = req.query as any
+
+	const startDate = dayjs(date).startOf("day").toDate()
+	const endDate = dayjs(date).endOf("day").toDate()
+
+	try {
+		const events = await prisma.event.findMany({
+			where: {
+				centerId: Number(centerId),
+				serviceId: Number(serviceId),
+				seniorId: null,
+				start: { gte: startDate, lte: endDate },
+			},
+			select: eventSelect,
+		})
+
+		return res.status(200).json({ values: events })
 	} catch (error) {
 		next(error)
 	}

@@ -10,7 +10,7 @@
 		"db:generate:deploy": "turbo run db:generate:deploy",
 		"build": "turbo run build",
 		"clean": "turbo run clean",
-		"dev": "turbo run dev",
+		"dev": "pm2 delete all || true && pm2 save && turbo run dev",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
 		"typecheck": "turbo run typecheck"
 	},

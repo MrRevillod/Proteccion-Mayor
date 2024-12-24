@@ -8,7 +8,10 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } fr
 
 interface CustomCameraProps {
 	onCapture: (photoUri: string) => void
-	rectGenerator: (width: number, height: number) => { originX: number; originY: number; width: number; height: number }
+	rectGenerator: (
+		width: number,
+		height: number
+	) => { originX: number; originY: number; width: number; height: number }
 	overlay?: ReactNode
 }
 
@@ -19,9 +22,9 @@ export const CustomCamera = ({ onCapture, rectGenerator, overlay }: CustomCamera
 
 	if (!permission?.granted) {
 		return (
-			<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+			<View style={{ flex: 1, justifyContent: "center", alignItems: "center", gap: 10 }}>
 				<Text style={{ fontSize: 24 }}>Se necesita permiso de cámara</Text>
-				<Button onPress={requestPermission} text="Conceder permisos" variant="primary" />
+				<Button onPress={requestPermission} text="Conceder permisos" variant="primary" size="lg" />
 			</View>
 		)
 	}
@@ -29,7 +32,10 @@ export const CustomCamera = ({ onCapture, rectGenerator, overlay }: CustomCamera
 	const handleCapture = async () => {
 		if (cameraRef.current) {
 			try {
-				const { uri, width, height } = (await cameraRef.current.takePictureAsync({ quality: 0.5, base64: false })) ?? {
+				const { uri, width, height } = (await cameraRef.current.takePictureAsync({
+					quality: 0.4,
+					base64: false,
+				})) ?? {
 					uri: "",
 					width: 0,
 					height: 0,

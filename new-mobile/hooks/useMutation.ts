@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { MutateActionProps } from "@/lib/types"
 
 interface useMutationProps {
@@ -11,7 +12,11 @@ interface MutationOptions<T> {
 }
 
 export const useMutation = <T>({ mutateFn }: useMutationProps) => {
+	const [loading, setLoading] = useState(false)
+
 	const mutate = async ({ params, onSuccess, onError }: MutationOptions<T>) => {
+		setLoading(true)
+
 		try {
 			const response = await mutateFn(params ?? {})
 			if (response && response.data && response.data.values) {
@@ -27,8 +32,10 @@ export const useMutation = <T>({ mutateFn }: useMutationProps) => {
 			} else {
 				throw new Error(err.response?.data?.message || "Error desconocido")
 			}
+		} finally {
+			setLoading(false)
 		}
 	}
 
-	return { mutate }
+	return { mutate, loading }
 }

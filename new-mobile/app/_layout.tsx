@@ -1,5 +1,7 @@
 import "react-native-reanimated"
 import FontAwesome from "@expo/vector-icons/FontAwesome"
+import AppStateHandler from "@/components/AppState"
+
 import * as SplashScreen from "expo-splash-screen"
 
 import { Stack } from "expo-router"
@@ -35,14 +37,18 @@ const RootLayout = () => {
 const RootLayoutNav = () => {
 	return (
 		<AuthProvider>
-			<Stack screenOptions={{
-				gestureEnabled: false,
-				header: ({ navigation }) => <Header title="Protección Mayor" goBack={() => navigation.goBack()} />,
-			}}>
+			<AppStateHandler />
+			<Stack
+				screenOptions={{
+					gestureEnabled: false,
+					header: ({ navigation }) => <Header title="Protección Mayor" goBack={() => navigation.goBack()} />,
+				}}
+			>
 				<Stack.Screen name="index" options={{ headerShown: false }} />
 				<Stack.Screen name="login" />
 				<Stack.Screen name="(register)" options={{ headerShown: false }} />
 				<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+				<Stack.Screen name="(modals)" options={{ headerShown: false }} />
 			</Stack>
 		</AuthProvider>
 	)

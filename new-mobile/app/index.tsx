@@ -20,15 +20,22 @@ const WelcomeScreen = () => {
 				<Image style={styles.logo} source={require("@/assets/images/logo.png")} />
 				<Text style={styles.welcomeText}>Bienvenido a Protección Mayor</Text>
 
-				<Button variant="secondary" text="Ingresar" onPress={() => router.push("/login")} size="75%" />
-				<Button variant="quaternary" text="Registrarme" onPress={() => router.push("/(register)/instructions")} size="75%" />
+				<Button variant="secondary" text="Ingresar" onPress={() => router.push("/login")} size="xl" />
+				<Button
+					variant="quaternary"
+					text="Registrarme"
+					onPress={() => router.push("/(register)/instructions")}
+					size="xl"
+				/>
 
 				<View style={{ marginTop: 20, backgroundColor: "transparent" }}>
 					<ExternalLink href={RESET_PASSWORD_URL}>
-						<Text style={{ color: "#fff", fontSize: 18, textAlign: "center", fontWeight: "600" }}>¿Olvidaste tu PIN de acceso?</Text>
+						<Text style={{ color: "#fff", fontSize: 18, textAlign: "center", fontWeight: "600" }}>
+							¿Olvidaste tu PIN de acceso?
+						</Text>
 					</ExternalLink>
 				</View>
-				<Button variant="quaternary" text="Sitemap" onPress={() => router.push("/_sitemap")} size="75%" />
+				<Button variant="quaternary" text="Sitemap" onPress={() => router.push("/_sitemap")} size="xl" />
 			</ImageBackground>
 		</View>
 	)

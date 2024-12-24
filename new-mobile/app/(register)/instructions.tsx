@@ -29,7 +29,7 @@ export const InstructionsRegisterScreen = () => {
 				<InstructionItem step={6} text="Finalizar el registro" />
 			</View>
 
-			<Button variant="primary" text="Iniciar" onPress={() => router.push("/(register)/rut")} />
+			<Button variant="primary" text="Comenzar" onPress={() => router.push("/(register)/rut")} size="xxl" />
 		</View>
 	)
 }

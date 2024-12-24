@@ -33,6 +33,28 @@ export type Center = {
 	phone: string
 }
 
+export type Event = {
+	id: string
+	start: string
+	end: string
+	assistance: boolean
+	backgroundColor: HexColor
+	title: string
+
+	seniorId?: string | null
+	professionalId: string
+	centerId?: number | null
+	serviceId?: number | null
+
+	service?: Partial<Service>
+	center?: Partial<Center>
+	senior?: Partial<User>
+	professional?: Partial<User>
+
+	createdAt: Date
+	updatedAt: Date
+}
+
 export type ApiResponse = {
 	status?: number
 	message: string

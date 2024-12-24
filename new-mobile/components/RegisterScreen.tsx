@@ -1,5 +1,5 @@
 import { Button } from "@/components/Button"
-import { ReactNode, useEffect } from "react"
+import { ReactNode } from "react"
 import { useMutation } from "@/hooks/useMutation"
 import { useFormContext } from "react-hook-form"
 import { Href, useRouter } from "expo-router"
@@ -50,7 +50,7 @@ export const RegisterScreen = ({ fieldName, nextScreen, step, children }: Regist
 
 			{children}
 
-			<Button variant="primary" text="Siguiente" onPress={() => handleNextStep()} />
+			<Button variant="primary" text="Siguiente" onPress={() => handleNextStep()} size="xxl" />
 		</View>
 	)
 }

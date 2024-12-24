@@ -2,7 +2,7 @@
 	"semi": false,
 	"tabWidth": 4,
 	"useTabs": true,
-	"printWidth": 150,
+	"printWidth": 100,
 	"proseWrap": "preserve",
 	"singleQuote": false,
 	"arrowParens": "always",

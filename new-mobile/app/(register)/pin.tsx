@@ -20,7 +20,14 @@ const PinRegisterScreen = () => {
 			</View>
 
 			<View style={{ width: "80%", gap: 25, marginBottom: 20 }}>
-				<Input label="Ingrese un PIN de acceso" name="pin" placeholder="● ● ● ●" secureTextEntry keyboardType="numeric" maxLength={4} />
+				<Input
+					label="Ingrese un PIN de acceso"
+					name="pin"
+					placeholder="● ● ● ●"
+					secureTextEntry
+					keyboardType="numeric"
+					maxLength={4}
+				/>
 			</View>
 			<View style={{ width: "80%", gap: 25, marginBottom: 20 }}>
 				<Input
@@ -33,7 +40,7 @@ const PinRegisterScreen = () => {
 				/>
 			</View>
 
-			<Button variant="primary" text="Siguiente" onPress={() => handleNextStep()} />
+			<Button variant="primary" text="Siguiente" onPress={() => handleNextStep()} size="xxl" />
 		</View>
 	)
 }
