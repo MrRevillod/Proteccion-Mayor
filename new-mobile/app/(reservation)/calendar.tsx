@@ -1,13 +1,10 @@
-import { Button } from "@/components/Button"
+import { Alert } from "react-native"
 import { useState } from "react"
 import { useRequest } from "@/hooks/useRequest"
-import { primaryGreen } from "@/constants/Colors"
 import { CalendarView } from "@/components/Calendar"
-import { getAvailableDates } from "@/lib/actions"
-import { MultiStepProgressBar } from "@/components/ProgressBar"
-import { Alert, StyleSheet, Text, View } from "react-native"
-import { useLocalSearchParams, useRouter } from "expo-router"
 import { ReservationStep } from "@/components/ReservationStep"
+import { getAvailableDates } from "@/lib/actions"
+import { useLocalSearchParams, useRouter } from "expo-router"
 
 const DateSelectionScreen = () => {
 	const router = useRouter()
@@ -27,7 +24,7 @@ const DateSelectionScreen = () => {
 			)
 
 		router.push({
-			pathname: "/(modals)/events",
+			pathname: "/(reservation)/events",
 			params: { date: selectedDate, serviceId, centerId },
 		})
 	}

@@ -23,7 +23,7 @@ const EventSelectionScreen = () => {
 		}
 
 		router.push({
-			pathname: "/(modals)/confirm",
+			pathname: "/(reservation)/confirm",
 			params: { eventId: selectedEvent.id.toString(), event: JSON.stringify(selectedEvent) },
 		})
 	}

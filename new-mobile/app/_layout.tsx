@@ -49,7 +49,7 @@ const RootLayoutNav = () => {
 				<Stack.Screen name="login" />
 				<Stack.Screen name="(register)" options={{ headerShown: false }} />
 				<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-				<Stack.Screen name="(modals)" options={{ headerShown: false }} />
+				<Stack.Screen name="(reservation)" options={{ headerShown: false }} />
 			</Stack>
 		</AuthProvider>
 	)

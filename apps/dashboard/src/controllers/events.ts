@@ -299,8 +299,22 @@ export const cancelReserve = async (req: Request, res: Response, next: NextFunct
 }
 
 export const getCentersByService = async (req: Request, res: Response, next: NextFunction) => {
+	const user = req.getExtension("user") as Senior
+	const serviceId = req.params.serviceId
+
+	const twoMonthsAgo = dayjs().subtract(2, "months").toDate()
+
 	try {
-		const serviceId = req.params.serviceId
+		const previousReservation = await prisma.event.findFirst({
+			select: eventSelect,
+			where: {
+				AND: [{ seniorId: user.id }, { serviceId: Number(serviceId) }, { updatedAt: { gte: twoMonthsAgo } }],
+			},
+		})
+
+		if (previousReservation) {
+			throw new AppError(409, "Ya reservaste este servicio en los ultimos 2 meses")
+		}
 
 		const centers = await prisma.event.findMany({
 			distinct: ["centerId"],

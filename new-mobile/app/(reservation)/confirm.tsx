@@ -4,9 +4,10 @@ import { useMutation } from "@/hooks/useMutation"
 import { EventConfirm } from "@/components/EventConfirm"
 import { reservateEvent } from "@/lib/actions"
 import { ReservationStep } from "@/components/ReservationStep"
-import { useLocalSearchParams } from "expo-router"
+import { useRouter, useLocalSearchParams } from "expo-router"
 
 const ConfirmEventScreen = () => {
+	const router = useRouter()
 	const params = useLocalSearchParams()
 	const event = JSON.parse(params.event as string)
 
@@ -18,10 +19,14 @@ const ConfirmEventScreen = () => {
 		await mutate({
 			params: { id: event.id },
 			onSuccess: () => {
-				console.log("Cita reservada")
+				router.replace({ pathname: "/(reservation)/final", params: { status: "success" } })
 			},
 			onError: (error) => {
-				console.log("Error al reservar cita: ", error)
+				const message = error.response?.data?.message || "Error desconocido"
+				router.replace({
+					pathname: "/(reservation)/final",
+					params: { status: "error", message },
+				})
 			},
 		})
 	}

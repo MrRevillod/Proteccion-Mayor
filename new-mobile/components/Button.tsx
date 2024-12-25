@@ -1,15 +1,22 @@
 import React from "react"
-import { StyleSheet, Text, TouchableOpacity, ViewStyle, TextStyle } from "react-native"
 import { primaryGreen } from "@/constants/Colors"
+import { StyleSheet, Text, TouchableOpacity, ViewStyle, TextStyle } from "react-native"
 
 interface ButtonProps {
 	text: string
 	variant?: "primary" | "secondary" | "tertiary" | "quaternary"
 	size?: "sm" | "md" | "lg" | "xl" | "xxl" | "full"
 	onPress: () => void
+	customFontSize?: number
 }
 
-export const Button = ({ text, onPress, variant = "primary", size = "sm" }: ButtonProps) => {
+export const Button = ({
+	text,
+	onPress,
+	variant = "primary",
+	size = "sm",
+	customFontSize,
+}: ButtonProps) => {
 	const buttonStyle: ViewStyle[] = [styles.button, styles[variant], styles[size]]
 	const textStyle: TextStyle[] = [
 		styles.buttonText,
@@ -19,7 +26,9 @@ export const Button = ({ text, onPress, variant = "primary", size = "sm" }: Butt
 
 	return (
 		<TouchableOpacity style={buttonStyle} onPress={onPress}>
-			<Text style={textStyle}>{text}</Text>
+			<Text style={[...textStyle, customFontSize ? { fontSize: customFontSize } : {}]}>
+				{text}
+			</Text>
 		</TouchableOpacity>
 	)
 }

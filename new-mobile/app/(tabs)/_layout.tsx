@@ -19,6 +19,7 @@ const TabLayout = () => {
 					header: () => <Header title="" />,
 					tabBarIcon: () => <FontAwesome name="user" color="white" size={35} />,
 					tabBarStyle: { ...styles.tabBar },
+					tabBarIconStyle: { height: "100%", width: "100%" },
 					tabBarLabel: () => null,
 				}}
 			/>
@@ -41,6 +42,7 @@ const TabLayout = () => {
 					header: () => <Header title="Mi Agenda" />,
 					tabBarIcon: () => <FontAwesome name="calendar" color="white" size={35} />,
 					tabBarStyle: { ...styles.tabBar },
+					tabBarIconStyle: { height: "100%", width: "100%" },
 					tabBarLabel: () => null,
 				}}
 			/>
@@ -51,7 +53,7 @@ const TabLayout = () => {
 const styles = StyleSheet.create({
 	tabBar: {
 		backgroundColor: primaryGreen,
-		paddingTop: 15,
+		paddingTop: 10,
 		height: isIos ? height * 0.11 : height * 0.09,
 		borderTopWidth: 0,
 	},

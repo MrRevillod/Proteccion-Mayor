@@ -27,7 +27,7 @@ export const createApp = (): express.Express => {
 	app.use(morgan("dev"))
 	app.use(express.urlencoded({ extended: true }))
 	app.use(express.json())
-	app.use(cors({ origin: services.WEB_APP.url, credentials: true }))
+	app.use(cors({ origin: "*", credentials: true }))
 
 	app.use(cookieParser())
 	app.use(extensions)

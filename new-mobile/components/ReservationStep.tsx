@@ -11,25 +11,36 @@ import { StyleSheet, Text, View, Platform } from "react-native"
 const { OS } = Platform
 
 interface Props {
-	title: string
-	description: string
+	title?: string
+	description?: string
 	continueHandler: () => void | Promise<void>
 	currentStep: 1 | 2 | 3 | 4 | 5
 	children: React.ReactNode
 	loading?: boolean
+	goBackEnabled?: boolean
+	continueText?: string
 }
 
 export const ReservationStep: React.FC<Props> = ({ loading = false, ...props }) => {
 	const router = useRouter()
 
-	const { continueHandler, title, description, currentStep, children } = props
+	const {
+		continueHandler,
+		title,
+		description,
+		currentStep,
+		goBackEnabled = true,
+		continueText = "Continuar",
+		children,
+	} = props
+
 	const [localLoading, setLocalLoading] = useState(loading)
 
 	useEffect(() => {
 		if (loading) {
 			setLocalLoading(true)
 		} else {
-			const timeout = setTimeout(() => setLocalLoading(false), 200)
+			const timeout = setTimeout(() => setLocalLoading(false), 100)
 			return () => clearTimeout(timeout)
 		}
 	}, [loading])
@@ -41,25 +52,29 @@ export const ReservationStep: React.FC<Props> = ({ loading = false, ...props }) 
 			</View>
 			<View style={styles.dataContainer}>
 				<View style={styles.textContainer}>
-					<Text style={{ fontSize: 20, fontWeight: "500", marginBottom: 5 }}>
-						{title}
-					</Text>
-					<Text style={{ fontSize: 16 }}>{description}</Text>
+					{title && (
+						<Text style={{ fontSize: 20, fontWeight: "500", marginBottom: 5 }}>
+							{title}
+						</Text>
+					)}
+					{description && <Text style={{ fontSize: 16 }}>{description}</Text>}
 				</View>
 				{localLoading ? <LoadingIndicator /> : <View>{children}</View>}
-				<View style={styles.buttonsContainer}>
+				<View style={{ ...styles.buttonsContainer, height: goBackEnabled ? "20%" : "10%" }}>
 					<Button
-						text="Continuar"
+						text={continueText}
 						onPress={() => continueHandler()}
 						variant="primary"
 						size="lg"
 					/>
-					<Button
-						text="Volver atrás"
-						onPress={() => router.back()}
-						variant="tertiary"
-						size="lg"
-					/>
+					{goBackEnabled && (
+						<Button
+							text="Volver atrás"
+							onPress={() => router.back()}
+							variant="tertiary"
+							size="lg"
+						/>
+					)}
 				</View>
 			</View>
 		</View>
@@ -102,6 +117,5 @@ const styles = StyleSheet.create({
 		alignContent: "center",
 		justifyContent: "center",
 		width: "100%",
-		height: "20%",
 	},
 })

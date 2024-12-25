@@ -58,12 +58,16 @@ const LoginScreen = () => {
 		<FormProvider {...methods}>
 			<View style={styles.container}>
 				<View style={{ width: "80%" }}>
-					<Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>Iniciar Sesión</Text>
+					<Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
+						Iniciar Sesión
+					</Text>
 				</View>
 
 				{auth.error && (
 					<View style={{ width: "80%", alignItems: "flex-start" }}>
-						<Text style={{ color: "red", fontSize: 16, marginBottom: 20 }}>{auth.error}</Text>
+						<Text style={{ color: "red", fontSize: 16, marginBottom: 20 }}>
+							{auth.error}
+						</Text>
 					</View>
 				)}
 
@@ -87,13 +91,20 @@ const LoginScreen = () => {
 					/>
 				</View>
 
-				<Button variant="primary" text="Ingresar" onPress={methods.handleSubmit(onSubmit)} size="xxl" />
+				<Button
+					variant="primary"
+					text="Ingresar"
+					onPress={methods.handleSubmit(onSubmit)}
+					size="xxl"
+				/>
 				{rutExists && (
-					<TouchableOpacity onPress={handleForget}>
-						<Text style={{ color: "red", fontSize: 16, marginTop: 20, fontWeight: "500" }}>
-							Ingresar con otro RUT
-						</Text>
-					</TouchableOpacity>
+					<Button
+						variant="tertiary"
+						text="Ingresar con otro RUT"
+						onPress={handleForget}
+						size="xxl"
+						customFontSize={18}
+					/>
 				)}
 			</View>
 		</FormProvider>
