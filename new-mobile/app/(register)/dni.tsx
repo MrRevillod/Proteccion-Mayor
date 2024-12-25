@@ -27,7 +27,9 @@ const DniRegisterScreen = () => {
 	return (
 		<View style={styles.container}>
 			<View style={{ width: "80%" }}>
-				<Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>Paso 4 de 6</Text>
+				<Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
+					Paso 4 de 6
+				</Text>
 			</View>
 
 			<View style={{ width: "80%", marginBottom: 24 }}>
@@ -50,7 +52,13 @@ const DniRegisterScreen = () => {
 						style={styles.checkIcon}
 					/>
 				)}
-				{dni_a && <FontAwesome name="check-square" color={primaryGreen} style={styles.checkIcon} />}
+				{dni_a && (
+					<FontAwesome
+						name="check-square"
+						color={primaryGreen}
+						style={styles.checkIcon}
+					/>
+				)}
 			</View>
 
 			<View style={[styles.imageButtonContainer, { marginBottom: 15 }]}>
@@ -67,10 +75,16 @@ const DniRegisterScreen = () => {
 						style={styles.checkIcon}
 					/>
 				)}
-				{dni_b && <FontAwesome name="check-square" color={primaryGreen} style={styles.checkIcon} />}
+				{dni_b && (
+					<FontAwesome
+						name="check-square"
+						color={primaryGreen}
+						style={styles.checkIcon}
+					/>
+				)}
 			</View>
 
-			<Button variant="primary" text="Siguiente" onPress={handleNextStep} />
+			<Button variant="primary" text="Siguiente" size="xxl" onPress={handleNextStep} />
 		</View>
 	)
 }

@@ -7,16 +7,16 @@ dayjs.locale("es")
 
 import { Alert } from "react-native"
 import { useState } from "react"
+import { primaryGreen } from "@/constants/Colors"
 import { CustomDayComponent } from "./CustomDay"
 import { Calendar, LocaleConfig } from "react-native-calendars"
 
 interface Props {
 	markedDates: string[]
 	onSelectDate: (date: string) => void
-	style: any
 }
 
-export const CalendarView: React.FC<Props> = ({ markedDates, onSelectDate, style }) => {
+export const CalendarView: React.FC<Props> = ({ markedDates, onSelectDate }) => {
 	const [selectedDate, setSelectedDate] = useState<string | null>(null)
 	const currentDate = dayjs().format("YYYY-MM-DD")
 
@@ -43,7 +43,6 @@ export const CalendarView: React.FC<Props> = ({ markedDates, onSelectDate, style
 		<Calendar
 			minDate={currentDate}
 			current={currentDate}
-			style={style}
 			dayComponent={({ date, state }: any) => (
 				<CustomDayComponent
 					onPress={() => handleSelectDate(date.dateString)}
@@ -53,6 +52,18 @@ export const CalendarView: React.FC<Props> = ({ markedDates, onSelectDate, style
 					isMarked={markedDates.includes(date.dateString)}
 				/>
 			)}
+			style={{
+				borderRadius: 15,
+				width: "100%",
+				height: "62%",
+				alignSelf: "center",
+				marginTop: "5%",
+				marginBottom: "-5%",
+			}}
+			theme={{
+				arrowColor: primaryGreen,
+				textMonthFontWeight: "bold",
+			}}
 		/>
 	)
 }

@@ -37,11 +37,12 @@ const RootLayout = () => {
 const RootLayoutNav = () => {
 	return (
 		<AuthProvider>
-			<AppStateHandler />
 			<Stack
 				screenOptions={{
 					gestureEnabled: false,
-					header: ({ navigation }) => <Header title="Protección Mayor" goBack={() => navigation.goBack()} />,
+					header: ({ navigation }) => (
+						<Header title="Protección Mayor" goBack={() => navigation.goBack()} />
+					),
 				}}
 			>
 				<Stack.Screen name="index" options={{ headerShown: false }} />

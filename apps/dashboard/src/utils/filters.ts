@@ -61,10 +61,10 @@ export const eventSelect: Prisma.EventSelect = {
 	serviceId: true,
 	centerId: true,
 	service: {
-		select: { name: true, color: true },
+		select: { id: true, name: true, color: true },
 	},
 	center: {
-		select: { id: true, name: true },
+		select: { id: true, name: true, address: true },
 	},
 	senior: {
 		select: { id: true, name: true, email: true },

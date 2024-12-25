@@ -4,7 +4,11 @@ import FontAwesome from "@expo/vector-icons/FontAwesome"
 import { Tabs } from "expo-router"
 import { Header } from "@/components/Header"
 import { primaryGreen } from "@/constants/Colors"
-import { StyleSheet, View } from "react-native"
+import { StyleSheet, View, Dimensions, Platform } from "react-native"
+
+const { height } = Dimensions.get("window")
+
+const isIos = Platform.OS === "ios"
 
 const TabLayout = () => {
 	return (
@@ -12,7 +16,7 @@ const TabLayout = () => {
 			<Tabs.Screen
 				name="profile"
 				options={{
-					header: () => <Header title="" height={250} />,
+					header: () => <Header title="" />,
 					tabBarIcon: () => <FontAwesome name="user" color="white" size={35} />,
 					tabBarStyle: { ...styles.tabBar },
 					tabBarLabel: () => null,
@@ -48,7 +52,7 @@ const styles = StyleSheet.create({
 	tabBar: {
 		backgroundColor: primaryGreen,
 		paddingTop: 15,
-		height: 80,
+		height: isIos ? height * 0.11 : height * 0.09,
 		borderTopWidth: 0,
 	},
 	centerTabIcon: {

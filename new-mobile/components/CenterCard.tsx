@@ -3,8 +3,8 @@ import React from "react"
 import { Center } from "@/lib/types"
 import { primaryGreen } from "@/constants/Colors"
 import { API_BASE_URL } from "@/lib/http"
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons"
-import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native"
+import { MaterialIcons } from "@expo/vector-icons"
+import { StyleSheet, View, Text, TouchableOpacity, ImageBackground } from "react-native"
 
 interface Props {
 	center: Center
@@ -17,17 +17,22 @@ export const CenterCard: React.FC<Props> = ({ center, onPress, selected }) => {
 
 	return (
 		<TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.8}>
-			<Image source={{ uri: imageUri }} style={styles.image} resizeMode="cover" />
-			{selected && <View style={styles.overlay} />}
-			{selected && (
-				<View style={styles.selectedLabel}>
-					<MaterialIcons name="check-circle" size={24} color={primaryGreen} />
-					<Text style={styles.selectedText}>Seleccionado</Text>
-				</View>
-			)}
 			<View style={styles.infoContainer}>
 				<View style={styles.iconContainer}>
-					<FontAwesome name="hospital-o" size={20} color="white" />
+					<ImageBackground
+						source={{ uri: imageUri }}
+						style={styles.imageBackground}
+						imageStyle={styles.imageBackgroundStyle}
+					>
+						{selected && (
+							<>
+								<View style={styles.overlay} />
+								<View style={styles.checkIconContainer}>
+									<MaterialIcons name="check-circle" size={24} color="white" />
+								</View>
+							</>
+						)}
+					</ImageBackground>
 				</View>
 				<View style={styles.textContainer}>
 					<Text style={styles.title}>{center.name}</Text>
@@ -51,19 +56,6 @@ const styles = StyleSheet.create({
 		shadowRadius: 4,
 		elevation: 3,
 		marginBottom: 15,
-	},
-	image: {
-		width: "100%",
-		height: 100,
-	},
-	overlay: {
-		position: "absolute",
-		top: 0,
-		left: 0,
-		width: "100%",
-		height: 100,
-		backgroundColor: "rgba(0, 0, 0, 0.5)",
-		borderRadius: 15,
 	},
 	selectedLabel: {
 		position: "absolute",
@@ -100,12 +92,31 @@ const styles = StyleSheet.create({
 		color: "#666",
 	},
 	iconContainer: {
-		backgroundColor: primaryGreen,
-		padding: 10,
-		borderRadius: 50,
-		justifyContent: "center",
-		alignItems: "center",
 		width: 40,
 		height: 40,
+		borderRadius: 30,
+		overflow: "hidden",
+		backgroundColor: "#f0f0f0",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	imageBackground: {
+		width: "100%",
+		height: "100%",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	imageBackgroundStyle: {
+		borderRadius: 30,
+	},
+	overlay: {
+		...StyleSheet.absoluteFillObject,
+		backgroundColor: "rgba(0, 0, 0, 0.5)",
+	},
+	checkIconContainer: {
+		position: "absolute",
+		top: "50%",
+		left: "50%",
+		transform: [{ translateX: -12 }, { translateY: -12 }],
 	},
 })

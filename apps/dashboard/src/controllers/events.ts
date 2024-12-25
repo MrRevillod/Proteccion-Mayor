@@ -189,6 +189,8 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 			select: eventSelect,
 		})
 
+		console.log("event to reserve: ", event)
+
 		// Si el evento no existe o si ya está reservado por otro adulto mayor
 		// se lanza un error 404 o 409 respectivamente
 
@@ -206,12 +208,11 @@ export const reserveEvent = async (req: Request, res: Response, next: NextFuncti
 		// ultima actualización (por reserva/asistencia) dentro de los 2 meses anteriores.
 
 		const previousReservation = await prisma.event.findFirst({
-			where: {
-				seniorId: senior.id,
-				serviceId: event.service.id,
-				updatedAt: { gte: twoMonthsAgo },
-			},
+			select: eventSelect,
+			where: { AND: [{ seniorId: senior.id }, { serviceId: event.service.id }, { updatedAt: { gte: twoMonthsAgo } }] },
 		})
+
+		console.log("previous reservation:", previousReservation)
 
 		// Si existe un evento con las condiciones anteriores se lanza un error 409
 		// que indica un conflicto con la reserva

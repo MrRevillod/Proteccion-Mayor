@@ -24,7 +24,12 @@ export const CustomCamera = ({ onCapture, rectGenerator, overlay }: CustomCamera
 		return (
 			<View style={{ flex: 1, justifyContent: "center", alignItems: "center", gap: 10 }}>
 				<Text style={{ fontSize: 24 }}>Se necesita permiso de cámara</Text>
-				<Button onPress={requestPermission} text="Conceder permisos" variant="primary" size="lg" />
+				<Button
+					onPress={requestPermission}
+					text="Conceder permisos"
+					variant="primary"
+					size="xl"
+				/>
 			</View>
 		)
 	}
@@ -43,13 +48,16 @@ export const CustomCamera = ({ onCapture, rectGenerator, overlay }: CustomCamera
 
 				setLoading(true)
 
-				const croppedPhoto = await manipulateAsync(uri ?? "", [{ crop: rectGenerator(width, height) }], {
-					compress: 1,
-					format: SaveFormat.WEBP,
-				})
+				const croppedPhoto = await manipulateAsync(
+					uri ?? "",
+					[{ crop: rectGenerator(width, height) }],
+					{
+						compress: 1,
+						format: SaveFormat.WEBP,
+					}
+				)
 
 				setLoading(false)
-
 				onCapture(croppedPhoto.uri)
 			} catch (error) {
 				Alert.alert("Error", "No se pudo capturar la foto. Inténtelo de nuevo.")
@@ -63,7 +71,9 @@ export const CustomCamera = ({ onCapture, rectGenerator, overlay }: CustomCamera
 				{!loading && overlay}
 				{loading && (
 					<View style={styles.loading}>
-						<Text style={{ color: "white", marginBottom: 10, fontWeight: "semibold" }}>Procesando...</Text>
+						<Text style={{ color: "white", marginBottom: 10, fontWeight: "semibold" }}>
+							Procesando...
+						</Text>
 						<ActivityIndicator size="large" color="white" />
 					</View>
 				)}

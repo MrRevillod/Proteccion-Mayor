@@ -57,16 +57,22 @@ const RshRegisterScreen = () => {
 		<View style={styles.container}>
 			{loading && (
 				<View style={styles.loading}>
-					<Text style={{ color: "white", marginBottom: 10, fontWeight: "semibold" }}>Procesando...</Text>
+					<Text style={{ color: "white", marginBottom: 10, fontWeight: "semibold" }}>
+						Procesando...
+					</Text>
 					<ActivityIndicator size="large" color="white" />
 				</View>
 			)}
 			<View style={{ width: "80%" }}>
-				<Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>Paso 5 de 6</Text>
+				<Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
+					Paso 5 de 6
+				</Text>
 			</View>
 
 			<View style={{ width: "80%", marginBottom: 24 }}>
-				<Text style={{ fontSize: 18 }}>Necesitamos que suba una foto de su registro social de hogares.</Text>
+				<Text style={{ fontSize: 18 }}>
+					Necesitamos que suba una foto de su registro social de hogares.
+				</Text>
 			</View>
 
 			<View style={styles.imageButtonContainer}>
@@ -83,10 +89,21 @@ const RshRegisterScreen = () => {
 						style={styles.checkIcon}
 					/>
 				)}
-				{social && <FontAwesome name="check-square" color={primaryGreen} style={styles.checkIcon} />}
+				{social && (
+					<FontAwesome
+						name="check-square"
+						color={primaryGreen}
+						style={styles.checkIcon}
+					/>
+				)}
 			</View>
 
-			<Button variant="primary" text="Finalizar" onPress={handleSubmit(onSubmit)} />
+			<Button
+				variant="primary"
+				text="Finalizar"
+				size="xxl"
+				onPress={handleSubmit(onSubmit)}
+			/>
 		</View>
 	)
 }

@@ -1,21 +1,19 @@
 import { useRouter } from "expo-router"
 import { FontAwesome } from "@expo/vector-icons"
 import { primaryGreen } from "@/constants/Colors"
-import { StyleSheet, TouchableOpacity, View, Text, Platform } from "react-native"
+import { StyleSheet, TouchableOpacity, View, Text, Platform, Dimensions } from "react-native"
+
+const { height } = Dimensions.get("window")
+const isIos = Platform.OS === "ios"
 
 interface HeaderProps {
 	title: string
 	goBack?: () => void
-	height?: number
-	variant?: "default" | "modal"
 }
 
-export const Header = ({ title, goBack, height, variant = "default" }: HeaderProps) => {
+export const Header = ({ title, goBack }: HeaderProps) => {
 	const router = useRouter()
 	const canGoBack = router.canGoBack()
-
-	const paddingTop = variant === "modal" ? 0 : 50
-	const heightStyle = variant === "modal" ? 100 : height ?? 120
 
 	const styles = StyleSheet.create({
 		header: {
@@ -24,8 +22,8 @@ export const Header = ({ title, goBack, height, variant = "default" }: HeaderPro
 			backgroundColor: primaryGreen,
 			color: "#fff",
 			paddingHorizontal: 45,
-			paddingTop: Platform.OS === "ios" ? paddingTop : 0,
-			height: heightStyle,
+			paddingTop: isIos ? 50 : 0,
+			height: isIos ? height * 0.15 : 120,
 		},
 		headerTitleContainer: {
 			flex: 1,
