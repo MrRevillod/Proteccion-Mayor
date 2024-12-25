@@ -5,8 +5,8 @@ import "dayjs/locale/es"
 
 dayjs.locale("es")
 
-import { Alert } from "react-native"
 import { useState } from "react"
+import { useAlert } from "@/context/AlertContext"
 import { primaryGreen } from "@/constants/Colors"
 import { CustomDayComponent } from "./CustomDay"
 import { Calendar, LocaleConfig } from "react-native-calendars"
@@ -17,6 +17,7 @@ interface Props {
 }
 
 export const CalendarView: React.FC<Props> = ({ markedDates, onSelectDate }) => {
+	const { showAlert } = useAlert()
 	const [selectedDate, setSelectedDate] = useState<string | null>(null)
 	const currentDate = dayjs().format("YYYY-MM-DD")
 
@@ -24,16 +25,27 @@ export const CalendarView: React.FC<Props> = ({ markedDates, onSelectDate }) => 
 		const selectedDateObj = dayjs(date)
 
 		if (selectedDateObj.isBefore(dayjs(currentDate))) {
-			return Alert.alert("No es posible seleccionar una fecha anterior a la actual.")
+			return showAlert({
+				title: "Fecha inválida",
+				message: "No es posible seleccionar una fecha anterior a la actual.",
+			})
 		}
 
 		if (!markedDates.includes(date)) {
-			return Alert.alert("No hay citas disponibles para esta fecha.")
+			return showAlert({
+				title: "Fecha no disponible",
+				message: "Por favor, seleccione una fecha marcada en verde.",
+			})
 		}
 
 		const isWeekend = selectedDateObj.day() === 0 || selectedDateObj.day() === 6
 
-		if (isWeekend) return Alert.alert("No puedes seleccionar un fin de semana.")
+		if (isWeekend) {
+			return showAlert({
+				title: "Fecha no disponible",
+				message: "No se pueden agendar citas los fines de semana.",
+			})
+		}
 
 		setSelectedDate(date)
 		onSelectDate(date)

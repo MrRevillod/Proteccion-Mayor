@@ -5,7 +5,7 @@ const isValidRutFormat = (rut: string): boolean => {
 	return rutRegex.test(rut)
 }
 
-const isValidRut = (rut: string): boolean => {
+export const isValidRut = (rut: string): boolean => {
 	if (!isValidRutFormat(rut)) {
 		return false
 	}

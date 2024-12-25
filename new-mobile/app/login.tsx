@@ -3,11 +3,11 @@ import { Input } from "@/components/Input"
 import { Button } from "@/components/Button"
 import { useAuth } from "@/context/AuthContext"
 import { useRouter } from "expo-router"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { isValidRut } from "@/lib/schemas"
 import { useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
+import { StyleSheet, Text, View } from "react-native"
 import { deleteSecureStore, getSecureStore } from "@/lib/secureStore"
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 
 const LoginScreen = () => {
 	const auth = useAuth()
@@ -16,17 +16,19 @@ const LoginScreen = () => {
 	const [rutExists, setRutExists] = useState<boolean>(false)
 
 	const schema = z.object({
-		rut: z.string().min(1, "El RUT es requerido"),
+		rut: z.string().min(1, "El RUT es requerido").refine(isValidRut, {
+			message: "El RUT ingresado no es válido",
+		}),
 		password: z.string().min(1, "El PIN es requerido").max(4, "El PIN debe tener 4 dígitos"),
 	})
 
 	type FormValues = z.infer<typeof schema>
 	const methods = useForm<FormValues>({
-		resolver: zodResolver(schema),
 		defaultValues: {
 			rut: "",
 			password: "",
 		},
+		mode: "onSubmit",
 	})
 
 	useEffect(() => {
@@ -43,15 +45,29 @@ const LoginScreen = () => {
 	}, [])
 
 	const onSubmit = async (data: FormValues) => {
-		await auth.login(data, () => {
-			router.replace("/(tabs)/home")
-		})
+		try {
+			schema.parse(data)
+			await auth.login(data, () => {
+				router.replace("/(tabs)/home")
+			})
+		} catch (e) {
+			if (e instanceof z.ZodError) {
+				e.errors.forEach((error) => {
+					methods.setError(error.path[0] as keyof FormValues, {
+						type: "manual",
+						message: error.message,
+					})
+				})
+			}
+		}
 	}
 
 	const handleForget = async () => {
 		methods.setValue("rut", "")
 		await deleteSecureStore("rut")
 		setRutExists(false)
+		methods.clearErrors(["rut", "password"])
+		auth.setError(null)
 	}
 
 	return (
@@ -101,7 +117,7 @@ const LoginScreen = () => {
 					<Button
 						variant="tertiary"
 						text="Ingresar con otro RUT"
-						onPress={handleForget}
+						onPress={() => handleForget()}
 						size="xxl"
 						customFontSize={18}
 					/>

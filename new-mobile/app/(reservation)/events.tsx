@@ -1,14 +1,16 @@
 import { Event } from "@/lib/types"
 import { useState } from "react"
+import { useAlert } from "@/context/AlertContext"
 import { getEvents } from "@/lib/actions"
 import { EventCard } from "@/components/EventCard"
 import { useRequest } from "@/hooks/useRequest"
 import { ReservationStep } from "@/components/ReservationStep"
+import { FlatList, StyleSheet, View } from "react-native"
 import { useLocalSearchParams, useRouter } from "expo-router"
-import { Alert, FlatList, StyleSheet, View } from "react-native"
 
 const EventSelectionScreen = () => {
 	const router = useRouter()
+	const { showAlert } = useAlert()
 	const { date, centerId, serviceId } = useLocalSearchParams()
 	const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
 
@@ -19,7 +21,10 @@ const EventSelectionScreen = () => {
 
 	const handleSelectEvent = () => {
 		if (!selectedEvent) {
-			return Alert.alert("Seleccione una hora de atención para continuar.")
+			return showAlert({
+				title: "Ups!",
+				message: "Debes seleccionar una hora de atención para continuar.",
+			})
 		}
 
 		router.push({

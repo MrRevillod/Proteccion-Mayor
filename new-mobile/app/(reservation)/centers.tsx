@@ -1,20 +1,25 @@
 import { Center } from "@/lib/types"
 import { useState } from "react"
+import { useAlert } from "@/context/AlertContext"
 import { CenterCard } from "@/components/CenterCard"
 import { ReservationStep } from "@/components/ReservationStep"
-import { Alert, FlatList, StyleSheet } from "react-native"
+import { FlatList, StyleSheet } from "react-native"
 import { useLocalSearchParams, useRouter } from "expo-router"
 
 const CenterSelectionScreen = () => {
 	const router = useRouter()
 	const [selectedCenter, setSelectedCenter] = useState<Center | null>(null)
 
+	const { showAlert } = useAlert()
 	const { centers: data, serviceId } = useLocalSearchParams()
 	const centers = JSON.parse(data as string)
 
 	const handleSelectCenter = () => {
 		if (!selectedCenter) {
-			return Alert.alert("Error", "Seleccione un centro de atención para continuar.")
+			return showAlert({
+				title: "Ups!",
+				message: "Debes seleccionar un centro de atención para continuar.",
+			})
 		}
 
 		router.push({

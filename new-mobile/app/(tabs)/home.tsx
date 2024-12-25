@@ -1,14 +1,16 @@
 import { useState } from "react"
+import { useAlert } from "@/context/AlertContext"
 import { useRouter } from "expo-router"
 import { useRequest } from "@/hooks/useRequest"
 import { ServiceCard } from "@/components/ServiceCard"
 import { Center, Service } from "@/lib/types"
+import { StyleSheet, FlatList, View } from "react-native"
 import { getCentersByService, getServices } from "@/lib/actions"
-import { StyleSheet, FlatList, View, Alert } from "react-native"
 
 const HomeScreen = () => {
 	const router = useRouter()
 
+	const { showAlert } = useAlert()
 	const [selectedService, setSelectedService] = useState<Service | null>(null)
 
 	const { data: services } = useRequest<Service[]>({
@@ -25,11 +27,8 @@ const HomeScreen = () => {
 
 	const handleSuccess = (data: Center[]) => {
 		if (data.length === 0) {
-			Alert.alert(
-				"Error",
-				"No se han encontrado centros de atención disponibles para este servicio."
-			)
-
+			const message = `No se han encontrado centros de atención disponibles para este servicio.`
+			showAlert({ title: "Ups!", message })
 			return setSelectedService(null)
 		}
 
@@ -42,7 +41,10 @@ const HomeScreen = () => {
 	}
 
 	const handleError = (error: any) => {
-		Alert.alert("Error", error.message || "Error desconocido. Intente nuevamente.")
+		showAlert({
+			title: "Error",
+			message: error.message ?? "Error desconocido. Intente nuevamente.",
+		})
 		return setSelectedService(null)
 	}
 

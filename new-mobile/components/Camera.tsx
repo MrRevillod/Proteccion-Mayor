@@ -1,10 +1,11 @@
 import { Button } from "@/components/Button"
+import { useAlert } from "@/context/AlertContext"
 import { FontAwesome } from "@expo/vector-icons"
 import { primaryGreen } from "@/constants/Colors"
 import { ReactNode, useRef, useState } from "react"
 import { manipulateAsync, SaveFormat } from "expo-image-manipulator"
 import { CameraView, useCameraPermissions } from "expo-camera"
-import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from "react-native"
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native"
 
 interface CustomCameraProps {
 	onCapture: (photoUri: string) => void
@@ -16,6 +17,7 @@ interface CustomCameraProps {
 }
 
 export const CustomCamera = ({ onCapture, rectGenerator, overlay }: CustomCameraProps) => {
+	const { showAlert } = useAlert()
 	const [loading, setLoading] = useState(false)
 	const [permission, requestPermission] = useCameraPermissions()
 	const cameraRef = useRef<CameraView | null>(null)
@@ -60,7 +62,12 @@ export const CustomCamera = ({ onCapture, rectGenerator, overlay }: CustomCamera
 				setLoading(false)
 				onCapture(croppedPhoto.uri)
 			} catch (error) {
-				Alert.alert("Error", "No se pudo capturar la foto. Inténtelo de nuevo.")
+				showAlert({
+					title: "Error",
+					message: "No se pudo capturar la foto. Inténtelo de nuevo.",
+				})
+
+				setLoading(false)
 			}
 		}
 	}

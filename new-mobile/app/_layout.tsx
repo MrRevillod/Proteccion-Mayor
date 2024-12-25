@@ -9,6 +9,7 @@ import { Header } from "@/components/Header"
 import { useFonts } from "expo-font"
 import { useEffect } from "react"
 import { AuthProvider } from "@/context/AuthContext"
+import { AlertProvider } from "@/context/AlertContext"
 export { ErrorBoundary } from "expo-router"
 
 export const unstable_settings = {
@@ -37,20 +38,22 @@ const RootLayout = () => {
 const RootLayoutNav = () => {
 	return (
 		<AuthProvider>
-			<Stack
-				screenOptions={{
-					gestureEnabled: false,
-					header: ({ navigation }) => (
-						<Header title="Protección Mayor" goBack={() => navigation.goBack()} />
-					),
-				}}
-			>
-				<Stack.Screen name="index" options={{ headerShown: false }} />
-				<Stack.Screen name="login" />
-				<Stack.Screen name="(register)" options={{ headerShown: false }} />
-				<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-				<Stack.Screen name="(reservation)" options={{ headerShown: false }} />
-			</Stack>
+			<AlertProvider>
+				<Stack
+					screenOptions={{
+						gestureEnabled: false,
+						header: ({ navigation }) => (
+							<Header title="Protección Mayor" goBack={() => navigation.goBack()} />
+						),
+					}}
+				>
+					<Stack.Screen name="index" options={{ headerShown: false }} />
+					<Stack.Screen name="login" />
+					<Stack.Screen name="(register)" options={{ headerShown: false }} />
+					<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+					<Stack.Screen name="(reservation)" options={{ headerShown: false }} />
+				</Stack>
+			</AlertProvider>
 		</AuthProvider>
 	)
 }

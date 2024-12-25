@@ -16,8 +16,8 @@
 	},
 	"devDependencies": {
 		"eslint": "^9.9.0",
-		"turbo": "^2.2.3",
 		"tsup": "^8.0.2",
+		"turbo": "^2.2.3",
 		"typescript": "^5.3.3"
 	},
 	"packageManager": "pnpm@8.15.6",
@@ -26,8 +26,8 @@
 	},
 	"dependencies": {
 		"@prisma/client": "^5.10.2",
+		"@socket.io/pm2": "^5.3.0",
 		"dotenv-cli": "^7.4.2",
-		"ts-node": "^10.9.2",
-		"@socket.io/pm2": "^5.3.0"
+		"ts-node": "^10.9.2"
 	}
 }

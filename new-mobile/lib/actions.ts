@@ -24,6 +24,10 @@ const apiRequest = {
 	},
 }
 
+export const getProfilePicture = async (props: QueryActionProps) => {
+	return await apiRequest.get(`/storage/public/seniors/${props.params?.id}/profile.webp`)
+}
+
 export const getServices = async (props: QueryActionProps) => {
 	return await apiRequest.get(`/dashboard/services${props.query ? "?" + props.query : ""}`)
 }

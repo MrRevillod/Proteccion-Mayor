@@ -2,7 +2,7 @@ import React from "react"
 
 import { api } from "@/lib/http"
 import { Dispatch, SetStateAction } from "react"
-import { createContext, ReactNode, useEffect, useState } from "react"
+import { createContext, ReactNode, useState } from "react"
 import { deleteSecureStore, setSecureStore } from "@/lib/secureStore"
 
 interface AuthContextType {
@@ -10,6 +10,7 @@ interface AuthContextType {
 	user: any | null
 	loading: boolean
 	error: string | null
+	setError: Dispatch<SetStateAction<string | null>>
 	login: (credentials: any, onSuccess: () => void) => Promise<void>
 	logout: () => Promise<void>
 	refreshSession: () => Promise<void>
@@ -91,6 +92,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 				setUser,
 				login,
 				error,
+				setError,
 				logout,
 				refreshToken,
 				loading,

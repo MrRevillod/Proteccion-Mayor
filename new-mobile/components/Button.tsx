@@ -1,4 +1,5 @@
 import React from "react"
+
 import { primaryGreen } from "@/constants/Colors"
 import { StyleSheet, Text, TouchableOpacity, ViewStyle, TextStyle } from "react-native"
 
@@ -10,13 +11,9 @@ interface ButtonProps {
 	customFontSize?: number
 }
 
-export const Button = ({
-	text,
-	onPress,
-	variant = "primary",
-	size = "sm",
-	customFontSize,
-}: ButtonProps) => {
+export const Button: React.FC<ButtonProps> = ({ text, onPress, ...props }) => {
+	const { variant = "primary", size = "lg", customFontSize } = props
+
 	const buttonStyle: ViewStyle[] = [styles.button, styles[variant], styles[size]]
 	const textStyle: TextStyle[] = [
 		styles.buttonText,
