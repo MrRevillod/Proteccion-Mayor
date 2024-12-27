@@ -1,7 +1,8 @@
 import { Center } from "@/lib/types"
 import { useState } from "react"
 import { useAlert } from "@/context/AlertContext"
-import { CenterCard } from "@/components/CenterCard"
+import { API_BASE_URL } from "@/lib/http"
+import { SelectableItem } from "@/components/SelectableItem"
 import { ReservationStep } from "@/components/ReservationStep"
 import { FlatList, StyleSheet } from "react-native"
 import { useLocalSearchParams, useRouter } from "expo-router"
@@ -10,13 +11,14 @@ const CenterSelectionScreen = () => {
 	const router = useRouter()
 	const [selectedCenter, setSelectedCenter] = useState<Center | null>(null)
 
-	const { showAlert } = useAlert()
+	const { alert } = useAlert()
 	const { centers: data, serviceId } = useLocalSearchParams()
 	const centers = JSON.parse(data as string)
 
 	const handleSelectCenter = () => {
 		if (!selectedCenter) {
-			return showAlert({
+			return alert({
+				variant: "simple",
 				title: "Ups!",
 				message: "Debes seleccionar un centro de atención para continuar.",
 			})
@@ -41,10 +43,12 @@ const CenterSelectionScreen = () => {
 				style={styles.flatList}
 				keyExtractor={(item) => item.id.toString()}
 				renderItem={({ item }) => (
-					<CenterCard
-						center={item}
-						selected={selectedCenter?.id === item.id}
+					<SelectableItem
+						title={item.name}
+						subtitle={item.address}
+						imageUri={`/centers/${item.id}.webp`}
 						onPress={() => setSelectedCenter(item)}
+						selected={selectedCenter?.id === item.id}
 					/>
 				)}
 			/>

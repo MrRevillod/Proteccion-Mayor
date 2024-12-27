@@ -51,9 +51,17 @@ export const getAvailableDates = async (props: QueryActionProps) => {
 }
 
 export const getEvents = async (props: QueryActionProps) => {
+	return await apiRequest.get(`/dashboard/events${props.query ? "?" + props.query : ""}`)
+}
+
+export const getEventsByDate = async (props: QueryActionProps) => {
 	return await apiRequest.get(`/dashboard/events/by-date${props.query ? "?" + props.query : ""}`)
 }
 
 export const reservateEvent = async (props: MutateActionProps) => {
 	return await apiRequest.patch(`/dashboard/events/${props.id}/reservate`, props)
+}
+
+export const cancelReservation = async (props: MutateActionProps) => {
+	return await apiRequest.patch(`/dashboard/events/${props.id}/cancel`, props)
 }

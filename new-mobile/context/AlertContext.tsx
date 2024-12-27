@@ -4,11 +4,15 @@ import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native"
 interface AlertOptions {
 	title: string
 	message: string
-	onClose?: () => void
+	onConfirm?: () => void
+	onCancel?: () => void
+	variant?: "simple" | "confirmCancel"
+	confirmText?: string
+	cancelText?: string
 }
 
 interface AlertContextProps {
-	showAlert: (options: AlertOptions) => void
+	alert: (options: AlertOptions) => void
 }
 
 const AlertContext = createContext<AlertContextProps | undefined>(undefined)
@@ -17,27 +21,56 @@ export const AlertProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 	const [visible, setVisible] = useState(false)
 	const [alertOptions, setAlertOptions] = useState<AlertOptions | null>(null)
 
-	const showAlert = (options: AlertOptions) => {
+	const alert = (options: AlertOptions) => {
 		setAlertOptions(options)
 		setVisible(true)
 	}
 
-	const handleClose = () => {
+	const handleConfirm = () => {
 		setVisible(false)
-		alertOptions?.onClose?.()
+		alertOptions?.onConfirm?.()
+	}
+
+	const handleCancel = () => {
+		setVisible(false)
+		alertOptions?.onCancel?.()
 	}
 
 	return (
-		<AlertContext.Provider value={{ showAlert }}>
+		<AlertContext.Provider value={{ alert }}>
 			{children}
 			<Modal transparent animationType="fade" visible={visible}>
 				<View style={styles.overlay}>
 					<View style={styles.alertBox}>
 						<Text style={styles.title}>{alertOptions?.title}</Text>
 						<Text style={styles.message}>{alertOptions?.message}</Text>
-						<TouchableOpacity style={styles.okButton} onPress={handleClose}>
-							<Text style={styles.okButtonText}>Entendido</Text>
-						</TouchableOpacity>
+						{alertOptions?.variant === "simple" && (
+							<TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>
+								<Text style={styles.confirmButtonText}>
+									{alertOptions?.confirmText ?? "Entendido"}
+								</Text>
+							</TouchableOpacity>
+						)}
+						{alertOptions?.variant === "confirmCancel" && (
+							<View style={styles.buttonContainer}>
+								<TouchableOpacity
+									style={{ ...styles.cancelButton, width: "45%" }}
+									onPress={handleCancel}
+								>
+									<Text style={styles.cancelButtonText}>
+										{alertOptions?.cancelText || "No"}
+									</Text>
+								</TouchableOpacity>
+								<TouchableOpacity
+									style={{ ...styles.confirmButton, width: "45%" }}
+									onPress={handleConfirm}
+								>
+									<Text style={styles.confirmButtonText}>
+										{alertOptions?.confirmText || "Sí"}
+									</Text>
+								</TouchableOpacity>
+							</View>
+						)}
 					</View>
 				</View>
 			</Modal>
@@ -59,6 +92,8 @@ const styles = StyleSheet.create({
 		backgroundColor: "rgba(0, 0, 0, 0.5)",
 		justifyContent: "center",
 		alignItems: "center",
+		zIndex: 1000,
+		elevation: 1000,
 	},
 	alertBox: {
 		width: "80%",
@@ -86,17 +121,35 @@ const styles = StyleSheet.create({
 		color: "#333",
 		lineHeight: 22,
 	},
-	okButton: {
+	buttonContainer: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		width: "100%",
+	},
+	confirmButton: {
 		backgroundColor: "#046c4e",
 		paddingVertical: 10,
 		paddingHorizontal: 40,
 		borderRadius: 8,
 		marginTop: 10,
 	},
-	okButtonText: {
+	confirmButtonText: {
 		color: "white",
 		fontWeight: "bold",
-		fontSize: 18,
+		fontSize: 16,
+		textAlign: "center",
+	},
+	cancelButton: {
+		backgroundColor: "#d9534f",
+		paddingVertical: 10,
+		paddingHorizontal: 40,
+		borderRadius: 8,
+		marginTop: 10,
+	},
+	cancelButtonText: {
+		color: "white",
+		fontWeight: "bold",
+		fontSize: 16,
 		textAlign: "center",
 	},
 })

@@ -10,7 +10,7 @@ import { getCentersByService, getServices } from "@/lib/actions"
 const HomeScreen = () => {
 	const router = useRouter()
 
-	const { showAlert } = useAlert()
+	const { alert } = useAlert()
 	const [selectedService, setSelectedService] = useState<Service | null>(null)
 
 	const { data: services } = useRequest<Service[]>({
@@ -27,8 +27,8 @@ const HomeScreen = () => {
 
 	const handleSuccess = (data: Center[]) => {
 		if (data.length === 0) {
-			const message = `No se han encontrado centros de atención disponibles para este servicio.`
-			showAlert({ title: "Ups!", message })
+			const message = `No se encontraron horas de atención disponibles.`
+			alert({ variant: "simple", title: "Ups!", message })
 			return setSelectedService(null)
 		}
 
@@ -41,10 +41,12 @@ const HomeScreen = () => {
 	}
 
 	const handleError = (error: any) => {
-		showAlert({
+		alert({
+			variant: "simple",
 			title: "Error",
 			message: error.message ?? "Error desconocido. Intente nuevamente.",
 		})
+
 		return setSelectedService(null)
 	}
 

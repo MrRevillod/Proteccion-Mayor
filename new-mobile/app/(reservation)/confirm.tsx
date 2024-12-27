@@ -1,7 +1,7 @@
 import React from "react"
 
 import { useMutation } from "@/hooks/useMutation"
-import { EventConfirm } from "@/components/EventConfirm"
+import { EventCard } from "@/components/EventCard"
 import { reservateEvent } from "@/lib/actions"
 import { ReservationStep } from "@/components/ReservationStep"
 import { useRouter, useLocalSearchParams } from "expo-router"
@@ -39,7 +39,7 @@ const ConfirmEventScreen = () => {
 			continueHandler={() => handleConfirm()}
 			loading={loading}
 		>
-			<EventConfirm event={event} />
+			<EventCard event={event} />
 		</ReservationStep>
 	)
 }

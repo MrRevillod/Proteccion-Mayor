@@ -3,11 +3,17 @@ import React from "react"
 import { primaryGreen } from "@/constants/Colors"
 import { View, Text, ActivityIndicator, StyleSheet } from "react-native"
 
-export const LoadingIndicator = () => {
+interface Props {
+	color?: string
+}
+
+export const LoadingIndicator: React.FC<Props> = ({ color }) => {
 	return (
 		<View style={styles.loaderContainer}>
-			<ActivityIndicator size="large" color={primaryGreen} />
-			<Text style={styles.loadingText}>Cargando...</Text>
+			<ActivityIndicator size="large" color={color ?? primaryGreen} />
+			<Text style={{ ...styles.loadingText, color: color ? "white" : "black" }}>
+				Cargando...
+			</Text>
 		</View>
 	)
 }

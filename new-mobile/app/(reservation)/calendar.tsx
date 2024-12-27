@@ -1,4 +1,3 @@
-import { Alert } from "react-native"
 import { useState } from "react"
 import { useAlert } from "@/context/AlertContext"
 import { useRequest } from "@/hooks/useRequest"
@@ -10,7 +9,7 @@ import { useLocalSearchParams, useRouter } from "expo-router"
 const DateSelectionScreen = () => {
 	const router = useRouter()
 
-	const { showAlert } = useAlert()
+	const { alert } = useAlert()
 	const { serviceId, centerId } = useLocalSearchParams()
 	const [selectedDate, setSelectedDate] = useState<string | null>(null)
 
@@ -21,7 +20,8 @@ const DateSelectionScreen = () => {
 
 	const handleSelectDate = () => {
 		if (!selectedDate) {
-			return showAlert({
+			return alert({
+				variant: "simple",
 				title: "Parece que no has seleccionado una fecha.",
 				message: "Las fechas disponibles se muestran en color verde.",
 			})

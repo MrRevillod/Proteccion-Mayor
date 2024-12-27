@@ -47,9 +47,7 @@ const LoginScreen = () => {
 	const onSubmit = async (data: FormValues) => {
 		try {
 			schema.parse(data)
-			await auth.login(data, () => {
-				router.replace("/(tabs)/home")
-			})
+			await auth.login(data, () => router.replace("/(tabs)/home"))
 		} catch (e) {
 			if (e instanceof z.ZodError) {
 				e.errors.forEach((error) => {
@@ -64,6 +62,7 @@ const LoginScreen = () => {
 
 	const handleForget = async () => {
 		methods.setValue("rut", "")
+		methods.setValue("password", "")
 		await deleteSecureStore("rut")
 		setRutExists(false)
 		methods.clearErrors(["rut", "password"])
@@ -104,24 +103,27 @@ const LoginScreen = () => {
 						keyboardType="number-pad"
 						secureTextEntry
 						maxLength={4}
+						autoFocus={rutExists}
 					/>
 				</View>
 
-				<Button
-					variant="primary"
-					text="Ingresar"
-					onPress={methods.handleSubmit(onSubmit)}
-					size="xxl"
-				/>
-				{rutExists && (
+				<View style={{ width: "80%", gap: 20, alignItems: "center" }}>
 					<Button
-						variant="tertiary"
-						text="Ingresar con otro RUT"
-						onPress={() => handleForget()}
-						size="xxl"
-						customFontSize={18}
+						variant="primary"
+						text="Ingresar"
+						onPress={methods.handleSubmit(onSubmit)}
+						size="lg"
 					/>
-				)}
+					{rutExists && (
+						<Button
+							variant="tertiary"
+							text="Ingresar con otro RUT"
+							onPress={() => handleForget()}
+							size="full"
+							customFontSize={18}
+						/>
+					)}
+				</View>
 			</View>
 		</FormProvider>
 	)

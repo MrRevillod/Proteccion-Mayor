@@ -117,5 +117,6 @@ const styles = StyleSheet.create({
 		alignContent: "center",
 		justifyContent: "center",
 		width: "100%",
+		gap: 15,
 	},
 })

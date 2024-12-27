@@ -16,7 +16,9 @@ const PinRegisterScreen = () => {
 	return (
 		<View style={styles.container}>
 			<View style={{ width: "80%" }}>
-				<Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>Paso 3 de 6</Text>
+				<Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
+					Paso 3 de 6
+				</Text>
 			</View>
 
 			<View style={{ width: "80%", gap: 25, marginBottom: 20 }}>
@@ -27,6 +29,7 @@ const PinRegisterScreen = () => {
 					secureTextEntry
 					keyboardType="numeric"
 					maxLength={4}
+					autoFocus
 				/>
 			</View>
 			<View style={{ width: "80%", gap: 25, marginBottom: 20 }}>
@@ -40,7 +43,12 @@ const PinRegisterScreen = () => {
 				/>
 			</View>
 
-			<Button variant="primary" text="Siguiente" onPress={() => handleNextStep()} size="xxl" />
+			<Button
+				variant="primary"
+				text="Siguiente"
+				onPress={() => handleNextStep()}
+				size="xxl"
+			/>
 		</View>
 	)
 }

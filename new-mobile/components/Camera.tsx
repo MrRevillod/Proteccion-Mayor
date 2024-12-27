@@ -17,7 +17,7 @@ interface CustomCameraProps {
 }
 
 export const CustomCamera = ({ onCapture, rectGenerator, overlay }: CustomCameraProps) => {
-	const { showAlert } = useAlert()
+	const { alert } = useAlert()
 	const [loading, setLoading] = useState(false)
 	const [permission, requestPermission] = useCameraPermissions()
 	const cameraRef = useRef<CameraView | null>(null)
@@ -62,7 +62,8 @@ export const CustomCamera = ({ onCapture, rectGenerator, overlay }: CustomCamera
 				setLoading(false)
 				onCapture(croppedPhoto.uri)
 			} catch (error) {
-				showAlert({
+				alert({
+					variant: "simple",
 					title: "Error",
 					message: "No se pudo capturar la foto. Inténtelo de nuevo.",
 				})

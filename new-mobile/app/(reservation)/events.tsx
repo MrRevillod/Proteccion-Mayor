@@ -1,27 +1,30 @@
+import dayjs from "dayjs"
+
 import { Event } from "@/lib/types"
 import { useState } from "react"
 import { useAlert } from "@/context/AlertContext"
-import { getEvents } from "@/lib/actions"
-import { EventCard } from "@/components/EventCard"
 import { useRequest } from "@/hooks/useRequest"
+import { SelectableItem } from "@/components/SelectableItem"
+import { getEventsByDate } from "@/lib/actions"
 import { ReservationStep } from "@/components/ReservationStep"
 import { FlatList, StyleSheet, View } from "react-native"
 import { useLocalSearchParams, useRouter } from "expo-router"
 
 const EventSelectionScreen = () => {
 	const router = useRouter()
-	const { showAlert } = useAlert()
+	const { alert } = useAlert()
 	const { date, centerId, serviceId } = useLocalSearchParams()
 	const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
 
 	const { data, loading } = useRequest<Event[]>({
-		action: getEvents,
+		action: getEventsByDate,
 		query: `date=${date}&centerId=${centerId}&serviceId=${serviceId}`,
 	})
 
 	const handleSelectEvent = () => {
 		if (!selectedEvent) {
-			return showAlert({
+			return alert({
+				variant: "simple",
 				title: "Ups!",
 				message: "Debes seleccionar una hora de atención para continuar.",
 			})
@@ -48,11 +51,15 @@ const EventSelectionScreen = () => {
 				ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
 				keyExtractor={(item) => item.id.toString()}
 				renderItem={({ item }) => (
-					<EventCard
+					<SelectableItem
 						key={item.id}
-						event={item}
+						title={`${dayjs(item.start).format("HH:mm A")} - ${dayjs(item.end).format(
+							"HH:mm A"
+						)}`}
+						subtitle={dayjs(item.start).format("DD/MM/YYYY")}
 						onPress={() => setSelectedEvent(item)}
-						isSelected={selectedEvent?.id === item.id}
+						selected={selectedEvent?.id === item.id}
+						imageUri={`/services/${item.service?.id}.webp`}
 					/>
 				)}
 			/>

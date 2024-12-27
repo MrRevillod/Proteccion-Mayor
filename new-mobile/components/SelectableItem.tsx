@@ -1,29 +1,26 @@
 import React from "react"
 
-import { Center } from "@/lib/types"
-import { primaryGreen } from "@/constants/Colors"
-import { API_BASE_URL } from "@/lib/http"
+import { Image } from "@/components/Image"
 import { MaterialIcons } from "@expo/vector-icons"
-import { StyleSheet, View, Text, TouchableOpacity, ImageBackground } from "react-native"
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
 
 interface Props {
-	center: Center
+	title: string
+	subtitle: string
 	onPress: () => void
 	selected?: boolean
+	imageUri?: string
 }
 
-export const CenterCard: React.FC<Props> = ({ center, onPress, selected }) => {
-	const imageUri = `${API_BASE_URL}/storage/public/centers/${center.id}.webp`
+export const SelectableItem: React.FC<Props> = ({ title, subtitle, ...props }) => {
+	const { imageUri, selected, onPress } = props
 
 	return (
 		<TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.8}>
 			<View style={styles.infoContainer}>
-				<View style={styles.iconContainer}>
-					<ImageBackground
-						source={{ uri: imageUri }}
-						style={styles.imageBackground}
-						imageStyle={styles.imageBackgroundStyle}
-					>
+				{imageUri && (
+					<View style={styles.iconContainer}>
+						<Image source={imageUri} style={styles.image} cache />
 						{selected && (
 							<>
 								<View style={styles.overlay} />
@@ -32,11 +29,11 @@ export const CenterCard: React.FC<Props> = ({ center, onPress, selected }) => {
 								</View>
 							</>
 						)}
-					</ImageBackground>
-				</View>
+					</View>
+				)}
 				<View style={styles.textContainer}>
-					<Text style={styles.title}>{center.name}</Text>
-					<Text style={styles.subtitle}>{center.address}</Text>
+					<Text style={styles.title}>{title}</Text>
+					<Text style={styles.subtitle}>{subtitle}</Text>
 				</View>
 			</View>
 		</TouchableOpacity>
@@ -55,22 +52,6 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.1,
 		shadowRadius: 4,
 		elevation: 3,
-		marginBottom: 15,
-	},
-	selectedLabel: {
-		position: "absolute",
-		top: 10,
-		right: 10,
-		flexDirection: "row",
-		alignItems: "center",
-		backgroundColor: "rgba(255, 255, 255, 0.95)",
-		padding: 5,
-		borderRadius: 10,
-	},
-	selectedText: {
-		marginLeft: 5,
-		fontSize: 14,
-		color: primaryGreen,
 	},
 	infoContainer: {
 		padding: 15,
@@ -99,19 +80,17 @@ const styles = StyleSheet.create({
 		backgroundColor: "#f0f0f0",
 		justifyContent: "center",
 		alignItems: "center",
+		position: "relative",
 	},
-	imageBackground: {
+	image: {
 		width: "100%",
 		height: "100%",
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	imageBackgroundStyle: {
 		borderRadius: 30,
 	},
 	overlay: {
 		...StyleSheet.absoluteFillObject,
 		backgroundColor: "rgba(0, 0, 0, 0.5)",
+		borderRadius: 30,
 	},
 	checkIconContainer: {
 		position: "absolute",

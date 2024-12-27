@@ -17,7 +17,7 @@ interface Props {
 }
 
 export const CalendarView: React.FC<Props> = ({ markedDates, onSelectDate }) => {
-	const { showAlert } = useAlert()
+	const { alert } = useAlert()
 	const [selectedDate, setSelectedDate] = useState<string | null>(null)
 	const currentDate = dayjs().format("YYYY-MM-DD")
 
@@ -25,14 +25,16 @@ export const CalendarView: React.FC<Props> = ({ markedDates, onSelectDate }) => 
 		const selectedDateObj = dayjs(date)
 
 		if (selectedDateObj.isBefore(dayjs(currentDate))) {
-			return showAlert({
+			return alert({
+				variant: "simple",
 				title: "Fecha inválida",
 				message: "No es posible seleccionar una fecha anterior a la actual.",
 			})
 		}
 
 		if (!markedDates.includes(date)) {
-			return showAlert({
+			return alert({
+				variant: "simple",
 				title: "Fecha no disponible",
 				message: "Por favor, seleccione una fecha marcada en verde.",
 			})
@@ -41,7 +43,8 @@ export const CalendarView: React.FC<Props> = ({ markedDates, onSelectDate }) => 
 		const isWeekend = selectedDateObj.day() === 0 || selectedDateObj.day() === 6
 
 		if (isWeekend) {
-			return showAlert({
+			return alert({
+				variant: "simple",
 				title: "Fecha no disponible",
 				message: "No se pueden agendar citas los fines de semana.",
 			})

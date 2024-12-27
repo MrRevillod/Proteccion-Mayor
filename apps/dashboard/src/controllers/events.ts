@@ -288,7 +288,7 @@ export const cancelReserve = async (req: Request, res: Response, next: NextFunct
 
 		io.to("ADMIN").emit("event:update", formatEvent(updatedEvent))
 		io.to(event.professionalId as string).emit("event:update", formatEvent(updatedEvent))
-		return res.status(200).json({ modified: formatEvent(updatedEvent) })
+		return res.status(200).json({ modified: formatEvent(updatedEvent), values: {} })
 	} catch (error) {
 		next(error)
 	}

@@ -1,6 +1,5 @@
 import "react-native-reanimated"
 import FontAwesome from "@expo/vector-icons/FontAwesome"
-import AppStateHandler from "@/components/AppState"
 
 import * as SplashScreen from "expo-splash-screen"
 

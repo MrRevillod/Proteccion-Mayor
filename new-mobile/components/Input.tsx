@@ -12,10 +12,18 @@ interface InputFieldProps {
 	secureTextEntry?: boolean
 	keyboardType?: KeyboardType | KeyboardTypeAndroid
 	maxLength?: number
+	autoFocus?: boolean
 }
 
 export const Input = ({ name, ...props }: InputFieldProps) => {
-	const { label, placeholder, secureTextEntry, keyboardType = "default", maxLength } = props
+	const {
+		label,
+		placeholder,
+		secureTextEntry,
+		keyboardType = "default",
+		maxLength,
+		autoFocus = false,
+	} = props
 
 	const {
 		control,
@@ -70,6 +78,7 @@ export const Input = ({ name, ...props }: InputFieldProps) => {
 						keyboardType={keyboardType}
 						placeholderTextColor="#d4d3cf"
 						maxLength={maxLength || 100}
+						autoFocus={autoFocus}
 					/>
 				)}
 			/>

@@ -45,12 +45,21 @@ export const RegisterScreen = ({ fieldName, nextScreen, step, children }: Regist
 	return (
 		<View style={styles.container}>
 			<View style={{ width: "80%" }}>
-				<Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>Paso {step}</Text>
+				<Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
+					Paso {step}
+				</Text>
 			</View>
 
 			{children}
 
-			<Button variant="primary" text="Siguiente" onPress={() => handleNextStep()} size="xxl" />
+			<View style={{ width: "100%", marginTop: 5, alignItems: "center" }}>
+				<Button
+					variant="primary"
+					text="Siguiente"
+					onPress={() => handleNextStep()}
+					size="xxl"
+				/>
+			</View>
 		</View>
 	)
 }
