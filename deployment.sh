@@ -42,6 +42,8 @@ if [ "$mode" = "build" ]; then
 
     echo "Done!"
 
+    export NODE_ENV=development
+
 elif [ "$mode" = "deploy" ]; then
 
     echo "Migrating to deploy database..."
@@ -61,7 +63,7 @@ elif [ "$mode" = "deploy" ]; then
 
     if [ "$install" = "dependencies" ]; then
         echo "Installing the dependencies..."
-        pnpm install --max-network-concurrency=1
+        pnpm install -P --max-network-concurrency=1
     fi
 
     echo "Building the project..."
@@ -79,18 +81,8 @@ elif [ "$mode" = "deploy" ]; then
 
     pm2 stop all
     pm2 delete all
-    pm2 flush
 
-    cd ./apps/auth/
-    pm2 start "./dist/index.js" --name "Authentication Service" -i 1 --env production
-
-    cd ../../apps/dashboard/
-    pm2 start "./dist/index.js" --name "Dashboard Service" -i 1 --env production
-
-    cd ../../apps/storage/
-    pm2 start "./dist/index.js" --name "Storage Service" -i 1 --env production
-
-    cd ../../
+    pm2 start ecosystem.config.js
 
     pm2 status
     pm2 save
@@ -99,15 +91,9 @@ elif [ "$mode" = "deploy" ]; then
 
     echo "Successfully deployed!"
 
-elif [ "$mode" = "seed:dev" ]; then
-    echo "Seeding database..."
-    pnpm run db:seed:dev
-
 else
     echo "Unknown mode: $mode"
     exit 1
 fi
 
 cd ../../
-
-export NODE_ENV=development

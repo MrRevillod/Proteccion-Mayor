@@ -59,8 +59,10 @@ export const io = new Server<SocketEvents>(http, {
 	transports: ["websocket"],
 })
 
-io.adapter(createAdapter())
-setupWorker(io)
+if (process.env.NODE_ENV === "production") {
+	io.adapter(createAdapter())
+	setupWorker(io)
+}
 
 io.on("connection", (socket: Socket) => {
 	const role = socket.handshake.query.userRole as UserRole
