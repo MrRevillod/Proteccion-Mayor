@@ -1,4 +1,7 @@
 import { Administrator, Professional, Senior } from "@prisma/client"
+import { NextFunction, Request, Response } from "express"
+
+export type Controller = (req: Request, res: Response, handleError: NextFunction) => any
 
 export type ContentTypeVariant = "JSON" | "MULTIPART"
 export type AllowedHttpMethod = "POST" | "PUT" | "DELETE" | "GET" | "PATCH"

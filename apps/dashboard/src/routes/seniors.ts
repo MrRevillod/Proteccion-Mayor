@@ -1,42 +1,62 @@
-import * as controllers from "../controllers/seniors"
-
-import { Router } from "express"
+import { Router } from "."
 import { validateRole } from "../middlewares/authentication"
-import { SeniorSchemas } from "@repo/lib"
+import { SeniorSchemas } from "../schemas/seniors"
 import { filesValidation } from "../middlewares/file"
+import { SeniorController } from "../controllers/seniors"
 import { seniorsRegisterMobileImages, singleImageupload } from "../config"
 import { userOwnerValidation, validateSchema, validateUserId } from "../middlewares/validation"
 
-const { DashboardRegister, MobileRegister, Update } = SeniorSchemas
+/**
+ * Router de la entidad Senior
+ * @class SeniorRouter
+ * @extends {Router}
+ * @param {SeniorController} controller Controlador de la entidad Senior
+ */
 
-const router: Router = Router()
+export class SeniorRouter extends Router {
+	constructor(private controller: SeniorController = new SeniorController()) {
+		super()
+		const { create, mobileRegister, update } = SeniorSchemas
 
-// -- Endpoints de adultos mayores
+		this.get({
+			path: "/",
+			handler: this.controller.getMany,
+			middlewares: [validateRole(["ADMIN", "PROFESSIONAL"])],
+		})
 
-// Obtener todos los adultos mayores
-router.get("/", validateRole(["ADMIN", "PROFESSIONAL"]), controllers.getAll)
+		this.post({
+			path: "/pre-checked",
+			handler: this.controller.createOne,
+			middlewares: [validateRole(["ADMIN"]), validateSchema(create)],
+		})
 
-// Crear un adulto mayor prechequeado
-router.post("/pre-checked", validateRole(["ADMIN"]), validateSchema(DashboardRegister), controllers.create)
+		this.patch({
+			path: "/:id",
+			handler: this.controller.updateOne,
+			middlewares: [singleImageupload, validateUserId("SENIOR"), userOwnerValidation, validateSchema(update)],
+		})
 
-// Actualizar un adulto mayor por id
-router.patch("/:id", singleImageupload, validateUserId("SENIOR"), userOwnerValidation, validateSchema(Update), controllers.updateById)
+		this.delete({
+			path: "/:id",
+			handler: this.controller.deleteOne,
+			middlewares: [validateUserId("SENIOR"), userOwnerValidation],
+		})
 
-// Eliminar un adulto mayor por id
-router.delete("/:id", validateUserId("SENIOR"), userOwnerValidation, controllers.deleteById)
+		this.post({
+			path: "/new-mobile",
+			handler: this.controller.createMobile,
+			middlewares: [seniorsRegisterMobileImages, validateSchema(mobileRegister), filesValidation],
+		})
 
-// -- Endpoints adicionales
+		this.patch({
+			path: "/:id/new",
+			handler: this.controller.handleRegisterRequest,
+			middlewares: [validateRole(["ADMIN"]), validateUserId("SENIOR")],
+		})
 
-// Obtener todos los nuevos adultos mayores (sin su cuenta validada)
-router.get("/new", validateRole(["ADMIN"]), controllers.newSeniors)
-
-// Registrar un adulto mayor desde la app móvil
-router.post("/new-mobile", seniorsRegisterMobileImages, validateSchema(MobileRegister), filesValidation, controllers.registerFromMobile)
-
-// Actualizar una solicitud registro de adulto mayor (denegar o aceptar)
-router.patch("/:id/new", validateRole(["ADMIN"]), validateUserId("SENIOR"), controllers.handleSeniorRequest)
-
-// Verificar si el RUT o email ya existe en la base de datos
-router.post("/check-unique", controllers.checkUnique)
-
-export default router
+		this.post({
+			path: "/check-unique",
+			handler: this.controller.checkUnique,
+		})
+	}
+}

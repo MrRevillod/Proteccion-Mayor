@@ -14,7 +14,6 @@ import { useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 
 const UpdateCenter: React.FC<FormProps<Center>> = ({ data, setData }) => {
-
 	const [loading, setLoading] = useState(false)
 	const methods = useForm({ resolver: zodResolver(CentersSchemas.Update) })
 
@@ -28,6 +27,7 @@ const UpdateCenter: React.FC<FormProps<Center>> = ({ data, setData }) => {
 				address: selectedData.address,
 				phone: selectedData.phone,
 				image: null,
+				color: selectedData.color,
 			})
 		}
 	}, [selectedData])

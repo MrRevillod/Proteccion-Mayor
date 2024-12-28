@@ -1,30 +1,79 @@
-import * as events from "../controllers/events"
+import { EventController } from "../controllers/events"
 
-import { Router } from "express"
-import { EventSchemas } from "@repo/lib"
+import { Router } from "."
+import { EventSchemas } from "../schemas/events"
 import { validateRole } from "../middlewares/authentication"
 import { validateSchema } from "../middlewares/validation"
 
-const { Create, Update } = EventSchemas
+export class EventRouter extends Router {
+	private controller: EventController
 
-const router: Router = Router()
+	constructor() {
+		super()
+		const { create, update } = EventSchemas
 
-// Endpoints CRUD
+		this.controller = new EventController()
 
-router.get("/", validateRole(["ADMIN", "PROFESSIONAL", "SENIOR"]), events.getAll)
-router.post("/", validateRole(["ADMIN", "PROFESSIONAL"]), validateSchema(Create), events.create)
-router.patch("/:id", validateRole(["ADMIN", "PROFESSIONAL"]), validateSchema(Update), events.updateById)
-router.delete("/:id", validateRole(["ADMIN", "PROFESSIONAL"]), events.deleteById)
+		this.get({
+			path: "/",
+			handler: this.controller.getMany,
+			middlewares: [validateRole(["ADMIN", "PROFESSIONAL", "SENIOR"])],
+		})
 
-// Endpoints adicionales
+		this.post({
+			path: "/",
+			handler: this.controller.createOne,
+			middlewares: [validateRole(["ADMIN", "PROFESSIONAL"]), validateSchema(create)],
+		})
 
-router.patch("/:id/reservate", validateRole(["SENIOR"]), events.reserveEvent)
-router.patch("/:id/cancel", validateRole(["SENIOR"]), events.cancelReserve)
+		this.patch({
+			path: "/:id",
+			handler: this.controller.updateOne,
+			middlewares: [validateRole(["ADMIN", "PROFESSIONAL"]), validateSchema(update)],
+		})
 
-router.get("/available-dates", validateRole(["SENIOR"]), events.getAvailableDates)
-router.get("/by-date", validateRole(["SENIOR"]), events.getEventsByDate)
+		this.delete({
+			path: "/:id",
+			handler: this.controller.deleteOne,
+			middlewares: [validateRole(["ADMIN", "PROFESSIONAL"])],
+		})
 
-router.get("/:serviceId", validateRole(["ADMIN", "PROFESSIONAL", "SENIOR"]), events.getCentersByService)
-router.get("/:serviceId/:centerId", validateRole(["ADMIN", "PROFESSIONAL", "SENIOR"]), events.getByServiceCenter)
+		this.patch({
+			path: "/:id/reservate",
+			handler: this.controller.createReservation,
+			middlewares: [validateRole(["SENIOR"])],
+		})
 
-export default router
+		this.patch({
+			path: "/:id/cancel",
+			handler: this.controller.cancelReservation,
+			middlewares: [validateRole(["SENIOR"])],
+		})
+
+		this.get({
+			path: "/available-dates",
+			handler: this.controller.getAvailableDates,
+			middlewares: [validateRole(["SENIOR"])],
+		})
+
+		this.get({
+			path: "/by-date",
+			handler: this.controller.getEventsByDate,
+			middlewares: [validateRole(["SENIOR"])],
+		})
+	}
+}
+
+// router.get(
+// 	"/:serviceId",
+// 	validateRole(["ADMIN", "PROFESSIONAL", "SENIOR"]),
+// 	events.getCentersByService,
+// )
+
+// router.get(
+// 	"/:serviceId/:centerId",
+// 	validateRole(["ADMIN", "PROFESSIONAL", "SENIOR"]),
+// 	events.getByServiceCenter,
+// )
+
+// export default router

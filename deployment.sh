@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Usage: ./deployment.sh [mode] [install | dependencies]
-# mode: build | deploy | db:deploy | seed:dev
+# Usage: ./deployment.sh [mode] [dependencies?]
+# mode: build | deploy
 
 set -a && source .env.production && set +a
 
@@ -63,7 +63,7 @@ elif [ "$mode" = "deploy" ]; then
 
     if [ "$install" = "dependencies" ]; then
         echo "Installing the dependencies..."
-        pnpm install -P --max-network-concurrency=1
+        pnpm install --network-concurrency=1 -P
     fi
 
     echo "Building the project..."

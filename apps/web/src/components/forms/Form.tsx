@@ -63,7 +63,6 @@ export const Form = <T extends BaseDataType>({ data, setData, ...props }: FormPr
 	})
 
 	const onSubmit: SubmitHandler<FieldValues> = async (formData) => {
-
 		// Se construye el body a partir de los datos del formulario
 		// necesario ya que el body puede contener un archivo y debe
 		// estructurarse de forma diferente
@@ -79,7 +78,7 @@ export const Form = <T extends BaseDataType>({ data, setData, ...props }: FormPr
 					break // Si ya hay un cambio, no es necesario seguir verificando
 				}
 
-				// 2. Si el campo no existe en selectedData pero sÃ­ en formData, hay cambios
+				// 2. Si el campo no existe en selectedData pero si­ en formData, hay cambios
 				if (!selectedData[key] && formData[key]) {
 					hasChanges = true
 					break // Si ya hay un cambio, no es necesario seguir verificando

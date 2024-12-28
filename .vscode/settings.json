@@ -1,7 +1,7 @@
 {
 	"eslint.workingDirectories": [
 		{
-			"mode": "auto"
+			"mode": "auto",
 		}
 	],
 	"eslint.validate": [
@@ -10,6 +10,11 @@
 		"typescript",
 		"typescriptreact"
 	],
+	"files.watcherExclude": {
+		"**/.git/objects/**": true,
+		"**/.git/subtree-cache/**": true,
+		"**/node_modules/*/**": true
+	},
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"eslint.format.enable": true,
 	"files.exclude": {
@@ -116,14 +121,14 @@
 		"*.w": "$(capture).*.w, I$(capture).w",
 		"*.xaml": "$(capture).xaml.cs"
 	},
-	"typescript.validate.enable": false,
+	"typescript.validate.enable": true,
 	"search.exclude": {
 		"**/node_modules": true
 	},
 	"typescript.tsdk": "node_modules/typescript/lib",
 	"[typescript]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode",
-		"editor.formatOnSave": true
+		"editor.formatOnSave": true,
 	},
 	"[typescriptreact]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -147,7 +152,7 @@
 		},
 		"editor.tabSize": 4,
 		"editor.suggest.insertMode": "replace",
-		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 	"errorLens.enabled": true,
 	"javascript.updateImportsOnFileMove.enabled": "always",

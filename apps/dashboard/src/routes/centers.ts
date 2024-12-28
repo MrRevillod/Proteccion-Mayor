@@ -1,27 +1,48 @@
-import * as centers from "../controllers/centers"
-
-import { Router } from "express"
+import { Router } from "."
 import { validateRole } from "../middlewares/authentication"
 import { validateSchema } from "../middlewares/validation"
-import { CentersSchemas } from "@repo/lib"
+import { CentersSchemas } from "../schemas/centers"
+import { CenterController } from "../controllers/centers"
 import { singleImageupload } from "../config"
 
-const { Create, Update } = CentersSchemas
+/**
+ * Router de la entidad Center
+ * @class CenterRouter
+ * @extends {Router} Router base
+ * @param {CenterController} controller Controlador de la entidad Center
+ */
 
-const router: Router = Router()
+export class CenterRouter extends Router {
+	private controller: CenterController
 
-// -- Endpoints CRUD
+	constructor() {
+		super()
+		const { create, update } = CentersSchemas
 
-// Obtener todos los centros
-router.get("/", validateRole(["ADMIN", "PROFESSIONAL"]), centers.getAll)
+		this.controller = new CenterController()
 
-// Crear un centro de atención, requiere validación de rol ADMIN.
-router.post("/", singleImageupload, validateRole(["ADMIN"]), validateSchema(Create), centers.create)
+		this.get({
+			path: "/",
+			handler: this.controller.getMany,
+			middlewares: [validateRole(["ADMIN", "PROFESSIONAL"])],
+		})
 
-// Actualizar un centro de atención por id, requiere validación de rol ADMIN.
-router.patch("/:id", singleImageupload, validateRole(["ADMIN"]), validateSchema(Update), centers.updateById)
+		this.post({
+			path: "/",
+			handler: this.controller.createOne,
+			middlewares: [singleImageupload, validateRole(["ADMIN"]), validateSchema(create)],
+		})
 
-// Eliminar un centro de atención por id requiere validación de rol ADMIN.
-router.delete("/:id", validateRole(["ADMIN"]), centers.deleteById)
+		this.patch({
+			path: "/:id",
+			handler: this.controller.updateOne,
+			middlewares: [singleImageupload, validateRole(["ADMIN"]), validateSchema(update)],
+		})
 
-export default router
+		this.delete({
+			path: "/:id",
+			handler: this.controller.deleteOne,
+			middlewares: [validateRole(["ADMIN"])],
+		})
+	}
+}

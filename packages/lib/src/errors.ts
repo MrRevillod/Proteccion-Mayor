@@ -22,6 +22,18 @@ export class AuthError extends AppError {
 	}
 }
 
+export class Conflict extends AppError {
+	constructor(message: string, details?: Record<string, string[]>) {
+		super(409, message, details)
+	}
+}
+
+export class BadRequest extends AppError {
+	constructor(message: string, details?: Record<string, string[]>) {
+		super(400, message, details ?? {})
+	}
+}
+
 export const errorHandler = (err: unknown, req: Request, res: Response, next: NextFunction) => {
 	log((err as Error).stack || "Uknown error from the error handler")
 

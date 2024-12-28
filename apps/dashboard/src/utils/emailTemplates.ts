@@ -118,6 +118,14 @@ export const seniorWelcomeEmailBody = (name: string) => `
   ${footerTemplate}
 `
 
+export const denegationEmailBody = (name: string) => `
+  ${headerTemplate("Solicitud de registro de cuenta rechazada")}
+  <p>Estimado(a) ${name},</p>
+  <p>Lamentamos informarle que su cuenta ha sido rechazada.</p>
+  <p>Si tiene alguna pregunta o necesita asistencia, no dude en ponerse en contacto con nuestro equipo de soporte.</p>
+  ${footerTemplate}
+`
+
 export const preValidatedSeniorWelcomeEmailBody = (name: string, rut: string, pin: string) => `
   ${headerTemplate("Bienvenido a la Plataforma de Protección Mayor de la Municipalidad de Temuco")}
   <p>Estimado(a) ${name},</p>

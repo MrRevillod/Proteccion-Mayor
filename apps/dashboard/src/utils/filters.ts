@@ -118,6 +118,7 @@ export const centerSelect: Prisma.CenterSelect = {
 	name: true,
 	address: true,
 	phone: true,
+	color: true,
 }
 
 // --- Filtro y Query para la entidad Senior ---

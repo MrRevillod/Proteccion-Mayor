@@ -4,14 +4,15 @@ import morgan from "morgan"
 import express from "express"
 import cookieParser from "cookie-parser"
 
-import centerRouter from "./routes/centers"
+import { EventRouter } from "./routes/events"
+import { CenterRouter } from "./routes/centers"
+import { SeniorRouter } from "./routes/seniors"
+import { ServiceRouter } from "./routes/services"
+import { ProfessionalRouter } from "./routes/professionals"
+import { AdministratorRouter } from "./routes/administrators"
+
 import accountRouter from "./routes/account"
-import eventsRouter from "./routes/events"
-import serviceRouter from "./routes/services"
-import seniorsRouter from "./routes/seniors"
 import reportsRouter from "./routes/reports"
-import professionalsRouter from "./routes/professionals"
-import administrarorsRouter from "./routes/administrators"
 
 import { setupWorker } from "@socket.io/sticky"
 import { createServer } from "http"
@@ -32,15 +33,22 @@ export const createApp = (): express.Express => {
 	app.use(cookieParser())
 	app.use(extensions)
 
+	const events = new EventRouter()
+	const seniors = new SeniorRouter()
+	const centers = new CenterRouter()
+	const services = new ServiceRouter()
+	const professionals = new ProfessionalRouter()
+	const administrarors = new AdministratorRouter()
+
+	app.use("/api/dashboard/events", events.router)
+	app.use("/api/dashboard/centers", centers.router)
+	app.use("/api/dashboard/seniors", seniors.router)
+	app.use("/api/dashboard/services", services.router)
+	app.use("/api/dashboard/professionals", professionals.router)
+	app.use("/api/dashboard/administrators", administrarors.router)
+
 	app.use("/api/dashboard/reports", reportsRouter)
-	app.use("/api/dashboard/centers", centerRouter)
-	app.use("/api/dashboard/seniors", seniorsRouter)
-	app.use("/api/dashboard/services", serviceRouter)
 	app.use("/api/dashboard/account", accountRouter)
-	app.use("/api/dashboard/professionals", professionalsRouter)
-	app.use("/api/dashboard/administrators", administrarorsRouter)
-	app.use("/api/dashboard/seniors", seniorsRouter)
-	app.use("/api/dashboard/events", eventsRouter)
 
 	app.use(errorHandler)
 

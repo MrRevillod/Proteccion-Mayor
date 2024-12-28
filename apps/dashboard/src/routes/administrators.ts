@@ -1,29 +1,55 @@
-import * as administrators from "../controllers/administrators"
-
-import { Router } from "express"
+import { Router } from "."
 import { validateRole } from "../middlewares/authentication"
 import { singleImageupload } from "../config"
-import { AdministratorSchemas } from "@repo/lib"
+import { AdministratorSchemas } from "../schemas/administrators"
+import { AdministratorController } from "../controllers/administrators"
 import { validateSchema, validateUserId } from "../middlewares/validation"
 
-const { Create, Update } = AdministratorSchemas
+/**
+ * Router de la entidad Administrator
+ * @class AdministratorRouter
+ * @extends {Router} Router base
+ * @param {AdministratorController}
+ * controller Controlador de la entidad Administrator
+ */
 
-const router: Router = Router()
+export class AdministratorRouter extends Router {
+	private controller: AdministratorController
 
-// -- Endpoints CRUD
+	constructor() {
+		super()
+		const { create, update } = AdministratorSchemas
 
-// Obtener todos los administradores --- Requiere rol de administrador
-router.get("/", validateRole(["ADMIN"]), administrators.getAll)
+		this.controller = new AdministratorController()
 
-// Crear un administrador  --- Requiere rol de administrador
-router.post("/", validateRole(["ADMIN"]), validateSchema(Create), administrators.create)
+		this.get({
+			path: "/",
+			handler: this.controller.getMany,
+			middlewares: [validateRole(["ADMIN"])],
+		})
 
-// Actualizar un administrador por id --- Requiere rol de administrador
-router.patch("/:id", singleImageupload, validateUserId("ADMIN"), validateRole(["ADMIN"]), validateSchema(Update), administrators.updateById)
+		this.post({
+			path: "/",
+			handler: this.controller.createOne,
+			middlewares: [singleImageupload, validateRole(["ADMIN"]), validateSchema(create)],
+		})
 
-// Eliminar un administrador por id --- Requiere rol de administrador
-router.delete("/:id", validateUserId("ADMIN"), validateRole(["ADMIN"]), administrators.deleteById)
+		this.patch({
+			path: "/:id",
+			handler: this.controller.updateOne,
+			middlewares: [singleImageupload, validateRole(["ADMIN"]), validateUserId("ADMIN"), validateSchema(update)],
+		})
 
-router.post("/confirm-action", validateRole(["ADMIN"]), administrators.confirmAction)
+		this.delete({
+			path: "/:id",
+			handler: this.controller.deleteOne,
+			middlewares: [validateRole(["ADMIN"]), validateUserId("ADMIN")],
+		})
 
-export default router
+		this.post({
+			path: "/confirm-action",
+			handler: this.controller.confirmAction,
+			middlewares: [validateRole(["ADMIN"])],
+		})
+	}
+}

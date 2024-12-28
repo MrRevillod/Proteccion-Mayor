@@ -1,29 +1,49 @@
-import * as professionals from "../controllers/professionals"
-
-import { Router } from "express"
+import { Router } from "."
 import { validateRole } from "../middlewares/authentication"
+import { singleImageupload } from "../config"
+import { ProfessionalSchemas } from "../schemas/professionals"
+import { ProfessionalController } from "../controllers/professionals"
 import { userOwnerValidation, validateSchema, validateUserId } from "../middlewares/validation"
 
-import { singleImageupload } from "../config"
-import { ProfessionalSchemas } from "@repo/lib"
+/**
+ * Router de la entidad Professional
+ * @class ProfessionalRouter
+ * @extends {Router} Router base
+ * @param {ProfessionalController}
+ * controller Controlador de la entidad Professional
+ */
 
-const { Create, Update } = ProfessionalSchemas
+export class ProfessionalRouter extends Router {
+	private professionals: ProfessionalController
 
-const router: Router = Router()
+	constructor() {
+		super()
+		const { create, update } = ProfessionalSchemas
 
-// -- Endpoints CRUD
+		this.professionals = new ProfessionalController()
 
-// Obtener todos los profesionales -- Requiere rol de administrador
-router.get("/", validateRole(["ADMIN"]), professionals.getAll)
-router.get("/unique", validateRole(["ADMIN"]), professionals.getOneById)
+		this.get({
+			path: "/",
+			handler: this.professionals.getMany,
+			middlewares: [validateRole(["ADMIN"])],
+		})
 
-// Crear un profesional -- Requiere rol de administrador
-router.post("/", validateSchema(Create), validateRole(["ADMIN"]), professionals.create)
+		this.post({
+			path: "/",
+			handler: this.professionals.createOne,
+			middlewares: [singleImageupload, validateRole(["ADMIN"]), validateSchema(create)],
+		})
 
-// Actualizar un profesional por id -- Requiere middleware de pertenencia
-router.patch("/:id", singleImageupload, validateUserId("PROFESSIONAL"), userOwnerValidation, validateSchema(Update), professionals.updateById)
+		this.patch({
+			path: "/:id",
+			handler: this.professionals.updateOne,
+			middlewares: [singleImageupload, validateUserId("PROFESSIONAL"), userOwnerValidation, validateSchema(update)],
+		})
 
-// Eliminar un profesional por id -- Reqiere middleware de pertenencia
-router.delete("/:id", validateUserId("PROFESSIONAL"), userOwnerValidation, professionals.deleteById)
-
-export default router
+		this.delete({
+			path: "/:id",
+			handler: this.professionals.deleteOne,
+			middlewares: [validateUserId("PROFESSIONAL"), userOwnerValidation],
+		})
+	}
+}

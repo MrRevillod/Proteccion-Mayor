@@ -28,6 +28,8 @@ export const extensions = (req: Request, res: Response, next: NextFunction) => {
 	next()
 }
 
+export * as rules from "./validationRules"
+
 export { httpRequest } from "./request"
 export { services, constants } from "./config"
 export type {
@@ -37,8 +39,9 @@ export type {
 	ApiResponse,
 	AuthResponse,
 	FormattedDateCount,
+	Controller,
 } from "./types"
-export { AppError, AuthError, errorHandler } from "./errors"
+export { AppError, AuthError, errorHandler, BadRequest, Conflict } from "./errors"
 export { toPublicUser, findUser, isValidUserRole } from "./authorization/user"
 export { isValidRut } from "./authorization/rut"
 
@@ -47,7 +50,6 @@ export {
 	AdministratorSchemas,
 	ProfessionalSchemas,
 	EventSchemas,
-	ServiceSchemas,
 	CentersSchemas,
 } from "./schemas"
 

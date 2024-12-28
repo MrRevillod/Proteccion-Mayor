@@ -31,21 +31,6 @@ export const SeniorSchemas = {
 		}),
 }
 
-export const ServiceSchemas = {
-	Create: z.object({
-		name: rules.nameServiceSchema,
-		title: rules.titleServiceSchema,
-		description: rules.descriptionSchema,
-		color: rules.colorSchema,
-	}),
-	Update: z.object({
-		name: rules.nameServiceSchema,
-		title: rules.titleServiceSchema,
-		description: rules.descriptionSchema,
-		color: rules.colorSchema,
-	}),
-}
-
 export const CentersSchemas = {
 	Create: z.object({
 		name: rules.nameCenterSchema,
