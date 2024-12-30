@@ -41,12 +41,14 @@ export const register = async (props: MutateActionProps) => {
 }
 
 export const getCentersByService = async (props: QueryActionProps) => {
-	return await apiRequest.get(`/dashboard/events/${props.params?.serviceId ?? "0"}`)
+	return await apiRequest.get(
+		`/dashboard/events/available-centers/${props.params?.serviceId ?? "0"}`,
+	)
 }
 
 export const getAvailableDates = async (props: QueryActionProps) => {
 	return await apiRequest.get(
-		`/dashboard/events/available-dates${props.query ? "?" + props.query : ""}`
+		`/dashboard/events/available-dates${props.query ? "?" + props.query : ""}`,
 	)
 }
 

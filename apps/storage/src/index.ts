@@ -8,7 +8,7 @@ import router from "./router"
 import cookieParser from "cookie-parser"
 
 import { RequestHandler } from "express"
-import { log, services, errorHandler, constants, AppError, httpRequest, AuthResponse, getServerTokens } from "@repo/lib"
+import { log, services, errorHandler, constants, AppError, AuthenticationService } from "@repo/lib"
 
 // Sistema de archivos de el microservicio de almacenamiento
 
@@ -38,23 +38,6 @@ const verifyStorageKey: RequestHandler = (req, res, next) => {
 	if (req.headers["x-storage-key"] !== constants.STORAGE_KEY) {
 		next(new AppError(403, "No tiene permisos para acceder al servicio"))
 	}
-	next()
-}
-
-const verifyAuth: RequestHandler = async (req, res, next) => {
-	const tokens = getServerTokens(req.headers, req.cookies)
-	const authResponse = await httpRequest<AuthResponse>({
-		service: "AUTH",
-		endpoint: "/validate-role/ADMIN",
-		headers: {
-			Authorization: `Bearer ${tokens?.access || null}`,
-		},
-	})
-
-	if (authResponse.type === "error") {
-		next(new AppError(authResponse.status || 500, authResponse.message))
-	}
-
 	next()
 }
 
@@ -96,9 +79,10 @@ export const createServer = (): express.Express => {
 	// /api/storage/public/* ![seniors] /*.webp
 	// ---------------------------------------------------
 
+	const AuthService = new AuthenticationService()
 	const seniorRouter = express.Router()
 
-	seniorRouter.get("/:id/register-files", verifyAuth, (req, res) => {
+	seniorRouter.get("/:id/register-files", AuthService.authorize(), (req, res) => {
 		const imagePaths = [
 			path.join(__dirname, `../public/seniors/${req.params.id}/dni-a.webp`),
 			path.join(__dirname, `../public/seniors/${req.params.id}/dni-b.webp`),
