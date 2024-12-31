@@ -3,7 +3,7 @@ import { AccountController } from "./controllers"
 
 export class AccountRouter extends Router {
 	constructor(private controller: AccountController) {
-		super({ prefix: "/api/dashboard/account" })
+		super({ prefix: "/api/auth/account" })
 
 		this.post({
 			path: "/reset-password",

@@ -2,7 +2,6 @@ import { EventsModule } from "./events/module"
 import { SeniorsModule } from "./seniors/module"
 import { CentersModule } from "./centers/module"
 import { ReportsModule } from "./reports/module"
-import { AccountModule } from "./account/module"
 import { ServicesModule } from "./services/module"
 import { ProfessionalsModule } from "./professionals/module"
 import { AdministratorsModule } from "./administrators/module"
@@ -25,13 +24,12 @@ const modules = [
 	new ReportsModule(authService),
 	new ServicesModule(authService, storageService),
 	new CentersModule(authService, storageService),
-	new AccountModule(authService, mailerService),
 	new ProfessionalsModule(authService, storageService, mailerService),
 	new AdministratorsModule(authService, storageService, mailerService),
 ]
 
-const server = createApplication(modules)
-const http = createServer(server)
+const app = createApplication(modules)
+const http = createServer(app)
 
 export const io = new Server<SocketEvents>(http, {
 	cors: {

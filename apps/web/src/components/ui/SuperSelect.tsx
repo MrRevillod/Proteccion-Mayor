@@ -14,11 +14,11 @@ interface SuperSelectProps {
 	placeholder?: string
 	disabled?: boolean
 	allowClear?: boolean
+	showSearch?: boolean
 }
 
 export const SuperSelect = ({ name, label, ...props }: SuperSelectProps) => {
-
-	const { options, setSearch, placeholder, disabled = false, allowClear = true } = props
+	const { options, setSearch, placeholder, disabled = false, allowClear = true, showSearch = true } = props
 
 	const {
 		control,
@@ -42,7 +42,9 @@ export const SuperSelect = ({ name, label, ...props }: SuperSelectProps) => {
 	return (
 		<div className="flex flex-col gap-2">
 			<div className="flex flex-row gap-2 items-center justify-between">
-				<label className="font-semibold dark:text-light text-dark truncate overflow-hidden whitespace-nowrap">{label}</label>
+				<label className="font-semibold dark:text-light text-dark truncate overflow-hidden whitespace-nowrap">
+					{label}
+				</label>
 				{errors[name] && <div className="text-red text-sm">{errors[name]?.message?.toString()}</div>}
 			</div>
 			<Controller
@@ -53,7 +55,7 @@ export const SuperSelect = ({ name, label, ...props }: SuperSelectProps) => {
 						{...field}
 						value={field.value}
 						className={classes}
-						showSearch
+						showSearch={showSearch}
 						placeholder={placeholder ? placeholder : `Seleccione una opción`}
 						options={options}
 						filterOption={filterOption}

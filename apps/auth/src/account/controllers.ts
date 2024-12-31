@@ -1,38 +1,25 @@
 import { match } from "ts-pattern"
 import { prisma } from "@repo/database"
 import { compare, hash } from "bcrypt"
-import { AppError, Unauthorized, NotFound, Conflict } from "@repo/lib"
-import {
-	services,
-	findUser,
-	Controller,
-	AuthenticationService,
-	constants,
-	UserRole,
-	jwt,
-	MailerService,
-	templates,
-} from "@repo/lib"
+import { AppError, Unauthorized, NotFound, Conflict, users } from "@repo/lib"
+import { services, Controller, constants, UserRole, jwt, MailerService, templates } from "@repo/lib"
 
 const { JWT_SECRET } = constants
 
 export class AccountController {
-	constructor(
-		private auth: AuthenticationService,
-		private mailer: MailerService,
-	) {}
+	constructor(private mailer: MailerService) {}
 
 	public requestPasswordReset: Controller = async (req, res, handleError) => {
 		const email = req.body.email
 		const userRole = req.query.variant
 
-		if (!this.auth.isValidRole(userRole as string)) {
+		if (!users.isValidRole(userRole as string)) {
 			throw new AppError(400, "Rol de usuario inválido")
 		}
 
 		try {
 			if (!email) throw new AppError(400, "Se requiere un correo electrónico")
-			const user = await findUser({ email }, userRole as UserRole)
+			const user = await users.find({ role: userRole as UserRole, filter: { email } })
 			if (!user) throw new NotFound("Usuario no encontrado.")
 
 			const payload = { id: user.id, email: email }
@@ -72,11 +59,11 @@ export class AccountController {
 
 			const rolePayload = jwt.verify(role)
 
-			if (!rolePayload.role || !this.auth.isValidRole(rolePayload.role)) {
+			if (!rolePayload.role || !users.isValidRole(rolePayload.role)) {
 				throw new Unauthorized()
 			}
 
-			const user = await findUser({ id }, rolePayload.role)
+			const user = await users.find({ role: rolePayload.role, filter: { id } })
 			if (!user) throw new NotFound("Usuario no encontrado.")
 
 			jwt.verify(token, `${JWT_SECRET}${user.password}`)
@@ -113,11 +100,11 @@ export class AccountController {
 			const { id, token, role } = req.params
 			const rolePayload = jwt.verify(role)
 
-			if (!rolePayload.role || !this.auth.isValidRole(rolePayload.role)) {
+			if (!rolePayload.role || !users.isValidRole(rolePayload.role)) {
 				throw new Unauthorized()
 			}
 
-			const user = await findUser({ id }, rolePayload.role)
+			const user = await users.find({ role: rolePayload.role, filter: { id } })
 			if (!user) throw new NotFound("Usuario no encontrado.")
 
 			jwt.verify(token, `${JWT_SECRET}${user.password}`)

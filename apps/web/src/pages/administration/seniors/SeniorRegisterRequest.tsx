@@ -38,7 +38,7 @@ const SeniorRegisterRequestPage: React.FC = () => {
 			const defaultValues = {
 				rut: senior.id,
 				email: senior.email,
-				birthDate: null
+				birthDate: null,
 			}
 
 			reset(defaultValues)
@@ -66,7 +66,6 @@ const SeniorRegisterRequestPage: React.FC = () => {
 	})
 
 	const onSubmit: SubmitHandler<FieldValues> = async (formData) => {
-
 		setLoading(true)
 
 		await AcceptMutation.mutate({
@@ -84,7 +83,6 @@ const SeniorRegisterRequestPage: React.FC = () => {
 	}
 
 	const onDeny = async () => {
-
 		setLoading(true)
 
 		await DenyMutation.mutate({
@@ -102,11 +100,12 @@ const SeniorRegisterRequestPage: React.FC = () => {
 
 	return (
 		<PageLayout pageTitle="Solicitud de registro de persona mayor">
-			<section className={clsx(
-				(loading || imageLoading) && "opacity-50",
-				"bg-white dark:bg-primary-dark p-4 rounded-lg flex flex-row gap-12"
-			)}>
-
+			<section
+				className={clsx(
+					(loading || imageLoading) && "opacity-50",
+					"bg-white dark:bg-primary-dark p-4 rounded-lg flex flex-row gap-12",
+				)}
+			>
 				{(loading || imageLoading) && <Loading />}
 
 				<FormProvider {...methods}>
@@ -133,6 +132,7 @@ const SeniorRegisterRequestPage: React.FC = () => {
 								<SuperSelect
 									name="gender"
 									label="Género"
+									showSearch={false}
 									options={[
 										{ value: "MA", label: "Masculino" },
 										{ value: "FE", label: "Femenino" },
@@ -175,7 +175,6 @@ const SeniorRegisterRequestPage: React.FC = () => {
 				<div className="w-2/3 grid grid-cols-2 gap-2">
 					<div className="col-span-1 grid grid-rows-2 gap-1">
 						<div className="row-span-1 rounded-lg dni-container max-h-[280px] overflow-hidden">
-
 							<Show when={!!images[0]}>
 								<Image
 									src={images[0]}
@@ -190,10 +189,8 @@ const SeniorRegisterRequestPage: React.FC = () => {
 									<p>No se ha podido cargar la imagen de la cédula frontal</p>
 								</div>
 							</Show>
-
 						</div>
 						<div className="row-span-1 rounded-lg dni-container max-h-[280px] overflow-hidden">
-
 							<Show when={!!images[1]}>
 								<Image
 									src={images[1]}
@@ -208,12 +205,10 @@ const SeniorRegisterRequestPage: React.FC = () => {
 									<p>No se ha podido cargar la imagen de la cédula trasera</p>
 								</div>
 							</Show>
-
 						</div>
 					</div>
 
 					<div className="col-span-1 rounded-lg dni-container overflow-hidden max-h-[580px]">
-
 						<Show when={!!images[2]}>
 							<Image
 								src={images[2]}
@@ -228,7 +223,6 @@ const SeniorRegisterRequestPage: React.FC = () => {
 								<p>No se ha podido cargar la imagen de la persona mayor</p>
 							</div>
 						</Show>
-
 					</div>
 				</div>
 			</section>

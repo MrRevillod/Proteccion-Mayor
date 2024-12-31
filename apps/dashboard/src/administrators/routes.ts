@@ -1,8 +1,6 @@
-import { singleImageupload } from "../config"
 import { AdministratorsSchemas } from "./schemas"
 import { AdministratorsController } from "./controllers"
-import { AuthenticationService, Router } from "@repo/lib"
-import { validateSchema, validateUserId } from "../middlewares/validation"
+import { AuthenticationService, Router, validations, uploads, findAdministrator } from "@repo/lib"
 
 export class AdministratorsRouter extends Router {
 	constructor(
@@ -21,28 +19,28 @@ export class AdministratorsRouter extends Router {
 		this.post({
 			path: "/",
 			handler: this.controller.createOne,
-			middlewares: [
-				singleImageupload,
-				this.auth.authorize(["ADMIN"]),
-				validateSchema(this.schemas.create),
-			],
+			middlewares: [this.auth.authorize(["ADMIN"]), validations.body(this.schemas.create)],
 		})
 
 		this.patch({
 			path: "/:id",
 			handler: this.controller.updateOne,
 			middlewares: [
-				singleImageupload,
+				uploads.singleImage,
 				this.auth.authorize(["ADMIN"]),
-				validateUserId("ADMIN"),
-				validateSchema(this.schemas.update),
+				validations.resourceId(findAdministrator),
+				validations.body(this.schemas.update),
+				validations.files({ required: false }),
 			],
 		})
 
 		this.delete({
 			path: "/:id",
 			handler: this.controller.deleteOne,
-			middlewares: [this.auth.authorize(["ADMIN"]), validateUserId("ADMIN")],
+			middlewares: [
+				this.auth.authorize(["ADMIN"]),
+				validations.resourceId(findAdministrator),
+			],
 		})
 
 		this.post({

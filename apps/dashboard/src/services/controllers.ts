@@ -50,7 +50,7 @@ export class ServicesController {
 				filename: service.id.toString(),
 			})
 
-			return res.status(201).json({ values: { created: service } })
+			return res.status(201).json({ values: { modified: service } })
 		} catch (error) {
 			handleError(error)
 		}

@@ -11,7 +11,7 @@ export class AppError extends Error {
 
 export class AuthError extends AppError {
 	constructor(code: number, message: string) {
-		super(401, message)
+		super(code ?? 401, message)
 	}
 }
 
@@ -28,8 +28,8 @@ export class BadRequest extends AppError {
 }
 
 export class Unauthorized extends AuthError {
-	constructor() {
-		super(401, "No tienes autorización para acceder a este recurso")
+	constructor(message?: string) {
+		super(401, message ?? "No tienes autorización para acceder a este recurso")
 	}
 }
 

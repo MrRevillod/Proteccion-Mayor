@@ -33,6 +33,7 @@ const CreateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => {
 					<SuperSelect
 						name="gender"
 						label="Género"
+						showSearch={false}
 						options={[
 							{ value: "MA", label: "Masculino" },
 							{ value: "FE", label: "Femenino" },

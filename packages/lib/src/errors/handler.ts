@@ -1,5 +1,5 @@
 import { ZodError } from "zod"
-import { AppError } from "../errors/custom"
+import { AppError } from "./custom"
 import { MulterError } from "multer"
 import { JsonWebTokenError } from "jsonwebtoken"
 import { NextFunction, Request, Response } from "express"

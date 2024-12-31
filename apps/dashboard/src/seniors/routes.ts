@@ -1,10 +1,7 @@
-import { Router } from "@repo/lib"
 import { SeniorSchemas } from "./schemas"
-import { filesValidation } from "../middlewares/file"
 import { SeniorController } from "./controllers"
-import { AuthenticationService } from "@repo/lib"
-import { validateSchema, validateUserId } from "../middlewares/validation"
-import { seniorsRegisterMobileImages, singleImageupload } from "../config"
+import { AuthenticationService, uploads } from "@repo/lib"
+import { findSenior, Router, validations } from "@repo/lib"
 
 export class SeniorRouter extends Router {
 	constructor(
@@ -23,40 +20,44 @@ export class SeniorRouter extends Router {
 		this.post({
 			path: "/pre-checked",
 			handler: this.controller.createOne,
-			middlewares: [this.auth.authorize(["ADMIN"]), validateSchema(this.schemas.create)],
+			middlewares: [this.auth.authorize(["ADMIN"]), validations.body(this.schemas.create)],
 		})
 
 		this.patch({
 			path: "/:id",
 			handler: this.controller.updateOne,
 			middlewares: [
-				singleImageupload,
+				uploads.singleImage,
 				this.auth.authorize(["ADMIN", "SENIOR"]),
-				validateUserId("SENIOR"),
-				validateSchema(this.schemas.update),
+				validations.resourceId(findSenior),
+				validations.body(this.schemas.update),
+				validations.files({ required: false }),
 			],
 		})
 
 		this.delete({
 			path: "/:id",
 			handler: this.controller.deleteOne,
-			middlewares: [this.auth.authorize(["ADMIN", "SENIOR"]), validateUserId("SENIOR")],
+			middlewares: [
+				this.auth.authorize(["ADMIN", "SENIOR"]),
+				validations.resourceId(findSenior),
+			],
 		})
 
 		this.post({
 			path: "/new-mobile",
 			handler: this.controller.createMobile,
 			middlewares: [
-				seniorsRegisterMobileImages,
-				validateSchema(this.schemas.mobileRegister),
-				filesValidation,
+				uploads.mobileregisterFiles,
+				validations.body(this.schemas.mobileRegister),
+				validations.files({ required: true }),
 			],
 		})
 
 		this.patch({
 			path: "/:id/new",
 			handler: this.controller.handleRegisterRequest,
-			middlewares: [this.auth.authorize(["ADMIN"]), validateUserId("SENIOR")],
+			middlewares: [this.auth.authorize(["ADMIN"]), validations.resourceId(findSenior)],
 		})
 
 		this.post({

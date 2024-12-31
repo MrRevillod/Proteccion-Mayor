@@ -61,7 +61,7 @@ export class AdministratorsController {
 		const { params, body, file } = req
 		const { name, email, password } = body
 
-		const reqUser = req.getExtension("requestedUser") as Administrator
+		const reqUser = req.getExtension("reqResource") as Administrator
 
 		try {
 			const exists = await prisma.administrator.findFirst({

@@ -143,6 +143,7 @@ export const colorSchema = z
 export const genderSchema = z.enum(["MA", "FE"], {
 	message: "El género debe ser MA o FE",
 })
+
 export const isWeekend = (date: string) => {
 	const day = dayjs(date).day()
 	return day !== 0 && day !== 6

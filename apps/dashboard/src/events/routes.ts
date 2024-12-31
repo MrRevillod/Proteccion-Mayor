@@ -1,8 +1,7 @@
-import { Router } from "@repo/lib"
+import { findEvent, Router } from "@repo/lib"
 import { EventsSchemas } from "./schemas"
-import { validateSchema } from "../middlewares/validation"
 import { EventsController } from "./controllers"
-import { AuthenticationService } from "@repo/lib"
+import { AuthenticationService, validations } from "@repo/lib"
 
 export class EventsRouter extends Router {
 	constructor(
@@ -23,7 +22,7 @@ export class EventsRouter extends Router {
 			handler: this.controller.createOne,
 			middlewares: [
 				this.auth.authorize(["ADMIN", "PROFESSIONAL"]),
-				validateSchema(this.schemas.create),
+				validations.body(this.schemas.create),
 			],
 		})
 
@@ -32,26 +31,30 @@ export class EventsRouter extends Router {
 			handler: this.controller.updateOne,
 			middlewares: [
 				this.auth.authorize(["ADMIN", "PROFESSIONAL"]),
-				validateSchema(this.schemas.update),
+				validations.resourceId(findEvent),
+				validations.body(this.schemas.update),
 			],
 		})
 
 		this.delete({
 			path: "/:id",
 			handler: this.controller.deleteOne,
-			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL"])],
+			middlewares: [
+				this.auth.authorize(["ADMIN", "PROFESSIONAL"]),
+				validations.resourceId(findEvent),
+			],
 		})
 
 		this.patch({
 			path: "/:id/reservate",
 			handler: this.controller.createReservation,
-			middlewares: [this.auth.authorize(["SENIOR"])],
+			middlewares: [this.auth.authorize(["SENIOR"]), validations.resourceId(findEvent)],
 		})
 
 		this.patch({
 			path: "/:id/cancel",
 			handler: this.controller.cancelReservation,
-			middlewares: [this.auth.authorize(["SENIOR"])],
+			middlewares: [this.auth.authorize(["SENIOR"]), validations.resourceId(findEvent)],
 		})
 
 		this.get({

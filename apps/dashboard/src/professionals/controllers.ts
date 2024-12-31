@@ -2,8 +2,8 @@ import { hash } from "bcrypt"
 import { prisma } from "@repo/database"
 import { Professional } from "@prisma/client"
 import { ProfessionalsSchemas } from "./schemas"
-import { credentials, MailerService, StorageService } from "@repo/lib"
 import { AppError, Controller, templates } from "@repo/lib"
+import { credentials, MailerService, StorageService } from "@repo/lib"
 
 export class ProfessionalsController {
 	constructor(
@@ -74,7 +74,7 @@ export class ProfessionalsController {
 		const { params, body, file } = req
 		const { name, email, password } = body
 
-		const user = req.getExtension("requestedUser") as Professional
+		const user = req.getExtension("reqResource") as Professional
 
 		try {
 			const exists = await prisma.professional.findFirst({

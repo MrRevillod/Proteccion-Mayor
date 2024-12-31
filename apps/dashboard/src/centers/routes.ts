@@ -1,9 +1,7 @@
-import { Router } from "@repo/lib"
-import { validateSchema } from "../middlewares/validation"
+import { findCenter, Router } from "@repo/lib"
 import { CentersSchemas } from "./schemas"
 import { CentersController } from "./controllers"
-import { singleImageupload } from "../config"
-import { AuthenticationService } from "@repo/lib"
+import { AuthenticationService, validations, uploads } from "@repo/lib"
 
 export class CentersRouter extends Router {
 	constructor(
@@ -23,9 +21,10 @@ export class CentersRouter extends Router {
 			path: "/",
 			handler: this.controller.createOne,
 			middlewares: [
-				singleImageupload,
+				uploads.singleImage,
 				this.auth.authorize(["ADMIN"]),
-				validateSchema(this.schemas.create),
+				validations.body(this.schemas.create),
+				validations.files({ required: true }),
 			],
 		})
 
@@ -33,16 +32,18 @@ export class CentersRouter extends Router {
 			path: "/:id",
 			handler: this.controller.updateOne,
 			middlewares: [
-				singleImageupload,
+				uploads.singleImage,
 				this.auth.authorize(["ADMIN"]),
-				validateSchema(this.schemas.update),
+				validations.resourceId(findCenter),
+				validations.body(this.schemas.update),
+				validations.files({ required: false }),
 			],
 		})
 
 		this.delete({
 			path: "/:id",
 			handler: this.controller.deleteOne,
-			middlewares: [this.auth.authorize(["ADMIN"])],
+			middlewares: [this.auth.authorize(["ADMIN"]), validations.resourceId(findCenter)],
 		})
 	}
 }

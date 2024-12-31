@@ -1,10 +1,10 @@
-import { findUser } from "../authorization/user"
 import { Unauthorized } from "../errors/custom"
 import { JsonWebTokenError } from "jsonwebtoken"
 import { RoleBasedMiddleware } from "../types"
 import { IncomingHttpHeaders } from "node:http"
 
 import * as jwt from "../utils/jsonwebtoken"
+import * as users from "../utils/users"
 
 type ServerTokens = {
 	access: string | null
@@ -27,11 +27,11 @@ export class AuthenticationService {
 			if (!tokens.access) throw new Unauthorized()
 			const payload = jwt.verify(tokens.access)
 
-			if (!payload.id || !payload.role || !this.isValidRole(payload.role)) {
+			if (!payload.id || !payload.role || !users.isValidRole(payload.role)) {
 				throw new Unauthorized()
 			}
 
-			const user = await findUser({ id: payload.id }, payload.role)
+			const user = await users.find({ role: payload.role, filter: { id: payload.id } })
 			if (!user) throw new Unauthorized()
 
 			if (roles && !roles.includes(payload.role)) throw new Unauthorized()
@@ -46,7 +46,7 @@ export class AuthenticationService {
 		}
 	}
 
-	private getClientAuthorization = ({ headers, cookies }: ClientAuthorization): ServerTokens => {
+	public getClientAuthorization = ({ headers, cookies }: ClientAuthorization): ServerTokens => {
 		let ACCESS_TOKEN = cookies["ACCESS_TOKEN"]
 		let REFRESH_TOKEN = cookies["REFRESH_TOKEN"]
 
@@ -63,9 +63,5 @@ export class AuthenticationService {
 		}
 
 		return { access: ACCESS_TOKEN, refresh: REFRESH_TOKEN }
-	}
-
-	public isValidRole = (role: string): boolean => {
-		return ["SENIOR", "ADMIN", "PROFESSIONAL"].includes(role)
 	}
 }

@@ -31,17 +31,15 @@ const ValidatePasswordPage: React.FC = () => {
 	}
 
 	useEffect(() => {
-
 		setLoading(true)
 
-		api.get(`/dashboard/account/reset-password/${id}/${token}/${role}`)
+		api.get(`/auth/account/reset-password/${id}/${token}/${role}`)
 			.then(() => setError(false))
 			.catch(() => {
 				setError(true)
 				setErrorMessage("Error 404 - Enlace inválido")
 			})
 			.finally(() => setLoading(false))
-
 	}, [id, token, role])
 
 	const payload = jwtDecode<{ role: string }>(role as string)
@@ -98,7 +96,6 @@ const ValidatePasswordPage: React.FC = () => {
 
 							<FormProvider {...methods}>
 								<form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-
 									<Input
 										name="password"
 										label="Nueva Contraseña"

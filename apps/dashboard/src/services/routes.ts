@@ -1,8 +1,6 @@
-import { validateSchema } from "../middlewares/validation"
 import { ServicesSchemas } from "./schemas"
-import { singleImageupload } from "../config"
 import { ServicesController } from "./controllers"
-import { AuthenticationService, Router } from "@repo/lib"
+import { AuthenticationService, Router, validations, uploads, findService } from "@repo/lib"
 
 export class ServicesRouter extends Router {
 	constructor(
@@ -19,12 +17,13 @@ export class ServicesRouter extends Router {
 		})
 
 		this.post({
-			path: "/:id",
+			path: "/",
 			handler: this.controller.createOne,
 			middlewares: [
-				singleImageupload,
+				uploads.singleImage,
 				this.auth.authorize(["ADMIN"]),
-				validateSchema(this.schemas.create),
+				validations.body(this.schemas.create),
+				validations.files({ required: true }),
 			],
 		})
 
@@ -32,16 +31,17 @@ export class ServicesRouter extends Router {
 			path: "/:id",
 			handler: this.controller.updateOne,
 			middlewares: [
-				singleImageupload,
+				uploads.singleImage,
 				this.auth.authorize(["ADMIN"]),
-				validateSchema(this.schemas.update),
+				validations.body(this.schemas.update),
+				validations.files({ required: false }),
 			],
 		})
 
 		this.delete({
 			path: "/:id",
 			handler: this.controller.deleteOne,
-			middlewares: [this.auth.authorize(["ADMIN"])],
+			middlewares: [this.auth.authorize(["ADMIN"]), validations.resourceId(findService)],
 		})
 	}
 }
