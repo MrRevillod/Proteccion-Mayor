@@ -1,9 +1,10 @@
+import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
 import { useRouter } from "expo-router"
 import { FontAwesome } from "@expo/vector-icons"
 import { primaryGreen } from "@/constants/Colors"
 import { useFormContext } from "react-hook-form"
-import { Text, StyleSheet, View } from "react-native"
+import { StyleSheet, View } from "react-native"
 
 const DniRegisterScreen = () => {
 	const {

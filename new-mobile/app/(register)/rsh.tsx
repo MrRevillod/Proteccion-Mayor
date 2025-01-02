@@ -1,3 +1,4 @@
+import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
 import { register } from "@/lib/actions"
 import { useRouter } from "expo-router"
@@ -7,7 +8,7 @@ import { primaryGreen } from "@/constants/Colors"
 import { useFormContext } from "react-hook-form"
 import { imageUriToFile } from "@/lib/files"
 import { RegisterFormData } from "@/lib/types"
-import { ActivityIndicator, StyleSheet, Text, View, Dimensions } from "react-native"
+import { ActivityIndicator, StyleSheet, View, Dimensions } from "react-native"
 
 const RshRegisterScreen = () => {
 	const {

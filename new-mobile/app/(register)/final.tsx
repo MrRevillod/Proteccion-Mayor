@@ -1,4 +1,4 @@
-import { Text } from "react-native"
+import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
 import { StyleSheet, View } from "react-native"
 import { useLocalSearchParams, useRouter } from "expo-router"
@@ -12,13 +12,16 @@ const FinalRegisterScreen = () => {
 	return (
 		<View style={styles.container}>
 			<View style={{ width: "80%" }}>
-				<Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>Paso 6 de 6</Text>
+				<Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
+					Paso 6 de 6
+				</Text>
 			</View>
 
 			{status === "success" && (
 				<Text style={{ fontSize: 18, marginBottom: 20, width: "80%" }}>
-					La solicitud se ha realizado con éxito. El equipo de administración revisará los datos de registro y
-					se le notificará por correo electrónico una vez que su cuenta haya sido activada.
+					La solicitud se ha realizado con éxito. El equipo de administración revisará los
+					datos de registro y se le notificará por correo electrónico una vez que su
+					cuenta haya sido activada.
 				</Text>
 			)}
 
@@ -28,10 +31,17 @@ const FinalRegisterScreen = () => {
 				</Text>
 			)}
 			{status === "error" && message && (
-				<Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 20 }}>{message}</Text>
+				<Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 20 }}>
+					{message}
+				</Text>
 			)}
 
-			<Button variant="primary" text="Volver al inicio" onPress={() => router.replace("/")} size="xxl" />
+			<Button
+				variant="primary"
+				text="Volver al inicio"
+				onPress={() => router.replace("/")}
+				size="xxl"
+			/>
 		</View>
 	)
 }

@@ -2,15 +2,13 @@ import { useAuth } from "@/context/AuthContext"
 import { useEffect, useRef } from "react"
 import { AppState, AppStateStatus } from "react-native"
 
-const AppStateHandler = () => {
+export const AppStateHandler = () => {
 	const auth = useAuth()
 	const appState = useRef(AppState.currentState)
 
 	useEffect(() => {
 		const handleAppStateChange = (nextAppState: AppStateStatus) => {
-			const isBackground = nextAppState === "background" || nextAppState === "inactive"
-
-			if (appState.current === "active" && isBackground) {
+			if (appState.current === "active" && nextAppState.match(/inactive|background/)) {
 				auth.logout()
 			}
 
@@ -26,5 +24,3 @@ const AppStateHandler = () => {
 
 	return null
 }
-
-export default AppStateHandler

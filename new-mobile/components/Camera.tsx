@@ -1,3 +1,4 @@
+import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
 import { useAlert } from "@/context/AlertContext"
 import { FontAwesome } from "@expo/vector-icons"
@@ -5,13 +6,13 @@ import { primaryGreen } from "@/constants/Colors"
 import { ReactNode, useRef, useState } from "react"
 import { manipulateAsync, SaveFormat } from "expo-image-manipulator"
 import { CameraView, useCameraPermissions } from "expo-camera"
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native"
+import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native"
 
 interface CustomCameraProps {
 	onCapture: (photoUri: string) => void
 	rectGenerator: (
 		width: number,
-		height: number
+		height: number,
 	) => { originX: number; originY: number; width: number; height: number }
 	overlay?: ReactNode
 }
@@ -56,7 +57,7 @@ export const CustomCamera = ({ onCapture, rectGenerator, overlay }: CustomCamera
 					{
 						compress: 1,
 						format: SaveFormat.WEBP,
-					}
+					},
 				)
 
 				setLoading(false)

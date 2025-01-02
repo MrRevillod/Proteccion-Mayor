@@ -1,7 +1,8 @@
 import React from "react"
 
+import { Text } from "@/components/Text"
 import { primaryGreen } from "@/constants/Colors"
-import { View, Text, StyleSheet } from "react-native"
+import { View, StyleSheet } from "react-native"
 
 interface Props {
 	currentStep: number
@@ -16,7 +17,9 @@ export const MultiStepProgressBar: React.FC<Props> = ({ currentStep, nSteps }) =
 					<View style={[styles.circle, currentStep >= index + 1 && styles.activeCircle]}>
 						<Text style={styles.circleText}>{index + 1}</Text>
 					</View>
-					{index < nSteps - 1 && <View style={[styles.line, currentStep > index + 1 && styles.activeLine]} />}
+					{index < nSteps - 1 && (
+						<View style={[styles.line, currentStep > index + 1 && styles.activeLine]} />
+					)}
 				</View>
 			))}
 		</View>

@@ -1,7 +1,8 @@
+import { Text } from "@/components/Text"
 import { useRouter } from "expo-router"
 import { FontAwesome } from "@expo/vector-icons"
 import { primaryGreen } from "@/constants/Colors"
-import { StyleSheet, TouchableOpacity, View, Text, Platform, Dimensions } from "react-native"
+import { StyleSheet, TouchableOpacity, View, Platform, Dimensions } from "react-native"
 
 const { height } = Dimensions.get("window")
 const isIos = Platform.OS === "ios"
@@ -9,9 +10,10 @@ const isIos = Platform.OS === "ios"
 interface HeaderProps {
 	title: string
 	goBack?: () => void
+	customHeight?: any
 }
 
-export const Header = ({ title, goBack }: HeaderProps) => {
+export const Header = ({ title, goBack, customHeight }: HeaderProps) => {
 	const router = useRouter()
 	const canGoBack = router.canGoBack()
 
@@ -23,7 +25,7 @@ export const Header = ({ title, goBack }: HeaderProps) => {
 			color: "#fff",
 			paddingHorizontal: 45,
 			paddingTop: isIos ? 50 : 0,
-			height: isIos ? height * 0.15 : 120,
+			height: customHeight ? customHeight : isIos ? height * 0.15 : 120,
 		},
 		headerTitleContainer: {
 			flex: 1,

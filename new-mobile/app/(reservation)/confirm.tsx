@@ -1,12 +1,15 @@
 import React from "react"
 
-import { useMutation } from "@/hooks/useMutation"
 import { EventCard } from "@/components/EventCard"
+import { useMutation } from "@/hooks/useMutation"
 import { reservateEvent } from "@/lib/actions"
 import { ReservationStep } from "@/components/ReservationStep"
+import { useProtectedRoute } from "@/hooks/useProtectedRoute"
 import { useRouter, useLocalSearchParams } from "expo-router"
 
 const ConfirmEventScreen = () => {
+	useProtectedRoute()
+
 	const router = useRouter()
 	const params = useLocalSearchParams()
 	const event = JSON.parse(params.event as string)

@@ -7,10 +7,13 @@ import { useRequest } from "@/hooks/useRequest"
 import { SelectableItem } from "@/components/SelectableItem"
 import { getEventsByDate } from "@/lib/actions"
 import { ReservationStep } from "@/components/ReservationStep"
+import { useProtectedRoute } from "@/hooks/useProtectedRoute"
 import { FlatList, StyleSheet, View } from "react-native"
 import { useLocalSearchParams, useRouter } from "expo-router"
 
 const EventSelectionScreen = () => {
+	useProtectedRoute()
+
 	const router = useRouter()
 	const { alert } = useAlert()
 	const { date, centerId, serviceId } = useLocalSearchParams()
@@ -54,7 +57,7 @@ const EventSelectionScreen = () => {
 					<SelectableItem
 						key={item.id}
 						title={`${dayjs(item.start).format("HH:mm A")} - ${dayjs(item.end).format(
-							"HH:mm A"
+							"HH:mm A",
 						)}`}
 						subtitle={dayjs(item.start).format("DD/MM/YYYY")}
 						onPress={() => setSelectedEvent(item)}

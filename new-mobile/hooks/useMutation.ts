@@ -21,7 +21,7 @@ export const useMutation = <T>({ mutateFn }: useMutationProps) => {
 			const response = await mutateFn(params ?? {})
 			if (response && response.data && response.data.values) {
 				if (onSuccess) {
-					onSuccess(response.data.values as T)
+					onSuccess(response.data.values)
 				}
 			} else {
 				throw new Error("No se encontraron datos en la respuesta")
@@ -29,8 +29,6 @@ export const useMutation = <T>({ mutateFn }: useMutationProps) => {
 		} catch (err: any) {
 			if (onError && err.response) {
 				onError(err)
-			} else {
-				throw new Error(err.response?.data?.message || "Error desconocido")
 			}
 		} finally {
 			setLoading(false)

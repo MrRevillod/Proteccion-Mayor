@@ -1,8 +1,9 @@
 import React from "react"
 
+import { Text } from "@/components/Text"
 import { primaryGreen } from "@/constants/Colors"
 import { MaterialIcons } from "@expo/vector-icons"
-import { Text, TouchableOpacity } from "react-native"
+import { TouchableOpacity } from "react-native"
 
 interface Props {
 	date: any
@@ -20,8 +21,8 @@ export const CustomDayComponent: React.FC<Props> = ({ date, state, ...props }) =
 			isSelected || isMarked
 				? "white"
 				: state === "disabled"
-				? "rgba(0, 0, 0, 0.3)"
-				: "black",
+					? "rgba(0, 0, 0, 0.3)"
+					: "black",
 	}
 
 	return (

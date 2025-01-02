@@ -16,7 +16,6 @@ export const files: FileMiddleware =
 	({ required }) =>
 	async (req, res, next) => {
 		const fileWhitelist = ["image/png", "image/jpeg", "image/jpg", "image/webp"]
-
 		const validateMimeType = (file: Express.Multer.File) => {
 			return validateBufferMIMEType(file.buffer, { allowMimeTypes: fileWhitelist })
 		}
@@ -31,8 +30,9 @@ export const files: FileMiddleware =
 			}
 
 			if (req.files) {
-				const files = Object.values(req.files) as Express.Multer.File[]
-				files.forEach(async (file) => {
+				const files = req.files as { [fieldname: string]: Express.Multer.File[] }
+				Object.keys(files).forEach(async (fieldname) => {
+					const file = files[fieldname][0]
 					if (!(await validateMimeType(file)).ok) {
 						throw new BadRequest("Tipo de archivo no permitido")
 					}

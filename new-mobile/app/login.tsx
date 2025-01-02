@@ -1,12 +1,13 @@
 import { z } from "zod"
+import { Text } from "@/components/Text"
 import { Input } from "@/components/Input"
 import { Button } from "@/components/Button"
 import { useAuth } from "@/context/AuthContext"
 import { useRouter } from "expo-router"
 import { isValidRut } from "@/lib/schemas"
+import { StyleSheet, View } from "react-native"
 import { useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
-import { StyleSheet, Text, View } from "react-native"
 import { deleteSecureStore, getSecureStore } from "@/lib/secureStore"
 
 const LoginScreen = () => {

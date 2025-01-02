@@ -1,9 +1,10 @@
 import React from "react"
 import dayjs from "dayjs"
 
+import { Text } from "@/components/Text"
 import { Event } from "@/lib/types"
 import { Image } from "@/components/Image"
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet, View } from "react-native"
 
 interface Props {
 	event: Event
@@ -70,6 +71,8 @@ const styles = StyleSheet.create({
 	centerImage: {
 		width: "100%",
 		height: 100,
+		borderTopLeftRadius: 15,
+		borderTopRightRadius: 15,
 	},
 	profileContainer: {
 		alignItems: "center",
@@ -87,10 +90,12 @@ const styles = StyleSheet.create({
 		gap: 10,
 	},
 	label: {
+		fontSize: 15,
 		fontWeight: "600",
 		marginBottom: 4,
 	},
 	value: {
+		fontSize: 15,
 		fontWeight: "normal",
 	},
 })

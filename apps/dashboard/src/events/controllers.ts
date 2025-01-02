@@ -320,7 +320,7 @@ export class EventsController {
 			io.to("ADMIN").emit("event:update", formatted)
 			io.to(event.professionalId as string).emit("event:update", formatted)
 
-			return res.status(200).json({ modified: formatted, values: {} })
+			return res.status(200).json({ values: formatted })
 		} catch (error) {
 			handleError(error)
 		}

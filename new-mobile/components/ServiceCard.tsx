@@ -1,8 +1,9 @@
 import React from "react"
 
+import { Text } from "@/components/Text"
 import { Image } from "@/components/Image"
 import { Service } from "@/lib/types"
-import { TouchableOpacity, StyleSheet, View, Text } from "react-native"
+import { TouchableOpacity, StyleSheet, View } from "react-native"
 
 interface Props {
 	service: Service

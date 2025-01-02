@@ -1,9 +1,9 @@
+import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
 import { useRouter } from "expo-router"
-import { View, Text } from "react-native"
 import { ExternalLink } from "@/components/ExternalLink"
 import { RESET_PASSWORD_URL } from "@/lib/http"
-import { Image, ImageBackground, StyleSheet, Dimensions } from "react-native"
+import { Image, ImageBackground, StyleSheet, Dimensions, View } from "react-native"
 
 const { width, height } = Dimensions.get("window")
 
@@ -36,17 +36,16 @@ const WelcomeScreen = () => {
 				</View>
 
 				<View style={{ marginTop: 20, backgroundColor: "transparent" }}>
-					<ExternalLink href={RESET_PASSWORD_URL}>
-						<Text
-							style={{
-								color: "#fff",
-								fontSize: 18,
-								textAlign: "center",
-								fontWeight: "600",
-							}}
-						>
-							¿Olvidaste tu PIN de acceso?
-						</Text>
+					<ExternalLink
+						href={RESET_PASSWORD_URL}
+						style={{
+							color: "#fff",
+							fontSize: 18,
+							textAlign: "center",
+							fontWeight: "600",
+						}}
+					>
+						¿Olvidaste tu PIN de acceso?
 					</ExternalLink>
 				</View>
 				<Button

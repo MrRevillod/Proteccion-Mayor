@@ -4,11 +4,14 @@ import { useRouter } from "expo-router"
 import { useRequest } from "@/hooks/useRequest"
 import { ServiceCard } from "@/components/ServiceCard"
 import { Center, Service } from "@/lib/types"
+import { useProtectedRoute } from "@/hooks/useProtectedRoute"
 import { StyleSheet, FlatList, View } from "react-native"
 import { getCentersByService, getServices } from "@/lib/actions"
 
 const HomeScreen = () => {
 	const router = useRouter()
+
+	useProtectedRoute()
 
 	const { alert } = useAlert()
 	const [selectedService, setSelectedService] = useState<Service | null>(null)
@@ -62,6 +65,8 @@ const HomeScreen = () => {
 					<ServiceCard service={item} onPress={() => setSelectedService(item)} />
 				)}
 				keyExtractor={(item) => item.id.toString()}
+				scrollEventThrottle={16}
+				removeClippedSubviews={true}
 			/>
 		</View>
 	)

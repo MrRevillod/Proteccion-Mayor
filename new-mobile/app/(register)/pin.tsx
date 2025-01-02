@@ -1,4 +1,4 @@
-import { Text } from "react-native"
+import { Text } from "@/components/Text"
 import { Input } from "@/components/Input"
 import { Button } from "@/components/Button"
 import { useRouter } from "expo-router"

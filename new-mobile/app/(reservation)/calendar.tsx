@@ -4,10 +4,13 @@ import { useRequest } from "@/hooks/useRequest"
 import { CalendarView } from "@/components/Calendar"
 import { ReservationStep } from "@/components/ReservationStep"
 import { getAvailableDates } from "@/lib/actions"
+import { useProtectedRoute } from "@/hooks/useProtectedRoute"
 import { useLocalSearchParams, useRouter } from "expo-router"
 
 const DateSelectionScreen = () => {
 	const router = useRouter()
+
+	useProtectedRoute()
 
 	const { alert } = useAlert()
 	const { serviceId, centerId } = useLocalSearchParams()

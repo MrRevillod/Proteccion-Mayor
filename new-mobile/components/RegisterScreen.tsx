@@ -1,10 +1,11 @@
+import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
 import { ReactNode } from "react"
 import { useMutation } from "@/hooks/useMutation"
 import { useFormContext } from "react-hook-form"
 import { Href, useRouter } from "expo-router"
 import { checkUniqueField } from "@/lib/actions"
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet, View } from "react-native"
 
 interface RegisterScreenProps {
 	fieldName: string

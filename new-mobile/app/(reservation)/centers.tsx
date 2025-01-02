@@ -1,13 +1,15 @@
 import { Center } from "@/lib/types"
 import { useState } from "react"
 import { useAlert } from "@/context/AlertContext"
-import { API_BASE_URL } from "@/lib/http"
 import { SelectableItem } from "@/components/SelectableItem"
 import { ReservationStep } from "@/components/ReservationStep"
+import { useProtectedRoute } from "@/hooks/useProtectedRoute"
 import { FlatList, StyleSheet } from "react-native"
 import { useLocalSearchParams, useRouter } from "expo-router"
 
 const CenterSelectionScreen = () => {
+	useProtectedRoute()
+
 	const router = useRouter()
 	const [selectedCenter, setSelectedCenter] = useState<Center | null>(null)
 
@@ -33,7 +35,7 @@ const CenterSelectionScreen = () => {
 	return (
 		<ReservationStep
 			title="Centros de atención disponibles:"
-			description="Seleccione el centro de atención que prefiera para continuar con la solicitud de su cita."
+			description="Seleccione el centro de atención de su preferencia."
 			currentStep={2}
 			continueHandler={() => handleSelectCenter()}
 		>

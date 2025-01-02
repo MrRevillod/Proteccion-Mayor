@@ -1,7 +1,8 @@
 import React from "react"
+import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
 import { useRouter } from "expo-router"
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet, View } from "react-native"
 
 const InstructionItem = ({ step, text }: { step: number; text: string }) => (
 	<View style={styles.instructionItem}>
@@ -29,7 +30,12 @@ export const InstructionsRegisterScreen = () => {
 				<InstructionItem step={6} text="Finalizar el registro" />
 			</View>
 
-			<Button variant="primary" text="Comenzar" onPress={() => router.push("/(register)/rut")} size="xxl" />
+			<Button
+				variant="primary"
+				text="Comenzar"
+				onPress={() => router.push("/(register)/rut")}
+				size="xxl"
+			/>
 		</View>
 	)
 }

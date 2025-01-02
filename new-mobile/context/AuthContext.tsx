@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 
 import { api } from "@/lib/http"
 import { Dispatch, SetStateAction } from "react"
@@ -13,10 +13,10 @@ interface AuthContextType {
 	setError: Dispatch<SetStateAction<string | null>>
 	login: (credentials: any, onSuccess: () => void) => Promise<void>
 	logout: () => Promise<void>
-	refreshSession: () => Promise<void>
 	setUser: Dispatch<SetStateAction<any | null>>
 	accessToken: string | null
 	refreshToken: string | null
+	validateSession: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -75,15 +75,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		setLoading(false)
 	}
 
-	const refreshSession = async () => {
+	const validateSession = async () => {
 		try {
-			await api.get("/auth/refresh")
+			await api.get("/auth/validate-auth")
 			setIsAuthenticated(true)
 		} catch (error) {
-			setUser(null)
-			setIsAuthenticated(false)
+			await logout()
 		}
 	}
+
+	useEffect(() => {
+		validateSession()
+	}, [])
 
 	return (
 		<AuthContext.Provider
@@ -98,7 +101,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 				loading,
 				isAuthenticated,
 				accessToken,
-				refreshSession,
+				validateSession,
 			}}
 		>
 			{children}

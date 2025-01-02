@@ -1,12 +1,16 @@
 import React from "react"
 
+import { Text } from "@/components/Text"
 import { FontAwesome } from "@expo/vector-icons"
 import { primaryGreen } from "@/constants/Colors"
 import { ReservationStep } from "@/components/ReservationStep"
-import { StyleSheet, Text, View } from "react-native"
+import { useProtectedRoute } from "@/hooks/useProtectedRoute"
+import { StyleSheet, View } from "react-native"
 import { useLocalSearchParams, useRouter } from "expo-router"
 
 const FinalReservationScreen = () => {
+	useProtectedRoute()
+
 	const router = useRouter()
 	const params = useLocalSearchParams<{ status: string; message: string }>()
 

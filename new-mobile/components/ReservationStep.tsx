@@ -1,12 +1,13 @@
 import React from "react"
 
+import { Text } from "./Text"
 import { Button } from "@/components/Button"
 import { useRouter } from "expo-router"
 import { primaryGreen } from "@/constants/Colors"
 import { LoadingIndicator } from "@/components/Loading"
 import { useEffect, useState } from "react"
 import { MultiStepProgressBar } from "@/components/ProgressBar"
-import { StyleSheet, Text, View, Platform } from "react-native"
+import { StyleSheet, View, Platform } from "react-native"
 
 const { OS } = Platform
 

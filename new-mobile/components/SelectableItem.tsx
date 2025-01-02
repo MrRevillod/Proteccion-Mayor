@@ -1,8 +1,9 @@
 import React from "react"
 
+import { Text } from "./Text"
 import { Image } from "@/components/Image"
 import { MaterialIcons } from "@expo/vector-icons"
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native"
+import { StyleSheet, View, TouchableOpacity } from "react-native"
 
 interface Props {
 	title: string

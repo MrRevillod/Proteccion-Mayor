@@ -1,9 +1,10 @@
 import React from "react"
 
+import { Text } from "@/components/Text"
 import { StyleSheet } from "react-native"
 import { primaryGreen } from "@/constants/Colors"
 import { Controller, useFormContext } from "react-hook-form"
-import { View, TextInput, Text, KeyboardTypeAndroid, KeyboardType } from "react-native"
+import { View, TextInput, KeyboardTypeAndroid, KeyboardType } from "react-native"
 
 interface InputFieldProps {
 	label: string

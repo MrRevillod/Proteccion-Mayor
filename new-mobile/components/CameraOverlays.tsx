@@ -1,6 +1,7 @@
 import React from "react"
 
-import { StyleSheet, View, Dimensions, Text } from "react-native"
+import { Text } from "@/components/Text"
+import { StyleSheet, View, Dimensions } from "react-native"
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window")
 
 const baseStyles = StyleSheet.create({
@@ -51,7 +52,9 @@ export const DniCameraOverlay = () => {
 			<View style={[styles.verticalDniBg, { top: 0 }]} />
 			<View style={[styles.horizontalDniBg, { right: 0 }]} />
 			<View>
-				<Text style={{ color: "white", fontSize: 20, marginTop: -50 }}>Ubique la cédula en el recuadro</Text>
+				<Text style={{ color: "white", fontSize: 20, marginTop: -50 }}>
+					Ubique la cédula en el recuadro
+				</Text>
 			</View>
 			<View style={[styles.borderContainer, baseStyles.border]} />
 			<View style={[styles.horizontalDniBg, { left: 0 }]} />
@@ -90,7 +93,9 @@ export const RshCameraOverlay = () => {
 			<View style={[styles.verticalRshBg, { top: 0 }]} />
 			<View style={[styles.horizontalRshBg, { right: 0 }]} />
 			<View>
-				<Text style={{ color: "white", fontSize: 20, marginTop: -50 }}>Ubique el documento en el recuadro</Text>
+				<Text style={{ color: "white", fontSize: 20, marginTop: -50 }}>
+					Ubique el documento en el recuadro
+				</Text>
 			</View>
 			<View style={[styles.borderContainer, baseStyles.border]} />
 			<View style={[styles.horizontalRshBg, { left: 0 }]} />

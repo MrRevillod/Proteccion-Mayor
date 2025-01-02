@@ -1,7 +1,8 @@
 import React from "react"
 
+import { Text } from "@/components/Text"
 import { primaryGreen } from "@/constants/Colors"
-import { StyleSheet, Text, TouchableOpacity, ViewStyle, TextStyle } from "react-native"
+import { StyleSheet, TouchableOpacity, ViewStyle, TextStyle } from "react-native"
 
 interface ButtonProps {
 	text: string
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 	},
 	lgText: {
-		fontSize: 18,
+		fontSize: 16,
 	},
 	xlText: {
 		fontSize: 20,

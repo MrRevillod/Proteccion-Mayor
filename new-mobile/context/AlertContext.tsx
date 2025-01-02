@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from "react"
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native"
+
+import { Text } from "@/components/Text"
+import { Modal, View, TouchableOpacity, StyleSheet } from "react-native"
 
 interface AlertOptions {
 	title: string
@@ -13,6 +15,7 @@ interface AlertOptions {
 
 interface AlertContextProps {
 	alert: (options: AlertOptions) => void
+	setVisible: (visible: boolean) => void
 }
 
 const AlertContext = createContext<AlertContextProps | undefined>(undefined)
@@ -37,7 +40,7 @@ export const AlertProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 	}
 
 	return (
-		<AlertContext.Provider value={{ alert }}>
+		<AlertContext.Provider value={{ alert, setVisible }}>
 			{children}
 			<Modal transparent animationType="fade" visible={visible}>
 				<View style={styles.overlay}>
