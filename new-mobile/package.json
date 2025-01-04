@@ -3,7 +3,7 @@
 	"main": "expo-router/entry",
 	"version": "1.0.0",
 	"scripts": {
-		"start": "expo start",
+		"dev": "expo start",
 		"android": "expo start --android",
 		"ios": "expo start --ios",
 		"web": "expo start --web",
@@ -16,7 +16,9 @@
 		"@expo/vector-icons": "^14.0.4",
 		"@hookform/resolvers": "^3.9.1",
 		"@react-navigation/native": "^7.0.14",
+		"axios": "^1.7.9",
 		"dayjs": "^1.11.13",
+		"eventemitter3": "^5.0.1",
 		"expo": "~52.0.23",
 		"expo-camera": "~16.0.10",
 		"expo-font": "~13.0.2",

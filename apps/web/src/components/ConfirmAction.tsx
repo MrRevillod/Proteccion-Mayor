@@ -59,6 +59,7 @@ const ConfirmDelete = <T extends BaseDataType>({ text, ...props }: ConfirmAction
 					}
 
 					refetch && refetch()
+					methods.reset()
 					message.success("Hecho")
 					handleOk()
 				},

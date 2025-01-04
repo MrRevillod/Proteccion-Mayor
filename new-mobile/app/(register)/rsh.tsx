@@ -136,6 +136,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "rgba(0, 0, 0, 0.5)",
 		height: height,
 		width: width,
+		zIndex: 1000,
 	},
 })
 

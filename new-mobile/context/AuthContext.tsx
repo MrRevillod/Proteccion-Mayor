@@ -84,10 +84,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		}
 	}
 
-	useEffect(() => {
-		validateSession()
-	}, [])
-
 	return (
 		<AuthContext.Provider
 			value={{

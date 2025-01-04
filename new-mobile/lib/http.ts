@@ -1,6 +1,7 @@
 import axios from "axios"
 
 import { getSecureStore } from "./secureStore"
+import { emitEvent } from "./events"
 
 export const SERVER_URL = process.env.EXPO_PUBLIC_SERVER_BASE_URL
 
@@ -30,7 +31,17 @@ api.interceptors.request.use(
 	},
 	(error) => {
 		return Promise.reject(error)
-	}
+	},
+)
+
+api.interceptors.response.use(
+	(response) => response,
+	(error) => {
+		if (error.response?.status === 401) {
+			emitEvent("unauthorized")
+		}
+		return Promise.reject(error)
+	},
 )
 
 export const getContentType = (body: any) => {

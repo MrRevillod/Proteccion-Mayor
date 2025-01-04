@@ -48,12 +48,6 @@ const WelcomeScreen = () => {
 						¿Olvidaste tu PIN de acceso?
 					</ExternalLink>
 				</View>
-				<Button
-					variant="quaternary"
-					text="Sitemap"
-					onPress={() => router.push("/_sitemap")}
-					size="xl"
-				/>
 			</ImageBackground>
 		</View>
 	)

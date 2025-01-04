@@ -1,7 +1,9 @@
+import { z } from "zod"
 import { BadRequest } from "../errors/custom"
+import { constants, jwt, rules, users } from ".."
 import { validateBufferMIMEType } from "validate-image-type"
 import { Request, Response, NextFunction } from "express"
-import { FileMiddleware, SchemaBasedMiddleware } from "../types"
+import { FileMiddleware, Middleware, SchemaBasedMiddleware, UserRole } from "../types"
 
 export const body: SchemaBasedMiddleware = (schema) => (req, res, next) => {
 	try {
@@ -67,3 +69,43 @@ export const resourceId =
 			next(error)
 		}
 	}
+
+export const resetPasswordRequest: Middleware = async (req, res, next) => {
+	const { id, token, role } = req.params
+
+	try {
+		if (!id || !token || !role) {
+			throw new BadRequest("Faltan parámetros necesarios para la operación")
+		}
+
+		const rolePayload = jwt.verify(role)
+
+		if (!rolePayload.role || !users.isValidRole(rolePayload.role)) {
+			throw new BadRequest("Solicitud inválida")
+		}
+
+		const user = await users.find({
+			filter: { id },
+			role: rolePayload.role,
+		})
+
+		if (!user) throw new BadRequest("Usuario no encontrado")
+		jwt.verify(token, `${constants.JWT_SECRET}${user?.password}`)
+
+		const userRole = rolePayload.role as UserRole
+
+		z.object({
+			password: userRole === "SENIOR" ? rules.pinSchema : rules.passwordSchema,
+			confirmPassword: userRole === "SENIOR" ? rules.pinSchema : rules.passwordSchema,
+		})
+			.refine((data) => data.password === data.confirmPassword, {
+				message: "Las contraseñas ingresadas no coinciden",
+				path: ["confirmPassword"],
+			})
+			.parse(req.body)
+
+		next()
+	} catch (error) {
+		next(error)
+	}
+}

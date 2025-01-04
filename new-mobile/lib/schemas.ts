@@ -57,3 +57,19 @@ export const RegisterSchema = z
 		message: "Los PIN ingresados no coinciden",
 		path: ["pinConfirm"],
 	})
+
+export const ChangePinSchema = z
+	.object({
+		password: z
+			.string()
+			.min(1, { message: "Este campo es requerido" })
+			.regex(/^\d+$/, "El Pin debe contener solo números")
+			.refine((value) => value.length === 4, {
+				message: "El PIN debe tener 4 dígitos",
+			}),
+
+		confirmPassword: z.string().min(1, { message: "Este campo es requerido" }),
+	})
+	.refine((data) => data.password === data.confirmPassword, {
+		message: "Los PIN ingresados no coinciden",
+	})

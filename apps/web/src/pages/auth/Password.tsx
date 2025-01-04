@@ -7,6 +7,7 @@ import { Input } from "../../components/ui/Input"
 import { Helmet } from "react-helmet"
 import { message } from "antd"
 import { Loading } from "@/components/Loading"
+import { UserRole } from "@/lib/types"
 import { jwtDecode } from "jwt-decode"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { resetPasswordSchema } from "../../lib/schemas"
@@ -43,7 +44,7 @@ const ValidatePasswordPage: React.FC = () => {
 	}, [id, token, role])
 
 	const payload = jwtDecode<{ role: string }>(role as string)
-	const validationSchema = resetPasswordSchema(payload.role as any)
+	const validationSchema = resetPasswordSchema(payload.role as UserRole | "SENIOR")
 
 	const methods = useForm<ResetPasswordFormData>({
 		resolver: zodResolver(validationSchema),
@@ -53,8 +54,9 @@ const ValidatePasswordPage: React.FC = () => {
 
 	const onSubmit: SubmitHandler<ResetPasswordFormData> = async (formData) => {
 		try {
-			const response = await api.post(`/dashboard/account/reset-password/${id}/${token}/${role}`, {
+			const response = await api.post(`/auth/account/reset-password/${id}/${token}/${role}`, {
 				password: formData.password,
+				confirmPassword: formData.confirmPassword,
 			})
 
 			message.success(response.data.message)
@@ -98,16 +100,22 @@ const ValidatePasswordPage: React.FC = () => {
 								<form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
 									<Input
 										name="password"
-										label="Nueva Contraseña"
+										label={payload.role === "SENIOR" ? "Nuevo PIN" : "Nueva Contraseña"}
 										type="password"
-										placeholder="Ingresa tu nueva contraseña"
+										placeholder={`Ingresa tu ${payload.role === "SENIOR" ? "nuevo PIN" : "nueva contraseña"}`}
+										maxLength={payload.role === "SENIOR" ? 4 : 100}
 									/>
 
 									<Input
 										name="confirmPassword"
-										label="Confirmar Contraseña"
+										label={
+											payload.role === "SENIOR"
+												? "Confirma tu nuevo PIN"
+												: "Confirma tu nueva Contraseña"
+										}
 										type="password"
-										placeholder="Confirma tu nueva contraseña"
+										placeholder={`Confirma tu ${payload.role === "SENIOR" ? "nuevo PIN" : "nueva contraseña"}`}
+										maxLength={payload.role === "SENIOR" ? 4 : 100}
 									/>
 
 									<div className="mt-4">
@@ -115,7 +123,7 @@ const ValidatePasswordPage: React.FC = () => {
 											type="submit"
 											className="bg-green-800 text-neutral-100 rounded-lg p-2 w-full h-12 font-bold"
 										>
-											Restablecer Contraseña
+											{payload.role === "SENIOR" ? "Restablecer PIN" : "Restablecer Contraseña"}
 										</button>
 									</div>
 								</form>

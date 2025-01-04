@@ -38,7 +38,7 @@ export const Input = ({ name, ...props }: InputFieldProps) => {
 		},
 		label: {
 			color: primaryGreen,
-			fontSize: 16,
+			fontSize: 17,
 			fontWeight: "bold",
 		},
 		error: {

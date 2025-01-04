@@ -67,3 +67,11 @@ export const reservateEvent = async (props: MutateActionProps) => {
 export const cancelReservation = async (props: MutateActionProps) => {
 	return await apiRequest.patch(`/dashboard/events/${props.id}/cancel`, props)
 }
+
+export const updateUser = async (props: MutateActionProps) => {
+	return await apiRequest.patch(`/dashboard/seniors/${props.id}`, props)
+}
+
+export const deleteAccount = async (props: MutateActionProps) => {
+	return await apiRequest.delete(`/dashboard/seniors/${props.id}`, props)
+}

@@ -3,7 +3,7 @@ export const log = (...args: unknown[]): void => {
 }
 
 export * as jwt from "./utils/jsonwebtoken"
-export * as rules from "./rules"
+export * as rules from "./utils/rules"
 export * as users from "./utils/users"
 export * as templates from "./utils/htmlTemplates"
 export * as credentials from "./utils/credentials"
@@ -19,9 +19,9 @@ export {
 	findService,
 } from "./utils/actions"
 
-export { services, constants } from "./config"
 export { MailerService } from "./services/mailer"
 export { StorageService } from "./services/storage"
+export { services, constants } from "./config"
 export { AuthenticationService } from "./services/authentication"
 
 export type { UserRole, User, Controller, Middleware } from "./types"
