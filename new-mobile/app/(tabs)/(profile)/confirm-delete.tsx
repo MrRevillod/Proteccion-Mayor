@@ -1,27 +1,31 @@
 import React, { useCallback } from "react"
 
 import { z } from "zod"
+import { Text } from "@/components/Text"
 import { Input } from "@/components/Input"
 import { Button } from "@/components/Button"
 import { LoadingIndicator } from "@/components/Loading"
 
 import { useAlert } from "@/context/AlertContext"
-import { updateUser } from "@/lib/actions"
-import { ChangePinSchema } from "@/lib/schemas"
-
 import { useMutation } from "@/hooks/useMutation"
+import { deleteAccount } from "@/lib/actions"
+import { deleteSecureStore } from "@/lib/secureStore"
+
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FormProvider, useForm } from "react-hook-form"
 import { Keyboard, StyleSheet, View } from "react-native"
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router"
 
-const ChangePinScreen = () => {
+const ConfirmDeleteAccountScreen = () => {
 	const methods = useForm({
-		defaultValues: {
-			password: "",
-			confirmPassword: "",
-		},
-		resolver: zodResolver(ChangePinSchema),
+		defaultValues: { password: "" },
+		resolver: zodResolver(
+			z.object({
+				password: z.string().refine((value) => /^\d{4}$/.test(value), {
+					message: "Solo se permiten números",
+				}),
+			}),
+		),
 	})
 
 	useFocusEffect(
@@ -38,46 +42,57 @@ const ChangePinScreen = () => {
 	const user = JSON.parse(params.user.toString())
 
 	const { alert } = useAlert()
-	const { mutate, loading } = useMutation({ mutateFn: updateUser })
+	const { mutate, loading } = useMutation({ mutateFn: deleteAccount })
 
-	const onSubmit = async (data: z.infer<typeof ChangePinSchema>) => {
-		await Promise.all([methods.trigger("password"), methods.trigger("confirmPassword")])
+	const handleDelete = async () => {
+		await Promise.all([
+			deleteSecureStore("rut"),
+			deleteSecureStore("accessToken"),
+			deleteSecureStore("refreshToken"),
+		])
 
-		const body = {
-			name: user?.name,
-			address: user?.address,
-			email: user?.email,
-			birthDate: user?.birthDate,
-			password: data.password,
-			confirmPassword: data.confirmPassword,
-		}
+		return router.replace("/login")
+	}
+
+	const onSubmit = async (data: { password: string }) => {
+		await methods.trigger("password")
 
 		await mutate({
-			params: { id: user?.id ?? "", body },
+			params: {
+				id: user?.id ?? "",
+				query: `credentials=${data.password}`,
+			},
 			onSuccess: () => {
 				alert({
-					title: "PIN actualizado",
-					message: "Su PIN de acceso ha sido actualizado correctamente",
+					title: "Cuenta eliminada",
+					message: "Su cuenta ha sido eliminada correctamente",
 					variant: "simple",
+					onConfirm: () => handleDelete(),
 				})
 			},
 			onError: () => {
 				alert({
 					title: "Error",
-					message: "No se ha podido actualizar su PIN de acceso",
+					message: "Error al eliminar la cuenta. Inténtalo de nuevo más tarde.",
 					variant: "simple",
+					onConfirm: () => router.replace("/(tabs)/home"),
 				})
 			},
 		})
 
 		methods.reset()
-		Keyboard.dismiss()
-
-		router.back()
+		Keyboard.isVisible() && Keyboard.dismiss()
 	}
 
 	return (
 		<View style={styles.container}>
+			<View style={styles.textContainer}>
+				<Text style={styles.title}>Información importante</Text>
+				<Text style={styles.subtitle}>
+					Al eliminar tu cuenta, perderás todos tus datos y no podrás recuperarlos.
+				</Text>
+			</View>
+
 			{loading && (
 				<View style={styles.loadingOverlay}>
 					<LoadingIndicator color="white" />
@@ -86,17 +101,8 @@ const ChangePinScreen = () => {
 			<View style={styles.formContainer}>
 				<FormProvider {...methods}>
 					<Input
-						label="Ingrese su nuevo PIN"
+						label="Ingrese su PIN"
 						name="password"
-						placeholder="● ● ● ●"
-						keyboardType="number-pad"
-						maxLength={4}
-						secureTextEntry
-						autoFocus={false}
-					/>
-					<Input
-						label="Repita su nuevo PIN"
-						name="confirmPassword"
 						placeholder="● ● ● ●"
 						keyboardType="number-pad"
 						maxLength={4}
@@ -107,8 +113,12 @@ const ChangePinScreen = () => {
 			</View>
 
 			<View style={styles.bottomContainer}>
-				<Button text="Confirmar" onPress={methods.handleSubmit(onSubmit)} />
-				<Button text="Cancelar" onPress={() => router.back()} variant="secondary" />
+				<Button
+					text="Eliminar cuenta"
+					onPress={methods.handleSubmit(onSubmit)}
+					variant="delete"
+				/>
+				<Button text="Cancelar" onPress={() => router.back()} variant="primary" />
 			</View>
 		</View>
 	)
@@ -148,6 +158,20 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		zIndex: 100,
 	},
+	textContainer: {
+		width: "100%",
+		marginTop: 20,
+		paddingHorizontal: 20,
+		gap: 12,
+		justifyContent: "center",
+	},
+	title: {
+		fontSize: 20,
+		fontWeight: "bold",
+	},
+	subtitle: {
+		fontSize: 17,
+	},
 })
 
-export default ChangePinScreen
+export default ConfirmDeleteAccountScreen

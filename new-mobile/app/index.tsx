@@ -35,7 +35,7 @@ const WelcomeScreen = () => {
 					/>
 				</View>
 
-				<View style={{ marginTop: 20, backgroundColor: "transparent" }}>
+				<View style={{ marginTop: 25, backgroundColor: "transparent" }}>
 					<ExternalLink
 						href={RESET_PASSWORD_URL}
 						style={{

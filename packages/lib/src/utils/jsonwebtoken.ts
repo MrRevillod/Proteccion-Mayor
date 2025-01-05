@@ -13,7 +13,7 @@ type TokenOptions = {
 }
 
 export const accessTokenOpts: TokenOptions = {
-	exp: "15m",
+	exp: "1m",
 	key: JWT_SECRET,
 }
 

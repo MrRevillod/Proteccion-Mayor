@@ -43,5 +43,3 @@ export const constants = {
 	PROJECT_EMAIL_HOST: process.env.PROJECT_EMAIL_HOST ?? "",
 	PROJECT_EMAIL_PORT: process.env.PROJECT_EMAIL_PORT ?? "",
 } as const
-
-console.table(services)

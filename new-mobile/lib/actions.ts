@@ -73,5 +73,8 @@ export const updateUser = async (props: MutateActionProps) => {
 }
 
 export const deleteAccount = async (props: MutateActionProps) => {
-	return await apiRequest.delete(`/dashboard/seniors/${props.id}`, props)
+	return await apiRequest.delete(
+		`/dashboard/seniors/${props.id}${props.query ? "?" + props.query : ""}`,
+		props,
+	)
 }

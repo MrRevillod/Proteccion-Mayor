@@ -65,4 +65,24 @@ export class SeniorSchemas extends Schema {
 				message: "Los PIN ingresados no coinciden",
 			})
 	}
+
+	get handleRegisterRequest() {
+		return z
+			.object({
+				rut: rules.rutSchema,
+				name: rules.nameSchema,
+				email: rules.emailSchema,
+				address: rules.addressSchema,
+				birthDate: z.string({ message: "La fecha de nacimiento es requerida" }),
+				gender: rules.genderSchema,
+			})
+			.refine((data) => rules.isValidDate(data.birthDate), {
+				message: "La fecha de ingresada no es válida",
+				path: ["birthDate"],
+			})
+			.refine((data) => rules.isValidSeniorBirthDate(data.birthDate), {
+				message: "La fecha de nacimiento no corresponde a la de una persona mayor",
+				path: ["birthDate"],
+			})
+	}
 }

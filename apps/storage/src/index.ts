@@ -5,7 +5,7 @@ import express from "express"
 
 import { Router } from "express"
 import { verifyStorageKey } from "./utils"
-import { createApplication } from "@repo/lib"
+import { createApplication, startService } from "@repo/lib"
 import { log, services, AuthenticationService } from "@repo/lib"
 
 // Las imagenes son transformadas a formato webp con calidad 80
@@ -71,5 +71,5 @@ app.use(
 app.use("/api/storage/", verifyStorageKey, router)
 
 app.listen(services.STORAGE.port, () => {
-	log(`Storage running on ${services.STORAGE.port}`)
+	startService("STORAGE", services.STORAGE.url, services.STORAGE.port)
 })

@@ -11,7 +11,7 @@ import { createServer } from "http"
 import { SocketEvents } from "./socket"
 import { createAdapter } from "@socket.io/cluster-adapter"
 import { Server, Socket } from "socket.io"
-import { log, MailerService, services, UserRole } from "@repo/lib"
+import { MailerService, services, startService, UserRole } from "@repo/lib"
 import { AuthenticationService, createApplication, StorageService } from "@repo/lib"
 
 const authService = new AuthenticationService()
@@ -59,5 +59,5 @@ io.on("connection", (socket: Socket) => {
 })
 
 http.listen(services.DASHBOARD.port, () => {
-	log(`Dashboard service running on ${services.DASHBOARD.port}`)
+	startService("DASHBOARD", services.DASHBOARD.url, services.DASHBOARD.port)
 })

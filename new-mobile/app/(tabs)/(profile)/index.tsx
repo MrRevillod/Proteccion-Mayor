@@ -3,51 +3,18 @@ import dayjs from "dayjs"
 import { Text } from "@/components/Text"
 import { Image } from "@/components/Image"
 import { Button } from "@/components/Button"
-import { useAuth } from "@/context/AuthContext"
-import { useAlert } from "@/context/AlertContext"
-import { useRouter } from "expo-router"
-import { useMutation } from "@/hooks/useMutation"
 import { ProfileInfo } from "@/components/ProfileInfo"
-import { deleteAccount } from "@/lib/actions"
-import { StyleSheet, View } from "react-native"
+
+import { useAuth } from "@/context/AuthContext"
 import { useProtectedRoute } from "@/hooks/useProtectedRoute"
+
+import { useRouter } from "expo-router"
+import { StyleSheet, View } from "react-native"
 
 const ProfileTab = () => {
 	useProtectedRoute()
 	const router = useRouter()
-
 	const { user } = useAuth()
-	const { alert } = useAlert()
-
-	const { mutate, loading } = useMutation({
-		mutateFn: deleteAccount,
-	})
-
-	const handleDelete = async () => {
-		await mutate({
-			params: { id: user?.id ?? "" },
-			onSuccess: () => {
-				return router.replace("/login")
-			},
-			onError: () => {
-				alert({
-					title: "Error",
-					message: "No se pudo eliminar la cuenta. Inténtalo de nuevo más tarde.",
-					variant: "simple",
-				})
-				return router.replace("/(tabs)/home")
-			},
-		})
-	}
-
-	const showDeleteAlert = () => {
-		alert({
-			title: "Eliminar cuenta",
-			message: "¿Estás seguro de que deseas eliminar tu cuenta?",
-			variant: "confirmCancel",
-			onConfirm: handleDelete,
-		})
-	}
 
 	return (
 		<View style={styles.container}>
@@ -83,7 +50,12 @@ const ProfileTab = () => {
 					<Button
 						text="Eliminar cuenta"
 						size="lg"
-						onPress={() => handleDelete()}
+						onPress={() =>
+							router.push({
+								pathname: "/(tabs)/(profile)/confirm-delete",
+								params: { user: JSON.stringify(user) },
+							})
+						}
 						variant="delete"
 					/>
 				</View>

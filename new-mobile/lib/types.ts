@@ -75,6 +75,7 @@ export interface QueryActionProps {
 export interface MutateActionProps {
 	id?: string | number
 	body?: any
+	query?: string
 }
 
 export type MutationResponse<T> = {

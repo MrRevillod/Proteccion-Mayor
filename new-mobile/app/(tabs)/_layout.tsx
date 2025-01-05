@@ -37,6 +37,16 @@ const TabLayout = () => {
 					}}
 				/>
 				<Tabs.Screen
+					name="(profile)/confirm-delete"
+					options={{
+						header: () => <Header title="Eliminar cuenta" />,
+						tabBarIcon: () => null,
+						tabBarLabel: () => null,
+						tabBarItemStyle: { display: "none" },
+						tabBarStyle: { ...styles.tabBar },
+					}}
+				/>
+				<Tabs.Screen
 					name="home"
 					options={{
 						header: () => <Header title="Protección Mayor" />,

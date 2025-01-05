@@ -1,6 +1,6 @@
-import React, { useEffect } from "react"
+import React from "react"
 
-import { api } from "@/lib/http"
+import { api, httpClient } from "@/lib/http"
 import { Dispatch, SetStateAction } from "react"
 import { createContext, ReactNode, useState } from "react"
 import { deleteSecureStore, setSecureStore } from "@/lib/secureStore"
@@ -17,6 +17,7 @@ interface AuthContextType {
 	accessToken: string | null
 	refreshToken: string | null
 	validateSession: () => Promise<void>
+	isCheckingSession: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -26,6 +27,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	const [error, setError] = useState<string | null>(null)
 	const [loading, setLoading] = useState<boolean>(true)
 	const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+	const [isCheckingSession, setIsCheckingSession] = useState<boolean>(true)
 
 	const [accessToken, setAccessToken] = useState<string | null>(null)
 	const [refreshToken, setRefreshToken] = useState<string | null>(null)
@@ -34,7 +36,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		setLoading(true)
 
 		try {
-			const response = await api.post("/auth/login-senior", {
+			const response = await httpClient.post("/auth/login-senior", {
 				rut: credentials.rut,
 				password: credentials.password,
 			})
@@ -56,6 +58,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 			onSuccess()
 		} catch (error: any) {
+			console.log(error)
 			setError(error.response?.data?.message || "Error al iniciar sesión")
 			setUser(null)
 			setIsAuthenticated(false)
@@ -76,11 +79,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	}
 
 	const validateSession = async () => {
+
+		setIsCheckingSession(true)
+
 		try {
 			await api.get("/auth/validate-auth")
 			setIsAuthenticated(true)
 		} catch (error) {
 			await logout()
+		} finally {
+			setIsCheckingSession(false)
 		}
 	}
 
@@ -96,6 +104,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 				refreshToken,
 				loading,
 				isAuthenticated,
+				isCheckingSession,
 				accessToken,
 				validateSession,
 			}}

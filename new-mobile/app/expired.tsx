@@ -4,14 +4,18 @@ import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
 import { useRouter } from "expo-router"
 import { StyleSheet, View } from "react-native"
+import { ImageBackground } from "expo-image"
 
 const ExpiredSessionScreen = () => {
 	const router = useRouter()
 
 	return (
-		<View style={styles.container}>
+		<ImageBackground
+			source={require("@/assets/images/welcome-bg.png")}
+			style={styles.container}
+		>
 			<View style={{ alignItems: "center", width: "80%", gap: 25 }}>
-				<View style={{ alignItems: "center", gap: 10, marginBottom: 5 }}>
+				<View style={{ alignItems: "center", gap: 10, marginBottom: 10 }}>
 					<Text style={styles.title}>Tu sesión ha expirado</Text>
 					<Text style={styles.description}>Para continuar, inicia sesión nuevamente</Text>
 				</View>
@@ -20,9 +24,10 @@ const ExpiredSessionScreen = () => {
 					onPress={() => router.replace("/login")}
 					size="xl"
 					customFontSize={18}
+					variant="secondary"
 				/>
 			</View>
-		</View>
+		</ImageBackground>
 	)
 }
 
@@ -38,15 +43,12 @@ const styles = StyleSheet.create({
 	title: {
 		fontSize: 25,
 		fontWeight: "bold",
-	},
-	separator: {
-		marginVertical: 30,
-		height: 1,
-		width: "80%",
+		color: "white",
 	},
 	description: {
 		fontSize: 18,
 		fontWeight: "normal",
+		color: "white",
 	},
 })
 

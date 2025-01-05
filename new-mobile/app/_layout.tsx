@@ -9,7 +9,7 @@ import { useFonts } from "expo-font"
 import { useEffect } from "react"
 import { AuthProvider } from "@/context/AuthContext"
 import { AlertProvider } from "@/context/AlertContext"
-import { subscribeToEvent } from "@/lib/events"
+import { eventEmitter, subscribeToEvent } from "@/lib/events"
 export { ErrorBoundary } from "expo-router"
 
 export const unstable_settings = {
@@ -34,13 +34,27 @@ const RootLayout = () => {
 		if (loaded) SplashScreen.hideAsync()
 	}, [loaded])
 
+	setTimeout(() => {
+		eventEmitter.emit("session-expired")
+	}, 1000 * 60)
+
 	useEffect(() => {
-		const unsubscribe = subscribeToEvent("unauthorized", () => {
+		const unauthorized = subscribeToEvent("unauthorized", () => {
+			router.replace("/expired")
+		})
+
+		const closeApp = subscribeToEvent("close-app", () => {
+			router.replace("/login")
+		})
+
+		const sessionExpired = subscribeToEvent("session-expired", () => {
 			router.replace("/expired")
 		})
 
 		return () => {
-			unsubscribe()
+			unauthorized()
+			closeApp()
+			sessionExpired()
 		}
 	}, [router])
 

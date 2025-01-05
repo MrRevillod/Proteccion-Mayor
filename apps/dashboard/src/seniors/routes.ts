@@ -3,6 +3,8 @@ import { SeniorController } from "./controllers"
 import { AuthenticationService, uploads } from "@repo/lib"
 import { findSenior, Router, validations } from "@repo/lib"
 
+import * as utils from "./utils"
+
 export class SeniorRouter extends Router {
 	constructor(
 		private auth: AuthenticationService,
@@ -41,6 +43,7 @@ export class SeniorRouter extends Router {
 			middlewares: [
 				this.auth.authorize(["ADMIN", "SENIOR"]),
 				validations.resourceId(findSenior),
+				utils.validatePassword,
 			],
 		})
 
@@ -57,7 +60,11 @@ export class SeniorRouter extends Router {
 		this.patch({
 			path: "/:id/new",
 			handler: this.controller.handleRegisterRequest,
-			middlewares: [this.auth.authorize(["ADMIN"]), validations.resourceId(findSenior)],
+			middlewares: [
+				this.auth.authorize(["ADMIN"]),
+				validations.resourceId(findSenior),
+				validations.body(this.schemas.handleRegisterRequest),
+			],
 		})
 
 		this.post({

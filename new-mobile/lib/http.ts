@@ -1,7 +1,7 @@
 import axios from "axios"
 
-import { getSecureStore } from "./secureStore"
 import { emitEvent } from "./events"
+import { getSecureStore } from "./secureStore"
 
 export const SERVER_URL = process.env.EXPO_PUBLIC_SERVER_BASE_URL
 
@@ -43,6 +43,10 @@ api.interceptors.response.use(
 		return Promise.reject(error)
 	},
 )
+
+export const httpClient = axios.create({
+	baseURL: API_BASE_URL,
+})
 
 export const getContentType = (body: any) => {
 	return body instanceof FormData ? "multipart/form-data" : "application/json"

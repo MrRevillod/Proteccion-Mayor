@@ -2,6 +2,15 @@ export const log = (...args: unknown[]): void => {
 	console.log("LOGGER: ", ...args)
 }
 
+export const startService = (serviceName: string, url: string, port: number): void => {
+	console.table({
+		[serviceName]: {
+			url,
+			port,
+		},
+	})
+}
+
 export * as jwt from "./utils/jsonwebtoken"
 export * as rules from "./utils/rules"
 export * as users from "./utils/users"

@@ -95,6 +95,19 @@ export const dateTimeSchema = z.string().refine(
 	},
 )
 
+export const isValidDate = (value: string): boolean => {
+	const date = new Date(value)
+	return !isNaN(date.getTime())
+}
+
+export const isValidSeniorBirthDate = (date: string) => {
+	const birthDate = new Date(date)
+	const now = new Date()
+	const age = now.getFullYear() - birthDate.getFullYear()
+
+	return age >= 60
+}
+
 export const nameServiceSchema = z
 	.string()
 	.min(2, "El nombre debe tener al menos 2 caracteres")

@@ -1,15 +1,18 @@
-import { useAuth } from "@/context/AuthContext"
+import { eventEmitter } from "@/lib/events"
+import { useSegments } from "expo-router"
 import { useEffect, useRef } from "react"
 import { AppState, AppStateStatus } from "react-native"
 
 export const AppStateHandler = () => {
-	const auth = useAuth()
 	const appState = useRef(AppState.currentState)
+	const segments = useSegments()
+
+	const unprotecedRoutes = ["/login", "/expired", "/(register)"]
 
 	useEffect(() => {
 		const handleAppStateChange = (nextAppState: AppStateStatus) => {
 			if (appState.current === "active" && nextAppState.match(/inactive|background/)) {
-				auth.logout()
+				eventEmitter.emit("close-app")
 			}
 
 			appState.current = nextAppState

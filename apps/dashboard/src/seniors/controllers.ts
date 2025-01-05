@@ -13,6 +13,20 @@ export class SeniorController {
 		private mailer: MailerService,
 	) {}
 
+	/**
+	 * Controlador para obtener a las personas mayores registradas en la base de datos
+	 * según los filtros ingresados en la aplicación web
+	 *
+	 * filtra por id, nombre, email y si está validado
+	 *
+	 * @param req (Express Request)
+	 * @param res (Express Response)
+	 * @param handleError (Express NextFunction)
+	 *
+	 * @returns (Express Response) (HTTP - 200)
+	 * @throws (AppError)
+	 */
+
 	public getMany: Controller = async (req, res, handleError) => {
 		const query = this.schemas.query.parse(req.query)
 
@@ -54,7 +68,7 @@ export class SeniorController {
 	 * @param res (Express Response)
 	 * @param handleError (Express NextFunction)
 	 *
-	 * @returns (Express Response)
+	 * @returns (Express Response) (HTTP - 201)
 	 * @throws (AppError)
 	 */
 
@@ -100,11 +114,26 @@ export class SeniorController {
 		}
 	}
 
+	/**
+	 * Controlador para actualizar la información de una persona mayor
+	 * por su id desde la aplicación web por parte de un administrador
+	 *
+	 * @param req (Express Request)
+	 * @param res (Express Response)
+	 * @param handleError (Express NextFunction)
+	 *
+	 * @returns (Express Response) (HTTP - 200)
+	 * @throws (AppError)
+	 */
+
 	public updateOne: Controller = async (req, res, handleError) => {
 		const { body, params } = req
 		const { name, email, password, address, birthDate } = body
 
 		const requestedUser = req.getExtension("reqResource") as Senior
+
+		// Se chequea si el email ya existe en la base de datos,
+		// excluyendo el id de la persona mayor que se está actualizando
 
 		try {
 			const exists = await prisma.senior.findFirst({
@@ -114,6 +143,11 @@ export class SeniorController {
 			if (exists) {
 				throw new Conflict("La persona mayor ya existe", { conflicts: ["email"] })
 			}
+
+			// Si existe una contraseña en los campos de la petición, se encripta
+			// y se utiliza para actualizar la contraseña de la persona mayor
+
+			// De los contratio se utiliza la actual
 
 			const updatedPassword = password ? await hash(password, 10) : requestedUser.password
 
@@ -128,6 +162,9 @@ export class SeniorController {
 				},
 				select: this.schemas.defaultSelect,
 			})
+
+			// Si se provee una imagen en la petición, se sube al servidor de archivos
+			// mediante el servicio de Storage. El servidor retornará la url de la imagen
 
 			const response = { modified: senior, image: "" }
 
@@ -146,6 +183,21 @@ export class SeniorController {
 			handleError(error)
 		}
 	}
+
+	/**
+	 * Controlador para eliminar a una persona mayor por su id
+	 * desde la aplicación web por parte de un administrador o desde la app móvil
+	 *
+	 * Se eliminan los eventos asociados a la persona mayor y se elimina la imagen
+	 * de la persona mayor del servidor de archivos
+	 *
+	 * @param req (Express Request)
+	 * @param res (Express Response)
+	 * @param handleError (Express NextFunction)
+	 *
+	 * @returns (Express Response) (HTTP - 200)
+	 * @throws (AppError)
+	 */
 
 	public deleteOne: Controller = async (req, res, handleError) => {
 		try {
@@ -167,6 +219,18 @@ export class SeniorController {
 			handleError(error)
 		}
 	}
+
+	/**
+	 * Controlador para comprobar si un rut o un email ya están registrados
+	 * Se utiliza para validar los campos de los formularios de registro de la app móvil
+	 *
+	 * @param req (Express Request)
+	 * @param res (Express Response)
+	 * @param handleError (Express NextFunction)
+	 *
+	 * @returns (Express Response) (HTTP - 200)
+	 * @throws (AppError)
+	 */
 
 	public checkUnique: Controller = async (req, res, handleError) => {
 		const { rut, email } = req.body
@@ -195,6 +259,20 @@ export class SeniorController {
 			handleError(error)
 		}
 	}
+
+	/**
+	 * Controlador para registrar a una persona mayor desde la app móvil
+	 * Se crea un registro en la base de datos y se suben las imágenes al servidor de archivos
+	 *
+	 * Esta solicitud se revisa en la aplicación web por un administrador
+	 *
+	 * @param req (Express Request)
+	 * @param res (Express Response)
+	 * @param handleError (Express NextFunction)
+	 *
+	 * @returns (Express Response) (HTTP - 201)
+	 * @throws (AppError)
+	 */
 
 	public createMobile: Controller = async (req, res, handleError) => {
 		const { rut, pin, email } = req.body
@@ -232,11 +310,25 @@ export class SeniorController {
 		}
 	}
 
+	/**
+	 * Controlador para validar una solicitud de registro de una persona mayor
+	 * desde la aplicación web por parte de un administrador
+	 *
+	 * Se envía un correo electrónico a la persona mayor con la respuesta
+	 *
+	 * @param req (Express Request)
+	 * @param res (Express Response)
+	 * @param handleError (Express NextFunction)
+	 *
+	 * @returns (Express Response) (HTTP - 200)
+	 * @throws (AppError)
+	 */
+
 	public handleRegisterRequest: Controller = async (req, res, handleError) => {
 		const { params, body, query } = req
 
 		const { validate } = query
-		const { name, address, birth, gender } = body
+		const { name, address, birthDate, gender } = body
 
 		try {
 			const senior = await prisma.senior.findUnique({ where: { id: params.id } })
@@ -249,7 +341,7 @@ export class SeniorController {
 				address,
 				gender,
 				validated: true,
-				birthDate: new Date(birth),
+				birthDate: new Date(birthDate),
 			}
 
 			const emailData = {
