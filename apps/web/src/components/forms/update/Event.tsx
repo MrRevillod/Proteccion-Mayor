@@ -1,22 +1,22 @@
 import dayjs from "dayjs"
 import React from "react"
-import DatetimeSelect from "../../ui/DatetimeSelect"
 
-import { Form } from "../Form"
-import { Show } from "../../ui/Show"
-import { Modal } from "../../Modal"
-import { useAuth } from "../../../context/AuthContext"
-import { useModal } from "../../../context/ModalContext"
+import { Form } from "@/components/forms/Form"
+import { Show } from "@/components/ui/Show"
+import { Modal } from "@/components/Modal"
+import { useAuth } from "@/context/AuthContext"
+import { useModal } from "@/context/ModalContext"
 import { useRequest } from "@/hooks/useRequest"
-import { SuperSelect } from "../../ui/SuperSelect"
+import { SuperSelect } from "@/components/ui/SuperSelect"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { EventSchemas } from "../../../lib/schemas"
-import { BooleanSelect } from "../../ui/BooleanSelect"
+import { EventSchemas } from "@/lib/schemas"
+import { BooleanSelect } from "@/components/ui/BooleanSelect"
+import { DatetimeSelect } from "@/components/ui/DatetimeSelect"
 import { selectDataFormatter } from "@/lib/formatters"
 import { useState, useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
-import { getSeniors, updateEvent } from "../../../lib/actions"
-import { Professional, Senior, SuperSelectField } from "../../../lib/types"
+import { getSeniors, updateEvent } from "@/lib/actions"
+import { Professional, Senior, SuperSelectField } from "@/lib/types"
 
 // Este formulario corresponde a la actualización de un evento
 // Se utiliza el componente Modal para mostrar el formulario
@@ -31,8 +31,7 @@ type EventFormProps = {
 	refetch?: () => void
 }
 
-const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, refetch }) => {
-
+export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, refetch }) => {
 	const [loading, setLoading] = useState(false)
 	const [seniors, setSeniors] = useState<SuperSelectField[]>([])
 	const [seniorsSearch, setSeniorsSearch] = useState<string>("")
@@ -82,7 +81,6 @@ const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, refetch
 			<FormProvider {...methods}>
 				<Form action={updateEvent} actionType="update" deletable refetch={refetch} setLoading={setLoading}>
 					<Show when={isAfterToday(selectedData?.start)}>
-
 						<Show when={role === "ADMIN"}>
 							<SuperSelect
 								label="Seleccione el profesional"
@@ -96,7 +94,6 @@ const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, refetch
 							name="centerId"
 							options={centers}
 						/>
-
 					</Show>
 
 					<SuperSelect
@@ -105,9 +102,7 @@ const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, refetch
 						options={seniors}
 						setSearch={setSeniorsSearch}
 						placeholder="Buscar por nombre o su Rut"
-						disabled={
-							!!selectedData?.seniorId
-						}
+						disabled={!!selectedData?.seniorId}
 					/>
 
 					<Show when={role === "ADMIN" && isAfterToday(selectedData?.start)}>
@@ -128,7 +123,6 @@ const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, refetch
 							<DatetimeSelect label="Inicio del evento" name="start" />
 							<DatetimeSelect label="Finalización del evento" name="end" />
 						</div>
-
 					</Show>
 
 					<Show when={selectedData?.seniorId && isBeforeToday(selectedData?.end)}>
@@ -145,5 +139,3 @@ const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, refetch
 		</Modal>
 	)
 }
-
-export default UpdateEvent

@@ -1,18 +1,19 @@
 import React from "react"
-import DatetimeSelect from "../../ui/DatetimeSelect"
 
-import { Form } from "../Form"
-import { Input } from "../../ui/Input"
-import { Modal } from "../../Modal"
+import { Form } from "@/components/forms/Form"
+import { Input } from "@/components/ui/Input"
+import { Modal } from "@/components/Modal"
 import { useState } from "react"
 import { SuperSelect } from "@/components/ui/SuperSelect"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { createSenior } from "../../../lib/actions"
-import { SeniorSchemas } from "../../../lib/schemas"
-import { FormProps, Senior } from "../../../lib/types"
+
+import { createSenior } from "@/lib/actions"
+import { SeniorSchemas } from "@/lib/schemas"
+import { DatetimeSelect } from "@/components/ui/DatetimeSelect"
+import { FormProps, Senior } from "@/lib/types"
 import { FormProvider, useForm } from "react-hook-form"
 
-const CreateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => {
+export const CreateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false)
 	const methods = useForm({ resolver: zodResolver(SeniorSchemas.DashboardRegister) })
 
@@ -45,5 +46,3 @@ const CreateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => {
 		</Modal>
 	)
 }
-
-export default CreateSenior

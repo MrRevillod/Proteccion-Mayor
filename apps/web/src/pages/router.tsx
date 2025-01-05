@@ -10,15 +10,15 @@ import StatisticsPage from "./administration/Statistics"
 import AdministratorPage from "./administration/Administrators"
 import ProfessionalsPage from "./administration/Professionals"
 import ResetPasswordPage from "./auth/ResetPassword"
-import DownloadApplication from "./DownloadApplication";
+import DownloadApplication from "./DownloadApplication"
 import ValidatePasswordPage from "./auth/Password"
 import ProfessionalAgendaPage from "./agenda/Professional"
 import AdministrationAgendaPage from "./agenda/Administration"
 import SeniorHistoryRequestPage from "./administration/History"
 import SeniorRegisterRequestPage from "./administration/seniors/SeniorRegisterRequest"
 
-import { useAuth } from "../context/AuthContext"
-import { UserRole } from "../lib/types"
+import { useAuth } from "@/context/AuthContext"
+import { UserRole } from "@/lib/types"
 import { Routes, Route, Navigate, Outlet } from "react-router-dom"
 
 interface RouteProps {
@@ -59,7 +59,11 @@ const RedirectRoute: React.FC<{ redirectTo?: string }> = ({ redirectTo }) => {
 	// Si el usuario está autenticado, redirigirlo dependiendo del rol
 	if (isAuthenticated) {
 		// Return el componente Navigate para que funcione correctamente
-		return role === "PROFESSIONAL" ? <Navigate to="/agenda/profesionales" /> : <Navigate to="/agenda/administradores" />
+		return role === "PROFESSIONAL" ? (
+			<Navigate to="/agenda/profesionales" />
+		) : (
+			<Navigate to="/agenda/administradores" />
+		)
 	}
 
 	// Si no está autenticado, se renderiza la ruta hija (como el login)

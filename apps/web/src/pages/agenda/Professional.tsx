@@ -1,22 +1,24 @@
 import React from "react"
-import PageLayout from "../../layouts/PageLayout"
-import CreateEvent from "../../components/forms/create/Event"
-import UpdateEvent from "../../components/forms/update/Event"
-import ConfirmAction from "../../components/ConfirmAction"
+import PageLayout from "@/layouts/PageLayout"
 
 import { message } from "antd"
-import { Loading } from "../../components/Loading"
-import { useAuth } from "@/context/AuthContext"
-import { Calendar } from "../../components/Calendar"
-import { useSocket } from "@/context/SocketContext"
-import { useRequest } from "../../hooks/useRequest"
-import { EventFilter } from "../../components/EventFilter"
-import { UpcomingEvents } from "../../components/UpcomingEvents"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { deleteEvent, getCenters, getEvents } from "../../lib/actions"
-import { Center, Events, Event, SuperSelectField } from "../../lib/types"
-import { filterUpcomingEvents, selectDataFormatter } from "../../lib/formatters"
+
+import { Loading } from "@/components/Loading"
+import { Calendar } from "@/components/Calendar"
+import { EventFilter } from "@/components/EventFilter"
+import { CreateEvent } from "@/components/forms/create/Event"
+import { UpdateEvent } from "@/components/forms/update/Event"
+import { ConfirmAction } from "@/components/ConfirmAction"
+import { UpcomingEvents } from "@/components/UpcomingEvents"
+
+import { useAuth } from "@/context/AuthContext"
+import { useSocket } from "@/context/SocketContext"
+import { useRequest } from "@/hooks/useRequest"
+import { deleteEvent, getCenters, getEvents } from "@/lib/actions"
+import { Center, Events, Event, SuperSelectField } from "@/lib/types"
+import { filterUpcomingEvents, selectDataFormatter } from "@/lib/formatters"
 
 const ProfessionalAgendaPage: React.FC = () => {
 	const location = useLocation()
@@ -28,9 +30,7 @@ const ProfessionalAgendaPage: React.FC = () => {
 	const [events, setEvents] = useState<Events>({} as Events)
 	const [centers, setCenters] = useState<SuperSelectField[]>([])
 	const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([])
-	const [pageQuery, setPageQuery] = useState<string>(
-		new URLSearchParams(location.search).toString()
-	)
+	const [pageQuery, setPageQuery] = useState<string>(new URLSearchParams(location.search).toString())
 
 	// Se obtiene la query de la URL para utilizarla en el filtro de eventos
 	useEffect(() => {
@@ -43,7 +43,11 @@ const ProfessionalAgendaPage: React.FC = () => {
 	// refetch es una función que permite volver a obtener los eventos
 	// en caso de que se realice alguna acción que modifique los eventos
 
-	const { error, refetch: refetchEvents, loading } = useRequest<Events>({
+	const {
+		error,
+		refetch: refetchEvents,
+		loading,
+	} = useRequest<Events>({
 		action: getEvents,
 		query: `professionalId=${user?.id}&${pageQuery}`,
 		onSuccess: (events) => {

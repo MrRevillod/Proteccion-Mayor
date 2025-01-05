@@ -1,9 +1,9 @@
 import React from "react"
-import Header from "../components/ui/Header"
 
-import { Show } from "../components/ui/Show"
-import { useAuth } from "../context/AuthContext"
-import { Loading } from "../components/Loading"
+import { Show } from "@/components/ui/Show"
+import { Header } from "@/components/ui/Header"
+import { useAuth } from "@/context/AuthContext"
+import { Loading } from "@/components/Loading"
 
 const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const { isAuthenticated, user, loading } = useAuth()

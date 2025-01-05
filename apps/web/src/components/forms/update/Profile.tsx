@@ -1,17 +1,17 @@
 import React from "react"
 
-import { Input } from "../../ui/Input"
-import { Button } from "../../ui/Button"
-import { useAuth } from "../../../context/AuthContext"
+import { Input } from "@/components/ui/Input"
+import { Button } from "@/components/ui/Button"
+import { useAuth } from "@/context/AuthContext"
 import { message } from "antd"
-import { useMutation } from "../../../hooks/useMutation"
+import { useMutation } from "@/hooks/useMutation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ImageSelector } from "../../ImageSelector"
-import { AdministratorSchemas } from "../../../lib/schemas"
-import { MutationResponse, User } from "../../../lib/types"
-import { buildRequestBody, handleFormError } from "../../../lib/form"
+import { ImageSelector } from "@/components/ImageSelector"
+import { AdministratorSchemas } from "@/lib/schemas"
+import { MutationResponse, User } from "@/lib/types"
+import { buildRequestBody, handleFormError } from "@/lib/form"
 import { useEffect, Dispatch, SetStateAction } from "react"
-import { updateAdministrator, updateProfessional } from "../../../lib/actions"
+import { updateAdministrator, updateProfessional } from "@/lib/actions"
 import { FieldValues, FormProvider, SubmitHandler, useForm } from "react-hook-form"
 
 interface UpdateProfileProps {
@@ -19,7 +19,7 @@ interface UpdateProfileProps {
 	setShowUpdateForm: Dispatch<SetStateAction<boolean>>
 }
 
-const UpdateProfile: React.FC<UpdateProfileProps> = ({ setImageSrc, setShowUpdateForm }) => {
+export const UpdateProfile: React.FC<UpdateProfileProps> = ({ setImageSrc, setShowUpdateForm }) => {
 	const methods = useForm({ resolver: zodResolver(AdministratorSchemas.Update) })
 
 	const { user, setUser, role } = useAuth()
@@ -112,5 +112,3 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({ setImageSrc, setShowUpdat
 		</FormProvider>
 	)
 }
-
-export default UpdateProfile

@@ -1,17 +1,17 @@
 import React from "react"
-import Router from "./pages/router"
+import Router from "@/pages/router"
 import ReactDOM from "react-dom/client"
-import AppLayout from "./layouts/AppLayout"
+import AppLayout from "@/layouts/AppLayout"
 
-import { AuthProvider } from "./context/AuthContext"
-import { ModalProvider } from "./context/ModalContext"
 import { BrowserRouter } from "react-router-dom"
-import { ThemeProvider } from "./context/ThemeContext"
+
+import { AuthProvider } from "@/context/AuthContext"
+import { ModalProvider } from "@/context/ModalContext"
+import { ThemeProvider } from "@/context/ThemeContext"
 import { StyleProvider } from "@ant-design/cssinjs"
-import { SocketProvider } from "./context/SocketContext"
+import { SocketProvider } from "@/context/SocketContext"
 
 import "./main.css"
-
 
 const root = ReactDOM.createRoot(document.getElementById("root")!)
 

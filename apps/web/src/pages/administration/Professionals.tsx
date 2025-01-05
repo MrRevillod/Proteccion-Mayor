@@ -1,18 +1,18 @@
 import React from "react"
-import PageLayout from "../../layouts/PageLayout"
+import PageLayout from "@/layouts/PageLayout"
 
-import DataTable from "../../components/Table"
-import ConfirmAction from "../../components/ConfirmAction"
-import CreateProfessional from "../../components/forms/create/Professional"
-import UpdateProfessional from "../../components/forms/update/Professional"
+import { Table } from "@/components/Table"
+import { ConfirmAction } from "@/components/ConfirmAction"
+import { CreateProfessional } from "@/components/forms/create/Professional"
+import { UpdateProfessional } from "@/components/forms/update/Professional"
 
 import { message } from "antd"
 import { useState } from "react"
-import { useRequest } from "../../hooks/useRequest"
+import { useRequest } from "@/hooks/useRequest"
 import { useNavigate } from "react-router-dom"
-import { Professional } from "../../lib/types"
-import { ProfessionalColumns } from "../../lib/columns"
-import { deleteProfessional, getProfessionals } from "../../lib/actions"
+import { Professional } from "@/lib/types"
+import { ProfessionalColumns } from "@/lib/columns"
+import { deleteProfessional, getProfessionals } from "@/lib/actions"
 
 const ProfessionalsPage: React.FC = () => {
 	const [professionals, setProfessionals] = useState<Professional[]>([])
@@ -40,14 +40,14 @@ const ProfessionalsPage: React.FC = () => {
 			searchKeys={["id", "name", "email"]}
 		>
 			<section className="w-full bg-white dark:bg-primary-dark p-4 rounded-lg">
-				<DataTable<Professional>
-					editable
-					deletable
+				<Table<Professional>
 					loading={loading}
 					data={professionals}
-					history
 					onHistory={handleHistory}
 					columnsConfig={ProfessionalColumns}
+					editable
+					deletable
+					history
 				/>
 			</section>
 

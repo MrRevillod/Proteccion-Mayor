@@ -1,14 +1,14 @@
 import React from "react"
-import DataTable from "../../../components/Table"
-import PageLayout from "../../../layouts/PageLayout"
+import PageLayout from "@/layouts/PageLayout"
 
+import { Table } from "@/components/Table"
 import { message } from "antd"
 import { useState } from "react"
-import { useRequest } from "../../../hooks/useRequest"
-import { getSeniors } from "../../../lib/actions"
+import { useRequest } from "@/hooks/useRequest"
+import { getSeniors } from "@/lib/actions"
 import { useNavigate } from "react-router-dom"
-import { Senior, UnvalidatedSenior } from "../../../lib/types"
-import { UnvalidatedSeniorsColumns } from "../../../lib/columns"
+import { Senior, UnvalidatedSenior } from "@/lib/types"
+import { UnvalidatedSeniorsColumns } from "@/lib/columns"
 
 const NewSeniorsPage: React.FC = () => {
 	const [seniors, setSeniors] = useState<Senior[]>([])
@@ -36,7 +36,7 @@ const NewSeniorsPage: React.FC = () => {
 			setData={setSeniors}
 		>
 			<section className="w-full bg-white dark:bg-primary-dark p-4 rounded-lg">
-				<DataTable<UnvalidatedSenior>
+				<Table<UnvalidatedSenior>
 					data={seniors}
 					loading={loading}
 					onView={handleView}

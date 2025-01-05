@@ -1,12 +1,13 @@
-import React from "react"
-import UpdateProfile from "../components/forms/update/Profile"
+import React, { useState } from "react"
 
-import { Button } from "../components/ui/Button"
-import { useAuth } from "../context/AuthContext"
-import { useState } from "react"
-import { UserRole } from "../lib/types"
-import { IMAGE_BASE_URL } from "../lib/axios"
-import { formatRole, formatRut } from "../lib/formatters"
+import { Button } from "@/components/ui/Button"
+import { UpdateProfile } from "@/components/forms/update/Profile"
+
+import { useAuth } from "@/context/AuthContext"
+
+import { UserRole } from "@/lib/types"
+import { IMAGE_BASE_URL } from "@/lib/axios"
+import { formatRole, formatRut } from "@/lib/formatters"
 
 const ProfilePage: React.FC = () => {
 	const [showUpdateForm, setShowUpdateForm] = useState<boolean>(false)

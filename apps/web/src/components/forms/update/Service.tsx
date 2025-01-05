@@ -1,20 +1,19 @@
 import React from "react"
 
-import { Form } from "../Form"
-import { Input } from "../../ui/Input"
-import { Modal } from "../../Modal"
-import { useModal } from "../../../context/ModalContext"
+import { Form } from "@/components/forms/Form"
+import { Input } from "@/components/ui/Input"
+import { Modal } from "@/components/Modal"
+import { useModal } from "@/context/ModalContext"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ColorPicker } from "../../ColorPicker"
-import { updateService } from "../../../lib/actions"
-import { ServiceSchemas } from "../../../lib/schemas"
-import { ImageSelector } from "../../ImageSelector"
-import { Service, FormProps } from "../../../lib/types"
+import { ColorPicker } from "@/components/ColorPicker"
+import { updateService } from "@/lib/actions"
+import { ServiceSchemas } from "@/lib/schemas"
+import { ImageSelector } from "@/components/ImageSelector"
+import { Service, FormProps } from "@/lib/types"
 import { useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 
-const UpdateService: React.FC<FormProps<Service>> = ({ data, setData }) => {
-
+export const UpdateService: React.FC<FormProps<Service>> = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false)
 	const { selectedData } = useModal()
 
@@ -60,5 +59,3 @@ const UpdateService: React.FC<FormProps<Service>> = ({ data, setData }) => {
 		</Modal>
 	)
 }
-
-export default UpdateService

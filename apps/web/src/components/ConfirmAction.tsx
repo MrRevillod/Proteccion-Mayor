@@ -21,7 +21,7 @@ interface ConfirmActionProps<T> {
 	refetch?: () => void
 }
 
-const ConfirmDelete = <T extends BaseDataType>({ text, ...props }: ConfirmActionProps<T>) => {
+export const ConfirmAction = <T extends BaseDataType>({ text, ...props }: ConfirmActionProps<T>) => {
 	const { data, setData, action, refetch, requirePasswordConfirmation } = props
 	const { handleOk, handleCancel, selectedData } = useModal()
 
@@ -109,5 +109,3 @@ const ConfirmDelete = <T extends BaseDataType>({ text, ...props }: ConfirmAction
 		</Modal>
 	)
 }
-
-export default ConfirmDelete

@@ -1,4 +1,4 @@
-import { ApiError, QueryAction } from "../lib/types"
+import { ApiError, QueryAction } from "@/lib/types"
 import { useEffect, useState, useRef } from "react"
 
 /**
@@ -69,7 +69,7 @@ export const useRequest = <T,>({ action, ...props }: useRequestProps<T>): useReq
 	// es importante utilizar una ref para que el valor de la función
 	// no cambie en cada renderizado, un estado no sería adecuado
 
-	const fetchDataRef = useRef<() => void>(() => { })
+	const fetchDataRef = useRef<() => void>(() => {})
 
 	const fetchData = async () => {
 		try {

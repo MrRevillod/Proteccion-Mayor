@@ -1,12 +1,13 @@
 import React from "react"
 
-import { Input } from "../../components/ui/Input"
+import { Input } from "@/components/ui/Input"
+import { useAuth } from "@/context/AuthContext"
+import { LoginFormData } from "@/lib/types"
+import { LoginFormSchema } from "@/lib/schemas"
+
 import { Helmet } from "react-helmet"
-import { useAuth } from "../../context/AuthContext"
 import { Fragment } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { LoginFormData } from "../../lib/types"
-import { LoginFormSchema } from "../../lib/schemas"
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form"
 
 const LoginPage: React.FC = () => {

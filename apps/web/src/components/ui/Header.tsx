@@ -9,7 +9,7 @@ import { Link, useLocation } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { Avatar, Dropdown, Navbar } from "flowbite-react"
 
-const Header: React.FC = () => {
+export const Header: React.FC = () => {
 	const location = useLocation()
 
 	const { toggleTheme, isDarkMode } = useTheme()
@@ -176,5 +176,3 @@ const Header: React.FC = () => {
 		</Navbar>
 	)
 }
-
-export default Header

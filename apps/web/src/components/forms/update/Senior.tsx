@@ -1,20 +1,19 @@
 import dayjs from "dayjs"
 import React from "react"
-import DatetimeSelect from "../../ui/DatetimeSelect"
 
-import { Form } from "../Form"
-import { Modal } from "../../Modal"
-import { Input } from "../../ui/Input"
-import { useModal } from "../../../context/ModalContext"
+import { Form } from "@/components/forms/Form"
+import { Modal } from "@/components/Modal"
+import { Input } from "@/components/ui/Input"
+import { useModal } from "@/context/ModalContext"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { updateSenior } from "../../../lib/actions"
-import { SeniorSchemas } from "../../../lib/schemas"
-import { Senior, FormProps } from "../../../lib/types"
+import { updateSenior } from "@/lib/actions"
+import { SeniorSchemas } from "@/lib/schemas"
+import { DatetimeSelect } from "@/components/ui/DatetimeSelect"
+import { Senior, FormProps } from "@/lib/types"
 import { useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 
-const UpdateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => {
-
+export const UpdateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false)
 	const { selectedData } = useModal()
 
@@ -56,5 +55,3 @@ const UpdateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => {
 		</Modal>
 	)
 }
-
-export default UpdateSenior

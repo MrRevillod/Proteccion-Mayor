@@ -1,9 +1,10 @@
 import React from "react"
-import DataTable from "@/components/Table"
 import PageLayout from "@/layouts/PageLayout"
-import CreateSenior from "@/components/forms/create/Senior"
-import UpdateSenior from "@/components/forms/update/Senior"
-import ConfirmAction from "@/components/ConfirmAction"
+
+import { Table } from "@/components/Table"
+import { CreateSenior } from "@/components/forms/create/Senior"
+import { UpdateSenior } from "@/components/forms/update/Senior"
+import { ConfirmAction } from "@/components/ConfirmAction"
 
 import { Senior } from "@/lib/types"
 import { message } from "antd"
@@ -40,7 +41,7 @@ const SeniorsPage: React.FC = () => {
 			searchKeys={["id", "name", "email"]}
 		>
 			<section className="w-full bg-white dark:bg-primary-dark p-4 rounded-lg">
-				<DataTable<Senior>
+				<Table<Senior>
 					data={seniors}
 					columnsConfig={SeniorsColumns}
 					editable

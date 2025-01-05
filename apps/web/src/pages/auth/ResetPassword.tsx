@@ -1,13 +1,14 @@
 import clsx from "clsx"
-import React from "react"
+import React, { useState } from "react"
 
 import { z } from "zod"
-import { api } from "../../lib/axios"
-import { Input } from "../../components/ui/Input"
-import { Helmet } from "react-helmet"
 import { message } from "antd"
+
+import { api } from "@/lib/axios"
+import { Input } from "@/components/ui/Input"
 import { Loading } from "@/components/Loading"
-import { useState } from "react"
+
+import { Helmet } from "react-helmet"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useSearchParams } from "react-router-dom"
 import { FormProvider, useForm } from "react-hook-form"

@@ -1,18 +1,20 @@
 import React from "react"
-import PageLayout from "../../layouts/PageLayout"
-import CreateService from "../../components/forms/create/Service"
-import UpdateService from "../../components/forms/update/Service"
-import ConfirmDelete from "../../components/ConfirmAction"
+import PageLayout from "@/layouts/PageLayout"
 
 import { message } from "antd"
-import { Service } from "../../lib/types"
 import { useState } from "react"
-import { useModal } from "@/context/ModalContext"
-import { ImageCard } from "../../components/ui/ImageCard"
-import { CardLayout } from "../../components/CardLayout"
-import { useRequest } from "../../hooks/useRequest"
 import { useNavigate } from "react-router-dom"
-import { deleteService, getServices } from "../../lib/actions"
+
+import { Service } from "@/lib/types"
+import { useRequest } from "@/hooks/useRequest"
+import { deleteService, getServices } from "@/lib/actions"
+
+import { useModal } from "@/context/ModalContext"
+import { ImageCard } from "@/components/ui/ImageCard"
+import { CardLayout } from "@/components/CardLayout"
+import { CreateService } from "@/components/forms/create/Service"
+import { UpdateService } from "@/components/forms/update/Service"
+import { ConfirmAction } from "@/components/ConfirmAction"
 
 const ServicesPage: React.FC = () => {
 	const navigate = useNavigate()
@@ -52,7 +54,7 @@ const ServicesPage: React.FC = () => {
 
 			<CreateService data={services} setData={setServices} />
 			<UpdateService data={services} setData={setServices} />
-			<ConfirmDelete<Service>
+			<ConfirmAction<Service>
 				text="¿Estás seguro(a) de que deseas eliminar este servicio?"
 				data={services}
 				setData={setServices}

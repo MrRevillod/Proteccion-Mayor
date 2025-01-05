@@ -5,25 +5,27 @@ import { MutateActionProps, QueryActionProps } from "./types"
 // Funciones auxiliares para las operaciones CRUD
 
 const apiRequest = {
-	get: async (url: string) => {
+	get: async (url: string): Promise<AxiosResponse> => {
 		return await api.get(url)
 	},
-	post: async (url: string, opts: MutateActionProps) => {
+	post: async (url: string, opts: MutateActionProps): Promise<AxiosResponse> => {
 		return await api.post(url, opts.body)
 	},
-	patch: async (url: string, opts: MutateActionProps) => {
+	patch: async (url: string, opts: MutateActionProps): Promise<AxiosResponse> => {
 		return await api.patch(`${url}/${opts.id}`, opts.body, {
 			headers: {
 				"Content-Type": getContentType(opts.body),
 			},
 		})
 	},
-	delete: async (url: string, opts: MutateActionProps) => {
+	delete: async (url: string, opts: MutateActionProps): Promise<AxiosResponse> => {
 		return await api.delete(`${url}/${opts.id}`)
 	},
 }
 
 // Acciones CRUD para los administradores
+
+import { AxiosResponse } from "axios"
 
 export const getAdministrators = async (props: QueryActionProps) => {
 	return await apiRequest.get(`/dashboard/administrators${props.query ? "?" + props.query : ""}`)

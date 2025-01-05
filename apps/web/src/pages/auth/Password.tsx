@@ -1,19 +1,21 @@
 import React from "react"
 import RenderPageError from "@/layouts/PageErrorLayout"
 
-import { api } from "../../lib/axios"
-import { Show } from "@/components/ui/Show"
-import { Input } from "../../components/ui/Input"
 import { Helmet } from "react-helmet"
 import { message } from "antd"
-import { Loading } from "@/components/Loading"
-import { UserRole } from "@/lib/types"
 import { jwtDecode } from "jwt-decode"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { resetPasswordSchema } from "../../lib/schemas"
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form"
+
+import { api } from "@/lib/axios"
+import { UserRole } from "@/lib/types"
+import { resetPasswordSchema } from "@/lib/schemas"
+
+import { Show } from "@/components/ui/Show"
+import { Input } from "@/components/ui/Input"
+import { Loading } from "@/components/Loading"
 
 interface ResetPasswordFormData {
 	password: string
