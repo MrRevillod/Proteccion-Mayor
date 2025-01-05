@@ -87,13 +87,13 @@ export class AdministratorsController {
 			const response = { modified: administrator, image: null }
 
 			if (file) {
-				const response = await this.storage.uploadFile({
+				const storage = await this.storage.uploadFile({
 					input: file,
 					url: `/upload?path=%2Fusers%2F${params.id}`,
 					filename: params.id,
 				})
 
-				response.image = response.image
+				response.image = storage.image as any
 			}
 
 			return res.status(200).json({ values: response })

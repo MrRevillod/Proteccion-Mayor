@@ -17,9 +17,9 @@ interface SingleUploadArgs extends UploadArgs {
 export class StorageService {
 	public uploadFile = async ({ url, input, filename }: SingleUploadArgs) => {
 		const formData = this.fileToFormData(input as File, filename)
-		const data = (await this.uploadRequest(url, formData)) as { values: { image: string } }
+		const data = (await this.uploadRequest(url, formData)) as { image: string | null }
 
-		return { status: 200, message: "success", image: data.values.image }
+		return { status: 200, message: "success", image: data.image }
 	}
 
 	public uploadFiles = async ({ url, input }: UploadArgs) => {
@@ -70,11 +70,11 @@ export class StorageService {
 		return formData
 	}
 
-	private uploadRequest = async (url: string, formData: FormData) => {
+	private uploadRequest = async (path: string, formData: FormData) => {
 		const { STORAGE } = services
 		const { STORAGE_KEY } = constants
 
-		const response = await fetch(`${STORAGE.url}${url}`, {
+		const response = await fetch(`${STORAGE.url}${path}`, {
 			method: "POST",
 			body: formData,
 			headers: {
@@ -86,6 +86,7 @@ export class StorageService {
 			throw new AppError(response.status ?? 500, "Error al subir el archivo")
 		}
 
-		return response.json()
+		const data = (await response.json()) as { values: { image?: string } }
+		return data?.values
 	}
 }

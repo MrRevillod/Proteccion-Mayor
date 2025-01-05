@@ -96,13 +96,13 @@ export class ProfessionalsController {
 			const response = { modified: professional, image: null }
 
 			if (file) {
-				const response = await this.storage.uploadFile({
+				const storage = await this.storage.uploadFile({
 					input: file,
 					filename: params.id,
 					url: `/upload?path=%2Fusers%2F${params.id}`,
 				})
 
-				response.image = response.image
+				response.image = storage.image as any
 			}
 
 			return res.status(200).json({ values: response })

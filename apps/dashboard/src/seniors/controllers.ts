@@ -138,7 +138,7 @@ export class SeniorController {
 					filename: params.id,
 				})
 
-				response.image = storageResponse.image
+				response.image = storageResponse.image as any
 			}
 
 			return res.status(200).json({ values: response })

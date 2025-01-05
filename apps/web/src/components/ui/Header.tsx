@@ -10,7 +10,6 @@ import { useState, useEffect } from "react"
 import { Avatar, Dropdown, Navbar } from "flowbite-react"
 
 const Header: React.FC = () => {
-
 	const location = useLocation()
 
 	const { toggleTheme, isDarkMode } = useTheme()
@@ -39,18 +38,19 @@ const Header: React.FC = () => {
 	}
 
 	useEffect(() => {
-
 		const path = location.pathname.split("/")[1]
 
 		if (path === "agenda") {
 			setSelectedPage("Agenda")
 			return
 		}
-
 	}, [location])
 
 	return (
-		<Navbar fluid className="py-4 h-18 w-full bg-primary dark:bg-primary-darker rounded-none px-8 md:px-12 lg:px-20">
+		<Navbar
+			fluid
+			className="py-4 h-18 w-full bg-primary dark:bg-primary-darker rounded-none px-8 md:px-12 lg:px-20"
+		>
 			<Navbar.Brand className="ml-2 2xl:ml-4">
 				<img src="/logo.webp" alt="logo" width="50" />
 			</Navbar.Brand>
@@ -64,7 +64,7 @@ const Header: React.FC = () => {
 						label={
 							<Avatar
 								alt="User settings"
-								img={profilePicture?.toString()}
+								img={profilePicture ?? `${IMAGE_BASE_URL}/users/default-profile.webp`}
 								onError={handleImageError}
 								rounded
 							/>
