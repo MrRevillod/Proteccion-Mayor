@@ -2,7 +2,7 @@ import { match } from "ts-pattern"
 import { prisma } from "@repo/database"
 import { compare, hash } from "bcrypt"
 import { AppError, Unauthorized, NotFound, Conflict, users } from "@repo/lib"
-import { services, Controller, CONSTANTS, UserRole, jwt, MailerService, templates } from "@repo/lib"
+import { SERVICES, Controller, CONSTANTS, UserRole, jwt, MailerService, templates } from "@repo/lib"
 
 export class AccountController {
 	constructor(private mailer: MailerService) {}
@@ -35,7 +35,7 @@ export class AccountController {
 			const token = jwt.sign(payload, tokenOpts)
 			const roleToken = jwt.sign(rolePayload, roleTokenOpts)
 
-			const resetLink = `${services.WEB_APP.url}auth/restaurar-contrasena/${user.id}/${token}/${roleToken}`
+			const resetLink = `${SERVICES.WEB_APP.URL}auth/restaurar-contrasena/${user.id}/${token}/${roleToken}`
 
 			this.mailer.send({
 				to: email,
