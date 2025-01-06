@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { BadRequest } from "../errors/custom"
-import { constants, jwt, rules, users } from ".."
+import { CONSTANTS, jwt, rules, users } from ".."
 import { validateBufferMIMEType } from "validate-image-type"
 import { Request, Response, NextFunction } from "express"
 import { FileMiddleware, Middleware, SchemaBasedMiddleware, UserRole } from "../types"
@@ -91,7 +91,7 @@ export const resetPasswordRequest: Middleware = async (req, res, next) => {
 		})
 
 		if (!user) throw new BadRequest("Usuario no encontrado")
-		jwt.verify(token, `${constants.JWT_SECRET}${user?.password}`)
+		jwt.verify(token, `${CONSTANTS.JWT_SECRET}${user?.password}`)
 
 		const userRole = rolePayload.role as UserRole
 

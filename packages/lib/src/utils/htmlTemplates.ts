@@ -1,7 +1,7 @@
 import dayjs from "dayjs"
 dayjs.locale("es")
 
-import { services } from "../config"
+import { SERVICES } from "../env"
 
 const headerTemplate = (title: string) => `
   <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
@@ -100,7 +100,7 @@ export const welcome = (name: string, email: string, password: string) => `
   </ul>
   <p>Por favor, inicia sesión en la plataforma y cambia tu contraseña por una más segura.</p>
   <p style="text-align: center;">
-  <a href="${services.WEB_APP.url}auth/iniciar-sesion" style="display: inline-block; background-color: #046C4E; color: white; padding: 8px 20px; text-decoration: none; border-radius: 5px;">
+  <a href="${SERVICES.WEB_APP.URL}auth/iniciar-sesion" style="display: inline-block; background-color: #046C4E; color: white; padding: 8px 20px; text-decoration: none; border-radius: 5px;">
     Ir a la plataforma
   </a>
   </p>

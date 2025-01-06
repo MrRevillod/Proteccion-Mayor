@@ -11,7 +11,7 @@ import { createServer } from "http"
 import { SocketEvents } from "./socket"
 import { createAdapter } from "@socket.io/cluster-adapter"
 import { Server, Socket } from "socket.io"
-import { MailerService, services, startService, UserRole } from "@repo/lib"
+import { MailerService, SERVICES, startService, UserRole } from "@repo/lib"
 import { AuthenticationService, createApplication, StorageService } from "@repo/lib"
 
 const authService = new AuthenticationService()
@@ -33,7 +33,7 @@ const http = createServer(app)
 
 export const io = new Server<SocketEvents>(http, {
 	cors: {
-		origin: services.WEB_APP.url,
+		origin: SERVICES.WEB_APP.URL,
 		methods: ["GET", "POST"],
 	},
 	path: "/api/dashboard/socket.io",
@@ -58,6 +58,6 @@ io.on("connection", (socket: Socket) => {
 	})
 })
 
-http.listen(services.DASHBOARD.port, () => {
-	startService("DASHBOARD", services.DASHBOARD.url, services.DASHBOARD.port)
+http.listen(SERVICES.DASHBOARD.PORT, () => {
+	startService("DASHBOARD", SERVICES.DASHBOARD.URL, SERVICES.DASHBOARD.PORT)
 })

@@ -1,11 +1,11 @@
 import { RequestHandler } from "express"
-import { AppError, constants } from "@repo/lib"
+import { AppError, CONSTANTS } from "@repo/lib"
 
 import fs from "node:fs"
 import path from "node:path"
 
 export const verifyStorageKey: RequestHandler = (req, res, next) => {
-	if (req.headers["x-storage-key"] !== constants.STORAGE_KEY) {
+	if (req.headers["x-storage-key"] !== CONSTANTS.STORAGE_KEY) {
 		next(new AppError(403, "No tiene permisos para acceder al servicio"))
 	}
 	next()

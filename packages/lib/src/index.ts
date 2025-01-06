@@ -30,7 +30,6 @@ export {
 
 export { MailerService } from "./services/mailer"
 export { StorageService } from "./services/storage"
-export { services, constants } from "./config"
 export { AuthenticationService } from "./services/authentication"
 
 export type { UserRole, User, Controller, Middleware } from "./types"
@@ -41,4 +40,5 @@ export { Schema } from "./application/schema"
 export { extensions } from "./application/extensions"
 export { errorHandler } from "./errors/handler"
 export { createApplication } from "./application/"
+export { CONSTANTS, SERVICES } from "./env"
 export { AppError, AuthError, BadRequest, Conflict, Unauthorized, NotFound } from "./errors/custom"

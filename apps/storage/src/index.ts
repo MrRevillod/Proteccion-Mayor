@@ -6,7 +6,7 @@ import express from "express"
 import { Router } from "express"
 import { verifyStorageKey } from "./utils"
 import { createApplication, startService } from "@repo/lib"
-import { log, services, AuthenticationService } from "@repo/lib"
+import { SERVICES, AuthenticationService } from "@repo/lib"
 
 // Las imagenes son transformadas a formato webp con calidad 80
 // Un upload de una imagen con el mismo nombre sobreescribe la anterior
@@ -70,6 +70,6 @@ app.use(
 
 app.use("/api/storage/", verifyStorageKey, router)
 
-app.listen(services.STORAGE.port, () => {
-	startService("STORAGE", services.STORAGE.url, services.STORAGE.port)
+app.listen(SERVICES.STORAGE.PORT, () => {
+	startService("STORAGE", SERVICES.STORAGE.URL, SERVICES.STORAGE.PORT)
 })

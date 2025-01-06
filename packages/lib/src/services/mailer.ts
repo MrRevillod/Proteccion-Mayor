@@ -1,4 +1,4 @@
-import { constants } from "../config"
+import { CONSTANTS } from "../env"
 import { createTransport, Transporter } from "nodemailer"
 
 type SendMailOpts = {
@@ -7,7 +7,7 @@ type SendMailOpts = {
 	html: string
 }
 
-const { PROJECT_EMAIL_ADDRESS, PROJECT_EMAIL_PASSWORD, PROJECT_EMAIL_HOST } = constants
+const { PROJECT_EMAIL_ADDRESS, PROJECT_EMAIL_PASSWORD, PROJECT_EMAIL_HOST } = CONSTANTS
 
 export class MailerService {
 	private transporter: Transporter

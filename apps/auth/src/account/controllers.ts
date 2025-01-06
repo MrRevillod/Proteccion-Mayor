@@ -2,9 +2,7 @@ import { match } from "ts-pattern"
 import { prisma } from "@repo/database"
 import { compare, hash } from "bcrypt"
 import { AppError, Unauthorized, NotFound, Conflict, users } from "@repo/lib"
-import { services, Controller, constants, UserRole, jwt, MailerService, templates } from "@repo/lib"
-
-const { JWT_SECRET } = constants
+import { services, Controller, CONSTANTS, UserRole, jwt, MailerService, templates } from "@repo/lib"
 
 export class AccountController {
 	constructor(private mailer: MailerService) {}
@@ -66,7 +64,7 @@ export class AccountController {
 			const user = await users.find({ role: rolePayload.role, filter: { id } })
 			if (!user) throw new NotFound("Usuario no encontrado.")
 
-			jwt.verify(token, `${JWT_SECRET}${user.password}`)
+			jwt.verify(token, `${CONSTANTS.JWT_SECRET}${user.password}`)
 
 			if (await compare(password, user.password)) {
 				throw new Conflict("La nueva contraseña no puede ser igual a la anterior.")
@@ -107,7 +105,7 @@ export class AccountController {
 			const user = await users.find({ role: rolePayload.role, filter: { id } })
 			if (!user) throw new NotFound("Usuario no encontrado.")
 
-			jwt.verify(token, `${JWT_SECRET}${user.password}`)
+			jwt.verify(token, `${CONSTANTS.JWT_SECRET}${user.password}`)
 
 			return res.status(200).json({ message: "OK" })
 		} catch (error) {

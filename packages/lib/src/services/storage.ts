@@ -1,5 +1,5 @@
 import { AppError } from "../errors/custom"
-import { constants, services } from "../config"
+import { CONSTANTS, SERVICES } from "../env"
 
 type File = Express.Multer.File
 type Files = Record<string, File[]>
@@ -30,14 +30,11 @@ export class StorageService {
 	}
 
 	public deleteFile = async ({ url }: { url: string }) => {
-		const { STORAGE } = services
-		const { STORAGE_KEY } = constants
-
-		const addr = `${STORAGE.url}${url}`
+		const addr = `${SERVICES.STORAGE.URL}${url}`
 
 		const response = await fetch(addr, {
 			method: "DELETE",
-			headers: { "X-storage-key": STORAGE_KEY },
+			headers: { "X-storage-key": CONSTANTS.STORAGE_KEY },
 		})
 
 		if (!response.ok) {
@@ -71,15 +68,10 @@ export class StorageService {
 	}
 
 	private uploadRequest = async (path: string, formData: FormData) => {
-		const { STORAGE } = services
-		const { STORAGE_KEY } = constants
-
-		const response = await fetch(`${STORAGE.url}${path}`, {
+		const response = await fetch(`${SERVICES.STORAGE.URL}${path}`, {
 			method: "POST",
 			body: formData,
-			headers: {
-				"X-storage-key": STORAGE_KEY,
-			},
+			headers: { "X-storage-key": CONSTANTS.STORAGE_KEY },
 		})
 
 		if (!response.ok) {
