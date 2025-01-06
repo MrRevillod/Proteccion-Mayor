@@ -2,6 +2,7 @@ import multer from "multer"
 
 import { AppError } from "../errors/custom"
 import { memoryStorage } from "multer"
+import { RequestHandler } from "express"
 
 const fileWhitelist = ["image/png", "image/jpeg", "image/jpg", "image/webp"]
 
@@ -17,8 +18,8 @@ const upload = multer({
 	},
 })
 
-export const singleImage = upload.single("image")
-export const mobileregisterFiles = upload.fields([
+export const singleImage: RequestHandler = upload.single("image")
+export const mobileregisterFiles: RequestHandler = upload.fields([
 	{ name: "dni-a", maxCount: 1 },
 	{ name: "dni-b", maxCount: 1 },
 	{ name: "social", maxCount: 1 },
