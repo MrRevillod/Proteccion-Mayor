@@ -4,6 +4,7 @@ import { api, httpClient } from "@/lib/http"
 import { Dispatch, SetStateAction } from "react"
 import { createContext, ReactNode, useState } from "react"
 import { deleteSecureStore, setSecureStore } from "@/lib/secureStore"
+import { eventEmitter } from "@/lib/events"
 
 interface AuthContextType {
 	isAuthenticated: boolean
@@ -57,6 +58,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 			setError(null)
 
 			onSuccess()
+
+			eventEmitter.emit("session-started")
 		} catch (error: any) {
 			console.log(error)
 			setError(error.response?.data?.message || "Error al iniciar sesión")
@@ -69,17 +72,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 	const logout = async () => {
 		setLoading(true)
+		setIsCheckingSession(true)
 
 		Promise.all([deleteSecureStore("accessToken"), deleteSecureStore("refreshToken")])
 
 		setIsAuthenticated(false)
 		setUser(null)
 
+		setIsCheckingSession(false)
 		setLoading(false)
 	}
 
 	const validateSession = async () => {
-
 		setIsCheckingSession(true)
 
 		try {
