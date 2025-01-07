@@ -61,6 +61,8 @@ export class EventsController {
 			if (senior && !senior?.validated)
 				throw new AppError(409, "La persona mayor no está validada")
 
+			console.log(start)
+
 			const event = {
 				start: dayjs(start),
 				end: dayjs(end),

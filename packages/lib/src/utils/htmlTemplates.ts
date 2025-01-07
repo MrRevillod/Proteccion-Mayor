@@ -1,10 +1,18 @@
 import dayjs from "dayjs"
 
+import utc from "dayjs/plugin/utc"
+import timezone from "dayjs/plugin/timezone"
 import "dayjs/locale/es"
 
 dayjs.locale("es")
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 import { SERVICES } from "../env"
+
+const formatDate = (date: string | Date, format = "dddd DD [de] MMMM [a las] HH:mm") => {
+	return dayjs(date).tz("America/Santiago").format(format)
+}
 
 const headerTemplate = (title: string) => `
   <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
@@ -37,21 +45,20 @@ export const reservation = (event: any) => {
 	const { professional, service, senior, center, start, end } = event
 
 	const professionalTemplate = `
-        ${headerTemplate("Cita Confirmada")}
-        <p>Hola, <strong>${professional?.name}</strong>.</p>
-        <p>Le informamos que se ha confirmado una cita para el servicio de <strong>${
-			service?.name
-		}</strong>.</p>
-        <ul>
-            <li><strong>Persona mayor:</strong> ${senior?.name}</li>
-            <li><strong>Hora:</strong> ${dayjs(start).format("dddd DD [de] MMMM HH:mm")} a ${dayjs(
-		end
-	).format("HH:mm ,YYYY")}</li>
-            <li><strong>Ubicación:</strong> ${center?.name}</li>
-        </ul>
-        <p>Por favor, contáctenos si necesita más detalles.</p>
-        ${footerTemplate}
-    `
+    ${headerTemplate("Cita Confirmada")}
+    <p>Hola, <strong>${professional?.name}</strong>.</p>
+    <p>Le informamos que se ha confirmado una cita para el servicio de <strong>${
+		service?.name
+	}</strong>.</p>
+    <ul>
+        <li><strong>Persona mayor:</strong> ${senior?.name}</li>
+        <li><strong>Hora:</strong> ${formatDate(start)} 
+        a ${formatDate(end, "HH:mm")}</li>
+        <li><strong>Ubicación:</strong> ${center?.name}</li>
+    </ul>
+    <p>Por favor, contáctenos si necesita más detalles.</p>
+    ${footerTemplate}
+`
 
 	const seniorTemplate = `
         ${headerTemplate("Confirmación de tu reserva")}
@@ -59,9 +66,7 @@ export const reservation = (event: any) => {
         <p>Tu reserva ha sido confirmada con éxito. Aquí tienes los detalles de tu cita:</p>
         <ul>
             <li><strong>Servicio:</strong> ${service?.name}</li>
-            <li><strong>Fecha y hora:</strong> ${dayjs(start).format(
-				"dddd DD [de] MMMM [a las] HH:mm"
-			)} a ${dayjs(end).format("HH:mm")}</li>
+            <li><strong>Fecha y hora:</strong> ${formatDate(start)}
             <li><strong>Centro:</strong> ${center?.name}</li>
             <li><strong>Profesional:</strong> ${professional?.name}</li>
         </ul>
@@ -84,8 +89,7 @@ export const cancelReservation = (event: any) => {
 		}</strong> ha sido cancelada.</p>
         <p><strong>Detalles de la cita cancelada:</strong></p>
         <ul>
-            <li><strong>Fecha:</strong> ${dayjs(start).format("dddd DD [de] MMMM YYYY")}</li>
-            <li><strong>Hora:</strong> ${dayjs(start).format("HH:mm")}</li>
+            <li><strong>Fecha y hora:</strong> ${formatDate(start)}</li>
         </ul>
         ${footerTemplate}
     `
@@ -98,8 +102,7 @@ export const cancelReservation = (event: any) => {
 		}</strong> ha sido cancelada.</p>
         <p><strong>Detalles:</strong></p>
         <ul>
-            <li><strong>Fecha:</strong> ${dayjs(start).format("dddd DD [de] MMMM YYYY")}</li>
-            <li><strong>Hora:</strong> ${dayjs(start).format("HH:mm")}</li>
+            <li><strong>Fecha y hora:</strong> ${formatDate(start)}</li>
         </ul>
         ${footerTemplate}
     `

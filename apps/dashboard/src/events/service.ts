@@ -132,8 +132,8 @@ export class EventService {
 		if (!overlap) {
 			await prisma.event.create({
 				data: {
-					start: start.toDate(),
-					end: end.toDate(),
+					start: start.toISOString(),
+					end: end.toISOString(),
 					professionalId,
 					serviceId: Number(serviceId),
 					seniorId: seniorId || null,
