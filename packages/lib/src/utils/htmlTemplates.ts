@@ -1,4 +1,7 @@
 import dayjs from "dayjs"
+
+import "dayjs/locale/es"
+
 dayjs.locale("es")
 
 import { SERVICES } from "../env"
@@ -10,7 +13,11 @@ const headerTemplate = (title: string) => `
 
 const footerTemplate = `
     <hr style="margin-top: 40px; border-color: #ddd;">
-    <p style="text-align: center; color: #888;">© ${new Date().toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}.</p>
+    <p style="text-align: center; color: #888;">© ${new Date().toLocaleDateString("es-ES", {
+		day: "numeric",
+		month: "long",
+		year: "numeric",
+	})}.</p>
   </div>
 `
 
@@ -32,10 +39,14 @@ export const reservation = (event: any) => {
 	const professionalTemplate = `
         ${headerTemplate("Cita Confirmada")}
         <p>Hola, <strong>${professional?.name}</strong>.</p>
-        <p>Le informamos que se ha confirmado una cita para el servicio de <strong>${service?.name}</strong>.</p>
+        <p>Le informamos que se ha confirmado una cita para el servicio de <strong>${
+			service?.name
+		}</strong>.</p>
         <ul>
             <li><strong>Persona mayor:</strong> ${senior?.name}</li>
-            <li><strong>Hora:</strong> ${dayjs(start).format("dddd DD [de] MMMM HH:mm")} a ${dayjs(end).format("HH:mm ,YYYY")}</li>
+            <li><strong>Hora:</strong> ${dayjs(start).format("dddd DD [de] MMMM HH:mm")} a ${dayjs(
+		end
+	).format("HH:mm ,YYYY")}</li>
             <li><strong>Ubicación:</strong> ${center?.name}</li>
         </ul>
         <p>Por favor, contáctenos si necesita más detalles.</p>
@@ -48,7 +59,9 @@ export const reservation = (event: any) => {
         <p>Tu reserva ha sido confirmada con éxito. Aquí tienes los detalles de tu cita:</p>
         <ul>
             <li><strong>Servicio:</strong> ${service?.name}</li>
-            <li><strong>Fecha y hora:</strong> ${dayjs(start).format("dddd DD [de] MMMM [a las] HH:mm")} a ${dayjs(end).format("HH:mm")}</li>
+            <li><strong>Fecha y hora:</strong> ${dayjs(start).format(
+				"dddd DD [de] MMMM [a las] HH:mm"
+			)} a ${dayjs(end).format("HH:mm")}</li>
             <li><strong>Centro:</strong> ${center?.name}</li>
             <li><strong>Profesional:</strong> ${professional?.name}</li>
         </ul>
@@ -66,7 +79,9 @@ export const cancelReservation = (event: any) => {
 	const professionalTemplate = `
         ${headerTemplate("Notificación de cancelación de cita")}
         <p>Hola <strong>${professional?.name}</strong>,</p>
-        <p>Lamentamos informarte que la cita programada con <strong>${senior?.name}</strong> ha sido cancelada.</p>
+        <p>Lamentamos informarte que la cita programada con <strong>${
+			senior?.name
+		}</strong> ha sido cancelada.</p>
         <p><strong>Detalles de la cita cancelada:</strong></p>
         <ul>
             <li><strong>Fecha:</strong> ${dayjs(start).format("dddd DD [de] MMMM YYYY")}</li>
@@ -78,7 +93,9 @@ export const cancelReservation = (event: any) => {
 	const seniorTemplate = `
         ${headerTemplate("Notificación de cancelación de cita")}
         <p>Estimado(a) <strong>${senior?.name}</strong>,</p>
-        <p>La cita programada del servicio de <strong>${service?.name}</strong> ha sido cancelada.</p>
+        <p>La cita programada del servicio de <strong>${
+			service?.name
+		}</strong> ha sido cancelada.</p>
         <p><strong>Detalles:</strong></p>
         <ul>
             <li><strong>Fecha:</strong> ${dayjs(start).format("dddd DD [de] MMMM YYYY")}</li>
@@ -100,7 +117,9 @@ export const welcome = (name: string, email: string, password: string) => `
   </ul>
   <p>Por favor, inicia sesión en la plataforma y cambia tu contraseña por una más segura.</p>
   <p style="text-align: center;">
-  <a href="${SERVICES.WEB_APP.URL}auth/iniciar-sesion" style="display: inline-block; background-color: #046C4E; color: white; padding: 8px 20px; text-decoration: none; border-radius: 5px;">
+  <a href="${
+		SERVICES.WEB_APP.URL
+  }auth/iniciar-sesion" style="display: inline-block; background-color: #046C4E; color: white; padding: 8px 20px; text-decoration: none; border-radius: 5px;">
     Ir a la plataforma
   </a>
   </p>
