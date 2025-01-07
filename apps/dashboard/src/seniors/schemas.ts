@@ -67,22 +67,26 @@ export class SeniorSchemas extends Schema {
 	}
 
 	get handleRegisterRequest() {
-		return z
-			.object({
-				rut: rules.rutSchema.optional(),
-				name: rules.nameSchema.optional(),
-				email: rules.emailSchema.optional(),
-				address: rules.addressSchema.optional(),
-				birthDate: z.string({ message: "La fecha de nacimiento es requerida" }).optional(),
-				gender: rules.genderSchema.optional(),
-			})
-			.refine((data) => data.birthDate && rules.isValidDate(data.birthDate), {
-				message: "La fecha de ingresada no es válida",
-				path: ["birthDate"],
-			})
-			.refine((data) => data.birthDate && rules.isValidSeniorBirthDate(data.birthDate), {
-				message: "La fecha de nacimiento no corresponde a la de una persona mayor",
-				path: ["birthDate"],
-			})
+		return z.optional(
+			z
+				.object({
+					rut: rules.rutSchema.optional(),
+					name: rules.nameSchema.optional(),
+					email: rules.emailSchema.optional(),
+					address: rules.addressSchema.optional(),
+					birthDate: z
+						.string({ message: "La fecha de nacimiento es requerida" })
+						.optional(),
+					gender: rules.genderSchema.optional(),
+				})
+				.refine((data) => !data.birthDate || rules.isValidDate(data.birthDate), {
+					message: "La fecha de ingresada no es válida",
+					path: ["birthDate"],
+				})
+				.refine((data) => !data.birthDate || rules.isValidSeniorBirthDate(data.birthDate), {
+					message: "La fecha de nacimiento no corresponde a la de una persona mayor",
+					path: ["birthDate"],
+				}),
+		)
 	}
 }
