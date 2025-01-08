@@ -2,27 +2,30 @@ import { findEvent, Router } from "@repo/lib"
 import { EventsSchemas } from "./schemas"
 import { EventsController } from "./controllers"
 import { AuthenticationService, validations } from "@repo/lib"
+import { HelpersController } from "../helpers/controllers"
 
 export class EventsRouter extends Router {
 	constructor(
 		private auth: AuthenticationService,
 		private schemas: EventsSchemas,
-		private controller: EventsController,
+        private controller: EventsController,
+        private helpersController: HelpersController,
 	) {
 		super({ prefix: "/api/dashboard/events" })
 
 		this.get({
 			path: "/",
 			handler: this.controller.getMany,
-			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL", "SENIOR"])],
+			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL", "SENIOR","HELPER"])],
 		})
 
 		this.post({
 			path: "/",
 			handler: this.controller.createOne,
 			middlewares: [
-				this.auth.authorize(["ADMIN", "PROFESSIONAL"]),
-				validations.body(this.schemas.create),
+                this.auth.authorize(["ADMIN", "PROFESSIONAL", "HELPER"]),
+
+ñ                validations.body(this.schemas.create),
 			],
 		})
 
@@ -30,7 +33,7 @@ export class EventsRouter extends Router {
 			path: "/:id",
 			handler: this.controller.updateOne,
 			middlewares: [
-				this.auth.authorize(["ADMIN", "PROFESSIONAL"]),
+				this.auth.authorize(["ADMIN", "PROFESSIONAL","HELPER"]),
 				validations.resourceId(findEvent),
 				validations.body(this.schemas.update),
 			],
@@ -40,7 +43,7 @@ export class EventsRouter extends Router {
 			path: "/:id",
 			handler: this.controller.deleteOne,
 			middlewares: [
-				this.auth.authorize(["ADMIN", "PROFESSIONAL"]),
+				this.auth.authorize(["ADMIN", "PROFESSIONAL","HELPER"]),
 				validations.resourceId(findEvent),
 			],
 		})

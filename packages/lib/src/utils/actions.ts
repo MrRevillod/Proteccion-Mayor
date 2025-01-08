@@ -4,6 +4,10 @@ export const findProfessional = (id: string) => {
 	return prisma.professional.findFirst({ where: { id } })
 }
 
+export const findHelper = (id: string) => {
+	return prisma.helper.findFirst({ where: { id } })
+}
+
 export const findSenior = (id: string) => {
 	return prisma.senior.findFirst({ where: { id } })
 }

@@ -72,26 +72,28 @@ const RedirectRoute: React.FC<{ redirectTo?: string }> = ({ redirectTo }) => {
 
 const Router: React.FC = () => {
 	return (
-		<Routes>
-			<Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
-				<Route path="/administracion/administradores" element={<AdministratorPage />} />
-				<Route path="/administracion/profesionales" element={<ProfessionalsPage />} />
+        <Routes>
+			<Route element={<ProtectedRoute allowedRoles={["ADMIN","HELPER"]} />}>
 				<Route path="/administracion/personas-mayores/" element={<SeniorsPage />} />
 				<Route path="/administracion/personas-mayores/nuevos" element={<NewSeniorsPage />} />
 				<Route
 					path="/administracion/personas-mayores/solicitud-de-registro"
 					element={<SeniorRegisterRequestPage />}
 				/>
+				<Route path="/agenda/administradores" element={<AdministrationAgendaPage />} />
+            </Route>
+			<Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
+				<Route path="/administracion/profesionales" element={<ProfessionalsPage />} />
+				<Route path="/administracion/administradores" element={<AdministratorPage />} />
 				<Route path="/administracion/servicios" element={<ServicesPage />} />
 				<Route path="/administracion/centros-de-atencion" element={<CentersPage />} />
-				<Route path="/agenda/administradores" element={<AdministrationAgendaPage />} />
 			</Route>
 
 			<Route element={<ProtectedRoute allowedRoles={["PROFESSIONAL"]} />}>
 				<Route path="/agenda/profesionales" element={<ProfessionalAgendaPage />} />
 			</Route>
 
-			<Route element={<ProtectedRoute allowedRoles={["ADMIN", "PROFESSIONAL"]} />}>
+			<Route element={<ProtectedRoute allowedRoles={["ADMIN", "PROFESSIONAL","HELPER"]} />}>
 				<Route path="/estadisticas" element={<StatisticsPage />} />
 				<Route path="/historial" element={<SeniorHistoryRequestPage />} />
 				<Route path="/perfil" element={<ProfilePage />} />

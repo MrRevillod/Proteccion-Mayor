@@ -16,13 +16,13 @@ export class SeniorRouter extends Router {
 		this.get({
 			path: "/",
 			handler: this.controller.getMany,
-			middlewares: [this.auth.authorize(["ADMIN", "SENIOR"])],
+			middlewares: [this.auth.authorize(["ADMIN", "SENIOR","HELPER"])],
 		})
 
 		this.post({
 			path: "/pre-checked",
 			handler: this.controller.createOne,
-			middlewares: [this.auth.authorize(["ADMIN"]), validations.body(this.schemas.create)],
+			middlewares: [this.auth.authorize(["ADMIN","HELPER"]), validations.body(this.schemas.create)],
 		})
 
 		this.patch({
@@ -30,7 +30,7 @@ export class SeniorRouter extends Router {
 			handler: this.controller.updateOne,
 			middlewares: [
 				uploads.singleImage,
-				this.auth.authorize(["ADMIN", "SENIOR"]),
+				this.auth.authorize(["ADMIN", "SENIOR","HELPER"]),
 				validations.resourceId(findSenior),
 				validations.body(this.schemas.update),
 				validations.files({ required: false }),
@@ -41,7 +41,7 @@ export class SeniorRouter extends Router {
 			path: "/:id",
 			handler: this.controller.deleteOne,
 			middlewares: [
-				this.auth.authorize(["ADMIN", "SENIOR"]),
+				this.auth.authorize(["ADMIN", "SENIOR","HELPER"]),
 				validations.resourceId(findSenior),
 				utils.validatePassword,
 			],
@@ -61,7 +61,7 @@ export class SeniorRouter extends Router {
 			path: "/:id/new",
 			handler: this.controller.handleRegisterRequest,
 			middlewares: [
-				this.auth.authorize(["ADMIN"]),
+				this.auth.authorize(["ADMIN","HELPER"]),
 				validations.resourceId(findSenior),
 				validations.body(this.schemas.handleRegisterRequest),
 			],

@@ -1,6 +1,6 @@
 import { ZodTypeAny } from "zod"
 import { NextFunction, Request, Response } from "express"
-import { Administrator, Professional, Senior } from "@prisma/client"
+import { Administrator, Helper, Professional, Senior } from "@prisma/client"
 
 export type Controller = (req: Request, res: Response, handleError: NextFunction) => any
 export type Middleware = (req: Request, res: Response, next: NextFunction) => any
@@ -20,5 +20,5 @@ export type ServiceInfo = {
 	port: number
 }
 
-export type User = Administrator | Senior | Professional
-export type UserRole = "ADMIN" | "PROFESSIONAL" | "SENIOR"
+export type User = Administrator | Senior | Professional | Helper
+export type UserRole = "ADMIN" | "PROFESSIONAL" | "SENIOR" | "HELPER"

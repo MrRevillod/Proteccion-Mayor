@@ -35,6 +35,9 @@ export const find = async ({ role, filter }: FindUserArgs) => {
 		})
 		.with("PROFESSIONAL", () => {
 			return prisma.professional.findFirst({ where: filter, select: professionalSelect })
+        })
+        .with("HELPER", () => {
+			return prisma.helper.findFirst({ where: filter})
 		})
 		.run()
 }

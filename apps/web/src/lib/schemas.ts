@@ -5,7 +5,7 @@ import dayjs from "dayjs"
 export const LoginFormSchema = z.object({
 	email: z.string().email().min(1, "El correo electrónico es requerido"),
 	password: z.string().min(1, "La contraseña es requerida"),
-	role: z.enum(["ADMIN", "PROFESSIONAL"]),
+	role: z.enum(["ADMIN", "PROFESSIONAL","HELPER"]),
 })
 
 export const SeniorSchemas = {
@@ -224,7 +224,7 @@ export const EventSchemas = {
 		}),
 }
 
-export const resetPasswordSchema = (role: "ADMIN" | "PROFESSIONAL" | "SENIOR"): any => {
+export const resetPasswordSchema = (role: "ADMIN" | "PROFESSIONAL" | "SENIOR"|"HELPER"): any => {
 	return z
 		.object({
 			password: role === "SENIOR" ? rules.pinSchema : rules.passwordSchema,

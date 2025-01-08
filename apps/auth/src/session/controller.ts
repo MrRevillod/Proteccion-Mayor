@@ -13,7 +13,7 @@ export class SessionController {
 		const { email, password } = req.body
 
 		try {
-			if (variant !== "ADMIN" && variant !== "PROFESSIONAL") {
+			if (variant !== "ADMIN" && variant !== "PROFESSIONAL" && variant !== "HELPER") {
 				throw new BadRequest("Inicio de sesión inválido")
 			}
 

@@ -90,7 +90,7 @@ export const Header: React.FC = () => {
 				</div>
 				<Navbar.Collapse className="">
 					<Show when={role === "ADMIN"}>
-						<Dropdown
+						<Dropdown    
 							label=""
 							dismissOnClick={false}
 							onClick={() => handlePageSelected("Personas")}
@@ -170,7 +170,48 @@ export const Header: React.FC = () => {
 						>
 							Estadísticas
 						</Link>
-					</Show>
+                    </Show>
+                    <Show when={role === "HELPER"}>
+                        <Dropdown
+									label="Adultos mayores"
+									placement="right-start"
+									dismissOnClick={false}
+									renderTrigger={() => <span className={`cursor-pointer`}>Personas Mayores</span>}
+									className="w-48"
+								>
+									<Link
+										to="/administracion/personas-mayores"
+										onClick={() => handlePageSelected("Personas")}
+										className={linkClasses("Personas", true)}
+									>
+										<Dropdown.Item as="div">Todos</Dropdown.Item>
+									</Link>
+
+									<Link
+										to="/administracion/personas-mayores/nuevos"
+										onClick={() => handlePageSelected("Personas")}
+										className={linkClasses("Personas", true)}
+									>
+										<Dropdown.Item as="div">Solicitudes de registro</Dropdown.Item>
+									</Link>
+                        </Dropdown>
+                        <Link
+							to="/agenda/administradores"
+							className={linkClasses("Agenda")}
+							onClick={() => handlePageSelected("Agenda")}
+						>
+							Agenda
+						</Link>
+                        <Link
+                                to="/estadisticas"
+                                className={linkClasses("Estadisticas")}
+                                onClick={() => handlePageSelected("Estadisticas")}
+                        >
+                                Estadísticas
+                        </Link>
+
+
+                    </Show>
 				</Navbar.Collapse>
 			</Show>
 		</Navbar>
