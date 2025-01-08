@@ -2,16 +2,18 @@ import dayjs from "dayjs"
 import React from "react"
 import PageLayout from "@/layouts/PageLayout"
 
-import { Show } from "@/components/ui/Show"
 import { useState } from "react"
 import { useRequest } from "@/hooks/useRequest"
+import { ChartLayout, StatisticMainLayout } from "@/layouts/StatisticLayout"
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts"
+
+import { Show } from "@/components/ui/Show"
 import { StatisticSelection } from "@/components/StatisticSelection"
 import { AssistanceSelection } from "@/components/AssistanceSelection"
+
 import { getOneProfessional, getReports } from "@/lib/actions"
 import { abbreviateCenterName, capitalize } from "@/lib/formatters"
-import { ChartLayout, StatisticMainLayout } from "@/layouts/StatisticLayout"
 import { AssistanceType, Professional, ReportType } from "@/lib/types"
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts"
 
 import "@/main.css"
 import "dayjs/locale/es"
@@ -83,7 +85,12 @@ const StatisticsPage: React.FC = () => {
 	return (
 		<PageLayout
 			pageTitle="Reporte general del sistema"
-			customRightSide={<StatisticSelection setReportSelection={setReportSelection} setSelectedProfessional={setSelectedProfessional} />}
+			customRightSide={
+				<StatisticSelection
+					setReportSelection={setReportSelection}
+					setSelectedProfessional={setSelectedProfessional}
+				/>
+			}
 		>
 			<StatisticMainLayout>
 				<ChartLayout
@@ -94,7 +101,12 @@ const StatisticsPage: React.FC = () => {
 					monthSelect={reportSelection !== "general" && reportSelection !== "byProfessional"}
 					yearSelect
 				>
-					<Show when={reportSelection === "general" || (reportSelection === "byProfessional" && !!selectedProfessional.id)}>
+					<Show
+						when={
+							reportSelection === "general" ||
+							(reportSelection === "byProfessional" && !!selectedProfessional.id)
+						}
+					>
 						<ResponsiveContainer width="100%" height={500} style={{ marginLeft: "0px" }}>
 							<LineChart data={reportData} margin={{ top: 20, right: 20, left: -25, bottom: 40 }}>
 								<CartesianGrid strokeDasharray="3 3" />
@@ -133,7 +145,9 @@ const StatisticsPage: React.FC = () => {
 								<XAxis
 									dataKey={reportSelection === "byCenter" ? "center" : "service"}
 									tickFormatter={
-										reportSelection === "byCenter" ? (value) => abbreviateCenterName(value) : undefined
+										reportSelection === "byCenter"
+											? (value) => abbreviateCenterName(value)
+											: undefined
 									}
 								/>
 								<YAxis allowDecimals={false} />
@@ -155,7 +169,6 @@ const StatisticsPage: React.FC = () => {
 						setSelection={handleAssistanceSelection}
 					/>
 				</ChartLayout>
-
 			</StatisticMainLayout>
 		</PageLayout>
 	)

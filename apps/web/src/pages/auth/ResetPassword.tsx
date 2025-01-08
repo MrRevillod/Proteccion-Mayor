@@ -1,19 +1,19 @@
 import clsx from "clsx"
-import React from "react"
+import React, { useState } from "react"
 
 import { z } from "zod"
-import { api } from "../../lib/axios"
-import { Input } from "../../components/ui/Input"
-import { Helmet } from "react-helmet"
 import { message } from "antd"
+
+import { api } from "@/lib/axios"
+import { Input } from "@/components/ui/Input"
 import { Loading } from "@/components/Loading"
-import { useState } from "react"
+
+import { Helmet } from "react-helmet"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useSearchParams } from "react-router-dom"
 import { FormProvider, useForm } from "react-hook-form"
-import { useLocation, useSearchParams } from "react-router-dom"
 
 const ResetPasswordPage: React.FC = () => {
-
 	const formSchemas = z.object({
 		email: z.string().email({
 			message: "Correo electrónico inválido",
@@ -31,11 +31,10 @@ const ResetPasswordPage: React.FC = () => {
 	}
 
 	const onSubmit = async (data: any) => {
-
 		setIsLoading(true)
 
 		try {
-			const response = await api.post(`/dashboard/account/reset-password?variant=${data.role}`, {
+			const response = await api.post(`/auth/account/reset-password?variant=${data.role}`, {
 				email: data.email,
 			})
 
@@ -55,18 +54,21 @@ const ResetPasswordPage: React.FC = () => {
 			</Helmet>
 
 			<div className="flex w-full login-container items-center justify-center absolute">
-				<div className={clsx(
-					isLoading ? "opacity-90 pointer-events-none bg-neutral-200" : "",
-					"bg-white dark:bg-primary-dark flex flex-col justify-center items-center px-8 md:px-12 w-11/12 sm:w-1/2 md:w-1/2 lg:w-1/3 xl:1/3 2xl:w-1/4 rounded-lg h-2/3 min-h-[550px] login-form-container dark:shadow-none"
-				)}>
+				<div
+					className={clsx(
+						isLoading ? "opacity-90 pointer-events-none bg-neutral-200" : "",
+						"bg-white dark:bg-primary-dark flex flex-col justify-center items-center px-8 md:px-12 w-11/12 sm:w-1/2 md:w-1/2 lg:w-1/3 xl:1/3 2xl:w-1/4 rounded-lg h-2/3 min-h-[550px] login-form-container dark:shadow-none",
+					)}
+				>
 					<div className="w-full max-w-md">
-						<h2 className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-8">Restablecer Contraseña</h2>
+						<h2 className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-8">
+							Restablecer Contraseña
+						</h2>
 						<p className="text-center text-gray-600 mb-6">
 							Por favor, ingresa tu correo electrónico y selecciona tu tipo de usuario para continuar.
 						</p>
 
 						<form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-
 							{isLoading && <Loading />}
 
 							<Input

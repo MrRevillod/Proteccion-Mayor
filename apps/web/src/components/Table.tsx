@@ -1,7 +1,7 @@
 import React from "react"
 
 import { useModal } from "../context/ModalContext"
-import { Table, Space } from "antd"
+import { Table as DataTable, Space } from "antd"
 import { tableColumnsFormatters } from "../lib/formatters"
 import { BaseDataType, TableColumnType } from "../lib/types"
 import { AiFillEdit, AiFillDelete, AiFillEye, AiOutlineHistory } from "react-icons/ai"
@@ -18,12 +18,12 @@ interface TableProps<T> {
 	onHistory?: (record: T) => void
 }
 
-const DataTable = <T extends BaseDataType>({ data, ...props }: TableProps<T>) => {
+export const Table = <T extends BaseDataType>({ data, ...props }: TableProps<T>) => {
 	const { columnsConfig, loading, editable, deletable, viewable, onView, onHistory } = props
 	const { showModal } = useModal()
 
 	return (
-		<Table
+		<DataTable
 			loading={loading}
 			dataSource={data}
 			rowKey={(record) => record.id}
@@ -31,7 +31,7 @@ const DataTable = <T extends BaseDataType>({ data, ...props }: TableProps<T>) =>
 			pagination={{ size: "default" }}
 		>
 			{columnsConfig.map((col) => (
-				<Table.Column
+				<DataTable.Column
 					key={col.key}
 					title={col.title}
 					dataIndex={col.dataIndex as string}
@@ -46,7 +46,7 @@ const DataTable = <T extends BaseDataType>({ data, ...props }: TableProps<T>) =>
 				/>
 			))}
 
-			<Table.Column
+			<DataTable.Column
 				title="Administrar"
 				key="action"
 				render={(_, record: T) => (
@@ -74,8 +74,6 @@ const DataTable = <T extends BaseDataType>({ data, ...props }: TableProps<T>) =>
 					</Space>
 				)}
 			/>
-		</Table>
+		</DataTable>
 	)
 }
-
-export default DataTable

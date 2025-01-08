@@ -2,23 +2,16 @@
 	"name": "pm-temuco",
 	"private": true,
 	"scripts": {
-		"db:migrate:dev": "turbo run db:migrate:dev",
-		"db:migrate:deploy": "turbo run db:migrate:deploy",
-		"db:push": "turbo run db:push",
-		"db:seed": "turbo run db:seed",
-		"db:generate": "turbo run db:generate",
-		"db:generate:deploy": "turbo run db:generate:deploy",
 		"build": "turbo run build",
 		"clean": "turbo run clean",
 		"dev": "turbo run dev",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
-		"test": "turbo run test",
 		"typecheck": "turbo run typecheck"
 	},
 	"devDependencies": {
 		"eslint": "^9.9.0",
-		"turbo": "^2.2.3",
 		"tsup": "^8.0.2",
+		"turbo": "^2.2.3",
 		"typescript": "^5.3.3"
 	},
 	"packageManager": "pnpm@8.15.6",
@@ -27,8 +20,8 @@
 	},
 	"dependencies": {
 		"@prisma/client": "^5.10.2",
+		"@socket.io/pm2": "^5.3.0",
 		"dotenv-cli": "^7.4.2",
-		"ts-node": "^10.9.2",
-		"@socket.io/pm2": "^5.3.0"
+		"ts-node": "^10.9.2"
 	}
 }

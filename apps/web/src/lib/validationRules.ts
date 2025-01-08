@@ -38,8 +38,8 @@ export const rutSchema = z
 
 export const emailSchema = z.string().email("El correo electrónico ingresado no es válido")
 
-export const pinSchema = z.string().refine((value) => value.length === 4, {
-	message: "El PIN debe tener 4 dígitos",
+export const pinSchema = z.string().refine((value) => /^[0-9]{4}$/.test(value), {
+	message: "El PIN debe tener 4 dígitos numéricos",
 })
 
 export const optionalPinSchema = z.string().refine((value) => value === "" || /^[0-9]{4}$/.test(value), {

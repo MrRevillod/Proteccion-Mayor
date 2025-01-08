@@ -1,17 +1,18 @@
 import React from "react"
 import PageLayout from "../../layouts/PageLayout"
-import UpdateCenter from "../../components/forms/update/Center"
-import CreateCenter from "../../components/forms/create/Center"
-import ConfirmAction from "../../components/ConfirmAction"
 
-import { Center } from "../../lib/types"
+import { UpdateCenter } from "@/components/forms/update/Center"
+import { CreateCenter } from "@/components/forms/create/Center"
+import { ConfirmAction } from "@/components/ConfirmAction"
+
+import { Center } from "@/lib/types"
 import { message } from "antd"
 import { useState } from "react"
-import { ImageCard } from "../../components/ui/ImageCard"
-import { CardLayout } from "../../components/CardLayout"
-import { useRequest } from "../../hooks/useRequest"
+import { ImageCard } from "@/components/ui/ImageCard"
+import { CardLayout } from "@/components/CardLayout"
+import { useRequest } from "@/hooks/useRequest"
 import { useNavigate } from "react-router-dom"
-import { deleteCenter, getCenters } from "../../lib/actions"
+import { deleteCenter, getCenters } from "@/lib/actions"
 
 const CentersPage: React.FC = () => {
 	const navigate = useNavigate()

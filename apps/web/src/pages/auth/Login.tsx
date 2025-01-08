@@ -1,12 +1,13 @@
 import React from "react"
 
-import { Input } from "../../components/ui/Input"
+import { Input } from "@/components/ui/Input"
+import { useAuth } from "@/context/AuthContext"
+import { LoginFormData } from "@/lib/types"
+import { LoginFormSchema } from "@/lib/schemas"
+
 import { Helmet } from "react-helmet"
-import { useAuth } from "../../context/AuthContext"
 import { Fragment } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { LoginFormData } from "../../lib/types"
-import { LoginFormSchema } from "../../lib/schemas"
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form"
 
 const LoginPage: React.FC = () => {
@@ -32,7 +33,6 @@ const LoginPage: React.FC = () => {
 
 			<div className="flex w-full login-container items-center justify-center absolute dark:shadow-none">
 				<div className="bg-white dark:bg-primary-dark flex flex-col justify-center items-center px-8 md:px-12 w-11/12 sm:w-1/2 md:w-1/2 lg:w-1/3 xl:1/3 2xl:w-1/4 rounded-lg h-2/3 min-h-[550px] login-form-container dark:shadow-none">
-
 					<div className="w-full max-w-md">
 						<h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-neutral-300 text-center mb-4">
 							¡Hola!
@@ -46,7 +46,10 @@ const LoginPage: React.FC = () => {
 						</div>
 
 						<FormProvider {...methods}>
-							<form className="flex flex-col gap-4 w-full justify-center" onSubmit={handleSubmit(onSubmit as any)}>
+							<form
+								className="flex flex-col gap-4 w-full justify-center"
+								onSubmit={handleSubmit(onSubmit as any)}
+							>
 								<Input
 									name="email"
 									label="Correo electrónico"

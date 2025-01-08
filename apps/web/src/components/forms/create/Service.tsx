@@ -1,18 +1,18 @@
 import React from "react"
 
-import { Form } from "../Form"
-import { Input } from "../../ui/Input"
-import { Modal } from "../../Modal"
+import { Form } from "@/components/forms/Form"
+import { Input } from "@/components/ui/Input"
+import { Modal } from "@/components/Modal"
 import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ColorPicker } from "../../ColorPicker"
-import { createService } from "../../../lib/actions"
-import { ImageSelector } from "../../ImageSelector"
-import { ServiceSchemas } from "../../../lib/schemas"
-import { FormProps, Service } from "../../../lib/types"
+import { ColorPicker } from "@/components/ColorPicker"
+import { createService } from "@/lib/actions"
+import { ImageSelector } from "@/components/ImageSelector"
+import { ServiceSchemas } from "@/lib/schemas"
+import { FormProps, Service } from "@/lib/types"
 import { FormProvider, useForm } from "react-hook-form"
 
-const CreateService: React.FC<FormProps<Service>> = ({ data, setData }) => {
+export const CreateService: React.FC<FormProps<Service>> = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false)
 	const methods = useForm({
 		resolver: zodResolver(ServiceSchemas.Create),
@@ -43,5 +43,3 @@ const CreateService: React.FC<FormProps<Service>> = ({ data, setData }) => {
 		</Modal>
 	)
 }
-
-export default CreateService

@@ -1,7 +1,7 @@
 import React from "react"
-import PageHeader from "../components/PageHeader"
 
 import { Helmet } from "react-helmet"
+import { PageHeader } from "@/components/PageHeader"
 import { Fragment, Dispatch, ReactNode, SetStateAction } from "react"
 
 interface PageLayoutProps {

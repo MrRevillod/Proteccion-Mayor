@@ -1,62 +1,44 @@
-import { NextFunction, Request, Response } from "express"
-
 export const log = (...args: unknown[]): void => {
 	console.log("LOGGER: ", ...args)
 }
 
-declare global {
-	namespace Express {
-		interface Request {
-			extensions: Map<string, unknown>
-			setExtension: (key: string, value: unknown) => void
-			getExtension: (key: string) => unknown | undefined
-		}
-	}
+export const startService = (serviceName: string, url: string, port: number): void => {
+	console.table({
+		[serviceName]: {
+			url,
+			port,
+		},
+	})
 }
 
-export const extensions = (req: Request, res: Response, next: NextFunction) => {
-	req.extensions = new Map<string, unknown>()
-
-	req.setExtension = (key: string, value: unknown) => {
-		req.extensions.set(key, value)
-	}
-
-	req.getExtension = (key: string) => {
-		return req.extensions.get(key)
-	}
-
-	next()
-}
-
-export { httpRequest } from "./request"
-export { services, constants } from "./config"
-export type {
-	JsonResponse,
-	UserRole,
-	User,
-	ApiResponse,
-	AuthResponse,
-	FormattedDateCount,
-} from "./types"
-export { AppError, AuthError, errorHandler } from "./errors"
-export { toPublicUser, findUser, isValidUserRole } from "./authorization/user"
-export { isValidRut } from "./authorization/rut"
+export * as jwt from "./utils/jsonwebtoken"
+export * as rules from "./utils/rules"
+export * as users from "./utils/users"
+export * as templates from "./utils/htmlTemplates"
+export * as credentials from "./utils/credentials"
+export * as validations from "./utils/validations"
+export * as uploads from "./utils/uploads"
 
 export {
-	SeniorSchemas,
-	AdministratorSchemas,
-	ProfessionalSchemas,
-	EventSchemas,
-	ServiceSchemas,
-	CentersSchemas,
-} from "./schemas"
+	findAdministrator,
+	findCenter,
+	findEvent,
+	findProfessional,
+	findSenior,
+	findService,
+} from "./utils/actions"
 
-export {
-	signJsonwebtoken,
-	verifyJsonwebtoken,
-	AccessTokenOpts,
-	CustomTokenOpts,
-	RefreshTokenOpts,
-	getServerTokens,
-	type ServerTokens,
-} from "./authorization/jsonwebtoken"
+export { MailerService } from "./services/mailer"
+export { StorageService } from "./services/storage"
+export { AuthenticationService } from "./services/authentication"
+
+export type { UserRole, User, Controller, Middleware } from "./types"
+
+export { Router } from "./application/routing"
+export { Module } from "./application/module"
+export { Schema } from "./application/schema"
+export { extensions } from "./application/extensions"
+export { errorHandler } from "./errors/handler"
+export { createApplication } from "./application/"
+export { CONSTANTS, SERVICES } from "./env"
+export { AppError, AuthError, BadRequest, Conflict, Unauthorized, NotFound } from "./errors/custom"

@@ -1,66 +1,49 @@
-import cors from "cors"
-import helmet from "helmet"
-import morgan from "morgan"
-import express from "express"
-import cookieParser from "cookie-parser"
-
-import centerRouter from "./routes/centers"
-import accountRouter from "./routes/account"
-import eventsRouter from "./routes/events"
-import serviceRouter from "./routes/services"
-import seniorsRouter from "./routes/seniors"
-import reportsRouter from "./routes/reports"
-import professionalsRouter from "./routes/professionals"
-import administrarorsRouter from "./routes/administrators"
+import { EventsModule } from "./events/module"
+import { SeniorsModule } from "./seniors/module"
+import { CentersModule } from "./centers/module"
+import { ReportsModule } from "./reports/module"
+import { ServicesModule } from "./services/module"
+import { ProfessionalsModule } from "./professionals/module"
+import { AdministratorsModule } from "./administrators/module"
 
 import { setupWorker } from "@socket.io/sticky"
 import { createServer } from "http"
 import { SocketEvents } from "./socket"
 import { createAdapter } from "@socket.io/cluster-adapter"
 import { Server, Socket } from "socket.io"
-import { log, services, errorHandler, extensions, UserRole } from "@repo/lib"
+import { MailerService, SERVICES, startService, UserRole } from "@repo/lib"
+import { AuthenticationService, createApplication, StorageService } from "@repo/lib"
 
-export const createApp = (): express.Express => {
-	const app = express()
+const authService = new AuthenticationService()
+const mailerService = new MailerService()
+const storageService = new StorageService()
 
-	app.use(helmet())
-	app.use(morgan("dev"))
-	app.use(express.urlencoded({ extended: true }))
-	app.use(express.json())
-	app.use(cors({ origin: services.WEB_APP.url, credentials: true }))
+const modules = [
+	new EventsModule(authService, mailerService),
+	new SeniorsModule(authService, storageService, mailerService),
+	new ReportsModule(authService),
+	new ServicesModule(authService, storageService),
+	new CentersModule(authService, storageService),
+	new ProfessionalsModule(authService, storageService, mailerService),
+	new AdministratorsModule(authService, storageService, mailerService),
+]
 
-	app.use(cookieParser())
-	app.use(extensions)
-
-	app.use("/api/dashboard/reports", reportsRouter)
-	app.use("/api/dashboard/centers", centerRouter)
-	app.use("/api/dashboard/seniors", seniorsRouter)
-	app.use("/api/dashboard/services", serviceRouter)
-	app.use("/api/dashboard/account", accountRouter)
-	app.use("/api/dashboard/professionals", professionalsRouter)
-	app.use("/api/dashboard/administrators", administrarorsRouter)
-	app.use("/api/dashboard/seniors", seniorsRouter)
-	app.use("/api/dashboard/events", eventsRouter)
-
-	app.use(errorHandler)
-
-	return app
-}
-
-const server = createApp()
-const http = createServer(server)
+const app = createApplication(modules)
+const http = createServer(app)
 
 export const io = new Server<SocketEvents>(http, {
 	cors: {
-		origin: services.WEB_APP.url,
+		origin: SERVICES.WEB_APP.URL,
 		methods: ["GET", "POST"],
 	},
 	path: "/api/dashboard/socket.io",
 	transports: ["websocket"],
 })
 
-io.adapter(createAdapter())
-setupWorker(io)
+if (process.env.NODE_ENV === "production") {
+	io.adapter(createAdapter())
+	setupWorker(io)
+}
 
 io.on("connection", (socket: Socket) => {
 	const role = socket.handshake.query.userRole as UserRole
@@ -75,6 +58,6 @@ io.on("connection", (socket: Socket) => {
 	})
 })
 
-http.listen(services.DASHBOARD.port, () => {
-	log(`Dashboard service running on ${services.DASHBOARD.port}`)
+http.listen(SERVICES.DASHBOARD.PORT, () => {
+	startService("DASHBOARD", SERVICES.DASHBOARD.URL, SERVICES.DASHBOARD.PORT)
 })

@@ -1,18 +1,17 @@
 import React from "react"
 
-import { Form } from "../Form"
-import { Input } from "../../ui/Input"
-import { Modal } from "../../Modal"
-import { useModal } from "../../../context/ModalContext"
+import { Form } from "@/components/forms/Form"
+import { Input } from "@/components/ui/Input"
+import { Modal } from "@/components/Modal"
+import { useModal } from "@/context/ModalContext"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { updateProfessional } from "../../../lib/actions"
-import { ProfessionalSchemas } from "../../../lib/schemas"
+import { updateProfessional } from "@/lib/actions"
+import { ProfessionalSchemas } from "@/lib/schemas"
 import { useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
-import { FormProps, Professional } from "../../../lib/types"
+import { FormProps, Professional } from "@/lib/types"
 
-const UpdateProfessional: React.FC<FormProps<Professional>> = ({ data, setData }) => {
-
+export const UpdateProfessional: React.FC<FormProps<Professional>> = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false)
 	const { selectedData } = useModal()
 
@@ -48,5 +47,3 @@ const UpdateProfessional: React.FC<FormProps<Professional>> = ({ data, setData }
 		</Modal>
 	)
 }
-
-export default UpdateProfessional

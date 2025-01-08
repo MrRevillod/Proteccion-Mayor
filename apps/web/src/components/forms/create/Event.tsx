@@ -1,22 +1,22 @@
 import React from "react"
 import dayjs from "dayjs"
-import DatetimeSelect from "../../ui/DatetimeSelect"
 
-import { Form } from "../Form"
-import { Show } from "../../ui/Show"
-import { Modal } from "../../Modal"
-import { useAuth } from "../../../context/AuthContext"
-import { useModal } from "../../../context/ModalContext"
-import { useRequest } from "../../../hooks/useRequest"
+import { Form } from "@/components/forms/Form"
+import { Show } from "@/components/ui/Show"
+import { Modal } from "@/components/Modal"
+import { useAuth } from "@/context/AuthContext"
+import { useModal } from "@/context/ModalContext"
+import { useRequest } from "@/hooks/useRequest"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useLocation } from "react-router-dom"
-import { SuperSelect } from "../../ui/SuperSelect"
-import { EventSchemas } from "../../../lib/schemas"
+import { SuperSelect } from "@/components/ui/SuperSelect"
+import { EventSchemas } from "@/lib/schemas"
+import { DatetimeSelect } from "@/components/ui/DatetimeSelect"
 import { useState, useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
-import { createEvent, getSeniors } from "../../../lib/actions"
-import { getIdsFromUrl, selectDataFormatter } from "../../../lib/formatters"
-import { Professional, Senior, SuperSelectField } from "../../../lib/types"
+import { createEvent, getSeniors } from "@/lib/actions"
+import { getIdsFromUrl, selectDataFormatter } from "@/lib/formatters"
+import { Professional, Senior, SuperSelectField } from "@/lib/types"
 
 // El formulario recibe refetch, ya que en este caso es más conveniente que
 // filtrar los evento en el cliente, se vuelvan a obtener los eventos desde el servidor
@@ -28,8 +28,7 @@ type EventFormProps = {
 	refetch?: () => void
 }
 
-const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, services, refetch }) => {
-
+export const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, services, refetch }) => {
 	const [loading, setLoading] = useState(false)
 	const [seniors, setSeniors] = useState<SuperSelectField[]>([])
 	const [seniorsSearch, setSeniorsSearch] = useState<string>("")
@@ -66,7 +65,7 @@ const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, service
 	useEffect(() => {
 		if (baseTrigger && selectedService && professionals) {
 			const serviceProfessionals = professionals.filter(
-				(professional) => professional.serviceId === selectedService
+				(professional) => professional.serviceId === selectedService,
 			)
 			selectDataFormatter({ data: serviceProfessionals, setData: setSelectProfessionals })
 		}
@@ -92,12 +91,10 @@ const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, service
 	}, [startsAt])
 
 	useEffect(() => {
-
 		if (role === "PROFESSIONAL" && baseTrigger) {
 			setValue("professionalId", user?.id)
 			setValue("serviceId", (user as Professional)?.service.id)
 		}
-
 	}, [isModalOpen, modalType])
 
 	useEffect(() => {
@@ -145,5 +142,3 @@ const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, service
 		</Modal>
 	)
 }
-
-export default CreateEvent

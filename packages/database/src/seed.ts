@@ -37,7 +37,7 @@ const generateRUT = (): string => {
 }
 
 const uploadImage = async (url: string, name: string, uploadPath: string) => {
-	const STORAGE_URL = process.env.STORAGE_SERVICE_URL
+	const STORAGE_URL = `${process.env.SERVER_BASE_URL}/api/storage`
 
 	try {
 		const response = await fetch(url)

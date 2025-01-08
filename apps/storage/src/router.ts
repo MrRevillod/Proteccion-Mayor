@@ -5,7 +5,7 @@ import multer from "multer"
 import express from "express"
 
 import { mkdir } from "node:fs/promises"
-import { AppError, services } from "@repo/lib"
+import { AppError, SERVICES } from "@repo/lib"
 
 const router: express.Router = express.Router()
 const upload = multer({ storage: multer.memoryStorage() })
@@ -40,7 +40,7 @@ router.post("/upload", upload.array("files"), async (req, res, next) => {
 
 		await Promise.all(uploadPromises)
 
-		const image = files.length === 1 ? `${services.STORAGE.url}/public/${query.path}/${files[0].originalname.split(".")[0]}.webp` : null
+		const image = files.length === 1 ? `${SERVICES.STORAGE.URL}/public/${query.path}/${files[0].originalname.split(".")[0]}.webp` : null
 
 		return res.status(201).json({
 			message: "Files uploaded",

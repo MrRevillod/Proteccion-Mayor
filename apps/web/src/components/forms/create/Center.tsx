@@ -1,18 +1,18 @@
 import React from "react"
 
-import { Form } from "../Form"
-import { Input } from "../../ui/Input"
-import { Modal } from "../../Modal"
+import { Form } from "@/components/forms/Form"
+import { Input } from "@/components/ui/Input"
+import { Modal } from "@/components/Modal"
 import { useState } from "react"
-import { ColorPicker } from "../../ColorPicker"
+import { ColorPicker } from "@/components/ColorPicker"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { createCenter } from "../../../lib/actions"
-import { ImageSelector } from "../../ImageSelector"
-import { CentersSchemas } from "../../../lib/schemas"
-import { Center, FormProps } from "../../../lib/types"
+import { createCenter } from "@/lib/actions"
+import { ImageSelector } from "@/components/ImageSelector"
+import { CentersSchemas } from "@/lib/schemas"
+import { Center, FormProps } from "@/lib/types"
 import { FormProvider, useForm } from "react-hook-form"
 
-const CreateCenter: React.FC<FormProps<Center>> = ({ data, setData }) => {
+export const CreateCenter: React.FC<FormProps<Center>> = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false)
 	const methods = useForm({ resolver: zodResolver(CentersSchemas.Create) })
 
@@ -36,5 +36,3 @@ const CreateCenter: React.FC<FormProps<Center>> = ({ data, setData }) => {
 		</Modal>
 	)
 }
-
-export default CreateCenter

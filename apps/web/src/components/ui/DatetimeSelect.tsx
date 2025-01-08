@@ -14,7 +14,7 @@ interface DatetimeSelectProps {
 	width?: string
 }
 
-const DatetimeSelect = ({ label, name, showTime = true, defaultValue, width }: DatetimeSelectProps) => {
+export const DatetimeSelect = ({ label, name, showTime = true, defaultValue, width }: DatetimeSelectProps) => {
 	const {
 		control,
 		setValue,
@@ -55,10 +55,8 @@ const DatetimeSelect = ({ label, name, showTime = true, defaultValue, width }: D
 						disabledDate={
 							showTime
 								? (current) =>
-									current &&
-									(current < dayjs().startOf("day") ||
-										current.day() === 0 ||
-										current.day() === 6)
+										current &&
+										(current < dayjs().startOf("day") || current.day() === 0 || current.day() === 6)
 								: undefined
 						}
 						showNow={showTime}
@@ -71,5 +69,3 @@ const DatetimeSelect = ({ label, name, showTime = true, defaultValue, width }: D
 		</div>
 	)
 }
-
-export default DatetimeSelect

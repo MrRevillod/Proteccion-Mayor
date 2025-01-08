@@ -16,7 +16,8 @@ interface PageHeaderProps {
 	customRightSide?: React.ReactNode
 }
 
-const PageHeader: React.FC<PageHeaderProps> = ({ pageTitle, create, searchKeys, data, setData, customRightSide }) => {
+export const PageHeader: React.FC<PageHeaderProps> = ({ pageTitle, create, ...props }) => {
+	const { searchKeys, data, setData, customRightSide } = props
 	const { showModal } = useModal()
 
 	return (
@@ -25,7 +26,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ pageTitle, create, searchKeys, 
 				className={clsx(
 					"flex w-full gap-4 justify-between",
 					data && setData && searchKeys && "flex-col md:flex-row",
-					!data && !setData && !searchKeys && "flex-row"
+					!data && !setData && !searchKeys && "flex-row",
 				)}
 			>
 				<div className="flex flex-col w-full md:w-3/6 xl:w-4/6 gap-2">
@@ -54,5 +55,3 @@ const PageHeader: React.FC<PageHeaderProps> = ({ pageTitle, create, searchKeys, 
 		</section>
 	)
 }
-
-export default PageHeader

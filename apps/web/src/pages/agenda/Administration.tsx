@@ -1,21 +1,24 @@
 import React from "react"
-import PageLayout from "../../layouts/PageLayout"
-import CreateEvent from "../../components/forms/create/Event"
-import UpdateEvent from "../../components/forms/update/Event"
-import ConfirmAction from "../../components/ConfirmAction"
+import PageLayout from "@/layouts/PageLayout"
 
 import { message } from "antd"
-import { Loading } from "../../components/Loading"
-import { Calendar } from "../../components/Calendar"
-import { useSocket } from "../../context/SocketContext"
-import { useRequest } from "../../hooks/useRequest"
-import { EventFilter } from "../../components/EventFilter"
-import { UpcomingEvents } from "../../components/UpcomingEvents"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { filterUpcomingEvents, selectDataFormatter } from "../../lib/formatters"
-import { Center, Event, Events, Professional, Service, SuperSelectField } from "../../lib/types"
-import { deleteEvent, getCenters, getEvents, getProfessionals, getServices } from "../../lib/actions"
+
+import { useRequest } from "@/hooks/useRequest"
+
+import { Loading } from "@/components/Loading"
+import { Calendar } from "@/components/Calendar"
+import { useSocket } from "@/context/SocketContext"
+import { EventFilter } from "@/components/EventFilter"
+import { CreateEvent } from "@/components/forms/create/Event"
+import { UpdateEvent } from "@/components/forms/update/Event"
+import { ConfirmAction } from "@/components/ConfirmAction"
+import { UpcomingEvents } from "@/components/UpcomingEvents"
+
+import { filterUpcomingEvents, selectDataFormatter } from "@/lib/formatters"
+import { Center, Event, Events, Professional, Service, SuperSelectField } from "@/lib/types"
+import { deleteEvent, getCenters, getEvents, getProfessionals, getServices } from "@/lib/actions"
 
 const AdministrationAgendaPage: React.FC = () => {
 	const location = useLocation()

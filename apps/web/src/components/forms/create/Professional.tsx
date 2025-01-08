@@ -1,19 +1,19 @@
 import React from "react"
 
-import { Form } from "../Form"
-import { Input } from "../../ui/Input"
-import { Modal } from "../../Modal"
+import { Form } from "@/components/forms/Form"
+import { Input } from "@/components/ui/Input"
+import { Modal } from "@/components/Modal"
 import { useState } from "react"
-import { useRequest } from "../../../hooks/useRequest"
+import { useRequest } from "@/hooks/useRequest"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { SuperSelect } from "../../ui/SuperSelect"
-import { ProfessionalSchemas } from "../../../lib/schemas"
-import { selectDataFormatter } from "../../../lib/formatters"
+import { SuperSelect } from "@/components/ui/SuperSelect"
+import { ProfessionalSchemas } from "@/lib/schemas"
+import { selectDataFormatter } from "@/lib/formatters"
 import { FormProvider, useForm } from "react-hook-form"
-import { createProfessional, getServices } from "../../../lib/actions"
-import { FormProps, Professional, Service } from "../../../lib/types"
+import { createProfessional, getServices } from "@/lib/actions"
+import { FormProps, Professional, Service } from "@/lib/types"
 
-const CreateProfessional: React.FC<FormProps<Professional>> = ({ data, setData }) => {
+export const CreateProfessional: React.FC<FormProps<Professional>> = ({ data, setData }) => {
 	const methods = useForm({ resolver: zodResolver(ProfessionalSchemas.Create) })
 
 	const [loading, setLoading] = useState(false)
@@ -54,5 +54,3 @@ const CreateProfessional: React.FC<FormProps<Professional>> = ({ data, setData }
 		</Modal>
 	)
 }
-
-export default CreateProfessional

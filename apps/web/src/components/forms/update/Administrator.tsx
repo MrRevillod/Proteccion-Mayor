@@ -1,18 +1,17 @@
 import React from "react"
 
-import { Form } from "../Form"
-import { Input } from "../../ui/Input"
-import { Modal } from "../../Modal"
-import { useModal } from "../../../context/ModalContext"
+import { Form } from "@/components/forms/Form"
+import { Input } from "@/components/ui/Input"
+import { Modal } from "@/components/Modal"
+import { useModal } from "@/context/ModalContext"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { updateAdministrator } from "../../../lib/actions"
+import { updateAdministrator } from "@/lib/actions"
 import { useEffect, useState } from "react"
-import { AdministratorSchemas } from "../../../lib/schemas"
+import { AdministratorSchemas } from "@/lib/schemas"
 import { FormProvider, useForm } from "react-hook-form"
-import { Administrator, FormProps } from "../../../lib/types"
+import { Administrator, FormProps } from "@/lib/types"
 
-const UpdateAdministrator: React.FC<FormProps<Administrator>> = ({ data, setData }) => {
-
+export const UpdateAdministrator: React.FC<FormProps<Administrator>> = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false)
 
 	const methods = useForm({
@@ -50,5 +49,3 @@ const UpdateAdministrator: React.FC<FormProps<Administrator>> = ({ data, setData
 		</Modal>
 	)
 }
-
-export default UpdateAdministrator

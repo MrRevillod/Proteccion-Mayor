@@ -32,27 +32,6 @@ export const ProfessionalColumns: TableColumnType<Partial<Professional>> = [
 	{ title: "Creado", dataIndex: "createdAt", key: "createdAt" },
 ]
 
-const dataSource = [
-	{
-		key: "1",
-		metric: "Personas atendidas",
-		average: "",
-		total: "",
-	},
-	{
-		key: "2",
-		metric: "Inasistencia",
-		average: "",
-		total: "",
-	},
-	{
-		key: "3",
-		metric: "Horas no reservadas",
-		average: "",
-		total: "",
-	},
-]
-
 export const statisticColumns = [
 	{
 		title: "",

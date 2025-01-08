@@ -1,6 +1,6 @@
 import React from "react"
 
-import { Nullable } from "../lib/types"
+import { Nullable } from "@/lib/types"
 import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from "react"
 
 export type ModalType = "Create" | "Edit" | "Confirm"

@@ -1,16 +1,16 @@
 import React from "react"
 
-import { Form } from "../Form"
-import { Input } from "../../ui/Input"
-import { Modal } from "../../Modal"
+import { Form } from "@/components/forms/Form"
+import { Input } from "@/components/ui/Input"
+import { Modal } from "@/components/Modal"
 import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { createAdministrator } from "../../../lib/actions"
-import { AdministratorSchemas } from "../../../lib/schemas"
+import { createAdministrator } from "@/lib/actions"
+import { AdministratorSchemas } from "@/lib/schemas"
 import { FormProvider, useForm } from "react-hook-form"
-import { FormProps, Administrator } from "../../../lib/types"
+import { FormProps, Administrator } from "@/lib/types"
 
-const CreateAdministrator: React.FC<FormProps<Administrator>> = ({ data, setData }) => {
+export const CreateAdministrator: React.FC<FormProps<Administrator>> = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false)
 	const methods = useForm({ resolver: zodResolver(AdministratorSchemas.Create) })
 
@@ -32,5 +32,3 @@ const CreateAdministrator: React.FC<FormProps<Administrator>> = ({ data, setData
 		</Modal>
 	)
 }
-
-export default CreateAdministrator

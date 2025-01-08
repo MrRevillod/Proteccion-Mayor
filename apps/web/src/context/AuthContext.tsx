@@ -1,8 +1,8 @@
 import React from "react"
 
-import { api, IMAGE_BASE_URL } from "../lib/axios"
+import { api, IMAGE_BASE_URL } from "@/lib/axios"
 import { Dispatch, SetStateAction } from "react"
-import { LoginFormData, Nullable, User, UserRole } from "../lib/types"
+import { LoginFormData, Nullable, User, UserRole } from "@/lib/types"
 import { createContext, ReactNode, useEffect, useState } from "react"
 
 // Contexto para manejar la autenticación de los usuarios
