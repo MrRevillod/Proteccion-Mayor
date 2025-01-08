@@ -78,7 +78,9 @@ const seed = async () => {
 	const services = data.services
 	const centers = data.centers
 	const admins = data.administrators
-	const professionals = data.professionals
+    const professionals = data.professionals
+	const helpers = data.helpers
+    
 
 	for (const admin of admins) {
 		const AdminRUT = generateRUT()
@@ -93,7 +95,10 @@ const seed = async () => {
 			},
 			update: {},
 		})
-	}
+    }
+    
+    
+
 
 	for (const center of centers) {
 		await prisma.center.upsert({
@@ -183,6 +188,22 @@ const seed = async () => {
 				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
 				name: professional.name,
 				serviceId: Math.floor(Math.random() * 6) + 1,
+			},
+			update: {},
+		})
+    }
+    
+    for (const helper of helpers) {
+		const helperRUT = generateRUT()
+
+		await prisma.helper.upsert({
+			where: { id: helperRUT },
+			create: {
+				id: helperRUT,
+				email: helper.email,
+				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
+                name: helper.name,
+                centerId: Math.floor(Math.random() * 8) + 1,
 			},
 			update: {},
 		})
