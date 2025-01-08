@@ -30,6 +30,7 @@
 		"**/.turbo": true,
 		"**/migrations": true,
 		"config": true,
+		"mobile": true,
 	},
 	"explorer.fileNesting.enabled": true,
 	"explorer.fileNesting.expand": false,
