@@ -9,7 +9,7 @@ export type BaseDataType = {
 	id: string | number
 }
 
-export type UserRole = "ADMIN" | "PROFESSIONAL"
+export type UserRole = "ADMIN" | "PROFESSIONAL" | "HELPER"
 
 export type LoginFormData = {
 	email: string

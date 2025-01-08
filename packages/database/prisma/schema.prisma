@@ -97,3 +97,10 @@ model Event {
   service      Service?      @relation(fields: [serviceId], references: [id], onDelete: SetNull)
   center       Center?       @relation(fields: [centerId], references: [id], onDelete: SetNull)
 }
+
+model RevokedToken {
+  id         Int      @id @default(autoincrement())
+  token      String   @unique
+  createdAt  DateTime @default(now())
+  expiresAt  DateTime?
+}
