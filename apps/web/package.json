@@ -26,6 +26,8 @@
 		"dayjs": "^1.11.13",
 		"flowbite-react": "^0.10.1",
 		"fullcalendar": "^6.1.15",
+		"jspdf": "^2.5.2",
+		"jspdf-autotable": "^3.8.4",
 		"jwt-decode": "^4.0.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",

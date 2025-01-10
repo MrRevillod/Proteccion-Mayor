@@ -2,7 +2,7 @@ import dayjs from "dayjs"
 
 import { io } from ".."
 import { prisma } from "@repo/database"
-import { Senior } from "@prisma/client"
+import { Prisma, Senior } from "@prisma/client"
 import { EventService } from "./service"
 import { EventsSchemas } from "./schemas"
 import { AppError, Controller, MailerService, templates } from "@repo/lib"
@@ -14,18 +14,51 @@ export class EventsController {
 		private service: EventService = new EventService(),
 	) {}
 
+	/**
+	 * Controlador para obtener un listado de eventos y un objeto con los eventos
+	 * formateados por id
+	 *
+	 * @param req (Express Request)
+	 * @param res (Express Response)
+	 * @param handleError (Express NextFunction)
+	 *
+	 * @returns (Express Response)
+	 * @throws (AppError)
+	 */
+
 	public getMany: Controller = async (req, res, handleError) => {
 		try {
 			const query = this.schemas.query.parse(req.query)
+
+			const andConditions: Prisma.EventWhereInput[] = []
+
+			if (query.professionalId) {
+				andConditions.push({ professionalId: { equals: query.professionalId } })
+			}
+
+			if (query.serviceId) {
+				andConditions.push({ serviceId: { equals: query.serviceId } })
+			}
+
+			if (query.centerId) {
+				andConditions.push({ centerId: { equals: query.centerId } })
+			}
+
+			if (query.seniorId) {
+				andConditions.push({ seniorId: { equals: query.seniorId } })
+			}
+
+			if (query.start && query.end) {
+				andConditions.push({
+					start: { gte: dayjs(query.start).startOf("day").toDate() },
+					end: { lte: dayjs(query.end).endOf("day").toDate() },
+				})
+			}
+
 			const data = await prisma.event.findMany({
 				select: this.schemas.defaultSelect,
 				where: {
-					professionalId: query.professionalId
-						? { equals: query.professionalId }
-						: undefined,
-					serviceId: query.serviceId ? { equals: query.serviceId } : undefined,
-					centerId: query.centerId ? { equals: query.centerId } : undefined,
-					seniorId: query.seniorId ? { equals: query.seniorId } : undefined,
+					AND: andConditions,
 				},
 			})
 
@@ -61,8 +94,6 @@ export class EventsController {
 			if (senior && !senior?.validated)
 				throw new AppError(409, "La persona mayor no está validada")
 
-			console.log(start)
-
 			const event = {
 				start: dayjs(start),
 				end: dayjs(end),
@@ -80,6 +111,23 @@ export class EventsController {
 			io.to(professionalId as string).emit("event:create", null)
 
 			return res.status(201).json({ values: { modified: null } })
+		} catch (error) {
+			handleError(error)
+		}
+	}
+
+	/**
+	 * Controlador para crear los eventos correspondientes a una semana
+	 * @param req (Express Request)
+	 * @param res (Express Response)
+	 * @param handleError (Express NextFunction)
+	 *
+	 * @returns (Express Response)
+	 * @throws (AppError)
+	 */
+
+	public createMany: Controller = async (req, res, handleError) => {
+		try {
 		} catch (error) {
 			handleError(error)
 		}

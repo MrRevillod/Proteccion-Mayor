@@ -8,6 +8,8 @@ export class EventsSchemas extends Schema {
 			centerId: z.coerce.number().optional(),
 			seniorId: z.string().optional(),
 			serviceId: z.coerce.number().optional(),
+			start: z.string().optional(),
+			end: z.string().optional(),
 		})
 	}
 

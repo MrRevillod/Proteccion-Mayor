@@ -6,7 +6,6 @@ import { Request, Response, NextFunction } from "express"
 import { FileMiddleware, Middleware, SchemaBasedMiddleware, UserRole } from "../types"
 
 export const body: SchemaBasedMiddleware = (schema) => (req, res, next) => {
-	console.log(req.body)
 	try {
 		schema.parse(req.body)
 		next()

@@ -16,7 +16,7 @@ export class SeniorRouter extends Router {
 		this.get({
 			path: "/",
 			handler: this.controller.getMany,
-			middlewares: [this.auth.authorize(["ADMIN", "SENIOR"])],
+			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL"])],
 		})
 
 		this.post({

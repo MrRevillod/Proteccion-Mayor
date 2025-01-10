@@ -25,7 +25,7 @@ export class ProfessionalsSchemas extends Schema {
 			serviceId: true,
 			updatedAt: true,
 			createdAt: true,
-			service: { select: { title: true } },
+			service: { select: { title: true, name: true } },
 		}
 	}
 

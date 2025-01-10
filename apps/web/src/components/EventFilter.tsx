@@ -1,10 +1,11 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 
 import { Show } from "./ui/Show"
+import { Button } from "./ui/Button"
 import { useAuth } from "@/context/AuthContext"
 import { SuperSelect } from "./ui/SuperSelect"
 import { useLocation } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { generatePDF } from "@/lib/downloadDailyAgenda"
 import { FormProvider, useForm } from "react-hook-form"
 import { Professional, SuperSelectField } from "../lib/types"
 import { getIdsFromUrl, selectDataFormatter } from "../lib/formatters"
@@ -28,7 +29,10 @@ export const EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) => {
 	useEffect(() => {
 		methods.setValue("centerFilter", centerId ? Number(centerId) : undefined)
 		methods.setValue("serviceFilter", serviceId ? Number(serviceId) : undefined)
-		methods.setValue("professionalFilter", professionalId ? professionalId.toString() : undefined)
+		methods.setValue(
+			"professionalFilter",
+			professionalId ? professionalId.toString() : undefined
+		)
 	}, [centerId, serviceId, professionalId])
 
 	// Se obtienen los datos necesarios para el filtro desde el componente padre
@@ -36,7 +40,7 @@ export const EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) => {
 	// Estado para almacenar los profesionales que se mostrarán en el filtro
 	const [selectProfessionals, setSelectProfessionals] = useState<SuperSelectField[]>([])
 
-	const { role } = useAuth()
+	const { role, user } = useAuth()
 	const methods = useForm({})
 
 	// Función para limpiar los filtros, onSubmit corresponde
@@ -71,9 +75,17 @@ export const EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) => {
 			<h2 className="text-xl font-bold text-dark dark:text-light">Filtrar agenda</h2>
 			<FormProvider {...methods}>
 				<form className="flex flex-col gap-4 pt-4" onSubmit={handleSubmit}>
-					<SuperSelect label="Seleccione un centro" name="centerFilter" options={centers} />
+					<SuperSelect
+						label="Seleccione un centro"
+						name="centerFilter"
+						options={centers}
+					/>
 					<Show when={role === "ADMIN"}>
-						<SuperSelect label="Seleccione un servicio" name="serviceFilter" options={services} />
+						<SuperSelect
+							label="Seleccione un servicio"
+							name="serviceFilter"
+							options={services}
+						/>
 						<SuperSelect
 							label="Seleccione un profesional"
 							name="professionalFilter"
@@ -96,6 +108,14 @@ export const EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) => {
 						</button>
 					</div>
 
+					<Show when={role === "PROFESSIONAL"}>
+						<Button
+							variant="secondary"
+							onClick={() => generatePDF(user as Professional)}
+						>
+							Descargar atenciones del día de hoy
+						</Button>
+					</Show>
 				</form>
 			</FormProvider>
 		</section>
