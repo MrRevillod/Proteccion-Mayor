@@ -33,7 +33,7 @@ export const tableColumnsFormatters = {
 }
 
 export const formatRole = (role: UserRole) => {
-	return role === "ADMIN" ? "Administrador" : "Profesional"
+	return role === "ADMIN" ? "Administrador" : ( role === "HELPER" ? "Funcionario de apoyo": "Profesional")
 }
 
 interface SelectDataFormatterProps {

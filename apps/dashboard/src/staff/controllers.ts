@@ -1,13 +1,13 @@
 import { prisma } from "@repo/database"
 import { compare, hash } from "bcrypt"
 import { Helper } from "@prisma/client"
-import { HelpersSchemas } from "./schemas"
+import { StaffSchemas } from "./schemas"
 import { MailerService, StorageService, templates } from "@repo/lib"
 import { AppError, Conflict, Controller, credentials } from "@repo/lib"
 
 export class HelpersController {
 	constructor(
-		private schemas: HelpersSchemas,
+		private schemas: StaffSchemas,
 		private mailer: MailerService,
 		private storage: StorageService,
 	) {}

@@ -1,11 +1,11 @@
-import { HelpersSchemas } from "./schemas"
+import { StaffSchemas } from "./schemas"
 import { HelpersController } from "./controllers"
 import { AuthenticationService, Router, validations, uploads, findHelper } from "@repo/lib"
 
-export class HelpersRouter extends Router {
+export class StaffRouter extends Router {
 	constructor(
 		private auth: AuthenticationService,
-		private schemas: HelpersSchemas,
+		private schemas: StaffSchemas,
         private controller: HelpersController,
 	) {
 		super({ prefix: "/api/dashboard/helpers" })
@@ -27,7 +27,7 @@ export class HelpersRouter extends Router {
 			handler: this.controller.updateOne,
 			middlewares: [
 				uploads.singleImage,
-                this.auth.authorize(["HELPER"]),
+                this.auth.authorize(["HELPER","ADMIN"]),
 				validations.resourceId(findHelper),
 				validations.body(this.schemas.update),
 				validations.files({ required: false }),
@@ -45,7 +45,7 @@ export class HelpersRouter extends Router {
 		this.post({
 			path: "/confirm-action",
 			handler: this.controller.confirmAction,
-			middlewares: [this.auth.authorize(["ADMIN"])],
+			middlewares: [this.auth.authorize(["ADMIN","HELPER"])],
 		})
 	}
 }

@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { rules, Schema } from "@repo/lib"
 
-export class HelpersSchemas extends Schema {
+export class StaffSchemas extends Schema {
 	get defaultSelect() {
 		return {
 			id: true,

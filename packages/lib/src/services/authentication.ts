@@ -28,6 +28,7 @@ export class AuthenticationService {
 			const payload = jwt.verify(tokens.access)
 
 			if (!payload.id || !payload.role || !users.isValidRole(payload.role)) {
+                console.log("payload:", payload)
 				throw new Unauthorized()
 			}
 
@@ -36,6 +37,7 @@ export class AuthenticationService {
 
 			if (roles && !roles.includes(payload.role)) throw new Unauthorized()
 
+            console.log("usuario autenticado")
 			req.setExtension("user", user)
 			req.setExtension("role", payload.role)
 			req.setExtension("userId", payload.id)

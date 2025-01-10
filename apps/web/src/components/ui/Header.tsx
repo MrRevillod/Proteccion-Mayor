@@ -172,29 +172,22 @@ export const Header: React.FC = () => {
 						</Link>
                     </Show>
                     <Show when={role === "HELPER"}>
-                        <Dropdown
-									label="Adultos mayores"
-									placement="right-start"
-									dismissOnClick={false}
-									renderTrigger={() => <span className={`cursor-pointer`}>Personas Mayores</span>}
-									className="w-48"
-								>
-									<Link
-										to="/administracion/personas-mayores"
-										onClick={() => handlePageSelected("Personas")}
-										className={linkClasses("Personas", true)}
-									>
-										<Dropdown.Item as="div">Todos</Dropdown.Item>
-									</Link>
+                        
+                        <Link
+                            to="/administracion/personas-mayores"
+							onClick={() => handlePageSelected("Personas")}
+							className={linkClasses("Personas", true)}
+                        >
+                            Personas mayores
+                        </Link>
 
-									<Link
-										to="/administracion/personas-mayores/nuevos"
-										onClick={() => handlePageSelected("Personas")}
-										className={linkClasses("Personas", true)}
-									>
-										<Dropdown.Item as="div">Solicitudes de registro</Dropdown.Item>
-									</Link>
-                        </Dropdown>
+						<Link
+						    to="/administracion/personas-mayores/nuevos"
+                            onClick={() => handlePageSelected("Personas")}
+                            className={linkClasses("Personas", true)}
+						>
+							solicitudes de registro
+						</Link>
                         <Link
 							to="/agenda/administradores"
 							className={linkClasses("Agenda")}
@@ -202,13 +195,6 @@ export const Header: React.FC = () => {
 						>
 							Agenda
 						</Link>
-                        <Link
-                                to="/estadisticas"
-                                className={linkClasses("Estadisticas")}
-                                onClick={() => handlePageSelected("Estadisticas")}
-                        >
-                                Estadísticas
-                        </Link>
 
 
                     </Show>

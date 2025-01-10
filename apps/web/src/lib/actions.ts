@@ -148,3 +148,21 @@ export const getReports = async (props: QueryActionProps) => {
 export const getRegisterImages = async (props: QueryActionProps) => {
 	return await apiRequest.get(`/storage/public/seniors/${props?.params?.id}/register-files`)
 }
+
+// Acciones CRUD para los funcionarios de apoyo
+
+export const getHelpers = async (props: QueryActionProps) => {
+	return await apiRequest.get(`/dashboard/helpers${props.query ? "?" + props.query : ""}`)
+}
+
+export const createHelper = async (props: MutateActionProps) => {
+	return await apiRequest.post("/dashboard/helpers", props)
+}
+
+export const updateHelper = async (props: MutateActionProps) => {
+	return await apiRequest.patch("/dashboard/helpers", props)
+}
+
+export const deleteHelper = async (props: MutateActionProps) => {
+	return await apiRequest.delete("/dashboard/helpers", props)
+}

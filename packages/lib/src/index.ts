@@ -19,13 +19,15 @@ export * as credentials from "./utils/credentials"
 export * as validations from "./utils/validations"
 export * as uploads from "./utils/uploads"
 
+
 export {
 	findAdministrator,
 	findCenter,
 	findEvent,
 	findProfessional,
 	findSenior,
-	findService,
+    findService,
+    findHelper,
 } from "./utils/actions"
 
 export { MailerService } from "./services/mailer"
@@ -33,6 +35,7 @@ export { StorageService } from "./services/storage"
 export { AuthenticationService } from "./services/authentication"
 
 export type { UserRole, User, Controller, Middleware } from "./types"
+
 
 export { Router } from "./application/routing"
 export { Module } from "./application/module"

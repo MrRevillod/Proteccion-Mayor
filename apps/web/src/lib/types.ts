@@ -31,6 +31,12 @@ export interface Professional extends IUser {
 	serviceId: number
 }
 
+export interface Helper extends IUser {
+	center: Partial<Center>
+	centerId: number
+}
+
+
 export type Service = {
 	id: number
 	name: string
@@ -53,7 +59,7 @@ export interface Senior extends IUser {
 }
 
 export type UnvalidatedSenior = Omit<Senior, "name" & "address" & "birthDate">
-export type User = Administrator | Professional | Senior
+export type User = Administrator | Professional | Senior | Helper
 
 export type ApiResponse = {
 	status?: number

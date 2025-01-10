@@ -19,7 +19,7 @@ export class SessionController {
 
 			const user = await users.find({ role: variant, filter: { email } })
 
-			if (!user || !(await compare(password, user.password))) {
+            if (!user || !(await compare(password, user.password))) {
 				throw new Unauthorized("Correo electrónico o contraseña incorrectos")
 			}
 

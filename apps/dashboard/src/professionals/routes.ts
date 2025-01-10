@@ -14,7 +14,7 @@ export class ProfessionalsRouter extends Router {
 		this.get({
 			path: "/",
 			handler: this.controller.getMany,
-			middlewares: [this.auth.authorize(["ADMIN"])],
+			middlewares: [this.auth.authorize(["ADMIN","HELPER"])],
 		})
 
 		this.post({

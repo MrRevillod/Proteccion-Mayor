@@ -2,14 +2,12 @@ import { findEvent, Router } from "@repo/lib"
 import { EventsSchemas } from "./schemas"
 import { EventsController } from "./controllers"
 import { AuthenticationService, validations } from "@repo/lib"
-import { HelpersController } from "../helpers/controllers"
 
 export class EventsRouter extends Router {
 	constructor(
 		private auth: AuthenticationService,
 		private schemas: EventsSchemas,
         private controller: EventsController,
-        private helpersController: HelpersController,
 	) {
 		super({ prefix: "/api/dashboard/events" })
 
@@ -24,17 +22,18 @@ export class EventsRouter extends Router {
 			handler: this.controller.createOne,
 			middlewares: [
                 this.auth.authorize(["ADMIN", "PROFESSIONAL", "HELPER"]),
-
-ñ                validations.body(this.schemas.create),
+                validations.validateSameCenter,
+                validations.body(this.schemas.create),
 			],
 		})
-
+        
 		this.patch({
-			path: "/:id",
+            path: "/:id",
 			handler: this.controller.updateOne,
 			middlewares: [
-				this.auth.authorize(["ADMIN", "PROFESSIONAL","HELPER"]),
+                this.auth.authorize(["ADMIN", "PROFESSIONAL","HELPER"]),
 				validations.resourceId(findEvent),
+                validations.validateEventPermissions,
 				validations.body(this.schemas.update),
 			],
 		})

@@ -3,7 +3,7 @@ import { prisma } from "@repo/database"
 import { UserRole } from ".."
 
 export const isValidRole = (role: string) => {
-	return ["ADMIN", "SENIOR", "PROFESSIONAL"].includes(role)
+	return ["ADMIN", "SENIOR", "PROFESSIONAL","HELPER"].includes(role)
 }
 
 // Función que busca un usuario en la base de datos según

@@ -11,7 +11,7 @@ import { AdministratorSchemas } from "@/lib/schemas"
 import { MutationResponse, User } from "@/lib/types"
 import { buildRequestBody, handleFormError } from "@/lib/form"
 import { useEffect, Dispatch, SetStateAction } from "react"
-import { updateAdministrator, updateProfessional } from "@/lib/actions"
+import { updateAdministrator, updateHelper, updateProfessional } from "@/lib/actions"
 import { FieldValues, FormProvider, SubmitHandler, useForm } from "react-hook-form"
 
 interface UpdateProfileProps {
@@ -45,7 +45,7 @@ export const UpdateProfile: React.FC<UpdateProfileProps> = ({ setImageSrc, setSh
 	}, [user])
 
 	const mutation = useMutation<MutationResponse<User>>({
-		mutateFn: role === "ADMIN" ? updateAdministrator : updateProfessional,
+		mutateFn: role === "ADMIN" ? updateAdministrator : (role === "HELPER" ? updateHelper : updateProfessional ),
 	})
 
 	const onSubmit: SubmitHandler<FieldValues> = async (formData) => {
