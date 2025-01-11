@@ -1,6 +1,6 @@
-import { findEvent, Router } from "@repo/lib"
 import { EventsSchemas } from "./schemas"
 import { EventsController } from "./controllers"
+import { findEvent, Router } from "@repo/lib"
 import { AuthenticationService, validations } from "@repo/lib"
 
 export class EventsRouter extends Router {

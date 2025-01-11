@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { Prisma } from "@prisma/client"
 import { rules, Schema } from "@repo/lib"
 
 export class ServicesSchemas extends Schema {
@@ -13,13 +14,14 @@ export class ServicesSchemas extends Schema {
 		})
 	}
 
-	get defaultSelect() {
+	get defaultSelect(): Prisma.ServiceSelect {
 		return {
 			id: true,
 			name: true,
 			title: true,
 			description: true,
 			color: true,
+			minutesPerAttention: true,
 		}
 	}
 
@@ -29,6 +31,7 @@ export class ServicesSchemas extends Schema {
 			title: rules.titleServiceSchema,
 			description: rules.descriptionSchema,
 			color: rules.colorSchema,
+			minutesPerAttention: z.number().int().positive(),
 		})
 	}
 
@@ -38,6 +41,7 @@ export class ServicesSchemas extends Schema {
 			title: rules.titleServiceSchema,
 			description: rules.descriptionSchema,
 			color: rules.colorSchema,
+			minutesPerAttention: z.number().int().positive(),
 		})
 	}
 }

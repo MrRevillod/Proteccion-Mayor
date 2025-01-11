@@ -9,6 +9,19 @@ export class ServicesController {
 		private schemas: ServicesSchemas,
 	) {}
 
+	/**
+	 * Obtener todos los servicios registrados, puede aceptar una query
+	 * Para seleccionar los campos a devolver
+	 *
+	 * path: /api/dashboard/services - GET
+	 *
+	 * @param req Request
+	 * @param res Response
+	 * @param handleError Function
+	 *
+	 * @returns Promise<Response>
+	 */
+
 	public getMany: Controller = async (req, res, handleError) => {
 		try {
 			const query = this.schemas.query.parse(req.query)
@@ -24,7 +37,7 @@ export class ServicesController {
 
 	public createOne: Controller = async (req, res, handleError) => {
 		const { body, file } = req
-		const { name, title, description, color } = body
+		const { name, title, description, color, minutesPerAttention } = body
 
 		try {
 			const exists = await prisma.service.findFirst({
@@ -41,7 +54,7 @@ export class ServicesController {
 			}
 
 			const service = await prisma.service.create({
-				data: { name, title, description, color },
+				data: { name, title, description, color, minutesPerAttention },
 			})
 
 			await this.storage.uploadFile({
@@ -58,7 +71,7 @@ export class ServicesController {
 
 	public updateOne: Controller = async (req, res, handleError) => {
 		const { params, body, file } = req
-		const { name, title, description, color } = body
+		const { name, title, description, color, minutesPerAttention } = body
 
 		try {
 			const exists = await prisma.service.findFirst({
@@ -78,9 +91,9 @@ export class ServicesController {
 			}
 
 			const service = await prisma.service.update({
-				where: { id: Number(params.id) },
-				data: { name, title, description, color },
 				select: this.schemas.defaultSelect,
+				where: { id: Number(params.id) },
+				data: { name, title, description, color, minutesPerAttention },
 			})
 
 			if (file) {

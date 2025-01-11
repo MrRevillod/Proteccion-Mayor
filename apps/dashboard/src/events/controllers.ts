@@ -2,9 +2,9 @@ import dayjs from "dayjs"
 
 import { io } from ".."
 import { prisma } from "@repo/database"
-import { Prisma, Senior } from "@prisma/client"
 import { EventService } from "./service"
 import { EventsSchemas } from "./schemas"
+import { Prisma, Senior } from "@prisma/client"
 import { AppError, Controller, MailerService, templates } from "@repo/lib"
 
 export class EventsController {

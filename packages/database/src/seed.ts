@@ -104,6 +104,7 @@ const seed = async () => {
 				address: center.address,
 				phone: center.phone,
 				color: center.color,
+				servicesDailyAttentions: center.servicesDailyAttentions,
 			},
 			update: {},
 		})
@@ -120,6 +121,7 @@ const seed = async () => {
 					title: service.title,
 					description: service.description,
 					color: service.color,
+					minutesPerAttention: service.minutesPerAttention,
 				},
 				update: {},
 			})

@@ -9,11 +9,24 @@ export class CentersController {
 		private storage: StorageService,
 	) {}
 
+	/**
+	 * Obtener todos los centros de atención registrados, puede aceptar una query
+	 * Para seleccionar los campos a devolver
+	 *
+	 * path: /api/dashboard/centers - GET
+	 *
+	 * @param req Request
+	 * @param res Response
+	 * @param handleError Function
+	 *
+	 * @returns Promise<Response>
+	 */
+
 	public getMany: Controller = async (req, res, handleError) => {
 		try {
 			const query = this.schemas.query.parse(req.query)
 			const centers = await prisma.center.findMany({
-				select: query.select ?? undefined,
+				select: query.select,
 			})
 
 			return res.status(200).json({ values: centers })
@@ -22,9 +35,24 @@ export class CentersController {
 		}
 	}
 
+	/**
+	 * Crear un centro de atención
+	 * Se debe enviar un archivo en el body con el nombre de "file"
+	 *
+	 * path: /api/dashboard/centers - POST
+	 *
+	 * @param req Request
+	 * @param res Response
+	 * @param handleError Function
+	 *
+	 * @returns Promise<Response>
+	 * @throws BadRequest
+	 * @throws Conflict
+	 */
+
 	public createOne: Controller = async (req, res, handleError) => {
 		const { body, file } = req
-		const { name, address, phone, color } = body
+		const { name, address, phone, color, servicesDailyAttentions } = body
 
 		if (!file) throw new BadRequest("No se ha subido un archivo")
 
@@ -38,7 +66,7 @@ export class CentersController {
 			}
 
 			const center = await prisma.center.create({
-				data: { name, address, phone, color },
+				data: { name, address, phone, color, servicesDailyAttentions },
 			})
 
 			await this.storage.uploadFile({
@@ -53,11 +81,27 @@ export class CentersController {
 		}
 	}
 
+	/**
+	 * Actualizar un centro de atención
+	 * Se puede enviar un archivo en el body con el nombre de "file"
+	 * Se debe enviar el id del centro en los parámetros
+	 *
+	 * path: /api/dashboard/centers/:id - PATCH
+	 *
+	 * @param req Request
+	 * @param res Response
+	 * @param handleError NextFunction
+	 *
+	 * @returns Promise<Response>
+	 * @throws BadRequest
+	 * @throws Conflict
+	 */
+
 	public updateOne: Controller = async (req, res, handleError) => {
 		const { body, file, params } = req
 
 		const { id } = params
-		const { name, address, phone, color } = body
+		const { name, address, phone, color, servicesDailyAttentions } = body
 
 		try {
 			const exists = await prisma.center.findFirst({
@@ -69,9 +113,9 @@ export class CentersController {
 			}
 
 			const center = await prisma.center.update({
-				where: { id: Number(id) },
-				data: { name, address, phone, color },
 				select: this.schemas.defaultSelect,
+				where: { id: Number(id) },
+				data: { name, address, phone, color, servicesDailyAttentions },
 			})
 
 			if (file) {
@@ -87,6 +131,21 @@ export class CentersController {
 			handleError(error)
 		}
 	}
+
+	/**
+	 * Eliminar un centro de atención
+	 * Se debe enviar el id del centro en los parámetros
+	 * Se eliminarán todos los eventos asociados a este centro
+	 * Se eliminará archivo asociado a este centro
+	 *
+	 * path: /api/dashboard/centers/:id - DELETE
+	 *
+	 * @param req Request
+	 * @param res Response
+	 * @param handleError NextFunction
+	 *
+	 * @returns Promise<Response>
+	 */
 
 	public deleteOne: Controller = async (req, res, handleError) => {
 		const { params } = req
@@ -114,32 +173,3 @@ export class CentersController {
 		}
 	}
 }
-
-// export const getAll = async (req: Request, res: Response, next: NextFunction) => {
-// 	const selectQuery = req.query.select?.toString()
-// 	const select = generateSelect<Prisma.CenterSelect>(selectQuery, centerSelect)
-
-// 	let filter = {} as Prisma.CenterWhereInput
-
-// 	if (req.query.professionalId) {
-// 		filter = {
-// 			Event: {
-// 				some: {
-// 					professionalId: req.query.professionalId.toString(),
-// 				},
-// 			},
-// 		}
-// 	}
-
-// 	try {
-// 		const centers = await prisma.center.findMany({
-// 			where: filter ? { ...filter } : undefined,
-// 			select,
-// 			distinct: ["id"],
-// 		})
-
-// 		return res.status(200).json({ values: centers })
-// 	} catch (error) {
-// 		next(error)
-// 	}
-// }

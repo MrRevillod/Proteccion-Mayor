@@ -50,7 +50,33 @@
 			"address": "Bramante #2121",
 			"img": "https://araucanianoticias.cl/wp-content/uploads/2014/07/DSC_2805.jpg",
 			"phone": "452973078",
-			"color": "#2E86C1"
+			"color": "#2E86C1",
+			"servicesDailyAttentions": [
+				{
+					"serviceId": 1,
+					"attentions": 3
+				},
+				{
+					"serviceId": 2,
+					"attentions": 5
+				},
+				{
+					"serviceId": 3,
+					"attentions": 2
+				},
+				{
+					"serviceId": 4,
+					"attentions": 1
+				},
+				{
+					"serviceId": 5,
+					"attentions": 2
+				},
+				{
+					"serviceId": 6,
+					"attentions": 4
+				}
+			]
 		},
 		{
 			"id": 2,
@@ -58,7 +84,33 @@
 			"address": "Los Jazmines S/N",
 			"img": "https://www.temucoontour.com/wp-content/uploads/2019/08/SENDEROS-1024x683.jpg",
 			"phone": "452973081",
-			"color": "#28B463"
+			"color": "#28B463",
+			"servicesDailyAttentions": [
+				{
+					"serviceId": 1,
+					"attentions": 2
+				},
+				{
+					"serviceId": 2,
+					"attentions": 4
+				},
+				{
+					"serviceId": 3,
+					"attentions": 1
+				},
+				{
+					"serviceId": 4,
+					"attentions": 2
+				},
+				{
+					"serviceId": 5,
+					"attentions": 3
+				},
+				{
+					"serviceId": 6,
+					"attentions": 5
+				}
+			]
 		},
 		{
 			"id": 3,
@@ -66,7 +118,33 @@
 			"address": "Mollulco #0880",
 			"img": "https://www.clave9.cl/wp-content/uploads/2019/09/Labranza_Araucania_Clave9cl.png",
 			"phone": "452973293",
-			"color": "#E67E22"
+			"color": "#E67E22",
+			"servicesDailyAttentions": [
+				{
+					"serviceId": 1,
+					"attentions": 1
+				},
+				{
+					"serviceId": 2,
+					"attentions": 3
+				},
+				{
+					"serviceId": 3,
+					"attentions": 5
+				},
+				{
+					"serviceId": 4,
+					"attentions": 4
+				},
+				{
+					"serviceId": 5,
+					"attentions": 1
+				},
+				{
+					"serviceId": 6,
+					"attentions": 2
+				}
+			]
 		},
 		{
 			"id": 4,
@@ -74,7 +152,33 @@
 			"address": "Quitratue #595",
 			"img": "https://www.superir.gob.cl/wp-content/uploads/2018/06/07-06-2018-CUERPO-CENTRO-COMUNITARIO-MUNI-TEMUCO.jpg",
 			"phone": "452973079",
-			"color": "#C0392B"
+			"color": "#C0392B",
+			"servicesDailyAttentions": [
+				{
+					"serviceId": 1,
+					"attentions": 5
+				},
+				{
+					"serviceId": 2,
+					"attentions": 2
+				},
+				{
+					"serviceId": 3,
+					"attentions": 4
+				},
+				{
+					"serviceId": 4,
+					"attentions": 3
+				},
+				{
+					"serviceId": 5,
+					"attentions": 5
+				},
+				{
+					"serviceId": 6,
+					"attentions": 1
+				}
+			]
 		},
 		{
 			"id": 5,
@@ -82,7 +186,33 @@
 			"address": "Huérfanos #01459",
 			"img": "https://araucanianoticias.cl/wp-content/uploads/2014/12/DSC_3106.jpg",
 			"phone": "452973080",
-			"color": "#1ABC9C"
+			"color": "#1ABC9C",
+			"servicesDailyAttentions": [
+				{
+					"serviceId": 1,
+					"attentions": 4
+				},
+				{
+					"serviceId": 2,
+					"attentions": 1
+				},
+				{
+					"serviceId": 3,
+					"attentions": 3
+				},
+				{
+					"serviceId": 4,
+					"attentions": 5
+				},
+				{
+					"serviceId": 5,
+					"attentions": 4
+				},
+				{
+					"serviceId": 6,
+					"attentions": 3
+				}
+			]
 		},
 		{
 			"id": 6,
@@ -90,7 +220,33 @@
 			"address": "Nahuelbuta #02835",
 			"img": "https://cdn.discordapp.com/attachments/1008449435933614120/1296321842960928880/image.png?ex=6711dd4b&is=67108bcb&hm=e063b473dc338dd360fbff50a7586324ce2d18b84301509bae8ea39a2c41fe19&",
 			"phone": "452973082",
-			"color": "#9B59B6"
+			"color": "#9B59B6",
+			"servicesDailyAttentions": [
+				{
+					"serviceId": 1,
+					"attentions": 3
+				},
+				{
+					"serviceId": 2,
+					"attentions": 5
+				},
+				{
+					"serviceId": 3,
+					"attentions": 2
+				},
+				{
+					"serviceId": 4,
+					"attentions": 1
+				},
+				{
+					"serviceId": 5,
+					"attentions": 2
+				},
+				{
+					"serviceId": 6,
+					"attentions": 4
+				}
+			]
 		},
 		{
 			"id": 7,
@@ -98,7 +254,33 @@
 			"address": "Avenida Argentina #0131",
 			"img": "https://img.soy-chile.cl/Fotos/2012/10/12/file_20121012154429.jpg",
 			"phone": "452973076",
-			"color": "#2E86C1"
+			"color": "#2E86C1",
+			"servicesDailyAttentions": [
+				{
+					"serviceId": 1,
+					"attentions": 2
+				},
+				{
+					"serviceId": 2,
+					"attentions": 4
+				},
+				{
+					"serviceId": 3,
+					"attentions": 1
+				},
+				{
+					"serviceId": 4,
+					"attentions": 2
+				},
+				{
+					"serviceId": 5,
+					"attentions": 3
+				},
+				{
+					"serviceId": 6,
+					"attentions": 5
+				}
+			]
 		},
 		{
 			"id": 8,
@@ -106,7 +288,33 @@
 			"address": "Curiñanco #040",
 			"img": "https://instagram.fzco2-1.fna.fbcdn.net/v/t39.30808-6/438818523_835831905238873_4781599932103728593_n.jpg?stp=dst-jpg_e35_s1080x1080_sh0.08&_nc_ht=instagram.fzco2-1.fna.fbcdn.net&_nc_cat=101&_nc_ohc=EITFbcLP2ewQ7kNvgFq9g0p&_nc_gid=84c947951c48475684d04b8cb8d28490&edm=ANTKIIoAAAAA&ccb=7-5&oh=00_AYBevmk9vIGl784qfyCapsI0KaJwexcEcgFtDz5jcmkEog&oe=67167768&_nc_sid=d885a2",
 			"phone": "452973077",
-			"color": "#28B463"
+			"color": "#28B463",
+			"servicesDailyAttentions": [
+				{
+					"serviceId": 1,
+					"attentions": 1
+				},
+				{
+					"serviceId": 2,
+					"attentions": 3
+				},
+				{
+					"serviceId": 3,
+					"attentions": 5
+				},
+				{
+					"serviceId": 4,
+					"attentions": 4
+				},
+				{
+					"serviceId": 5,
+					"attentions": 1
+				},
+				{
+					"serviceId": 6,
+					"attentions": 2
+				}
+			]
 		},
 		{
 			"id": 9,
@@ -114,7 +322,33 @@
 			"address": "Isquiña #1914",
 			"img": "https://img.soy-chile.cl/Fotos/2017/04/26/file_20170426214106.jpg",
 			"phone": "452973075",
-			"color": "#E67E22"
+			"color": "#E67E22",
+			"servicesDailyAttentions": [
+				{
+					"serviceId": 1,
+					"attentions": 5
+				},
+				{
+					"serviceId": 2,
+					"attentions": 2
+				},
+				{
+					"serviceId": 3,
+					"attentions": 4
+				},
+				{
+					"serviceId": 4,
+					"attentions": 3
+				},
+				{
+					"serviceId": 5,
+					"attentions": 5
+				},
+				{
+					"serviceId": 6,
+					"attentions": 1
+				}
+			]
 		}
 	],
 	"services": [
@@ -125,7 +359,8 @@
 			"img": "https://img.freepik.com/vector-premium/circuito-linea-ilustracion-vectorial-psicologia_764382-140070.jpg?semt=ais_hybrid",
 			"description": "La psicología es la disciplina que investiga sobre los procesos mentales de las personas y su relación con el entorno social y físico. El psicólogo es el profesional que se dedica a estudiar y tratar los padecimientos mentales, emocionales y de comportamiento.",
 			"color": "#2E86C1",
-			"professionals": 2
+			"professionals": 2,
+			"minutesPerAttention": 60
 		},
 		{
 			"id": 2,
@@ -134,7 +369,8 @@
 			"img": "https://static.wixstatic.com/media/2987d9_828f8c6f0e9749898fe777d00af66cb3~mv2.jpg/v1/fill/w_560,h_372,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/podologia-clinica-13___Selected.jpg  https://img.freepik.com/vector-gratis/ilustracion-fisioterapia-deportiva_23-2150076874.jpg",
 			"description": "La podología es la rama de la medicina que se encarga de estudiar, diagnosticar y tratar las enfermedades y alteraciones que afectan a los pies. El podólogo es el profesional que se dedica a prevenir, diagnosticar y tratar las enfermedades y alteraciones de los pies.",
 			"color": "#28B463",
-			"professionals": 8
+			"professionals": 8,
+			"minutesPerAttention": 30
 		},
 		{
 			"id": 3,
@@ -143,7 +379,8 @@
 			"img": "https://kinesishouse.cl/wp-content/uploads/2024/03/kinesiologia-gratis.webp",
 			"description": "La kinesiología es la disciplina que se encarga de prevenir, diagnosticar y tratar las enfermedades y lesiones del sistema musculoesquelético. El kinesiólogo es el profesional que se dedica a prevenir, diagnosticar y tratar las enfermedades y lesiones del sistema musculoesquelético.",
 			"color": "#E67E22",
-			"professionals": 2
+			"professionals": 2,
+			"minutesPerAttention": 45
 		},
 		{
 			"id": 4,
@@ -152,7 +389,8 @@
 			"img": "https://ceapsi.cl/wp-content/uploads/2024/01/FonoaudiologiaAdulto.webp",
 			"description": "La fonoaudiología es la disciplina que se encarga de prevenir, diagnosticar y tratar los trastornos de la comunicación humana. El fonoaudiólogo es el profesional que se dedica a prevenir, diagnosticar y tratar los trastornos de la comunicación humana.",
 			"color": "#C0392B",
-			"professionals": 3
+			"professionals": 3,
+			"minutesPerAttention": 45
 		},
 		{
 			"id": 5,
@@ -161,7 +399,8 @@
 			"img": "https://clvconsultora.cl/agizivoa/2023/07/asesoria-juridica.jpg",
 			"description": "La asesoría jurídica es el servicio que se encarga de brindar orientación y asesoramiento legal a las personas que lo requieran. El abogado es el profesional que se dedica a brindar orientación y asesoramiento legal a las personas que lo requieran.",
 			"color": "#1ABC9C",
-			"professionals": 3
+			"professionals": 3,
+			"minutesPerAttention": 60
 		},
 		{
 			"id": 6,
@@ -170,7 +409,8 @@
 			"img": "https://blog.goingbeautiful.com/wp-content/uploads/2021/08/corte-pelo-domicilio-mayores.jpg",
 			"description": "La peluquería es el servicio que se encarga de cortar, peinar y arreglar el cabello de las personas. El peluquero es el profesional que se dedica a cortar, peinar y arreglar el cabello de las personas.",
 			"color": "#9B59B6",
-			"professionals": 5
+			"professionals": 5,
+			"minutesPerAttention": 30
 		}
 	]
 }

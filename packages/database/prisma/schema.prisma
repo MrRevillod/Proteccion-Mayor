@@ -39,24 +39,26 @@ model Senior {
 }
 
 model Service {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique @db.VarChar(255)
-  title       String   @db.Text
-  description String   @db.Text
-  color       String   @db.Text
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                  Int      @id @default(autoincrement())
+  name                String   @unique @db.VarChar(255)
+  title               String   @db.Text
+  description         String   @db.Text
+  color               String   @db.Text
+  minutesPerAttention Int
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
   events        Event[]
   professionals Professional[]
 }
 
 model Center {
-  id      Int    @id @default(autoincrement())
-  name    String @unique @db.VarChar(255)
-  address String @db.Text
-  phone   String @db.VarChar(255)
-  color   String @db.Text
+  id                      Int    @id @default(autoincrement())
+  name                    String @unique @db.VarChar(255)
+  address                 String @db.Text
+  phone                   String @db.VarChar(255)
+  color                   String @db.Text
+  servicesDailyAttentions Json
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
