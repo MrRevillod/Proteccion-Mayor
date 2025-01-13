@@ -28,14 +28,33 @@ export const CreateService: React.FC<FormProps<Service>> = ({ data, setData }) =
 					actionType="create"
 					setLoading={setLoading}
 				>
-					<Input name="name" label="Nombre del Servicio" type="text" placeholder="Asesoría Legal" />
-					<Input name="title" label="Título del Servicio" type="text" placeholder="Abogado(a)" />
+					<Input
+						name="name"
+						label="Nombre del Servicio"
+						type="text"
+						placeholder="Asesoría Legal"
+					/>
+					<Input
+						name="title"
+						label="Título del Servicio"
+						type="text"
+						placeholder="Abogado(a)"
+					/>
 					<Input
 						name="description"
 						label="Descripción"
 						type="text"
 						placeholder="Descripción breve del servicio"
 					/>
+
+					<Input
+						type="text"
+						label="Minutos por atención"
+						name="minutesPerAttention"
+						maxLength={3}
+						placeholder="60"
+					/>
+
 					<ColorPicker label="Color del servicio" />
 					<ImageSelector imageLabel="Imagen del servicio" size={[400, 250]} />
 				</Form>

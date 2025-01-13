@@ -2,6 +2,8 @@ import { z } from "zod"
 import { Prisma } from "@prisma/client"
 import { rules, Schema } from "@repo/lib"
 
+export type ServiceSchemas = typeof ServicesSchemas
+
 export class ServicesSchemas extends Schema {
 	private readonly selectValues = ["id", "name", "title"]
 
@@ -31,7 +33,7 @@ export class ServicesSchemas extends Schema {
 			title: rules.titleServiceSchema,
 			description: rules.descriptionSchema,
 			color: rules.colorSchema,
-			minutesPerAttention: z.number().int().positive(),
+			minutesPerAttention: rules.minutesPerAttentionSchema,
 		})
 	}
 
@@ -41,7 +43,7 @@ export class ServicesSchemas extends Schema {
 			title: rules.titleServiceSchema,
 			description: rules.descriptionSchema,
 			color: rules.colorSchema,
-			minutesPerAttention: z.number().int().positive(),
+			minutesPerAttention: rules.minutesPerAttentionSchema,
 		})
 	}
 }

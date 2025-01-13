@@ -37,6 +37,7 @@ export type Service = {
 	title: string
 	description: string
 	color: HexColor
+	minutesPerAttention: number
 }
 
 export type Center = {

@@ -15,11 +15,7 @@ export class ServicesController {
 	 *
 	 * path: /api/dashboard/services - GET
 	 *
-	 * @param req Request
-	 * @param res Response
-	 * @param handleError Function
-	 *
-	 * @returns Promise<Response>
+	 * @returns (Express Response) (HTTP - 200)
 	 */
 
 	public getMany: Controller = async (req, res, handleError) => {
@@ -34,6 +30,16 @@ export class ServicesController {
 			handleError(error)
 		}
 	}
+
+	/**
+	 * Registrar un servicio en el sistema, debe incluir una imagen en el body
+	 *
+	 * Content-Type: multipart/form-data
+	 * path: /api/dashboard/services - POST
+	 *
+	 * @returns (Express Response) (HTTP - 201)
+	 * @throws (AppError) (HTTP - 409)
+	 */
 
 	public createOne: Controller = async (req, res, handleError) => {
 		const { body, file } = req
@@ -54,7 +60,13 @@ export class ServicesController {
 			}
 
 			const service = await prisma.service.create({
-				data: { name, title, description, color, minutesPerAttention },
+				data: {
+					name,
+					title,
+					description,
+					color,
+					minutesPerAttention: Number(minutesPerAttention),
+				},
 			})
 
 			await this.storage.uploadFile({
@@ -68,6 +80,16 @@ export class ServicesController {
 			handleError(error)
 		}
 	}
+
+	/**
+	 * Actualizar un servicio en el sistema, puede incluir una imagen en el body
+	 * Se comprueba que no exista un servicio con el mismo nombre o color
+	 *
+	 * /api/dashboard/services/:id - PATCH
+	 *
+	 * @returns (Express Response) (HTTP - 200)
+	 * @throws (AppError) (HTTP - 409)
+	 */
 
 	public updateOne: Controller = async (req, res, handleError) => {
 		const { params, body, file } = req
@@ -109,6 +131,17 @@ export class ServicesController {
 			handleError(error)
 		}
 	}
+
+	/**
+	 * Eliminar un servicio del sistema, se eliminan los eventos y se desvinculan
+	 * los profesionales asociados a este servicio
+	 * Se elimina la imagen asociada al servicio
+	 *
+	 * /api/dashboard/services/:id - DELETE
+	 *
+	 * @returns (Express Response) (HTTP - 200)
+	 * @throws (AppError) (HTTP - 500)
+	 */
 
 	public deleteOne: Controller = async (req, res, handleError) => {
 		const { params } = req

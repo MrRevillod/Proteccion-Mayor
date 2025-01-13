@@ -10,6 +10,7 @@ export const body: SchemaBasedMiddleware = (schema) => (req, res, next) => {
 		schema.parse(req.body)
 		next()
 	} catch (error) {
+		console.log(error)
 		next(new BadRequest("Error en la validación de campos en el formulario"))
 	}
 }

@@ -30,12 +30,17 @@ export const UpdateService: React.FC<FormProps<Service>> = ({ data, setData }) =
 				title: selectedData.title,
 				description: selectedData.description,
 				color: selectedData.color.toString().split("#")[1],
+				minutesPerAttention: selectedData.minutesPerAttention,
 			})
 		}
 	}, [selectedData])
 
 	return (
-		<Modal type="Edit" title={`Editar la información de ${selectedData?.name}`} loading={loading}>
+		<Modal
+			type="Edit"
+			title={`Editar la información de ${selectedData?.name}`}
+			loading={loading}
+		>
 			<FormProvider {...methods}>
 				<Form<Service>
 					data={data as Service[]}
@@ -51,6 +56,13 @@ export const UpdateService: React.FC<FormProps<Service>> = ({ data, setData }) =
 						label="Descripción"
 						type="text"
 						placeholder="¿En qué consiste el servicio?"
+					/>
+					<Input
+						type="text"
+						label="Minutos por atención"
+						name="minutesPerAttention"
+						maxLength={3}
+						placeholder="60"
 					/>
 					<ColorPicker label="Color del servicio" />
 					<ImageSelector imageLabel="Imagen del servicio" size={[400, 250]} />

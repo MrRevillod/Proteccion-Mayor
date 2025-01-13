@@ -28,7 +28,7 @@ export class ProfessionalsRouter extends Router {
 			handler: this.controller.updateOne,
 			middlewares: [
 				uploads.singleImage,
-				this.auth.authorize(["ADMIN"]),
+				this.auth.authorize(["ADMIN", "PROFESSIONAL"]),
 				validations.resourceId(findProfessional),
 				validations.body(this.schemas.update),
 				validations.files({ required: false }),

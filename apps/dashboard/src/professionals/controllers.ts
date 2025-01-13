@@ -12,6 +12,16 @@ export class ProfessionalsController {
 		private mailer: MailerService,
 	) {}
 
+	/**
+	 * Obtener todos los profesionales registrados, puede aceptar una query
+	 * Query: ?id=""&serviceId=""&select=""
+	 *
+	 * path: /api/dashboard/professionals - GET
+	 *
+	 * @returns (Express Response) (HTTP - 200)
+	 * @throws (AppError) (HTTP - 400)
+	 */
+
 	public getMany: Controller = async (req, res, handleError) => {
 		try {
 			const query = this.schemas.query.parse(req.query)
@@ -30,6 +40,16 @@ export class ProfessionalsController {
 			handleError(error)
 		}
 	}
+
+	/**
+	 * Registrar un profesional en el sistema, debe incluir una imagen en el body
+	 *
+	 * Content-Type: multipart/form-data
+	 * path: /api/dashboard/professionals - POST
+	 *
+	 * @returns (Express Response) (HTTP - 201)
+	 * @throws (AppError) (HTTP - 409)
+	 */
 
 	public createOne: Controller = async (req, res, handleError) => {
 		const { id, name, email, serviceId } = req.body
@@ -69,6 +89,16 @@ export class ProfessionalsController {
 			handleError(error)
 		}
 	}
+
+	/**
+	 * Actualizar un profesional en el sistema, puede incluir una imagen en el body
+	 *
+	 * Content-Type: multipart/form-data
+	 * path: /api/dashboard/professionals/:id - PATCH
+	 *
+	 * @returns (Express Response) (HTTP - 200)
+	 * @throws (AppError) (HTTP - 400 | 409)
+	 */
 
 	public updateOne: Controller = async (req, res, handleError) => {
 		const { params, body, file } = req
@@ -110,6 +140,15 @@ export class ProfessionalsController {
 			handleError(error)
 		}
 	}
+
+	/**
+	 * Eliminar un profesional en el sistema
+	 *
+	 * path: /api/dashboard/professionals/:id - DELETE
+	 *
+	 * @returns (Express Response) (HTTP - 200)
+	 * @throws (AppError)
+	 */
 
 	public deleteOne: Controller = async (req, res, handleError) => {
 		const { params } = req

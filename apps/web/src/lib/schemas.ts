@@ -124,6 +124,7 @@ export const ServiceSchemas = {
 		description: rules.descriptionSchema,
 		image: rules.imageSchemaCreate,
 		color: rules.colorSchema,
+		minutesPerAttention: rules.minutesPerAttentionSchema,
 	}),
 	Update: z.object({
 		name: rules.nameServiceSchema,
@@ -131,6 +132,7 @@ export const ServiceSchemas = {
 		description: rules.descriptionSchema,
 		image: rules.imageSchemaUpdate,
 		color: rules.colorSchema,
+		minutesPerAttention: rules.minutesPerAttentionSchema,
 	}),
 }
 

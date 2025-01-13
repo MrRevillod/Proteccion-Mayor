@@ -1,6 +1,18 @@
 import dayjs from "dayjs"
 import { z } from "zod"
 
+export const minutesPerAttentionSchema = z
+	.string()
+	.transform((val) => Number(val))
+	.refine((val) => !isNaN(val), { message: "Debe ser un número válido" })
+	.pipe(
+		z
+			.number()
+			.int({ message: "Debe ser un número entero" })
+			.min(15, { message: "La duración mínima es de 15 minutos" })
+			.max(180, { message: "La duración máxima es de 3 horas" })
+	)
+
 export const isValidRutFormat = (rut: string): boolean => {
 	const rutRegex = /^[0-9]+[0-9Kk]$/
 	return rutRegex.test(rut)
@@ -42,9 +54,11 @@ export const pinSchema = z.string().refine((value) => /^[0-9]{4}$/.test(value), 
 	message: "El PIN debe tener 4 dígitos numéricos",
 })
 
-export const optionalPinSchema = z.string().refine((value) => value === "" || /^[0-9]{4}$/.test(value), {
-	message: "El pin debe contener 4 dígitos numéricos",
-})
+export const optionalPinSchema = z
+	.string()
+	.refine((value) => value === "" || /^[0-9]{4}$/.test(value), {
+		message: "El pin debe contener 4 dígitos numéricos",
+	})
 
 export const optionalPasswordSchema = z
 	.string()
@@ -59,7 +73,7 @@ export const optionalPasswordSchema = z
 		{
 			message:
 				"La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial.",
-		},
+		}
 	)
 
 export const passwordSchema = z
@@ -75,7 +89,7 @@ export const passwordSchema = z
 		{
 			message:
 				"La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial.",
-		},
+		}
 	)
 
 export const nameSchema = z
@@ -112,7 +126,7 @@ export const nameServiceSchema = z
 	.max(50, "El nombre no debe tener más de 50 caracteres")
 	.regex(
 		/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ\-'.()]+$/,
-		"El nombre solo puede contener letras, espacios y caracteres especiales como - ' . ()",
+		"El nombre solo puede contener letras, espacios y caracteres especiales como - ' . ()"
 	)
 
 export const titleServiceSchema = z
@@ -121,7 +135,7 @@ export const titleServiceSchema = z
 	.max(50, "El título no debe tener más de 50 caracteres")
 	.regex(
 		/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ\-'.()]+$/,
-		"El título solo puede contener letras, espacios y caracteres especiales como - ' . ()",
+		"El título solo puede contener letras, espacios y caracteres especiales como - ' . ()"
 	)
 
 export const nameCenterSchema = z
@@ -130,7 +144,9 @@ export const nameCenterSchema = z
 	.max(50, "El nombre no debe tener más de 50 caracteres")
 	.regex(/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ]+$/, "El nombre solo puede contener letras y espacios")
 
-export const addressCenterSchema = z.string().min(2, "La dirección debe tener al menos 2 caracteres")
+export const addressCenterSchema = z
+	.string()
+	.min(2, "La dirección debe tener al menos 2 caracteres")
 
 export const phoneSchema = z
 	.string()
