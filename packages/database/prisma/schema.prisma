@@ -64,7 +64,6 @@ model Center {
   
   Event     Event[]
   Helper    Helper[]
-  Staff     Staff[]
 }
 
 model Professional {
@@ -117,17 +116,3 @@ model Helper {
   center    Center?       @relation(fields: [centerId], references: [id], onDelete: SetNull)
 }
 
-model Staff {
-  id       String @id @db.VarChar(255)
-  name     String @db.Text
-  email    String @unique @db.VarChar(255)
-  password String @db.VarChar(255)
-  role     String @db.VarChar(255)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  centerId  Int?
-
-  center    Center?       @relation(fields: [centerId], references: [id], onDelete: SetNull)
-}
