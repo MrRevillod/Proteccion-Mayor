@@ -6,10 +6,8 @@ import { ServicesModule } from "./services/module"
 import { ProfessionalsModule } from "./professionals/module"
 import { AdministratorsModule } from "./administrators/module"
 
-import { setupWorker } from "@socket.io/sticky"
 import { createServer } from "http"
 import { SocketEvents } from "./socket"
-import { createAdapter } from "@socket.io/cluster-adapter"
 import { Server, Socket } from "socket.io"
 import { MailerService, SERVICES, startService, UserRole } from "@repo/lib"
 import { AuthenticationService, createApplication, StorageService } from "@repo/lib"
@@ -39,11 +37,6 @@ export const io = new Server<SocketEvents>(http, {
 	path: "/api/dashboard/socket.io",
 	transports: ["websocket"],
 })
-
-if (process.env.NODE_ENV === "production") {
-	io.adapter(createAdapter())
-	setupWorker(io)
-}
 
 io.on("connection", (socket: Socket) => {
 	const role = socket.handshake.query.userRole as UserRole

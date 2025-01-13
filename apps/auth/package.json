@@ -7,12 +7,14 @@
 		"dev": "tsup --watch --onSuccess \"node dist/index.js\"",
 		"build": "tsup",
 		"clean": "rm -rf dist",
+		"prune": "rm -rf node_modules",
 		"typecheck": "tsc --noEmit",
 		"format": "prettier --write ."
 	},
 	"dependencies": {
 		"@repo/database": "workspace:*",
 		"@repo/lib": "workspace:*",
+		"@prisma/client": "^5.10.2",
 		"bcrypt": "^5.1.1",
 		"cookie-parser": "^1.4.6",
 		"cors": "^2.8.5",
@@ -33,6 +35,7 @@
 		"@types/jsonwebtoken": "^9.0.6",
 		"@types/morgan": "^1.9.9",
 		"@types/node": "^20.11.24",
-		"prettier": "^3.3.3"
+		"tsup": "^8.3.5",
+		"typescript": "^5.7.3"
 	}
 }

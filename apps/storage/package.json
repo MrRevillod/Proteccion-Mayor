@@ -7,11 +7,11 @@
 		"dev": "tsup --watch --onSuccess \"node dist/index.js\"",
 		"build": "tsup",
 		"clean": "rm -rf dist",
+		"prune": "rm -rf node_modules",
 		"typecheck": "tsc --noEmit",
 		"format": "prettier --write ."
 	},
 	"dependencies": {
-		"@repo/database": "workspace:*",
 		"@repo/lib": "workspace:*",
 		"cors": "^2.8.5",
 		"express": "^4.18.3",
@@ -31,6 +31,7 @@
 		"@types/morgan": "^1.9.9",
 		"@types/multer": "^1.4.12",
 		"@types/node": "^20.11.24",
-		"prettier": "^3.3.3"
+		"tsup": "^8.3.5",
+		"typescript": "^5.7.3"
 	}
 }
