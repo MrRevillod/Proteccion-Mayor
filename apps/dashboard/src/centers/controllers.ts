@@ -1,4 +1,5 @@
 import { prisma } from "@repo/database"
+import { DailySessions } from "@prisma/client"
 import { CentersSchemas } from "./schemas"
 import { StorageService } from "@repo/lib"
 import { Conflict, BadRequest, Controller } from "@repo/lib"
@@ -15,10 +16,6 @@ export class CentersController {
 	 *
 	 * path: /api/dashboard/centers - GET
 	 *
-	 * @param req Request
-	 * @param res Response
-	 * @param handleError Function
-	 *
 	 * @returns Promise<Response>
 	 */
 
@@ -26,7 +23,7 @@ export class CentersController {
 		try {
 			const query = this.schemas.query.parse(req.query)
 			const centers = await prisma.center.findMany({
-				select: query.select,
+				select: query.select ?? this.schemas.defaultSelect,
 			})
 
 			return res.status(200).json({ values: centers })
@@ -41,10 +38,6 @@ export class CentersController {
 	 *
 	 * path: /api/dashboard/centers - POST
 	 *
-	 * @param req Request
-	 * @param res Response
-	 * @param handleError Function
-	 *
 	 * @returns Promise<Response>
 	 * @throws BadRequest
 	 * @throws Conflict
@@ -52,7 +45,7 @@ export class CentersController {
 
 	public createOne: Controller = async (req, res, handleError) => {
 		const { body, file } = req
-		const { name, address, phone, color, servicesDailyAttentions } = body
+		const { name, address, phone, color } = body
 
 		if (!file) throw new BadRequest("No se ha subido un archivo")
 
@@ -66,7 +59,7 @@ export class CentersController {
 			}
 
 			const center = await prisma.center.create({
-				data: { name, address, phone, color, servicesDailyAttentions },
+				data: { name, address, phone, color },
 			})
 
 			await this.storage.uploadFile({
@@ -88,20 +81,15 @@ export class CentersController {
 	 *
 	 * path: /api/dashboard/centers/:id - PATCH
 	 *
-	 * @param req Request
-	 * @param res Response
-	 * @param handleError NextFunction
-	 *
 	 * @returns Promise<Response>
-	 * @throws BadRequest
-	 * @throws Conflict
+	 * @throws AppError HTTP 400 | HTTP 409
 	 */
 
 	public updateOne: Controller = async (req, res, handleError) => {
 		const { body, file, params } = req
 
 		const { id } = params
-		const { name, address, phone, color, servicesDailyAttentions } = body
+		const { name, address, phone, color } = body
 
 		try {
 			const exists = await prisma.center.findFirst({
@@ -115,7 +103,7 @@ export class CentersController {
 			const center = await prisma.center.update({
 				select: this.schemas.defaultSelect,
 				where: { id: Number(id) },
-				data: { name, address, phone, color, servicesDailyAttentions },
+				data: { name, address, phone, color },
 			})
 
 			if (file) {
@@ -140,11 +128,8 @@ export class CentersController {
 	 *
 	 * path: /api/dashboard/centers/:id - DELETE
 	 *
-	 * @param req Request
-	 * @param res Response
-	 * @param handleError NextFunction
-	 *
 	 * @returns Promise<Response>
+	 * @throws AppError HTTP 400
 	 */
 
 	public deleteOne: Controller = async (req, res, handleError) => {
@@ -168,6 +153,48 @@ export class CentersController {
 			})
 
 			return res.status(200).json({ values: { modified: deleted } })
+		} catch (error) {
+			handleError(error)
+		}
+	}
+
+	/**
+	 * Actualiza las atenciones diarias de los servicios en un centro (centerId)
+	 *
+	 * path: /dashboard/centers/daily-sessions/:centerId - HTTP PATCH
+	 *
+	 * @returns Promise<Response>
+	 * @throws AppError
+	 */
+
+	public updateDailySessions: Controller = async (req, res, handleError) => {
+		const { body, params } = req
+
+		try {
+			const sessions = await prisma.dailySessions.findMany({
+				where: { centerId: Number(params.id) },
+			})
+
+			const changes: DailySessions[] = []
+
+			for (let i = 0; i < sessions.length; i++) {
+				const session = sessions[i]
+
+				if (body[session.id] !== session.quantity) {
+					changes.push({ ...session, quantity: Number(body[session.id]) })
+				}
+			}
+
+			await prisma.$transaction(
+				changes.map((change) =>
+					prisma.dailySessions.update({
+						where: { id: change.id },
+						data: { quantity: change.quantity },
+					}),
+				),
+			)
+
+			return res.status(200).json({ values: { modified: "" } })
 		} catch (error) {
 			handleError(error)
 		}

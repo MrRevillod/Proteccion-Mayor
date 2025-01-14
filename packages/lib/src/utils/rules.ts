@@ -173,3 +173,14 @@ export const minutesPerAttentionSchema = z
 			.min(15, { message: "La duración mínima es de 15 minutos" })
 			.max(180, { message: "La duración máxima es de 3 horas" })
 	)
+
+export const numberIdSchema = z
+	.string()
+	.transform((val) => Number(val))
+	.refine((val) => !isNaN(val), { message: "Debe ser un número válido" })
+	.pipe(
+		z
+			.number()
+			.int({ message: "Debe ser un número entero" })
+			.min(1, { message: "El número debe ser mayor a 0" })
+	)

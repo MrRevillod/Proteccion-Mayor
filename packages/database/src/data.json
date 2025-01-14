@@ -50,33 +50,7 @@
 			"address": "Bramante #2121",
 			"img": "https://araucanianoticias.cl/wp-content/uploads/2014/07/DSC_2805.jpg",
 			"phone": "452973078",
-			"color": "#2E86C1",
-			"servicesDailyAttentions": [
-				{
-					"serviceId": 1,
-					"attentions": 3
-				},
-				{
-					"serviceId": 2,
-					"attentions": 5
-				},
-				{
-					"serviceId": 3,
-					"attentions": 2
-				},
-				{
-					"serviceId": 4,
-					"attentions": 1
-				},
-				{
-					"serviceId": 5,
-					"attentions": 2
-				},
-				{
-					"serviceId": 6,
-					"attentions": 4
-				}
-			]
+			"color": "#2E86C1"
 		},
 		{
 			"id": 2,
@@ -84,33 +58,7 @@
 			"address": "Los Jazmines S/N",
 			"img": "https://www.temucoontour.com/wp-content/uploads/2019/08/SENDEROS-1024x683.jpg",
 			"phone": "452973081",
-			"color": "#28B463",
-			"servicesDailyAttentions": [
-				{
-					"serviceId": 1,
-					"attentions": 2
-				},
-				{
-					"serviceId": 2,
-					"attentions": 4
-				},
-				{
-					"serviceId": 3,
-					"attentions": 1
-				},
-				{
-					"serviceId": 4,
-					"attentions": 2
-				},
-				{
-					"serviceId": 5,
-					"attentions": 3
-				},
-				{
-					"serviceId": 6,
-					"attentions": 5
-				}
-			]
+			"color": "#28B463"
 		},
 		{
 			"id": 3,
@@ -118,33 +66,7 @@
 			"address": "Mollulco #0880",
 			"img": "https://www.clave9.cl/wp-content/uploads/2019/09/Labranza_Araucania_Clave9cl.png",
 			"phone": "452973293",
-			"color": "#E67E22",
-			"servicesDailyAttentions": [
-				{
-					"serviceId": 1,
-					"attentions": 1
-				},
-				{
-					"serviceId": 2,
-					"attentions": 3
-				},
-				{
-					"serviceId": 3,
-					"attentions": 5
-				},
-				{
-					"serviceId": 4,
-					"attentions": 4
-				},
-				{
-					"serviceId": 5,
-					"attentions": 1
-				},
-				{
-					"serviceId": 6,
-					"attentions": 2
-				}
-			]
+			"color": "#E67E22"
 		},
 		{
 			"id": 4,
@@ -152,33 +74,7 @@
 			"address": "Quitratue #595",
 			"img": "https://www.superir.gob.cl/wp-content/uploads/2018/06/07-06-2018-CUERPO-CENTRO-COMUNITARIO-MUNI-TEMUCO.jpg",
 			"phone": "452973079",
-			"color": "#C0392B",
-			"servicesDailyAttentions": [
-				{
-					"serviceId": 1,
-					"attentions": 5
-				},
-				{
-					"serviceId": 2,
-					"attentions": 2
-				},
-				{
-					"serviceId": 3,
-					"attentions": 4
-				},
-				{
-					"serviceId": 4,
-					"attentions": 3
-				},
-				{
-					"serviceId": 5,
-					"attentions": 5
-				},
-				{
-					"serviceId": 6,
-					"attentions": 1
-				}
-			]
+			"color": "#C0392B"
 		},
 		{
 			"id": 5,
@@ -186,33 +82,7 @@
 			"address": "Huérfanos #01459",
 			"img": "https://araucanianoticias.cl/wp-content/uploads/2014/12/DSC_3106.jpg",
 			"phone": "452973080",
-			"color": "#1ABC9C",
-			"servicesDailyAttentions": [
-				{
-					"serviceId": 1,
-					"attentions": 4
-				},
-				{
-					"serviceId": 2,
-					"attentions": 1
-				},
-				{
-					"serviceId": 3,
-					"attentions": 3
-				},
-				{
-					"serviceId": 4,
-					"attentions": 5
-				},
-				{
-					"serviceId": 5,
-					"attentions": 4
-				},
-				{
-					"serviceId": 6,
-					"attentions": 3
-				}
-			]
+			"color": "#1ABC9C"
 		},
 		{
 			"id": 6,
@@ -220,33 +90,7 @@
 			"address": "Nahuelbuta #02835",
 			"img": "https://cdn.discordapp.com/attachments/1008449435933614120/1296321842960928880/image.png?ex=6711dd4b&is=67108bcb&hm=e063b473dc338dd360fbff50a7586324ce2d18b84301509bae8ea39a2c41fe19&",
 			"phone": "452973082",
-			"color": "#9B59B6",
-			"servicesDailyAttentions": [
-				{
-					"serviceId": 1,
-					"attentions": 3
-				},
-				{
-					"serviceId": 2,
-					"attentions": 5
-				},
-				{
-					"serviceId": 3,
-					"attentions": 2
-				},
-				{
-					"serviceId": 4,
-					"attentions": 1
-				},
-				{
-					"serviceId": 5,
-					"attentions": 2
-				},
-				{
-					"serviceId": 6,
-					"attentions": 4
-				}
-			]
+			"color": "#9B59B6"
 		},
 		{
 			"id": 7,
@@ -254,33 +98,7 @@
 			"address": "Avenida Argentina #0131",
 			"img": "https://img.soy-chile.cl/Fotos/2012/10/12/file_20121012154429.jpg",
 			"phone": "452973076",
-			"color": "#2E86C1",
-			"servicesDailyAttentions": [
-				{
-					"serviceId": 1,
-					"attentions": 2
-				},
-				{
-					"serviceId": 2,
-					"attentions": 4
-				},
-				{
-					"serviceId": 3,
-					"attentions": 1
-				},
-				{
-					"serviceId": 4,
-					"attentions": 2
-				},
-				{
-					"serviceId": 5,
-					"attentions": 3
-				},
-				{
-					"serviceId": 6,
-					"attentions": 5
-				}
-			]
+			"color": "#2E86C1"
 		},
 		{
 			"id": 8,
@@ -288,33 +106,7 @@
 			"address": "Curiñanco #040",
 			"img": "https://instagram.fzco2-1.fna.fbcdn.net/v/t39.30808-6/438818523_835831905238873_4781599932103728593_n.jpg?stp=dst-jpg_e35_s1080x1080_sh0.08&_nc_ht=instagram.fzco2-1.fna.fbcdn.net&_nc_cat=101&_nc_ohc=EITFbcLP2ewQ7kNvgFq9g0p&_nc_gid=84c947951c48475684d04b8cb8d28490&edm=ANTKIIoAAAAA&ccb=7-5&oh=00_AYBevmk9vIGl784qfyCapsI0KaJwexcEcgFtDz5jcmkEog&oe=67167768&_nc_sid=d885a2",
 			"phone": "452973077",
-			"color": "#28B463",
-			"servicesDailyAttentions": [
-				{
-					"serviceId": 1,
-					"attentions": 1
-				},
-				{
-					"serviceId": 2,
-					"attentions": 3
-				},
-				{
-					"serviceId": 3,
-					"attentions": 5
-				},
-				{
-					"serviceId": 4,
-					"attentions": 4
-				},
-				{
-					"serviceId": 5,
-					"attentions": 1
-				},
-				{
-					"serviceId": 6,
-					"attentions": 2
-				}
-			]
+			"color": "#28B463"
 		},
 		{
 			"id": 9,
@@ -322,33 +114,7 @@
 			"address": "Isquiña #1914",
 			"img": "https://img.soy-chile.cl/Fotos/2017/04/26/file_20170426214106.jpg",
 			"phone": "452973075",
-			"color": "#E67E22",
-			"servicesDailyAttentions": [
-				{
-					"serviceId": 1,
-					"attentions": 5
-				},
-				{
-					"serviceId": 2,
-					"attentions": 2
-				},
-				{
-					"serviceId": 3,
-					"attentions": 4
-				},
-				{
-					"serviceId": 4,
-					"attentions": 3
-				},
-				{
-					"serviceId": 5,
-					"attentions": 5
-				},
-				{
-					"serviceId": 6,
-					"attentions": 1
-				}
-			]
+			"color": "#E67E22"
 		}
 	],
 	"services": [
@@ -411,6 +177,278 @@
 			"color": "#9B59B6",
 			"professionals": 5,
 			"minutesPerAttention": 30
+		}
+	],
+	"dailySessions": [
+		{
+			"centerId": 1,
+			"serviceId": 1,
+			"quantity": 6
+		},
+		{
+			"centerId": 1,
+			"serviceId": 2,
+			"quantity": 8
+		},
+		{
+			"centerId": 1,
+			"serviceId": 3,
+			"quantity": 6
+		},
+		{
+			"centerId": 1,
+			"serviceId": 4,
+			"quantity": 4
+		},
+		{
+			"centerId": 1,
+			"serviceId": 5,
+			"quantity": 4
+		},
+		{
+			"centerId": 1,
+			"serviceId": 6,
+			"quantity": 8
+		},
+		{
+			"centerId": 2,
+			"serviceId": 1,
+			"quantity": 6
+		},
+		{
+			"centerId": 2,
+			"serviceId": 2,
+			"quantity": 8
+		},
+		{
+			"centerId": 2,
+			"serviceId": 3,
+			"quantity": 6
+		},
+		{
+			"centerId": 2,
+			"serviceId": 4,
+			"quantity": 4
+		},
+		{
+			"centerId": 2,
+			"serviceId": 5,
+			"quantity": 4
+		},
+		{
+			"centerId": 2,
+			"serviceId": 6,
+			"quantity": 8
+		},
+		{
+			"centerId": 3,
+			"serviceId": 1,
+			"quantity": 6
+		},
+		{
+			"centerId": 3,
+			"serviceId": 2,
+			"quantity": 8
+		},
+		{
+			"centerId": 3,
+			"serviceId": 3,
+			"quantity": 6
+		},
+		{
+			"centerId": 3,
+			"serviceId": 4,
+			"quantity": 4
+		},
+		{
+			"centerId": 3,
+			"serviceId": 5,
+			"quantity": 4
+		},
+		{
+			"centerId": 3,
+			"serviceId": 6,
+			"quantity": 8
+		},
+		{
+			"centerId": 4,
+			"serviceId": 1,
+			"quantity": 6
+		},
+		{
+			"centerId": 4,
+			"serviceId": 2,
+			"quantity": 8
+		},
+		{
+			"centerId": 4,
+			"serviceId": 3,
+			"quantity": 6
+		},
+		{
+			"centerId": 4,
+			"serviceId": 4,
+			"quantity": 4
+		},
+		{
+			"centerId": 4,
+			"serviceId": 5,
+			"quantity": 4
+		},
+		{
+			"centerId": 4,
+			"serviceId": 6,
+			"quantity": 8
+		},
+		{
+			"centerId": 5,
+			"serviceId": 1,
+			"quantity": 6
+		},
+		{
+			"centerId": 5,
+			"serviceId": 2,
+			"quantity": 8
+		},
+		{
+			"centerId": 5,
+			"serviceId": 3,
+			"quantity": 6
+		},
+		{
+			"centerId": 5,
+			"serviceId": 4,
+			"quantity": 4
+		},
+		{
+			"centerId": 5,
+			"serviceId": 5,
+			"quantity": 4
+		},
+		{
+			"centerId": 5,
+			"serviceId": 6,
+			"quantity": 8
+		},
+		{
+			"centerId": 6,
+			"serviceId": 1,
+			"quantity": 6
+		},
+		{
+			"centerId": 6,
+			"serviceId": 2,
+			"quantity": 8
+		},
+		{
+			"centerId": 6,
+			"serviceId": 3,
+			"quantity": 6
+		},
+		{
+			"centerId": 6,
+			"serviceId": 4,
+			"quantity": 4
+		},
+		{
+			"centerId": 6,
+			"serviceId": 5,
+			"quantity": 4
+		},
+		{
+			"centerId": 6,
+			"serviceId": 6,
+			"quantity": 8
+		},
+		{
+			"centerId": 7,
+			"serviceId": 1,
+			"quantity": 6
+		},
+		{
+			"centerId": 7,
+			"serviceId": 2,
+			"quantity": 8
+		},
+		{
+			"centerId": 7,
+			"serviceId": 3,
+			"quantity": 6
+		},
+		{
+			"centerId": 7,
+			"serviceId": 4,
+			"quantity": 4
+		},
+		{
+			"centerId": 7,
+			"serviceId": 5,
+			"quantity": 4
+		},
+		{
+			"centerId": 7,
+			"serviceId": 6,
+			"quantity": 8
+		},
+		{
+			"centerId": 8,
+			"serviceId": 1,
+			"quantity": 6
+		},
+		{
+			"centerId": 8,
+			"serviceId": 2,
+			"quantity": 8
+		},
+		{
+			"centerId": 8,
+			"serviceId": 3,
+			"quantity": 6
+		},
+		{
+			"centerId": 8,
+			"serviceId": 4,
+			"quantity": 4
+		},
+		{
+			"centerId": 8,
+			"serviceId": 5,
+			"quantity": 4
+		},
+		{
+			"centerId": 8,
+			"serviceId": 6,
+			"quantity": 8
+		},
+		{
+			"centerId": 9,
+			"serviceId": 1,
+			"quantity": 6
+		},
+		{
+			"centerId": 9,
+			"serviceId": 2,
+			"quantity": 8
+		},
+		{
+			"centerId": 9,
+			"serviceId": 3,
+			"quantity": 6
+		},
+		{
+			"centerId": 9,
+			"serviceId": 4,
+			"quantity": 4
+		},
+		{
+			"centerId": 9,
+			"serviceId": 5,
+			"quantity": 4
+		},
+		{
+			"centerId": 9,
+			"serviceId": 6,
+			"quantity": 8
 		}
 	]
 }

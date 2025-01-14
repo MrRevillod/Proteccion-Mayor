@@ -151,6 +151,17 @@ export const CentersSchemas = {
 		image: rules.imageSchemaUpdate,
 		color: rules.colorSchema,
 	}),
+
+	UpdateDailySessions: z.object({
+		servicesDailyAttentions: z.array(
+			z.object({
+				id: z.string(),
+				quantity: z.number().int().min(1),
+				serviceId: z.string(),
+				centerId: z.string(),
+			})
+		),
+	}),
 }
 
 export const EventSchemas = {

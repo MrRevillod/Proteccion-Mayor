@@ -1,7 +1,7 @@
-const { hash } = require("bcrypt")
-const { faker } = require("@faker-js/faker")
-const { readFileSync } = require("node:fs")
-const { PrismaClient } = require("@prisma/client")
+import { hash } from "bcrypt"
+import { faker } from "@faker-js/faker"
+import { readFileSync } from "node:fs"
+import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 const Gender = require("@prisma/client").Gender
@@ -68,6 +68,7 @@ const seed = async () => {
 		prisma.service.deleteMany(),
 		prisma.senior.deleteMany(),
 		prisma.administrator.deleteMany(),
+		prisma.dailySessions.deleteMany(),
 	])
 
 	console.log("All records dropped.")
@@ -79,6 +80,7 @@ const seed = async () => {
 	const centers = data.centers
 	const admins = data.administrators
 	const professionals = data.professionals
+	const dailySessions = data.dailySessions
 
 	for (const admin of admins) {
 		const AdminRUT = generateRUT()
@@ -104,7 +106,6 @@ const seed = async () => {
 				address: center.address,
 				phone: center.phone,
 				color: center.color,
-				servicesDailyAttentions: center.servicesDailyAttentions,
 			},
 			update: {},
 		})
@@ -121,7 +122,7 @@ const seed = async () => {
 					title: service.title,
 					description: service.description,
 					color: service.color,
-					minutesPerAttention: service.minutesPerAttention,
+					minutesPerSession: service.minutesPerAttention,
 				},
 				update: {},
 			})
@@ -187,6 +188,16 @@ const seed = async () => {
 				serviceId: Math.floor(Math.random() * 6) + 1,
 			},
 			update: {},
+		})
+	}
+
+	for (const session of dailySessions) {
+		await prisma.dailySessions.create({
+			data: {
+				centerId: session.centerId,
+				serviceId: session.serviceId,
+				quantity: session.quantity,
+			},
 		})
 	}
 }

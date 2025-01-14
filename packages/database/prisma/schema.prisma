@@ -39,17 +39,18 @@ model Senior {
 }
 
 model Service {
-  id                  Int      @id @default(autoincrement())
-  name                String   @unique @db.VarChar(255)
-  title               String   @db.Text
-  description         String   @db.Text
-  color               String   @db.Text
-  minutesPerAttention Int
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id                Int      @id @default(autoincrement())
+  name              String   @unique @db.VarChar(255)
+  title             String   @db.Text
+  description       String   @db.Text
+  color             String   @db.Text
+  minutesPerSession Int
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   events        Event[]
   professionals Professional[]
+  dailySessions DailySessions[]
 }
 
 model Center {
@@ -59,30 +60,24 @@ model Center {
   phone   String @db.VarChar(255)
   color   String @db.Text
 
-  // Services Daily Attentions represents the daily 
-  // attentions for each service in the current center
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  Event         Event[]
+  dailySessions DailySessions[]
+}
 
-  // For example, Center A has 3 services: Service A, Service B, Service C
-
-  // Service 1 has 10 daily attentions
-  // Service 2 has 5 daily attentions
-  // Service 3 has 15 daily attentions
-
-  // The servicesDailyAttentions field will be like this:
-
-  // servicesDailyAttentions: [
-  //   { serviceId: 1, dailyAttentions: 10 },
-  //   { serviceId: 2, dailyAttentions: 5 },
-  //   { serviceId: 3, dailyAttentions: 15 }
-  // ]
-
-  // The daily attention is the number of attentios for each professional in the center
-
-  servicesDailyAttentions Json
+model DailySessions {
+  id       Int @id @default(autoincrement())
+  quantity Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Event     Event[]
+
+  serviceId Int
+  centerId  Int
+
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  center  Center  @relation(fields: [centerId], references: [id], onDelete: Cascade)
 }
 
 model Professional {

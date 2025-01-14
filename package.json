@@ -5,6 +5,8 @@
 		"build": "turbo run build",
 		"clean": "turbo run clean",
 		"dev": "turbo run dev",
+		"dev:server": "turbo run dev --filter=!web",
+		"dev:web": "turbo run dev --filter=web",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
 		"typecheck": "turbo run typecheck"
 	},

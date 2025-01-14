@@ -1,6 +1,6 @@
-import { findCenter, Router } from "@repo/lib"
 import { CentersSchemas } from "./schemas"
 import { CentersController } from "./controllers"
+import { findCenter, Router } from "@repo/lib"
 import { AuthenticationService, validations, uploads } from "@repo/lib"
 
 export class CentersRouter extends Router {
@@ -43,6 +43,14 @@ export class CentersRouter extends Router {
 		this.delete({
 			path: "/:id",
 			handler: this.controller.deleteOne,
+			middlewares: [this.auth.authorize(["ADMIN"]), validations.resourceId(findCenter)],
+		})
+
+		// Actualizar las sesiones diarias de un servicio en un centro :id
+
+		this.patch({
+			path: "/daily-sessions/:id",
+			handler: this.controller.updateDailySessions,
 			middlewares: [this.auth.authorize(["ADMIN"]), validations.resourceId(findCenter)],
 		})
 	}

@@ -40,11 +40,21 @@ export type Service = {
 	minutesPerAttention: number
 }
 
+export type DailySessions = {
+	id: number
+	quantity: number
+	centerId: number
+	serviceId: number
+	service: Pick<Service, "id" | "name">
+}
+
 export type Center = {
 	id: number
 	name: string
 	address: string
 	phone: string
+	color: string
+	dailySessions: DailySessions[]
 }
 
 export interface Senior extends IUser {

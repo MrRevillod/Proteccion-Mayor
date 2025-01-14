@@ -21,7 +21,17 @@ export class CentersSchemas extends Schema {
 			address: true,
 			phone: true,
 			color: true,
-			servicesDailyAttentions: true,
+			dailySessions: {
+				select: {
+					id: true,
+					quantity: true,
+					centerId: true,
+					serviceId: true,
+					service: {
+						select: { id: true, name: true },
+					},
+				},
+			},
 		}
 	}
 
@@ -31,12 +41,6 @@ export class CentersSchemas extends Schema {
 			address: rules.addressCenterSchema,
 			phone: rules.phoneSchema,
 			color: rules.colorSchema,
-			servicesDailyAttentions: z.array(
-				z.object({
-					serviceId: z.string(),
-					attentions: z.number().int().positive(),
-				}),
-			),
 		})
 	}
 
@@ -46,6 +50,19 @@ export class CentersSchemas extends Schema {
 			address: rules.addressCenterSchema,
 			phone: rules.phoneSchema,
 			color: rules.colorSchema,
+		})
+	}
+
+	get updateDailySessions() {
+		return z.object({
+			servicesDailyAttentions: z.array(
+				z.object({
+					id: rules.numberIdSchema,
+					quantity: z.number().int().min(1),
+					serviceId: rules.numberIdSchema,
+					centerId: rules.numberIdSchema,
+				}),
+			),
 		})
 	}
 }

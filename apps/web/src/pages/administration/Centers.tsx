@@ -13,12 +13,13 @@ import { CardLayout } from "@/components/CardLayout"
 import { useRequest } from "@/hooks/useRequest"
 import { useNavigate } from "react-router-dom"
 import { deleteCenter, getCenters } from "@/lib/actions"
+import { UpdateDailySessions } from "@/components/forms/update/DailySessions"
 
 const CentersPage: React.FC = () => {
 	const navigate = useNavigate()
 
 	const [centers, setCenters] = useState<Center[]>([])
-	const { error, loading, data } = useRequest<Center[]>({
+	const { error, loading, data, refetch } = useRequest<Center[]>({
 		action: getCenters,
 		onSuccess: (centers) => setCenters(centers),
 	})
@@ -48,6 +49,7 @@ const CentersPage: React.FC = () => {
 							imagePath={`/centers`}
 							deletable
 							updatable
+							dailySessions
 							onCardClick={(item) => {
 								navigate(`/agenda/administradores?centerId=${item.id}`)
 							}}
@@ -58,6 +60,7 @@ const CentersPage: React.FC = () => {
 
 			<CreateCenter data={centers} setData={setCenters} />
 			<UpdateCenter data={centers} setData={setCenters} />
+			<UpdateDailySessions data={centers} refetch={refetch} />
 
 			<ConfirmAction<Center>
 				text="¿Estás seguro(a) de que deseas eliminar este centro de atención?"

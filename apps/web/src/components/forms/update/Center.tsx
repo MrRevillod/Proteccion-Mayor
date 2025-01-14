@@ -18,7 +18,7 @@ export const UpdateCenter: React.FC<FormProps<Center>> = ({ data, setData }) => 
 	const methods = useForm({ resolver: zodResolver(CentersSchemas.Update) })
 
 	const { reset } = methods
-	const { selectedData } = useModal()
+	const { selectedData } = useModal() as { selectedData: Center }
 
 	useEffect(() => {
 		if (selectedData) {
@@ -33,7 +33,11 @@ export const UpdateCenter: React.FC<FormProps<Center>> = ({ data, setData }) => 
 	}, [selectedData])
 
 	return (
-		<Modal type="Edit" title={`Editar la información del ${selectedData?.name}`} loading={loading}>
+		<Modal
+			type="Edit"
+			title={`Editar la información del ${selectedData?.name}`}
+			loading={loading}
+		>
 			<FormProvider {...methods}>
 				<Form<Center>
 					data={data as Center[]}
@@ -46,6 +50,7 @@ export const UpdateCenter: React.FC<FormProps<Center>> = ({ data, setData }) => 
 					<Input name="address" label="Dirección" type="text" />
 					<Input name="phone" label="Teléfono" type="text" />
 					<ColorPicker label="Color del centro de atención" />
+
 					<ImageSelector imageLabel="Imagen del centro de atención" size={[400, 250]} />
 				</Form>
 			</FormProvider>
