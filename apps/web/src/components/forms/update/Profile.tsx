@@ -7,11 +7,11 @@ import { message } from "antd"
 import { useMutation } from "@/hooks/useMutation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageSelector } from "@/components/ImageSelector"
-import { AdministratorSchemas } from "@/lib/schemas"
+import { StaffSchemas } from "@/lib/schemas"
 import { MutationResponse, User } from "@/lib/types"
 import { buildRequestBody, handleFormError } from "@/lib/form"
 import { useEffect, Dispatch, SetStateAction } from "react"
-import { updateAdministrator, updateProfessional } from "@/lib/actions"
+import { updateStaff, updateProfessional } from "@/lib/actions"
 import { FieldValues, FormProvider, SubmitHandler, useForm } from "react-hook-form"
 
 interface UpdateProfileProps {
@@ -20,7 +20,7 @@ interface UpdateProfileProps {
 }
 
 export const UpdateProfile: React.FC<UpdateProfileProps> = ({ setImageSrc, setShowUpdateForm }) => {
-	const methods = useForm({ resolver: zodResolver(AdministratorSchemas.Update) })
+	const methods = useForm({ resolver: zodResolver(StaffSchemas.Update) })
 
 	const { user, setUser, role } = useAuth()
 	const { reset, handleSubmit, setError } = methods
@@ -45,7 +45,7 @@ export const UpdateProfile: React.FC<UpdateProfileProps> = ({ setImageSrc, setSh
 	}, [user])
 
 	const mutation = useMutation<MutationResponse<User>>({
-		mutateFn: role === "ADMIN" ? updateAdministrator : updateProfessional,
+		mutateFn: role === "ADMIN" ? updateStaff : updateProfessional,
 	})
 
 	const onSubmit: SubmitHandler<FieldValues> = async (formData) => {

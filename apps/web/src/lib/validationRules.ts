@@ -177,3 +177,9 @@ export const isWeekend = (date: string) => {
 	const day = dayjs(date).day()
 	return day !== 0 && day !== 6
 }
+
+export const staffRoleSchema = z.enum(["ADMIN", "FUNCTIONARY"], {
+    message: "El rol debe ser Administrador o Funcionario",
+})
+
+export const centerIdSchema = z.number().int().positive("El centro es requerido").optional()

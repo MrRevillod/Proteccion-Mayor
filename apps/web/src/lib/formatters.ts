@@ -1,7 +1,7 @@
 import dayjs from "dayjs"
 
 import { Location } from "react-router-dom"
-import { Event, UserRole } from "./types"
+import { Event, StaffRole, UserRole } from "./types"
 import { Dispatch, SetStateAction } from "react"
 
 export const formatRut = (rut: string) => {
@@ -11,6 +11,7 @@ export const formatRut = (rut: string) => {
 export const formatBoolean = (value: boolean) => {
 	return value ? "Sí" : "No"
 }
+
 
 export const formatDate = (dateString: string) => {
 	const date = new Date(dateString)
@@ -24,16 +25,22 @@ export const dateToAge = (dateString: string) => {
 	return Math.abs(ageDate.getUTCFullYear() - 1970)
 }
 
+
+export const formatRole = (role: UserRole) => {
+    return role === "ADMIN" ? "Administrador" : "Profesional"
+}
+
+export const formatStaffRole = (role: StaffRole) => {
+    return role === "ADMIN" ? "Administrador" : "Funcionario"
+}
+
 export const tableColumnsFormatters = {
 	id: formatRut,
 	birthDate: dateToAge,
 	updatedAt: formatDate,
 	createdAt: formatDate,
-	validated: formatBoolean,
-}
-
-export const formatRole = (role: UserRole) => {
-	return role === "ADMIN" ? "Administrador" : "Profesional"
+    validated: formatBoolean,
+    role: formatStaffRole,
 }
 
 interface SelectDataFormatterProps {

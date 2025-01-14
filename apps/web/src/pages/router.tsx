@@ -13,13 +13,13 @@ import ResetPasswordPage from "./auth/ResetPassword"
 import DownloadApplication from "./DownloadApplication"
 import ValidatePasswordPage from "./auth/Password"
 import ProfessionalAgendaPage from "./agenda/Professional"
-import AdministrationAgendaPage from "./agenda/Administration"
 import SeniorHistoryRequestPage from "./administration/History"
 import SeniorRegisterRequestPage from "./administration/seniors/SeniorRegisterRequest"
 
 import { useAuth } from "@/context/AuthContext"
 import { UserRole } from "@/lib/types"
 import { Routes, Route, Navigate, Outlet } from "react-router-dom"
+import StaffAgendaPage from "./agenda/Administration"
 
 interface RouteProps {
 	redirectTo?: string
@@ -62,7 +62,7 @@ const RedirectRoute: React.FC<{ redirectTo?: string }> = ({ redirectTo }) => {
 		return role === "PROFESSIONAL" ? (
 			<Navigate to="/agenda/profesionales" />
 		) : (
-			<Navigate to="/agenda/administradores" />
+			<Navigate to="/agenda/funcionarios" />
 		)
 	}
 
@@ -74,7 +74,7 @@ const Router: React.FC = () => {
 	return (
 		<Routes>
 			<Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
-				<Route path="/administracion/administradores" element={<AdministratorPage />} />
+				<Route path="/administracion/funcionarios" element={<AdministratorPage />} />
 				<Route path="/administracion/profesionales" element={<ProfessionalsPage />} />
 				<Route path="/administracion/personas-mayores/" element={<SeniorsPage />} />
 				<Route path="/administracion/personas-mayores/nuevos" element={<NewSeniorsPage />} />
@@ -84,7 +84,7 @@ const Router: React.FC = () => {
 				/>
 				<Route path="/administracion/servicios" element={<ServicesPage />} />
 				<Route path="/administracion/centros-de-atencion" element={<CentersPage />} />
-				<Route path="/agenda/administradores" element={<AdministrationAgendaPage />} />
+				<Route path="/agenda/funcionarios" element={<StaffAgendaPage />} />
 			</Route>
 
 			<Route element={<ProtectedRoute allowedRoles={["PROFESSIONAL"]} />}>

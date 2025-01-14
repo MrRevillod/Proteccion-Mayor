@@ -67,7 +67,7 @@ const seed = async () => {
 		prisma.center.deleteMany(),
 		prisma.service.deleteMany(),
 		prisma.senior.deleteMany(),
-		prisma.administrator.deleteMany(),
+        prisma.staff.deleteMany()
 	])
 
 	console.log("All records dropped.")
@@ -83,13 +83,14 @@ const seed = async () => {
 	for (const admin of admins) {
 		const AdminRUT = generateRUT()
 
-		await prisma.administrator.upsert({
+		await prisma.staff.upsert({
 			where: { id: AdminRUT },
 			create: {
 				id: AdminRUT,
 				email: admin.email,
 				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
 				name: admin.name,
+                role:"ADMIN"
 			},
 			update: {},
 		})

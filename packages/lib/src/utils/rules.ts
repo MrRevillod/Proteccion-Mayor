@@ -1,4 +1,5 @@
 import dayjs from "dayjs"
+import { isNumberObject } from "node:util/types"
 
 import { z } from "zod"
 
@@ -161,3 +162,8 @@ export const isWeekend = (date: string) => {
 	const day = dayjs(date).day()
 	return day !== 0 && day !== 6
 }
+    export const staffRoleSchema =  z.enum(["ADMIN", "FUNCTIONARY"], {
+        message: "El rol debe ser administrador o funcionario",
+})
+
+export const centerIdSchema = z.number().int().positive("El centro es requerido").optional()

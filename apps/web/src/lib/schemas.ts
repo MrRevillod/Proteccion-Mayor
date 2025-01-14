@@ -74,11 +74,14 @@ export const SeniorSchemas = {
 		}),
 }
 
-export const AdministratorSchemas = {
+export const StaffSchemas = {
 	Create: z.object({
 		id: rules.rutSchema,
 		name: rules.nameSchema,
-		email: rules.emailSchema,
+        email: rules.emailSchema,
+        role: rules.staffRoleSchema,
+        centerId: rules.centerIdSchema,
+        
 	}),
 
 	Update: z
@@ -87,7 +90,10 @@ export const AdministratorSchemas = {
 			email: rules.emailSchema,
 			password: rules.optionalPasswordSchema,
 			confirmPassword: rules.optionalPasswordSchema,
-			image: rules.imageSchemaUpdate,
+            image: rules.imageSchemaUpdate,
+            role: rules.staffRoleSchema,
+            centerId: rules.centerIdSchema,
+            
 		})
 		.refine((data) => data.password === data.confirmPassword, {
 			message: "Las contraseñas ingresadas no coinciden",

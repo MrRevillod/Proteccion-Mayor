@@ -4,7 +4,7 @@ import { CentersModule } from "./centers/module"
 import { ReportsModule } from "./reports/module"
 import { ServicesModule } from "./services/module"
 import { ProfessionalsModule } from "./professionals/module"
-import { AdministratorsModule } from "./administrators/module"
+import { StaffModule } from "./staff/module"
 
 import { setupWorker } from "@socket.io/sticky"
 import { createServer } from "http"
@@ -25,7 +25,7 @@ const modules = [
 	new ServicesModule(authService, storageService),
 	new CentersModule(authService, storageService),
 	new ProfessionalsModule(authService, storageService, mailerService),
-	new AdministratorsModule(authService, storageService, mailerService),
+    new StaffModule(authService, storageService, mailerService),
 ]
 
 const app = createApplication(modules)

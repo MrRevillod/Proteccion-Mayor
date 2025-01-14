@@ -7,20 +7,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+    ADMIN
+    FUNCTIONARY
+}
+
 enum Gender {
   MA
   FE
 }
 
-model Administrator {
-  id       String @id @db.VarChar(255)
-  name     String @db.Text
-  email    String @unique @db.VarChar(255)
-  password String @db.VarChar(255)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
 
 model Senior {
   id        String   @id @db.VarChar(255)
@@ -61,6 +57,7 @@ model Center {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Event     Event[]
+  Staff     Staff[]
 }
 
 model Professional {
@@ -96,4 +93,18 @@ model Event {
   professional Professional? @relation(fields: [professionalId], references: [id], onDelete: SetNull)
   service      Service?      @relation(fields: [serviceId], references: [id], onDelete: SetNull)
   center       Center?       @relation(fields: [centerId], references: [id], onDelete: SetNull)
+}
+
+model Staff {
+  id       String @id @db.VarChar(255)
+  name     String @db.Text
+  email    String @unique @db.VarChar(255)
+  password String @db.VarChar(255)
+  role     Role
+
+  centerId Int?
+  center Center? @relation(fields: [centerId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
