@@ -17,8 +17,9 @@ interface SuperSelectProps {
 	showSearch?: boolean
 }
 
-export const SuperSelect = ({ name, label, ...props }: SuperSelectProps) => {
-	const { options, setSearch, placeholder, disabled = false, allowClear = true, showSearch = true } = props
+export const
+        SuperSelect = ({ name, label, ...props }: SuperSelectProps) => {
+	const { options, setSearch, placeholder, disabled = false, allowClear = true, showSearch = true, defaultValue } = props
 
 	const {
 		control,
@@ -53,6 +54,7 @@ export const SuperSelect = ({ name, label, ...props }: SuperSelectProps) => {
 				render={({ field }) => (
 					<Select
 						{...field}
+                        defaultValue={defaultValue}
 						value={field.value}
 						className={classes}
 						showSearch={showSearch}

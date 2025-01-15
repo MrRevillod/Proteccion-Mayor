@@ -77,7 +77,7 @@ export class EventsController {
 			})
 
             io.to("ADMIN").emit("event:create", null)
-			io.to("HELPER").emit("event:create", null)
+			io.to("FUNCTIONARY").emit("event:create", null)
 			io.to(professionalId as string).emit("event:create", null)
 
 			return res.status(201).json({ values: { modified: null } })
@@ -168,7 +168,7 @@ export class EventsController {
 			event = this.service.singleFormat(event)
 
             io.to("ADMIN").emit("event:update", event)
-			io.to("HELPER").emit("event:update", event)
+			io.to("FUNCTIONARY").emit("event:update", event)
             
 			io.to(event.professionalId as string).emit("event:update", event)
 
@@ -200,7 +200,7 @@ export class EventsController {
 			const formatted = this.service.singleFormat(event)
 
             io.to("ADMIN").emit("event:delete", formatted)
-			io.to("HELPER").emit("event:delete", formatted)
+			io.to("FUNCTIONARY").emit("event:delete", formatted)
             
 			io.to(event.professionalId as string).emit("event:delete", formatted)
 

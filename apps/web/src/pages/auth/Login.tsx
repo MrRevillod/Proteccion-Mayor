@@ -72,7 +72,7 @@ const LoginPage: React.FC = () => {
 									options={[
 										{ value: "ADMIN", label: "Administrador" },
 										{ value: "PROFESSIONAL", label: "Profesional" },
-										{ value: "HELPER", label: "Funcionario Apoyo" }
+										{ value: "FUNCTIONARY", label: "Funcionario Apoyo" }
 
 									]}
 									defaultValue={lastLoginRole || "ADMIN"}

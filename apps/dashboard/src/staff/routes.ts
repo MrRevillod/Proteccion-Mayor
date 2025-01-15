@@ -1,14 +1,14 @@
-import { HelpersSchemas } from "./schemas"
-import { HelpersController } from "./controllers"
-import { AuthenticationService, Router, validations, uploads, findHelper } from "@repo/lib"
+import { staffController } from "../staff/controllers"
+import { StaffSchemas } from "./schemas"
+import { AuthenticationService, Router, validations, uploads, findStaff } from "@repo/lib"
 
-export class HelpersRouter extends Router {
+export class StaffRouter extends Router {
 	constructor(
 		private auth: AuthenticationService,
-		private schemas: HelpersSchemas,
-        private controller: HelpersController,
+		private schemas: StaffSchemas,
+		private controller: staffController ,
 	) {
-		super({ prefix: "/api/dashboard/helpers" })
+		super({ prefix: "/api/dashboard/staff" })
 
 		this.get({
 			path: "/",
@@ -27,8 +27,8 @@ export class HelpersRouter extends Router {
 			handler: this.controller.updateOne,
 			middlewares: [
 				uploads.singleImage,
-                this.auth.authorize(["HELPER"]),
-				validations.resourceId(findHelper),
+				this.auth.authorize(["ADMIN","FUNCTIONARY"]),
+				validations.resourceId(findStaff),
 				validations.body(this.schemas.update),
 				validations.files({ required: false }),
 			],
@@ -39,13 +39,14 @@ export class HelpersRouter extends Router {
 			handler: this.controller.deleteOne,
 			middlewares: [
 				this.auth.authorize(["ADMIN"]),
+				validations.resourceId(findStaff),
 			],
 		})
 
 		this.post({
 			path: "/confirm-action",
 			handler: this.controller.confirmAction,
-			middlewares: [this.auth.authorize(["ADMIN"])],
+			middlewares: [this.auth.authorize(["ADMIN","FUNCTIONARY"])],
 		})
 	}
 }

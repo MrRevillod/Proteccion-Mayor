@@ -6,7 +6,7 @@ import { SuperSelect } from "./ui/SuperSelect"
 import { useLocation } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
-import { Helper, Professional, SuperSelectField } from "../lib/types"
+import { Staff, Professional, SuperSelectField } from "../lib/types"
 import { getIdsFromUrl, selectDataFormatter } from "../lib/formatters"
 import { Switch } from "antd"
 
@@ -27,9 +27,9 @@ export const    EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) =
 	// Se ejecuta un efecto para seleccionar por defecto los filtros
 	// Si existe alguno de estos ids en la url, se selecciona por defecto en el filtro
     useEffect(() => {
-        if (role === "HELPER") {
-            const helper = user as Helper
-            methods.setValue("centerFilter", helper.centerId ? Number(helper.centerId) : undefined)
+        if (role === "FUNCTIONARY") {
+            const functionary = user as Staff
+            methods.setValue("centerFilter", functionary.centerId ? Number(functionary.centerId) : undefined)
         } else {
             
             methods.setValue("centerFilter", centerId ? Number(centerId) : undefined)
@@ -40,8 +40,8 @@ export const    EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) =
 
     const toggleCenter = (checked: boolean) => { 
         if (checked) {
-            const helper = user as Helper
-            methods.setValue("centerFilter", helper.centerId ? Number(helper.centerId) : undefined)
+            const functionary = user as Staff
+            methods.setValue("centerFilter", functionary.centerId ? Number(functionary.centerId) : undefined)
         } else {
             methods.setValue("centerFilter", undefined)
         }
@@ -90,7 +90,7 @@ export const    EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) =
 					    <SuperSelect label="Seleccione un centro" name="centerFilter" options={centers} />
                     </Show>
                     
-					<Show when={role === "ADMIN" || role === "HELPER"}>
+					<Show when={role === "ADMIN" || role === "FUNCTIONARY"}>
 						<SuperSelect label="Seleccione un servicio" name="serviceFilter" options={services} />
 						<SuperSelect
 							label="Seleccione un profesional"
@@ -99,12 +99,12 @@ export const    EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) =
 						/>
                     </Show>
                 
-                    <Show when={role === "HELPER"}>
+                    <Show when={role === "FUNCTIONARY"}>
                         <div className="grid grid-cols-6 place-content-between w-full ">
                             <label className="font-semibold dark:text-light text-dark text-wrap col-span-5 whitespace-nowrap">Solo eventos de mi centro
                             </label>
                             <div className="flex justify-end">
-                                <Switch className="" onChange={toggleCenter} defaultValue={ Number(centerId) === (user as Helper).centerId} />
+                                <Switch className="" onChange={toggleCenter} defaultValue={ Number(centerId) === (user as Staff).centerId} />
                             </div>
                             
                         </div>

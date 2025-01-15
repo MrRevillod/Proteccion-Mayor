@@ -5,7 +5,7 @@ import dayjs from "dayjs"
 export const LoginFormSchema = z.object({
 	email: z.string().email().min(1, "El correo electrónico es requerido"),
 	password: z.string().min(1, "La contraseña es requerida"),
-	role: z.enum(["ADMIN", "PROFESSIONAL","HELPER"]),
+	role: z.enum(["ADMIN", "PROFESSIONAL","FUNCTIONARY"]),
 })
 
 export const SeniorSchemas = {
@@ -74,11 +74,14 @@ export const SeniorSchemas = {
 		}),
 }
 
-export const AdministratorSchemas = {
+export const StaffSchemas = {
 	Create: z.object({
 		id: rules.rutSchema,
 		name: rules.nameSchema,
-		email: rules.emailSchema,
+        email: rules.emailSchema,
+        role: rules.staffRoleSchema,
+        centerId: rules.centerIdSchema,
+        
 	}),
 
 	Update: z
@@ -87,7 +90,10 @@ export const AdministratorSchemas = {
 			email: rules.emailSchema,
 			password: rules.optionalPasswordSchema,
 			confirmPassword: rules.optionalPasswordSchema,
-			image: rules.imageSchemaUpdate,
+            image: rules.imageSchemaUpdate,
+            role: rules.staffRoleSchema,
+            centerId: rules.centerIdSchema,
+            
 		})
 		.refine((data) => data.password === data.confirmPassword, {
 			message: "Las contraseñas ingresadas no coinciden",
@@ -224,7 +230,7 @@ export const EventSchemas = {
 		}),
 }
 
-export const resetPasswordSchema = (role: "ADMIN" | "PROFESSIONAL" | "SENIOR"|"HELPER"): any => {
+export const resetPasswordSchema = (role: "ADMIN" | "PROFESSIONAL" | "SENIOR" | "FUNCTIONARY"): any => {
 	return z
 		.object({
 			password: role === "SENIOR" ? rules.pinSchema : rules.passwordSchema,

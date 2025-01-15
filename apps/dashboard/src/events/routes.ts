@@ -14,14 +14,14 @@ export class EventsRouter extends Router {
 		this.get({
 			path: "/",
 			handler: this.controller.getMany,
-			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL", "SENIOR","HELPER"])],
+			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL", "SENIOR","FUNCTIONARY"])],
 		})
 
 		this.post({
 			path: "/",
 			handler: this.controller.createOne,
 			middlewares: [
-                this.auth.authorize(["ADMIN", "PROFESSIONAL", "HELPER"]),
+                this.auth.authorize(["ADMIN", "PROFESSIONAL", "FUNCTIONARY"]),
                 validations.validateSameCenter,
                 validations.body(this.schemas.create),
 			],
@@ -31,7 +31,7 @@ export class EventsRouter extends Router {
             path: "/:id",
 			handler: this.controller.updateOne,
 			middlewares: [
-                this.auth.authorize(["ADMIN", "PROFESSIONAL","HELPER"]),
+                this.auth.authorize(["ADMIN", "PROFESSIONAL","FUNCTIONARY"]),
 				validations.resourceId(findEvent),
                 validations.validateEventPermissions,
 				validations.body(this.schemas.update),
@@ -42,7 +42,7 @@ export class EventsRouter extends Router {
 			path: "/:id",
 			handler: this.controller.deleteOne,
 			middlewares: [
-				this.auth.authorize(["ADMIN", "PROFESSIONAL","HELPER"]),
+				this.auth.authorize(["ADMIN", "PROFESSIONAL","FUNCTIONARY"]),
 				validations.resourceId(findEvent),
 			],
 		})

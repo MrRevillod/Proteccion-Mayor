@@ -9,7 +9,8 @@ export type BaseDataType = {
 	id: string | number
 }
 
-export type UserRole = "ADMIN" | "PROFESSIONAL" | "HELPER"
+export type UserRole = "ADMIN" | "PROFESSIONAL" | "STAFF" | "ADMIN" | "FUNCTIONARY"
+export type StaffRole = "ADMIN" | "FUNCTIONARY"
 
 export type LoginFormData = {
 	email: string
@@ -25,16 +26,15 @@ interface IUser {
 	updatedAt: string
 }
 
-export interface Administrator extends IUser {}
+export interface Staff extends IUser {
+    role: UserRole
+    centerId: number | null 
+}
 export interface Professional extends IUser {
 	service: Partial<Service>
 	serviceId: number
 }
 
-export interface Helper extends IUser {
-	center: Partial<Center>
-	centerId: number
-}
 
 
 export type Service = {
@@ -59,7 +59,7 @@ export interface Senior extends IUser {
 }
 
 export type UnvalidatedSenior = Omit<Senior, "name" & "address" & "birthDate">
-export type User = Administrator | Professional | Senior | Helper
+export type User = Staff | Professional | Senior
 
 export type ApiResponse = {
 	status?: number

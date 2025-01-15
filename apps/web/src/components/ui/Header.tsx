@@ -97,11 +97,11 @@ export const Header: React.FC = () => {
 							renderTrigger={() => <span className={linkClasses("Personas")}>Personas</span>}
 						>
 							<Link
-								to="/administracion/administradores"
+								to="/administracion/funcionarios"
 								className={linkClasses("Personas", true)}
 								onClick={() => handlePageSelected("Personas")}
 							>
-								<Dropdown.Item>Administradores</Dropdown.Item>
+								<Dropdown.Item>Funcionarios</Dropdown.Item>
 							</Link>
 
 							<Link
@@ -140,7 +140,7 @@ export const Header: React.FC = () => {
 						</Dropdown>
 
 						<Link
-							to="/agenda/administradores"
+							to="/agenda/funcionarios"
 							className={linkClasses("Agenda")}
 							onClick={() => handlePageSelected("Agenda")}
 						>
@@ -171,7 +171,7 @@ export const Header: React.FC = () => {
 							Estadísticas
 						</Link>
                     </Show>
-                    <Show when={role === "HELPER"}>
+                    <Show when={role === "FUNCTIONARY"}>
                         
                         <Link
                             to="/administracion/personas-mayores"
