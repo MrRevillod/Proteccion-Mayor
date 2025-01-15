@@ -14,12 +14,12 @@ import ValidatePasswordPage from "./auth/Password"
 import ProfessionalAgendaPage from "./agenda/Professional"
 import SeniorHistoryRequestPage from "./administration/History"
 import SeniorRegisterRequestPage from "./administration/seniors/SeniorRegisterRequest"
+import StaffPage from "./administration/Administrators"
+import StaffAgendaPage from "./agenda/Administration"
 
 import { useAuth } from "@/context/AuthContext"
 import { UserRole } from "@/lib/types"
 import { Routes, Route, Navigate, Outlet } from "react-router-dom"
-import StaffAgendaPage from "./agenda/Administration"
-import StaffPage from "./administration/Administrators"
 
 interface RouteProps {
 	redirectTo?: string
@@ -62,7 +62,7 @@ const RedirectRoute: React.FC<{ redirectTo?: string }> = ({ redirectTo }) => {
 		return role === "PROFESSIONAL" ? (
 			<Navigate to="/agenda/profesionales" />
 		) : (
-			<Navigate to="/agenda/funcionarios" />
+			<Navigate to="/agenda/administradores" />
 		)
 	}
 
@@ -87,7 +87,6 @@ const Router: React.FC = () => {
 				<Route path="/administracion/funcionarios" element={<StaffPage />} />
 				<Route path="/administracion/servicios" element={<ServicesPage />} />
 				<Route path="/administracion/centros-de-atencion" element={<CentersPage />} />
-				<Route path="/agenda/administradores" element={<StaffAgendaPage />} />
 			</Route>
 
 			<Route element={<ProtectedRoute allowedRoles={["PROFESSIONAL"]} />}>
