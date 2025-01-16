@@ -36,7 +36,7 @@ export const ConfirmAction = <T extends BaseDataType>({ text, ...props }: Confir
 				const { password } = methods.getValues()
 
 				if (!password) return message.error("Por favor, ingrese su contraseña")
-				await api.post("/dashboard/administrators/confirm-action", { password })
+				await api.post("/dashboard/staff/confirm-action", { password })
 			}
 
 			await mutation.mutate({

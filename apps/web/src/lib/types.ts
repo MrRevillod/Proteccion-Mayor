@@ -9,7 +9,7 @@ export type BaseDataType = {
 	id: string | number
 }
 
-export type UserRole = "ADMIN" | "PROFESSIONAL" | "STAFF" | "ADMIN" | "FUNCTIONARY"
+export type UserRole = "ADMIN" | "PROFESSIONAL" | "STAFF" | "FUNCTIONARY"
 export type StaffRole = "ADMIN" | "FUNCTIONARY"
 
 export type LoginFormData = {
@@ -34,8 +34,6 @@ export interface Professional extends IUser {
 	service: Partial<Service>
 	serviceId: number
 }
-
-
 
 export type Service = {
 	id: number

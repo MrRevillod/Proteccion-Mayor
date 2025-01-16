@@ -62,7 +62,7 @@ const RedirectRoute: React.FC<{ redirectTo?: string }> = ({ redirectTo }) => {
 		return role === "PROFESSIONAL" ? (
 			<Navigate to="/agenda/profesionales" />
 		) : (
-			<Navigate to="/agenda/administradores" />
+			<Navigate to="/agenda/funcionarios" />
 		)
 	}
 

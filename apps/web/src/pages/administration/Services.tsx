@@ -45,7 +45,7 @@ const ServicesPage: React.FC = () => {
 							deletable
 							updatable
 							onCardClick={() => {
-								navigate(`/agenda/administradores?serviceId=${service.id}`)
+								navigate(`/agenda/funcionarios?serviceId=${service.id}`)
 							}}
 						/>
 					)}

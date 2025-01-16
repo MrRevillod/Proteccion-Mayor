@@ -9,7 +9,7 @@ import { getCenters, updateStaff } from "@/lib/actions"
 import { useEffect, useState } from "react"
 import { StaffSchemas } from "@/lib/schemas"
 import { FormProvider, useForm } from "react-hook-form"
-import { Staff, FormProps, StaffRole, Center } from "@/lib/types"
+import { Staff, FormProps, Center } from "@/lib/types"
 import { SuperSelect } from "@/components/ui/SuperSelect"
 import { useRequest } from "@/hooks/useRequest"
 import { selectDataFormatter } from "@/lib/formatters"
@@ -23,24 +23,28 @@ export const UpdateStaff: React.FC<FormProps<Staff>> = ({ data, setData }) => {
 		resolver: zodResolver(StaffSchemas.Update),
 	})
 
-	const { reset } = methods
-	const { selectedData } = useModal()
+	const { reset, getValues } = methods
+	const { selectedData } = useModal() as { selectedData: Staff }
 
     useEffect(() => {
-        console.log(selectedData)
-		if (selectedData) {
-			reset({
-				name: selectedData.name,
-                email: selectedData.email,
-                role: selectedData.role,
-                centerId: selectedData.centerId,
-			})
-		}
+        
+        if (selectedData) {
+            reset({
+                name: selectedData?.name,
+                email: selectedData?.email,
+                password: "",
+                confirmPassword: "",
+                image: null,
+                role: selectedData?.role,
+                centerId:  selectedData.centerId ? selectedData.centerId?.toString() : "" ,
+            })
+        }
+        console.log(getValues())
 	}, [selectedData])
 
     const { error } = useRequest<Center[]>({
 		action: getCenters,
-		onSuccess: (centers) => selectDataFormatter({ data: centers, setData: setCenters }),
+		onSuccess: (centers) => selectDataFormatter({ data: centers, setData: setCenters,allString:true }),
 	})
 
 	if (error) message.error("Error al cargar los datos")

@@ -25,6 +25,7 @@ const modules = [
 	new CentersModule(authService, storageService),
 	new ProfessionalsModule(authService, storageService, mailerService),
     new StaffModule(authService, storageService, mailerService),
+    new EventsModule(authService, mailerService) ,
 ]
 
 const app = createApplication(modules)

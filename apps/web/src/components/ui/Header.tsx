@@ -189,7 +189,7 @@ export const Header: React.FC = () => {
 							solicitudes de registro
 						</Link>
                         <Link
-							to="/agenda/administradores"
+							to="/agenda/funcionarios"
 							className={linkClasses("Agenda")}
 							onClick={() => handlePageSelected("Agenda")}
 						>

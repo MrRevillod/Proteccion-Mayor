@@ -182,4 +182,12 @@ export const staffRoleSchema = z.enum(["ADMIN", "FUNCTIONARY"], {
     message: "El rol debe ser Administrador o Funcionario",
 })
 
-export const centerIdSchema = z.number().int().positive("El centro es requerido").optional()
+export const centerIdSchema = z.string().refine(
+    (value) => {
+      // Verifica si el valor es un número válido o "null"
+      return !isNaN(Number(value)) || value === "null";
+    },
+    {
+      message: "El valor debe ser un número válido o 'null'",
+    }
+).nullable()

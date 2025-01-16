@@ -62,14 +62,24 @@ export class staffController {
 		const { params, body, file } = req
 		const { name, email, password, centerId, role} = body
 
+        let center_id = centerId
+        
+        if (centerId === "null" || centerId === "") {
+            center_id = null
+        }else if(!isNaN(Number(centerId))) {
+            center_id = Number(centerId)
+        }
+
+        console.log("centro id",center_id)
 		const reqUser = req.getExtension("reqResource") as Staff
 
-		try {
+        try {
+            
 			const exists = await prisma.staff.findFirst({
 				where: { email, id: { not: params.id } },
 			})
-
 			if (exists) {
+                console.log(exists)
 				throw new Conflict("El administrador ya existe", { conflicts: ["email"] })
 			}
 
@@ -82,7 +92,7 @@ export class staffController {
 					email,
                     role,
                     password: updatedPassword,
-                    centerId
+                    centerId: center_id
 				},
 				select: this.schemas.defaultSelect,
 			})

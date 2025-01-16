@@ -49,7 +49,7 @@ const CentersPage: React.FC = () => {
 							deletable
 							updatable
 							onCardClick={(item) => {
-								navigate(`/agenda/administradores?centerId=${item.id}`)
+								navigate(`/agenda/funcionarios?centerId=${item.id}`)
 							}}
 						/>
 					)}

@@ -8,7 +8,7 @@ import { useMutation } from "@/hooks/useMutation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageSelector } from "@/components/ImageSelector"
 import { StaffSchemas } from "@/lib/schemas"
-import { MutationResponse, User } from "@/lib/types"
+import { MutationResponse, Staff, User } from "@/lib/types"
 import { buildRequestBody, handleFormError } from "@/lib/form"
 import { useEffect, Dispatch, SetStateAction } from "react"
 import { updateStaff, updateProfessional } from "@/lib/actions"
@@ -25,14 +25,28 @@ export const UpdateProfile: React.FC<UpdateProfileProps> = ({ setImageSrc, setSh
 	const { user, setUser, role } = useAuth()
 	const { reset, handleSubmit, setError } = methods
 
-	const handleReset = () => {
-		reset({
-			name: user?.name,
-			email: user?.email,
-			password: "",
-			confirmPassword: "",
-			image: null,
-		})
+    const { formState: { errors } } = methods
+    
+    const handleReset = () => {
+        if (role === "PROFESSIONAL") {
+            reset({
+                name: user?.name,
+                email: user?.email,
+                password: "",
+                confirmPassword: "",
+                image: null,
+            })
+        } else {
+            reset({
+                name: user?.name,
+                email: user?.email,
+                password: "",
+                confirmPassword: "",
+                image: null,
+                role: (user as Staff)?.role,
+                centerId:  (user as Staff).centerId ? ( user as Staff).centerId?.toString() : "",
+            })
+        }
 	}
 
 	const handleCancel = () => {
@@ -47,14 +61,31 @@ export const UpdateProfile: React.FC<UpdateProfileProps> = ({ setImageSrc, setSh
 	const mutation = useMutation<MutationResponse<User>>({
 		mutateFn: role === "PROFESSIONAL" ? updateProfessional : updateStaff,
 	})
+    
+    // ver errores
+    useEffect(() => {
+        if (errors) {
+            console.log(errors)
+        }   
+    },[errors])
 
-	const onSubmit: SubmitHandler<FieldValues> = async (formData) => {
-		const originalData = {
+    const onSubmit: SubmitHandler<FieldValues> = async (formData) => {
+        console.log(formData)
+        const staffData = {
+            name: user?.name,
+			email: user?.email,
+			password: "",
+			confirmPassword: "",
+            image: null,
+            role: (user as Staff)?.role,
+            centerId:  (user as Staff).centerId ? ( user as Staff).centerId?.toString() : "",
+        }
+		const originalData = role !== "PROFESSIONAL" ? staffData : {
 			name: user?.name,
 			email: user?.email,
 			password: "",
 			confirmPassword: "",
-			image: null,
+            image: null,
 		}
 
 		if (JSON.stringify(formData) === JSON.stringify(originalData)) {

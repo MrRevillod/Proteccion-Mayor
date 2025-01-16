@@ -68,9 +68,8 @@ export const Form = <T extends BaseDataType>({ data, setData, ...props }: FormPr
 		// estructurarse de forma diferente
 		const body = buildRequestBody(formData)
 
-		let hasChanges = false
-
-		if (actionType === "update") {
+        if (actionType === "update") {
+            let hasChanges = false
 			for (const key in formData) {
 				// 1. Si existe en selectedData y es diferente a formData[key], hay cambios
 				if (selectedData[key] && formData[key] !== selectedData[key]) {
@@ -82,11 +81,11 @@ export const Form = <T extends BaseDataType>({ data, setData, ...props }: FormPr
 				if (!selectedData[key] && formData[key]) {
 					hasChanges = true
 					break // Si ya hay un cambio, no es necesario seguir verificando
-				}
+                }
 			}
-
 			// Si no se detectaron cambios
 			if (!hasChanges) {
+                console.log(selectedData,formData)
 				return message.error("No se han realizado cambios")
 			}
 		}

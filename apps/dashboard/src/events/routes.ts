@@ -14,7 +14,7 @@ export class EventsRouter extends Router {
 		this.get({
 			path: "/",
 			handler: this.controller.getMany,
-			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL", "SENIOR","FUNCTIONARY"])],
+			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL", "SENIOR", "FUNCTIONARY"])],
 		})
 
 		this.post({

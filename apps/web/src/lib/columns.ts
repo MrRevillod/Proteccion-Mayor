@@ -1,4 +1,4 @@
-import { Administrator, Professional, Senior, Staff, TableColumnType, UnvalidatedSenior } from "./types"
+import {  Professional, Senior, Staff, TableColumnType, UnvalidatedSenior } from "./types"
 
 export const UnvalidatedSeniorsColumns: TableColumnType<UnvalidatedSenior> = [
 	{ title: "RUT", dataIndex: "id", key: "id" },

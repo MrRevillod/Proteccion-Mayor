@@ -88,7 +88,7 @@ const seed = async () => {
 		await prisma.staff.upsert({
 			where: { id: AdminRUT },
 			create: {
-				id: AdminRUT,
+                id: AdminRUT,
 				email: admin.email,
 				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
 				name: admin.name,

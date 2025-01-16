@@ -48,13 +48,18 @@ export const formatRole = (role: UserRole) => {
 interface SelectDataFormatterProps {
 	data: any[]
 	setData: Dispatch<SetStateAction<any[]>>
-	keys?: { label: string; value: string }
+    keys?: { label: string; value: string }
+    allString?: boolean
 }
 
 const defaultSelectKeys = { label: "name", value: "id" }
 
-export const selectDataFormatter = ({ data, setData, keys = defaultSelectKeys }: SelectDataFormatterProps) => {
-	setData(data.map((item) => ({ label: item[keys.label], value: item[keys.value] })))
+export const selectDataFormatter = ({ data, setData, keys = defaultSelectKeys, allString = false }: SelectDataFormatterProps) => {
+    if (allString) {
+        setData(data.map((item) => ({ label: item[keys.label].toString(), value: item[keys.value].toString() })))
+    } else {
+        setData(data.map((item) =>  ({ label: item[keys.label], value: item[keys.value] })))
+    }
 }
 
 type QueryIdsValues = {

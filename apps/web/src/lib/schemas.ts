@@ -93,7 +93,6 @@ export const StaffSchemas = {
             image: rules.imageSchemaUpdate,
             role: rules.staffRoleSchema,
             centerId: rules.centerIdSchema,
-            
 		})
 		.refine((data) => data.password === data.confirmPassword, {
 			message: "Las contraseñas ingresadas no coinciden",
@@ -230,7 +229,7 @@ export const EventSchemas = {
 		}),
 }
 
-export const resetPasswordSchema = (role: "ADMIN" | "PROFESSIONAL" | "SENIOR" | "FUNCTIONARY"): any => {
+export const resetPasswordSchema = (role: "ADMIN" | "PROFESSIONAL" | "SENIOR" | "FUNCTIONARY" | "STAFF"): any => {
 	return z
 		.object({
 			password: role === "SENIOR" ? rules.pinSchema : rules.passwordSchema,

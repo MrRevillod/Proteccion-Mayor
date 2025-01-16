@@ -166,4 +166,12 @@ export const isWeekend = (date: string) => {
         message: "El rol debe ser administrador o funcionario",
 })
 
-export const centerIdSchema = z.number().int().positive("El centro es requerido").optional()
+export const centerIdSchema = z.string().refine(
+    (value) => {
+      // Verifica si el valor es un número válido o "null"
+      return !isNaN(Number(value)) || value === "null";
+    },
+    {
+      message: "El valor debe ser un número válido o 'null'",
+    }
+).nullable()

@@ -23,7 +23,8 @@ export const
 
 	const {
 		control,
-		formState: { errors },
+        formState: { errors },
+        getValues
 	} = useFormContext()
 
 	const classes = clsx(
@@ -65,7 +66,7 @@ export const
 							setSearch && setSearch(value)
 						}}
 						onChange={(value) => {
-							field.onChange(value)
+                            field.onChange(value)
 						}}
 						allowClear={allowClear}
 						disabled={disabled}
