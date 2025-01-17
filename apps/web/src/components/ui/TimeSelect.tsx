@@ -51,9 +51,9 @@ export const TimeSelect = ({ label, name, defaultValue }: TimeSelectProps) => {
 							}
 						}}
 						showNow={false}
-						value={field.value ? dayjs(field.value) : null}
+						value={field.value ? dayjs(field.value, "HH:mm") : null}
 						defaultValue={defaultValue ? dayjs(defaultValue) : null}
-						onChange={(event) => setValue(name, event)}
+						onChange={(time) => setValue(name, time.format("HH:mm"))}
 					/>
 				)}
 			/>

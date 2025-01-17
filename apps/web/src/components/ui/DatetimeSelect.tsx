@@ -12,6 +12,7 @@ interface DatetimeSelectProps {
 	showTime?: boolean
 	defaultValue?: Dayjs
 	width?: string
+	disablePast?: boolean
 }
 
 export const DatetimeSelect = ({
@@ -20,6 +21,7 @@ export const DatetimeSelect = ({
 	showTime = true,
 	defaultValue,
 	width,
+	disablePast = false,
 }: DatetimeSelectProps) => {
 	const {
 		control,
@@ -63,7 +65,7 @@ export const DatetimeSelect = ({
 							}
 						}}
 						disabledDate={
-							showTime
+							showTime || disablePast
 								? (current) =>
 										current &&
 										(current < dayjs().startOf("day") ||

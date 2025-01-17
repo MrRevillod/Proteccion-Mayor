@@ -159,7 +159,7 @@ export const genderSchema = z.enum(["MA", "FE"], {
 
 export const isWeekend = (date: string) => {
 	const day = dayjs(date).day()
-	return day !== 0 && day !== 6
+	return day === 0 || day === 6
 }
 
 export const minutesPerSessionSchema = z

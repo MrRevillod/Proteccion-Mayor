@@ -17,6 +17,8 @@ import { useRequest } from "@/hooks/useRequest"
 import { getProfessionals } from "@/lib/actions"
 import { selectDataFormatter } from "@/lib/formatters"
 import { Center, Professional, SuperSelectField } from "@/lib/types"
+import { DatetimeSelect } from "@/components/ui/DatetimeSelect"
+import { isWeekend } from "@/lib/validationRules"
 
 interface Props {
 	centers: Center[]
@@ -24,15 +26,20 @@ interface Props {
 	services: SuperSelectField[]
 }
 
-const WEEK_DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday"]
+type WeekDay = {
+	day: string
+	date: string
+}
 
 export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formattedCenters }) => {
 	const { role } = useAuth()
-	const [formStep, setFormStep] = useState(role === "ADMIN" ? 1 : 2)
+	const [formStep, setFormStep] = useState(1)
 
-	const [dailySessions, setDailySessions] = useState<number>(0)
-	const [professionals, setProfessionals] = useState<Professional[]>([])
+	const [weekDays, setWeekDays] = useState<WeekDay[]>([])
 	const [modalSize, setModalSize] = useState("middle")
+	const [dailySessions, setDailySessions] = useState<number>(1)
+
+	const [professionals, setProfessionals] = useState<Professional[]>([])
 	const [selectedProfessional, setSelectedProfessional] = useState<Professional>()
 
 	const methods = useForm()
@@ -41,7 +48,7 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 
 	const selectedService = watch("serviceId")
 	const selectedProfessionalId = watch("professionalId")
-	const selectedCenters = watch(WEEK_DAYS.map((day) => `${day}-centerId`))
+	const selectedCenters = watch(weekDays.map(({ date }) => `${date}-centerId`))
 
 	useRequest<Professional[]>({
 		action: getProfessionals,
@@ -56,52 +63,99 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 	})
 
 	useEffect(() => {
-		if (centers) {
+		if (centers && selectedCenters.length) {
 			const center = centers.find((center) => center.id === selectedCenters[formStep - 2])
 			const serviceDailySessions = center?.dailySessions.find(
 				(session) => session.serviceId === selectedService
 			)
-			setDailySessions(serviceDailySessions?.quantity || 0)
+
+			setDailySessions(serviceDailySessions?.quantity ?? 0)
 		}
 	}, [selectedCenters, formStep])
 
-	const handleNextStep = async () => {
-		if (formStep === 1) {
-			if (!getValues("serviceId") || !getValues("professionalId")) {
-				return message.error("Debes seleccionar un servicio y un profesional")
-			}
-		} else if (formStep === 2) {
-			if (!getValues("monday-centerId")) {
-				return message.error("Debes seleccionar un centro de atención para el lunes")
-			}
-		} else if (formStep === 6) {
-			await handleSubmit()
-		}
-
-		formStep < 6 && setFormStep(formStep + 1)
+	const onCancel = () => {
+		handleCancel()
+		methods.reset()
+		setFormStep(1)
 	}
 
-	const handlePreviousStep = () => formStep > 1 && setFormStep(formStep - 1)
+	const generateWeekDays = (): void => {
+		const start = dayjs(getValues("start"))
+		const end = dayjs(getValues("end"))
 
-	const handleSubmit = async () => {
-		const weekStart = dayjs("2025-01-25").startOf("week")
-		const query = `serviceId=${selectedService}&professionalId=${selectedProfessionalId}`
+		const days: WeekDay[] = []
+		const dayDiff = end.diff(start, "day")
 
-		const weeklyEvents = WEEK_DAYS.reduce((acc, day) => {
-			const centerId = getValues(`${day}-centerId`)
-			acc[day] = {
+		const toUpperLowerCase = (day: string) => day.replace(/^\w/, (c) => c.toUpperCase())
+
+		for (let i = 0; i < dayDiff + 1; i++) {
+			if (!isWeekend(start.add(i, "day").toISOString())) {
+				const dayName = toUpperLowerCase(start.add(i, "day").format("dddd"))
+				const date = start.add(i, "day").format("YYYY-MM-DD")
+				days.push({ day: dayName, date })
+			}
+		}
+
+		setWeekDays(days)
+	}
+
+	const validateStepOne = (): boolean => {
+		const start = getValues("start")
+		const end = getValues("end")
+
+		if (!start || !end || !selectedService || !selectedProfessionalId) {
+			message.error("Debes completar todos los campos.")
+			return false
+		}
+
+		if (dayjs(start).isAfter(dayjs(end))) {
+			message.error("La fecha de término debe ser posterior a la de inicio.")
+			return false
+		}
+
+		return true
+	}
+
+	const handleNextStep = async () => {
+		switch (formStep) {
+			case 1:
+				validateStepOne() && generateWeekDays()
+				break
+			case 6:
+				await handleSubmit()
+				break
+		}
+
+		setFormStep((prev) => Math.min(prev + 1, 6))
+	}
+
+	const handlePreviousStep = () => setFormStep((prev) => Math.max(prev - 1, 1))
+
+	const reduceWeekDays = (): Record<string, any> => {
+		return weekDays.reduce((acc, { date }) => {
+			const centerId = getValues(`${date}-centerId`)
+			acc[date] = {
 				centerId,
 				events: Array.from({ length: dailySessions }).map((_, index) => ({
-					start: getValues(`${day}[${index}].start`),
-					end: getValues(`${day}[${index}].end`),
+					start: getValues(`${date}[${index}].start`),
+					end: getValues(`${date}[${index}].end`),
 				})),
 			}
 			return acc
 		}, {} as Record<string, any>)
+	}
+
+	const handleSubmit = async () => {
+		const start = dayjs(methods.getValues("start"))
+		const end = dayjs(methods.getValues("end"))
+		const weeklyEvents = reduceWeekDays()
+
+		const query = `serviceId=${selectedService}&professionalId=${selectedProfessionalId}`
 
 		try {
 			await api.post(`/dashboard/events/weekly?${query}`, {
-				start: weekStart.toISOString(),
+				start: start.toISOString(),
+				end: end.toISOString(),
 				weeklyEvents,
 			})
 		} catch (error) {
@@ -111,7 +165,7 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 		message.success("Agenda semanal creada con éxito")
 		handleOk()
 		methods.reset()
-		setFormStep(role === "ADMIN" ? 1 : 2)
+		setFormStep(1)
 	}
 
 	return (
@@ -131,18 +185,28 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 							name="professionalId"
 							allowClear
 						/>
+						<DatetimeSelect
+							label="Fecha de inicio"
+							name="start"
+							showTime={false}
+							disablePast
+						/>
+						<DatetimeSelect
+							label="Fecha de término"
+							name="end"
+							showTime={false}
+							disablePast
+						/>
 					</Show>
 
-					{WEEK_DAYS.map((day, index) => (
-						<Show key={day} when={formStep === index + 2}>
+					{weekDays.map(({ date, day }, index) => (
+						<Show key={date} when={formStep === index + 2}>
 							<WeeklyEventsStep
 								centers={formattedCenters}
 								dailySessions={dailySessions}
 								minutesPerSession={selectedProfessional?.minutesPerSession ?? 0}
-								date={dayjs("2025-01-25")
-									.day(index + 1)
-									.format("dddd DD/MM/YYYY")}
-								day={day as any}
+								date={date}
+								day={day}
 								setModalSize={setModalSize}
 							/>
 						</Show>
@@ -150,7 +214,7 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 				</form>
 
 				<div className="flex gap-4 justify-end bottom-0">
-					<Button type="button" variant="secondary" onClick={handleCancel}>
+					<Button type="button" variant="secondary" onClick={() => onCancel()}>
 						Cancelar
 					</Button>
 
