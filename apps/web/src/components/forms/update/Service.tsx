@@ -7,8 +7,8 @@ import { useModal } from "@/context/ModalContext"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ColorPicker } from "@/components/ColorPicker"
 import { updateService } from "@/lib/actions"
-import { ServiceSchemas } from "@/lib/schemas"
 import { ImageSelector } from "@/components/ImageSelector"
+import { ServiceSchemas } from "@/lib/schemas"
 import { Service, FormProps } from "@/lib/types"
 import { useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
@@ -30,7 +30,6 @@ export const UpdateService: React.FC<FormProps<Service>> = ({ data, setData }) =
 				title: selectedData.title,
 				description: selectedData.description,
 				color: selectedData.color.toString().split("#")[1],
-				minutesPerAttention: selectedData.minutesPerAttention,
 			})
 		}
 	}, [selectedData])
@@ -56,13 +55,6 @@ export const UpdateService: React.FC<FormProps<Service>> = ({ data, setData }) =
 						label="Descripción"
 						type="text"
 						placeholder="¿En qué consiste el servicio?"
-					/>
-					<Input
-						type="text"
-						label="Minutos por atención"
-						name="minutesPerAttention"
-						maxLength={3}
-						placeholder="60"
 					/>
 					<ColorPicker label="Color del servicio" />
 					<ImageSelector imageLabel="Imagen del servicio" size={[400, 250]} />

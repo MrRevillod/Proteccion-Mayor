@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { rules, Schema } from "@repo/lib"
+import { Prisma } from "@prisma/client"
 
 export class ProfessionalsSchemas extends Schema {
 	private readonly selectValues = ["id", "name", "serviceId"]
@@ -7,7 +8,7 @@ export class ProfessionalsSchemas extends Schema {
 	get query() {
 		return z.object({
 			id: z.string().optional(),
-			serviceId: z.number().optional(),
+			serviceId: z.coerce.number().optional(),
 			limit: z.coerce.number().optional(),
 			select: z
 				.string()
@@ -16,7 +17,7 @@ export class ProfessionalsSchemas extends Schema {
 		})
 	}
 
-	get defaultSelect() {
+	get defaultSelect(): Prisma.ProfessionalSelect {
 		return {
 			id: true,
 			name: true,
@@ -25,6 +26,7 @@ export class ProfessionalsSchemas extends Schema {
 			serviceId: true,
 			updatedAt: true,
 			createdAt: true,
+			minutesPerSession: true,
 			service: { select: { title: true, name: true } },
 		}
 	}
@@ -35,6 +37,7 @@ export class ProfessionalsSchemas extends Schema {
 			name: rules.nameSchema,
 			email: rules.emailSchema,
 			serviceId: z.number({ message: "La profesión es obligatoria" }),
+			minutesPerSession: rules.minutesPerSessionSchema,
 		})
 	}
 
@@ -45,6 +48,7 @@ export class ProfessionalsSchemas extends Schema {
 				email: rules.emailSchema,
 				password: rules.optionalPasswordSchema,
 				confirmPassword: rules.optionalPasswordSchema,
+				minutesPerSession: rules.minutesPerSessionSchema,
 			})
 			.refine((data) => data.password === data.confirmPassword, {
 				message: "Las contraseñas ingresadas no coinciden",

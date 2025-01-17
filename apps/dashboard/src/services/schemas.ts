@@ -23,7 +23,6 @@ export class ServicesSchemas extends Schema {
 			title: true,
 			description: true,
 			color: true,
-			minutesPerAttention: true,
 		}
 	}
 
@@ -33,7 +32,6 @@ export class ServicesSchemas extends Schema {
 			title: rules.titleServiceSchema,
 			description: rules.descriptionSchema,
 			color: rules.colorSchema,
-			minutesPerAttention: rules.minutesPerAttentionSchema,
 		})
 	}
 
@@ -43,7 +41,6 @@ export class ServicesSchemas extends Schema {
 			title: rules.titleServiceSchema,
 			description: rules.descriptionSchema,
 			color: rules.colorSchema,
-			minutesPerAttention: rules.minutesPerAttentionSchema,
 		})
 	}
 }

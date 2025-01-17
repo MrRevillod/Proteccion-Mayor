@@ -3,24 +3,16 @@ import React from "react"
 import dayjs from "dayjs"
 
 import { Dayjs } from "dayjs"
-import { DatePicker } from "antd"
+import { TimePicker } from "antd"
 import { Controller, useFormContext } from "react-hook-form"
 
-interface DatetimeSelectProps {
+interface TimeSelectProps {
 	label: string
 	name: string
-	showTime?: boolean
 	defaultValue?: Dayjs
-	width?: string
 }
 
-export const DatetimeSelect = ({
-	label,
-	name,
-	showTime = true,
-	defaultValue,
-	width,
-}: DatetimeSelectProps) => {
+export const TimeSelect = ({ label, name, defaultValue }: TimeSelectProps) => {
 	const {
 		control,
 		setValue,
@@ -31,8 +23,7 @@ export const DatetimeSelect = ({
 		errors[name] ? "border-red" : "border-gray-dark",
 		"rounded-lg text-sm focus:outline-none focus:ring-primary-green",
 		"focus:border-primary-green w-full h-10 placeholder-neutral-400",
-		"text-dark dark:text-light mb-1 border-1 bg-light dark:bg-primary-dark",
-		width ? width : "w-full"
+		"text-dark dark:text-light mb-1 border-1 bg-light dark:bg-primary-dark"
 	)
 
 	return (
@@ -47,36 +38,22 @@ export const DatetimeSelect = ({
 				control={control}
 				name={name}
 				render={({ field }) => (
-					<DatePicker
+					<TimePicker
 						{...field}
-						className={classes}
-						showTime={
-							showTime && {
-								hideDisabledOptions: true,
-							}
-						}
+						allowClear={false}
+						className={`${classes} w-40`}
+						format={"HH:mm"}
 						disabledTime={(_) => {
 							return {
 								disabledHours: () => [
-									0, 1, 2, 3, 4, 4, 5, 6, 7, 19, 20, 21, 22, 23,
+									0, 1, 2, 3, 4, 4, 5, 6, 7, 8, 19, 20, 21, 22, 23,
 								],
 							}
 						}}
-						disabledDate={
-							showTime
-								? (current) =>
-										current &&
-										(current < dayjs().startOf("day") ||
-											current.day() === 0 ||
-											current.day() === 6)
-								: undefined
-						}
-						showNow={showTime}
+						showNow={false}
 						value={field.value ? dayjs(field.value) : null}
 						defaultValue={defaultValue ? dayjs(defaultValue) : null}
-						onChange={(event) =>
-							setValue(name, event ? dayjs(event).toISOString() : null)
-						}
+						onChange={(event) => setValue(name, event)}
 					/>
 				)}
 			/>

@@ -45,10 +45,27 @@ export const CreateProfessional: React.FC<FormProps<Professional>> = ({ data, se
 					actionType="create"
 					setLoading={setLoading}
 				>
-					<Input name="id" label="Rut (sin puntos ni guión)" type="text" placeholder="123456789" />
+					<Input
+						name="id"
+						label="Rut (sin puntos ni guión)"
+						type="text"
+						placeholder="123456789"
+					/>
 					<Input name="name" label="Nombre" type="text" placeholder="Juan Perez" />
-					<Input name="email" label="Correo Electrónico" type="email" placeholder="JohnD@provider.com" />
+					<Input
+						name="email"
+						label="Correo Electrónico"
+						type="email"
+						placeholder="JohnD@provider.com"
+					/>
 					<SuperSelect label="Profesión" name="serviceId" options={services} />
+					<Input
+						type="text"
+						label="Minutos por atención"
+						name="minutesPerSession"
+						maxLength={3}
+						placeholder="60"
+					/>
 				</Form>
 			</FormProvider>
 		</Modal>

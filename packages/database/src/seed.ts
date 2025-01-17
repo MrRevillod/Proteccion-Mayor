@@ -1,10 +1,9 @@
 import { hash } from "bcrypt"
 import { faker } from "@faker-js/faker"
 import { readFileSync } from "node:fs"
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient, Gender } from "@prisma/client"
 
 const prisma = new PrismaClient()
-const Gender = require("@prisma/client").Gender
 
 const DEFAULT_SENIOR_PASSWORD = process.env.DEV_DEFAULT_SENIOR_PASSWORD || "1234"
 const DEFAULT_PROFESSIONAL_PASSWORD = process.env.DEV_DEFAULT_PROFESSIONAL_PASSWORD || "pro123"
@@ -122,12 +121,12 @@ const seed = async () => {
 					title: service.title,
 					description: service.description,
 					color: service.color,
-					minutesPerSession: service.minutesPerAttention,
 				},
 				update: {},
 			})
 
 			if (!serviceExists) {
+				console.log(service)
 				await uploadImage(service.img, service.id.toString(), "/upload?path=%2Fservices")
 
 				for (let i = 0; i < service.professionals; i++) {
@@ -143,6 +142,7 @@ const seed = async () => {
 							email: professionalEmail,
 							password: await hash(DEFAULT_PROFESSIONAL_PASSWORD, 10),
 							name: `${professionalFirstName} ${professionalLastName}`,
+							minutesPerSession: Number(service.minutesPerSession),
 							serviceId: service.id,
 						},
 						update: {},
@@ -186,6 +186,7 @@ const seed = async () => {
 				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
 				name: professional.name,
 				serviceId: Math.floor(Math.random() * 6) + 1,
+				minutesPerSession: 30,
 			},
 			update: {},
 		})

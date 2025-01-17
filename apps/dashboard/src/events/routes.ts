@@ -26,6 +26,12 @@ export class EventsRouter extends Router {
 			],
 		})
 
+		this.post({
+			path: "/weekly",
+			handler: this.controller.createMany,
+			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL"])],
+		})
+
 		this.patch({
 			path: "/:id",
 			handler: this.controller.updateOne,

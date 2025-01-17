@@ -126,7 +126,7 @@
 			"description": "La psicología es la disciplina que investiga sobre los procesos mentales de las personas y su relación con el entorno social y físico. El psicólogo es el profesional que se dedica a estudiar y tratar los padecimientos mentales, emocionales y de comportamiento.",
 			"color": "#2E86C1",
 			"professionals": 2,
-			"minutesPerAttention": 60
+			"minutesPerSession": 60
 		},
 		{
 			"id": 2,
@@ -136,7 +136,7 @@
 			"description": "La podología es la rama de la medicina que se encarga de estudiar, diagnosticar y tratar las enfermedades y alteraciones que afectan a los pies. El podólogo es el profesional que se dedica a prevenir, diagnosticar y tratar las enfermedades y alteraciones de los pies.",
 			"color": "#28B463",
 			"professionals": 8,
-			"minutesPerAttention": 30
+			"minutesPerSession": 30
 		},
 		{
 			"id": 3,
@@ -146,7 +146,7 @@
 			"description": "La kinesiología es la disciplina que se encarga de prevenir, diagnosticar y tratar las enfermedades y lesiones del sistema musculoesquelético. El kinesiólogo es el profesional que se dedica a prevenir, diagnosticar y tratar las enfermedades y lesiones del sistema musculoesquelético.",
 			"color": "#E67E22",
 			"professionals": 2,
-			"minutesPerAttention": 45
+			"minutesPerSession": 45
 		},
 		{
 			"id": 4,
@@ -156,7 +156,7 @@
 			"description": "La fonoaudiología es la disciplina que se encarga de prevenir, diagnosticar y tratar los trastornos de la comunicación humana. El fonoaudiólogo es el profesional que se dedica a prevenir, diagnosticar y tratar los trastornos de la comunicación humana.",
 			"color": "#C0392B",
 			"professionals": 3,
-			"minutesPerAttention": 45
+			"minutesPerSession": 45
 		},
 		{
 			"id": 5,
@@ -166,7 +166,7 @@
 			"description": "La asesoría jurídica es el servicio que se encarga de brindar orientación y asesoramiento legal a las personas que lo requieran. El abogado es el profesional que se dedica a brindar orientación y asesoramiento legal a las personas que lo requieran.",
 			"color": "#1ABC9C",
 			"professionals": 3,
-			"minutesPerAttention": 60
+			"minutesPerSession": 60
 		},
 		{
 			"id": 6,
@@ -176,7 +176,7 @@
 			"description": "La peluquería es el servicio que se encarga de cortar, peinar y arreglar el cabello de las personas. El peluquero es el profesional que se dedica a cortar, peinar y arreglar el cabello de las personas.",
 			"color": "#9B59B6",
 			"professionals": 5,
-			"minutesPerAttention": 30
+			"minutesPerSession": 30
 		}
 	],
 	"dailySessions": [
@@ -213,22 +213,22 @@
 		{
 			"centerId": 2,
 			"serviceId": 1,
-			"quantity": 6
+			"quantity": 3
 		},
 		{
 			"centerId": 2,
 			"serviceId": 2,
-			"quantity": 8
+			"quantity": 5
 		},
 		{
 			"centerId": 2,
 			"serviceId": 3,
-			"quantity": 6
+			"quantity": 4
 		},
 		{
 			"centerId": 2,
 			"serviceId": 4,
-			"quantity": 4
+			"quantity": 6
 		},
 		{
 			"centerId": 2,
@@ -243,52 +243,52 @@
 		{
 			"centerId": 3,
 			"serviceId": 1,
-			"quantity": 6
+			"quantity": 3
 		},
 		{
 			"centerId": 3,
 			"serviceId": 2,
-			"quantity": 8
+			"quantity": 5
 		},
 		{
 			"centerId": 3,
 			"serviceId": 3,
-			"quantity": 6
+			"quantity": 5
 		},
 		{
 			"centerId": 3,
 			"serviceId": 4,
-			"quantity": 4
+			"quantity": 3
 		},
 		{
 			"centerId": 3,
 			"serviceId": 5,
-			"quantity": 4
+			"quantity": 5
 		},
 		{
 			"centerId": 3,
 			"serviceId": 6,
-			"quantity": 8
+			"quantity": 6
 		},
 		{
 			"centerId": 4,
 			"serviceId": 1,
-			"quantity": 6
+			"quantity": 4
 		},
 		{
 			"centerId": 4,
 			"serviceId": 2,
-			"quantity": 8
-		},
-		{
-			"centerId": 4,
-			"serviceId": 3,
 			"quantity": 6
 		},
 		{
 			"centerId": 4,
+			"serviceId": 3,
+			"quantity": 8
+		},
+		{
+			"centerId": 4,
 			"serviceId": 4,
-			"quantity": 4
+			"quantity": 3
 		},
 		{
 			"centerId": 4,

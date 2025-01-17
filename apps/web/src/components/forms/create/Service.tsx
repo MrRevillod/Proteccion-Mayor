@@ -47,14 +47,6 @@ export const CreateService: React.FC<FormProps<Service>> = ({ data, setData }) =
 						placeholder="Descripción breve del servicio"
 					/>
 
-					<Input
-						type="text"
-						label="Minutos por atención"
-						name="minutesPerAttention"
-						maxLength={3}
-						placeholder="60"
-					/>
-
 					<ColorPicker label="Color del servicio" />
 					<ImageSelector imageLabel="Imagen del servicio" size={[400, 250]} />
 				</Form>

@@ -47,7 +47,6 @@ export class EventsSchemas extends Schema {
 				serviceId: z.number({ message: "El servicio es obligatorio" }),
 				seniorId: z.optional(rules.rutSchema),
 				centerId: z.number({ message: "El centro es obligatorio" }),
-				repeat: z.optional(z.enum(["daily", "weekly"])),
 			})
 			.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
 				message: "No es posible crear eventos los fin de semana",

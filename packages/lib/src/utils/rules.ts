@@ -162,7 +162,7 @@ export const isWeekend = (date: string) => {
 	return day !== 0 && day !== 6
 }
 
-export const minutesPerAttentionSchema = z
+export const minutesPerSessionSchema = z
 	.string()
 	.transform((val) => Number(val))
 	.refine((val) => !isNaN(val), { message: "Debe ser un número válido" })

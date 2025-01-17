@@ -39,14 +39,14 @@ model Senior {
 }
 
 model Service {
-  id                Int      @id @default(autoincrement())
-  name              String   @unique @db.VarChar(255)
-  title             String   @db.Text
-  description       String   @db.Text
-  color             String   @db.Text
-  minutesPerSession Int
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id          Int    @id @default(autoincrement())
+  name        String @unique @db.VarChar(255)
+  title       String @db.Text
+  description String @db.Text
+  color       String @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   events        Event[]
   professionals Professional[]
@@ -85,6 +85,8 @@ model Professional {
   name     String @db.Text
   email    String @db.VarChar(255)
   password String @db.VarChar(255)
+
+  minutesPerSession Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

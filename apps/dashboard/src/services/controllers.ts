@@ -43,7 +43,7 @@ export class ServicesController {
 
 	public createOne: Controller = async (req, res, handleError) => {
 		const { body, file } = req
-		const { name, title, description, color, minutesPerAttention } = body
+		const { name, title, description, color } = body
 
 		try {
 			const exists = await prisma.service.findFirst({
@@ -60,13 +60,7 @@ export class ServicesController {
 			}
 
 			const service = await prisma.service.create({
-				data: {
-					name,
-					title,
-					description,
-					color,
-					minutesPerAttention: Number(minutesPerAttention),
-				},
+				data: { name, title, description, color },
 			})
 
 			await this.storage.uploadFile({
@@ -93,7 +87,7 @@ export class ServicesController {
 
 	public updateOne: Controller = async (req, res, handleError) => {
 		const { params, body, file } = req
-		const { name, title, description, color, minutesPerAttention } = body
+		const { name, title, description, color } = body
 
 		try {
 			const exists = await prisma.service.findFirst({
@@ -115,7 +109,7 @@ export class ServicesController {
 			const service = await prisma.service.update({
 				select: this.schemas.defaultSelect,
 				where: { id: Number(params.id) },
-				data: { name, title, description, color, minutesPerAttention },
+				data: { name, title, description, color },
 			})
 
 			if (file) {

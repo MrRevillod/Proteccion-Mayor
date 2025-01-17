@@ -23,12 +23,14 @@ interface IUser {
 	name: string
 	createdAt: string
 	updatedAt: string
+	minutesPerSession?: number
 }
 
 export interface Administrator extends IUser {}
 export interface Professional extends IUser {
 	service: Partial<Service>
 	serviceId: number
+	minutesPerSession: number
 }
 
 export type Service = {
@@ -37,7 +39,6 @@ export type Service = {
 	title: string
 	description: string
 	color: HexColor
-	minutesPerAttention: number
 }
 
 export type DailySessions = {

@@ -52,7 +52,7 @@ export class ProfessionalsController {
 	 */
 
 	public createOne: Controller = async (req, res, handleError) => {
-		const { id, name, email, serviceId } = req.body
+		const { id, name, email, serviceId, minutesPerSession } = req.body
 
 		try {
 			const [proExists, servExists] = await Promise.all([
@@ -75,7 +75,7 @@ export class ProfessionalsController {
 
 			const professional = await prisma.professional.create({
 				select: this.schemas.defaultSelect,
-				data: { id, name, email, password: hash, serviceId },
+				data: { id, name, email, password: hash, serviceId, minutesPerSession },
 			})
 
 			this.mailer.send({
@@ -102,7 +102,7 @@ export class ProfessionalsController {
 
 	public updateOne: Controller = async (req, res, handleError) => {
 		const { params, body, file } = req
-		const { name, email, password } = body
+		const { name, email, password, minutesPerSession } = body
 
 		const user = req.getExtension("reqResource") as Professional
 
@@ -120,7 +120,7 @@ export class ProfessionalsController {
 			const professional = await prisma.professional.update({
 				where: { id: params.id },
 				select: this.schemas.defaultSelect,
-				data: { name, email, password: updatedPassword },
+				data: { name, email, password: updatedPassword, minutesPerSession },
 			})
 
 			const response = { modified: professional, image: null }

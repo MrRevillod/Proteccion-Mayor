@@ -5,6 +5,7 @@ import { prisma } from "@repo/database"
 import { EventService } from "./service"
 import { EventsSchemas } from "./schemas"
 import { Prisma, Senior } from "@prisma/client"
+import { WeeklyEvents, DailyEvents, dayToNumber, WeekDay } from "@repo/lib"
 import { AppError, Controller, MailerService, templates } from "@repo/lib"
 
 export class EventsController {
@@ -29,7 +30,6 @@ export class EventsController {
 	public getMany: Controller = async (req, res, handleError) => {
 		try {
 			const query = this.schemas.query.parse(req.query)
-
 			const andConditions: Prisma.EventWhereInput[] = []
 
 			if (query.professionalId) {
@@ -73,7 +73,7 @@ export class EventsController {
 	}
 
 	public createOne: Controller = async (req, res, handleError) => {
-		const { start, end, professionalId, serviceId, centerId, seniorId, repeat } = req.body
+		const { start, end, professionalId, serviceId, centerId, seniorId } = req.body
 
 		try {
 			// Se buscan los datos a utilizar con Promise.all
@@ -103,8 +103,16 @@ export class EventsController {
 				centerId: Number(centerId),
 			}
 
-			await this.service.createEvents({ ...event, repeat }).catch((error) => {
-				throw new AppError(409, error.message)
+			await prisma.event.create({
+				data: {
+					start: event.start.toISOString(),
+					end: event.end.toISOString(),
+					professionalId: event.professionalId,
+					serviceId: event.serviceId,
+					seniorId: event.seniorId,
+					centerId: event.centerId,
+					assistance: false,
+				},
 			})
 
 			io.to("ADMIN").emit("event:create", null)
@@ -127,7 +135,55 @@ export class EventsController {
 	 */
 
 	public createMany: Controller = async (req, res, handleError) => {
+		const { query, body } = req
+
+		const { serviceId, professionalId } = query
+		const { start, weeklyEvents } = body as { start: string; weeklyEvents: WeeklyEvents }
+
 		try {
+			const [professional, service] = await Promise.all([
+				prisma.professional.findUnique({ where: { id: professionalId?.toString() } }),
+				prisma.service.findUnique({ where: { id: Number(serviceId) } }),
+			])
+
+			if (!professional || !service) {
+				throw new AppError(400, "Profesional o servicio no encontrado")
+			}
+
+			const startWeekDate = dayjs(start).startOf("week")
+
+			Object.keys(weeklyEvents).forEach((day) => {
+				const dayNumber = dayToNumber(day)
+				const dayDate = startWeekDate.day(dayNumber)
+				const centerId = weeklyEvents[day as WeekDay]["centerId"]
+				const events = weeklyEvents[day as WeekDay]["events"]
+
+				events.forEach(async (event) => {
+					const { start, end } = event
+
+					const splittedStart = this.service.splitTime(start)
+					const splittedEnd = this.service.splitTime(end)
+
+					const startDate = dayDate.hour(splittedStart[0]).minute(splittedStart[1])
+					const endDate = dayDate.hour(splittedEnd[0]).minute(splittedEnd[1])
+
+					await prisma.event.create({
+						data: {
+							start: startDate.toISOString(),
+							end: endDate.toISOString(),
+							professionalId: professionalId?.toString(),
+							serviceId: Number(serviceId),
+							centerId: Number(centerId),
+							assistance: false,
+						},
+					})
+				})
+			})
+
+			io.to("ADMIN").emit("event:create", null)
+			io.to(professionalId as string).emit("event:create", null)
+
+			return res.status(201).json({ values: { modified: null } })
 		} catch (error) {
 			handleError(error)
 		}
