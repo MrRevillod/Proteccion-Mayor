@@ -2,12 +2,12 @@
 	"name": "@repo/database",
 	"version": "0.0.0",
 	"private": true,
-	"main": "./dist/index.js",
+	"main": "./dist/src/index.js",
 	"files": [
 		"dist/**"
 	],
 	"scripts": {
-		"build": "tsup",
+		"build": "swc src -d dist --source-maps",
 		"db:generate": "dotenv -e ../../.env -- prisma generate",
 		"db:migrate:reset": "dotenv -e ../../.env -- prisma migrate reset",
 		"db:migrate:dev": "dotenv -e ../../.env -- prisma migrate dev",

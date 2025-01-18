@@ -4,7 +4,6 @@
 	"private": true,
 	"scripts": {
 		"start": "node dist/index.js",
-		"dev": "tsup --watch --onSuccess \"node dist/index.js\"",
 		"build": "tsup",
 		"clean": "rm -rf dist",
 		"prune": "rm -rf node_modules",

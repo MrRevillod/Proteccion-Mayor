@@ -2,10 +2,11 @@
 	"name": "auth",
 	"version": "0.0.0",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"start": "node dist/index.js",
-		"dev": "tsup --watch --onSuccess \"node dist/index.js\"",
-		"build": "tsup",
+		"dev": "concurrently -k \"swc src -d dist --source-maps --watch --config-file '../../.swcrc'\" \"node dist/src/index.js\"",
+		"build": "swc src -d dist --source-maps",
 		"clean": "rm -rf dist",
 		"prune": "rm -rf node_modules",
 		"typecheck": "tsc --noEmit",
