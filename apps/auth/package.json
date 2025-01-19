@@ -2,13 +2,14 @@
 	"name": "auth",
 	"version": "0.0.0",
 	"private": true,
+	"main": "./dist/index.mjs",
 	"scripts": {
-		"start": "node dist/index.js",
+		"start": "node dist/index.mjs",
 		"dev": "tsx watch  --clearScreen=false --include \"src/*\" src/index.ts",
 		"build": "tsup",
 		"clean": "rm -rf dist",
 		"typecheck": "tsc --noEmit",
-		"format": "prettier --write ."
+		"format": "pnpx prettier --write ."
 	},
 	"dependencies": {
 		"@repo/database": "workspace:*",

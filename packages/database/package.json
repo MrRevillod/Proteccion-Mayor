@@ -2,7 +2,8 @@
 	"name": "@repo/database",
 	"version": "0.0.0",
 	"private": true,
-	"main": "./dist/index.js",
+	"main": "./dist/index.mjs",
+	"types": "./dist/index.d.mts",
 	"files": [
 		"dist/**"
 	],
@@ -10,11 +11,11 @@
 		"build": "tsup",
 		"dev": "tsup --watch",
 		"db:generate": "dotenv -e ../../.env -- prisma generate",
+		"db:generate:deploy": "dotenv -e ../../.env.production -- prisma generate",
 		"db:migrate:reset": "dotenv -e ../../.env -- prisma migrate reset",
 		"db:migrate:dev": "dotenv -e ../../.env -- prisma migrate dev",
 		"db:migrate:deploy": "dotenv -e ../../.env.production -- prisma migrate deploy",
-		"db:generate:deploy": "dotenv -e ../../.env.production -- prisma generate",
-		"db:seed": "dotenv -e ../../.env -- pnpx tsx src/seed.ts"
+		"db:seed": "dotenv -e ../../.env -- tsx src/seed.ts"
 	},
 	"devDependencies": {
 		"@repo/typescript-config": "workspace:*",
