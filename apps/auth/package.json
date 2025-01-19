@@ -9,7 +9,7 @@
 		"build": "tsup",
 		"clean": "rm -rf dist",
 		"typecheck": "tsc --noEmit",
-		"format": "pnpx prettier --write ."
+		"format": "pnpx prettier --config ../../.prettierrc --write \"src/*\""
 	},
 	"dependencies": {
 		"@repo/database": "workspace:*",

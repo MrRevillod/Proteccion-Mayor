@@ -10,6 +10,7 @@
 	"scripts": {
 		"build": "tsup",
 		"dev": "tsup --watch",
+		"format": "pnpx prettier --config ../../.prettierrc --write \"src/*\"",
 		"db:generate": "dotenv -e ../../.env -- prisma generate",
 		"db:generate:deploy": "dotenv -e ../../.env.production -- prisma generate",
 		"db:migrate:reset": "dotenv -e ../../.env -- prisma migrate reset",
