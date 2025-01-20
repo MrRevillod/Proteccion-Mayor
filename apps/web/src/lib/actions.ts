@@ -23,9 +23,14 @@ const apiRequest = {
 	},
 }
 
-// Acciones CRUD para los funcionarios
 
 import { AxiosResponse } from "axios"
+
+export const getOperatives = async (props: QueryActionProps) => {
+    return await apiRequest.get(`/dashboard/operatives${props.query ? "?" + props.query : ""}`)
+}
+
+// Acciones CRUD para los funcionarios
 
 export const getStaff = async (props: QueryActionProps) => {
 	return await apiRequest.get(`/dashboard/staff${props.query ? "?" + props.query : ""}`)

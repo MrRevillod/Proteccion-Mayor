@@ -8,6 +8,7 @@ import NotFoundPage from "./NotFound"
 import NewSeniorsPage from "./administration/seniors/SeniorsNew"
 import StatisticsPage from "./administration/Statistics"
 import ProfessionalsPage from "./administration/Professionals"
+import OperativesPages from "./administration/Operatives"
 import ResetPasswordPage from "./auth/ResetPassword"
 import DownloadApplication from "./DownloadApplication"
 import ValidatePasswordPage from "./auth/Password"
@@ -87,6 +88,7 @@ const Router: React.FC = () => {
 				<Route path="/administracion/funcionarios" element={<StaffPage />} />
 				<Route path="/administracion/servicios" element={<ServicesPage />} />
 				<Route path="/administracion/centros-de-atencion" element={<CentersPage />} />
+				<Route path="/operativos" element={<OperativesPages />} />
 			</Route>
 
 			<Route element={<ProtectedRoute allowedRoles={["PROFESSIONAL"]} />}>
