@@ -61,7 +61,7 @@ export class SeniorRouter extends Router {
 			path: "/:id/new",
 			handler: this.controller.handleRegisterRequest,
 			middlewares: [
-				this.auth.authorize(["ADMIN","FUNCTIONARY"]),
+				this.auth.authorize(["ADMIN","FUNCTIONARY","FUNCTIONARY"]),
 				validations.resourceId(findSenior),
 				validations.body(this.schemas.handleRegisterRequest),
 			],

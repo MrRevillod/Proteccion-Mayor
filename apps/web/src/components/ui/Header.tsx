@@ -175,18 +175,18 @@ export const Header: React.FC = () => {
                         
                         <Link
                             to="/administracion/personas-mayores"
-							onClick={() => handlePageSelected("Personas")}
-							className={linkClasses("Personas", true)}
+							onClick={() => handlePageSelected("personas-mayores")}
+							className={linkClasses("personas-mayores")}
                         >
                             Personas mayores
                         </Link>
 
 						<Link
 						    to="/administracion/personas-mayores/nuevos"
-                            onClick={() => handlePageSelected("Personas")}
-                            className={linkClasses("Personas", true)}
+                            onClick={() => handlePageSelected("personas-mayores-nuevos")}
+                            className={linkClasses("personas-mayores-nuevos")}
 						>
-							solicitudes de registro
+							Solicitudes de registro
 						</Link>
                         <Link
 							to="/agenda/funcionarios"
