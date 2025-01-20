@@ -164,7 +164,7 @@ export const EventSchemas = {
 			professionalId: z.string({ message: "El profesional es requerido" }),
 			serviceId: z.number({ message: "El servicio es requerido" }),
 			seniorId: z.optional(rules.rutSchema),
-			centerId: z.number({ message: "El centro es requerido" }),
+			centerId: rules.centerIdSchema,
 			repeat: z.optional(z.enum(["daily", "weekly"])),
 		})
 		.refine((data) => data.start < data.end, {
@@ -205,7 +205,7 @@ export const EventSchemas = {
 			serviceId: z.number(),
 			assistance: z.boolean(),
 			seniorId: z.optional(rules.rutSchema),
-			centerId: z.number(),
+			centerId: rules.centerIdSchema,
 		})
 		.refine((data) => data.start < data.end, {
 			path: ["end", "start"],

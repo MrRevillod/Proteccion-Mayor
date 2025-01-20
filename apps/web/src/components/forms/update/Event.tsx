@@ -61,7 +61,7 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 		if (!selectedData) return
 		methods.reset({
 			professionalId: selectedData?.professionalId,
-			centerId: selectedData?.centerId.toString() || undefined,
+			centerId: selectedData?.centerId ? selectedData?.centerId.toString() : undefined,
 			serviceId: selectedData?.serviceId,
 			assistance: selectedData?.assistance,
 			seniorId: selectedData?.seniorId || undefined,

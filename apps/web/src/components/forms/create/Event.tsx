@@ -47,10 +47,10 @@ export const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
     useEffect(() => {
         if (role === "FUNCTIONARY") {
             const functionary = user as Staff
-            setValue("centerId", functionary.centerId ? Number(functionary.centerId) : undefined)
+            setValue("centerId", functionary.centerId ? functionary.centerId.toString() : undefined)
         } else {
             const selectedUrlCenter = getIdsFromUrl(location).centerId
-            setValue("centerId", selectedUrlCenter ? Number(selectedUrlCenter) : undefined)
+            setValue("centerId", selectedUrlCenter ? selectedUrlCenter.toString() : undefined)
         }
 	}, [location.search])
 

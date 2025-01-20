@@ -24,7 +24,7 @@ export class EventsController {
 						? { equals: query.professionalId }
 						: undefined,
 					serviceId: query.serviceId ? { equals: query.serviceId } : undefined,
-					centerId: query.centerId ? { equals: query.centerId } : undefined,
+					centerId: query.centerId ? { equals: Number(query.centerId) } : undefined,
 					seniorId: query.seniorId ? { equals: query.seniorId } : undefined,
 				},
 			})
