@@ -28,12 +28,7 @@ type EventFormProps = {
 	refetch?: () => void
 }
 
-export const CreateEvent: React.FC<EventFormProps> = ({
-	centers,
-	professionals,
-	services,
-	refetch,
-}) => {
+export const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, services, refetch }) => {
 	const [loading, setLoading] = useState(false)
 	const [seniors, setSeniors] = useState<SuperSelectField[]>([])
 	const [seniorsSearch, setSeniorsSearch] = useState<string>("")
@@ -68,12 +63,9 @@ export const CreateEvent: React.FC<EventFormProps> = ({
 	// Se obtienen los servicios al abrir el modal
 
 	useEffect(() => {
-		console.log("serviceId", selectedService)
 		if (baseTrigger && selectedService && professionals) {
 			console.log(professionals)
-			const serviceProfessionals = professionals.filter(
-				(professional) => professional.serviceId === selectedService
-			)
+			const serviceProfessionals = professionals.filter((professional) => professional.serviceId === selectedService)
 			selectDataFormatter({ data: serviceProfessionals, setData: setSelectProfessionals })
 		}
 	}, [selectedService])
@@ -113,37 +105,15 @@ export const CreateEvent: React.FC<EventFormProps> = ({
 	return (
 		<Modal type="Other" title="Crear un nuevo evento" loading={loading}>
 			<FormProvider {...methods}>
-				<Form
-					action={createEvent}
-					actionType="create"
-					refetch={refetch}
-					setLoading={setLoading}
-				>
+				<Form action={createEvent} actionType="create" refetch={refetch} setLoading={setLoading}>
 					<Show when={role === "ADMIN"}>
-						<SuperSelect
-							label="Seleccione un servicio"
-							name="serviceId"
-							options={services}
-						/>
-						<SuperSelect
-							label="Seleccione un profesional"
-							name="professionalId"
-							options={selectProfessionals}
-						/>
+						<SuperSelect label="Seleccione un servicio" name="serviceId" options={services} />
+						<SuperSelect label="Seleccione un profesional" name="professionalId" options={selectProfessionals} />
 					</Show>
 
-					<SuperSelect
-						label="Seleccione un centro de atención"
-						name="centerId"
-						options={centers}
-					/>
+					<SuperSelect label="Seleccione un centro de atención" name="centerId" options={centers} />
 
-					<SuperSelect
-						label="Seleccione una persona mayor"
-						name="seniorId"
-						options={seniors}
-						setSearch={setSeniorsSearch}
-					/>
+					<SuperSelect label="Seleccione una persona mayor" name="seniorId" options={seniors} setSearch={setSeniorsSearch} />
 					<div className="flex gap-2 justify-between">
 						<DatetimeSelect label="Inicio del evento" name="start" />
 						<DatetimeSelect label="Término del evento" name="end" />

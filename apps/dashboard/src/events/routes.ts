@@ -20,35 +20,25 @@ export class EventsRouter extends Router {
 		this.post({
 			path: "/",
 			handler: this.controller.createOne,
-			middlewares: [
-				this.auth.authorize(["ADMIN", "PROFESSIONAL"]),
-				validations.body(this.schemas.create),
-			],
+			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL"]), validations.body(this.schemas.create)],
 		})
 
 		this.post({
 			path: "/weekly",
 			handler: this.controller.createMany,
-			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL"])],
+			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL"]), validations.body(this.schemas.createMany)],
 		})
 
 		this.patch({
 			path: "/:id",
 			handler: this.controller.updateOne,
-			middlewares: [
-				this.auth.authorize(["ADMIN", "PROFESSIONAL"]),
-				validations.resourceId(findEvent),
-				validations.body(this.schemas.update),
-			],
+			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL"]), validations.resourceId(findEvent), validations.body(this.schemas.update)],
 		})
 
 		this.delete({
 			path: "/:id",
 			handler: this.controller.deleteOne,
-			middlewares: [
-				this.auth.authorize(["ADMIN", "PROFESSIONAL"]),
-				validations.resourceId(findEvent),
-			],
+			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL"]), validations.resourceId(findEvent)],
 		})
 
 		this.patch({

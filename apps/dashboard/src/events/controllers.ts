@@ -3,9 +3,8 @@ import dayjs from "dayjs"
 import { io } from ".."
 import { prisma } from "@repo/database"
 import { EventService } from "./service"
-import { EventsSchemas } from "./schemas"
 import { Prisma, Senior } from "@prisma/client"
-import { WeeklyEvents, DailyEvents, dayToNumber, WeekDay } from "@repo/lib"
+import { EventsSchemas, WeeklyEvents } from "./schemas"
 import { AppError, Controller, MailerService, templates } from "@repo/lib"
 
 export class EventsController {
@@ -80,9 +79,7 @@ export class EventsController {
 			const [professional, service, senior, center] = await Promise.all([
 				prisma.professional.findUnique({ where: { id: professionalId } }),
 				prisma.service.findUnique({ where: { id: Number(serviceId) } }),
-				seniorId
-					? prisma.senior.findUnique({ where: { id: seniorId } })
-					: Promise.resolve(null),
+				seniorId ? prisma.senior.findUnique({ where: { id: seniorId } }) : Promise.resolve(null),
 				prisma.center.findUnique({ where: { id: Number(centerId) } }),
 			])
 
@@ -91,8 +88,7 @@ export class EventsController {
 			if (!service) throw new AppError(400, "Servicio no encontrado")
 			if (seniorId && !senior) throw new AppError(400, "Adulto mayor no encontrado")
 			if (!center) throw new AppError(400, "Centro no encontrado")
-			if (senior && !senior?.validated)
-				throw new AppError(409, "La persona mayor no está validada")
+			if (senior && !senior?.validated) throw new AppError(409, "La persona mayor no está validada")
 
 			const event = {
 				start: dayjs(start),
@@ -138,7 +134,7 @@ export class EventsController {
 		const { query, body } = req
 
 		const { serviceId, professionalId } = query
-		const { start, weeklyEvents } = body as { start: string; weeklyEvents: WeeklyEvents }
+		const { weeklyEvents } = body as WeeklyEvents
 
 		try {
 			const [professional, service] = await Promise.all([
@@ -150,22 +146,19 @@ export class EventsController {
 				throw new AppError(400, "Profesional o servicio no encontrado")
 			}
 
-			const startWeekDate = dayjs(start).startOf("week")
-
 			Object.keys(weeklyEvents).forEach((day) => {
-				const dayNumber = dayToNumber(day)
-				const dayDate = startWeekDate.day(dayNumber)
-				const centerId = weeklyEvents[day as WeekDay]["centerId"]
-				const events = weeklyEvents[day as WeekDay]["events"]
+				const dayDate = dayjs(day)
+
+				const centerId = weeklyEvents[day]["centerId"]
+				const events = weeklyEvents[day]["events"]
 
 				events.forEach(async (event) => {
 					const { start, end } = event
+					const [startHH, startMM] = this.service.splitTime(start)
+					const [endHH, endMM] = this.service.splitTime(end)
 
-					const splittedStart = this.service.splitTime(start)
-					const splittedEnd = this.service.splitTime(end)
-
-					const startDate = dayDate.hour(splittedStart[0]).minute(splittedStart[1])
-					const endDate = dayDate.hour(splittedEnd[0]).minute(splittedEnd[1])
+					const startDate = dayDate.hour(startHH).minute(startMM)
+					const endDate = dayDate.hour(endHH).minute(endMM)
 
 					await prisma.event.create({
 						data: {
@@ -206,12 +199,8 @@ export class EventsController {
 			const [professional, service, senior, center] = await Promise.all([
 				prisma.professional.findUnique({ where: { id: professionalId } }),
 				prisma.service.findUnique({ where: { id: Number(serviceId) } }),
-				seniorId
-					? prisma.senior.findUnique({ where: { id: seniorId } })
-					: Promise.resolve(null),
-				centerId
-					? prisma.center.findUnique({ where: { id: Number(centerId) } })
-					: Promise.resolve(null),
+				seniorId ? prisma.senior.findUnique({ where: { id: seniorId } }) : Promise.resolve(null),
+				centerId ? prisma.center.findUnique({ where: { id: Number(centerId) } }) : Promise.resolve(null),
 			])
 
 			// Se verifica que los datos existan
@@ -338,11 +327,7 @@ export class EventsController {
 			// ultima actualización (por reserva/asistencia) dentro de los 2 meses anteriores.
 
 			const condition = {
-				AND: [
-					{ seniorId: senior.id },
-					{ serviceId: event.service.id },
-					{ updatedAt: { gte: twoMonthsAgo } },
-				],
+				AND: [{ seniorId: senior.id }, { serviceId: event.service.id }, { updatedAt: { gte: twoMonthsAgo } }],
 			}
 
 			const previousReservation = await prisma.event.findFirst({
@@ -442,11 +427,7 @@ export class EventsController {
 			const previousReservation = await prisma.event.findFirst({
 				select: this.schemas.defaultSelect,
 				where: {
-					AND: [
-						{ seniorId: user.id },
-						{ serviceId: Number(serviceId) },
-						{ updatedAt: { gte: twoMonthsAgo } },
-					],
+					AND: [{ seniorId: user.id }, { serviceId: Number(serviceId) }, { updatedAt: { gte: twoMonthsAgo } }],
 				},
 			})
 

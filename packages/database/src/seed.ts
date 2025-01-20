@@ -1,7 +1,12 @@
 import { hash } from "bcrypt"
-import { faker } from "@faker-js/faker"
+import { Faker, es } from "@faker-js/faker"
 import { readFileSync } from "node:fs"
 import { PrismaClient, Gender } from "@prisma/client"
+
+import colors from "ansi-colors"
+import cliProgress from "cli-progress"
+
+const faker = new Faker({ locale: [es] })
 
 const prisma = new PrismaClient()
 
@@ -49,14 +54,24 @@ const uploadImage = async (url: string, name: string, uploadPath: string) => {
 			method: "POST",
 			body: formData,
 			headers: {
-				"x-storage-key": process.env.STORAGE_KEY || "",
+				"x-storage-key": process.env.STORAGE_KEY ?? "",
 			},
 		})
 
 		if (!res.ok) throw new Error(`Error uploading image ${name}`)
-	} catch (error) {
-		console.error(error)
-	}
+	} catch (error) {}
+}
+
+const createProgressBar = (title: string, total: number) => {
+	return new cliProgress.SingleBar(
+		{
+			format: colors.cyan("{title}") + " |" + colors.cyan("{bar}") + "| {percentage}% || {value}/{total}",
+			barCompleteChar: "\u2588",
+			barIncompleteChar: "\u2591",
+			hideCursor: true,
+		},
+		cliProgress.Presets.shades_classic
+	)
 }
 
 const seed = async () => {
@@ -70,18 +85,17 @@ const seed = async () => {
 		prisma.dailySessions.deleteMany(),
 	])
 
-	console.log("All records dropped.")
+	console.log(colors.yellow.bold("\n🌱 Starting database seeding...\n"))
 
 	await uploadImage(DEFAULT_PROFILE_PICTURE, "default-profile", "/upload?path=%2Fusers")
 
 	const data = JSON.parse(readFileSync("./src/data.json", "utf-8"))
-	const services = data.services
-	const centers = data.centers
-	const admins = data.administrators
-	const professionals = data.professionals
-	const dailySessions = data.dailySessions
+	const { services, centers, administrators, professionals, dailySessions } = data
 
-	for (const admin of admins) {
+	const adminBar = createProgressBar("Administrators", administrators.length)
+	adminBar.start(administrators.length, 0, { title: "Administrators" })
+
+	for (const [index, admin] of administrators.entries()) {
 		const AdminRUT = generateRUT()
 
 		await prisma.administrator.upsert({
@@ -94,9 +108,57 @@ const seed = async () => {
 			},
 			update: {},
 		})
+		adminBar.update(index + 1)
 	}
+	adminBar.stop()
 
-	for (const center of centers) {
+	const serviceBar = createProgressBar("Services", services.length)
+	serviceBar.start(services.length, 0, { title: "Services" })
+
+	for (const [serviceIndex, service] of services.entries()) {
+		const serviceExists = await prisma.service.findUnique({ where: { id: service.id } })
+		if (!serviceExists) {
+			await prisma.service.upsert({
+				where: { id: service.id },
+				create: {
+					id: service.id,
+					name: service.name,
+					title: service.title,
+					description: service.description,
+					color: service.color,
+				},
+				update: {},
+			})
+			await uploadImage(service.img, service.id.toString(), "/upload?path=%2Fservices")
+
+			for (let i = 0; i < service.professionals; i++) {
+				const ProfessionalRUT = generateRUT()
+				const professionalFirstName = faker.person.firstName()
+				const professionalLastName = faker.person.lastName()
+				const professionalEmail = `${professionalFirstName[0].toLowerCase()}${professionalLastName.toLowerCase()}@professionals.com`
+
+				await prisma.professional.upsert({
+					where: { id: ProfessionalRUT },
+					create: {
+						id: ProfessionalRUT,
+						email: professionalEmail,
+						password: await hash(DEFAULT_PROFESSIONAL_PASSWORD, 10),
+						name: `${professionalFirstName} ${professionalLastName}`,
+						minutesPerSession: Number(service.minutesPerSession),
+						serviceId: service.id,
+					},
+					update: {},
+				})
+			}
+		}
+		serviceBar.update(serviceIndex + 1)
+	}
+	serviceBar.stop()
+
+	const centerBar = createProgressBar("Centers", centers.length)
+	centerBar.start(centers.length, 0, { title: "Centers" })
+
+	for (const [centerIndex, center] of centers.entries()) {
 		await prisma.center.upsert({
 			where: { id: center.id },
 			create: {
@@ -110,72 +172,42 @@ const seed = async () => {
 		})
 
 		await uploadImage(center.img, center.id.toString(), "/upload?path=%2Fcenters")
-
-		for (const service of services) {
-			const serviceExists = await prisma.service.findUnique({ where: { id: service.id } })
-			await prisma.service.upsert({
-				where: { id: service.id },
-				create: {
-					id: service.id,
-					name: service.name,
-					title: service.title,
-					description: service.description,
-					color: service.color,
-				},
-				update: {},
-			})
-
-			if (!serviceExists) {
-				console.log(service)
-				await uploadImage(service.img, service.id.toString(), "/upload?path=%2Fservices")
-
-				for (let i = 0; i < service.professionals; i++) {
-					const ProfessionalRUT = generateRUT()
-					const professionalFirstName = faker.person.firstName()
-					const professionalLastName = faker.person.lastName()
-					const professionalEmail = `${professionalFirstName[0].toLowerCase()}${professionalLastName.toLowerCase()}@professionals.com`
-
-					await prisma.professional.upsert({
-						where: { id: ProfessionalRUT },
-						create: {
-							id: ProfessionalRUT,
-							email: professionalEmail,
-							password: await hash(DEFAULT_PROFESSIONAL_PASSWORD, 10),
-							name: `${professionalFirstName} ${professionalLastName}`,
-							minutesPerSession: Number(service.minutesPerSession),
-							serviceId: service.id,
-						},
-						update: {},
-					})
-				}
-			}
-		}
-
-		for (let i = 0; i < 50; i++) {
-			const SeniorRUT = generateRUT()
-			const seniorFirstName = faker.person.firstName()
-			const seniorLastName = faker.person.lastName()
-
-			const seniorEmail = `${seniorFirstName[0].toLowerCase()}${seniorLastName.toLowerCase()}@seniors.com`
-
-			await prisma.senior.upsert({
-				where: { id: generateRUT() },
-				create: {
-					id: SeniorRUT,
-					email: seniorEmail,
-					password: await hash(DEFAULT_SENIOR_PASSWORD, 10),
-					name: `${seniorFirstName} ${seniorLastName}`,
-					address: faker.location.streetAddress(),
-					birthDate: faker.date.between({ from: "1940-01-01", to: "1965-12-31" }),
-					validated: Math.floor(Math.random() * 1000) % 2 === 0,
-					gender: Math.floor(Math.random() * 1000) % 2 === 0 ? Gender.MA : Gender.FE,
-				},
-				update: {},
-			})
-		}
+		centerBar.update(centerIndex + 1)
 	}
+	centerBar.stop()
 
-	for (const professional of professionals) {
+	const seniorBar = createProgressBar("Seniors", 50)
+	seniorBar.start(50, 0, { title: "Seniors" })
+
+	for (let i = 0; i < 50; i++) {
+		const SeniorRUT = generateRUT()
+		const seniorFirstName = faker.person.firstName()
+		const seniorLastName = faker.person.lastName()
+
+		const seniorEmail = `${seniorFirstName[0].toLowerCase()}${seniorLastName.toLowerCase()}@seniors.com`
+
+		await prisma.senior.upsert({
+			where: { id: generateRUT() },
+			create: {
+				id: SeniorRUT,
+				email: seniorEmail,
+				password: await hash(DEFAULT_SENIOR_PASSWORD, 10),
+				name: `${seniorFirstName} ${seniorLastName}`,
+				address: faker.location.streetAddress(),
+				birthDate: faker.date.between({ from: "1940-01-01", to: "1965-12-31" }),
+				validated: Math.floor(Math.random() * 1000) % 2 === 0,
+				gender: Math.floor(Math.random() * 1000) % 2 === 0 ? Gender.MA : Gender.FE,
+			},
+			update: {},
+		})
+		seniorBar.update(i + 1)
+	}
+	seniorBar.stop()
+
+	const professionalBar = createProgressBar("Professionals", professionals.length)
+	professionalBar.start(professionals.length, 0, { title: "Professionals" })
+
+	for (const [index, professional] of professionals.entries()) {
 		const ProfessionalRUT = generateRUT()
 
 		await prisma.professional.upsert({
@@ -190,19 +222,37 @@ const seed = async () => {
 			},
 			update: {},
 		})
+		professionalBar.update(index + 1)
+	}
+	professionalBar.stop()
+
+	const sessionBar = createProgressBar("Daily Sessions", dailySessions.length)
+	sessionBar.start(dailySessions.length, 0, { title: "Daily Sessions" })
+
+	let index = 0
+
+	for (const service of dailySessions) {
+		for (const session of service.sessions) {
+			await prisma.dailySessions.create({
+				data: {
+					centerId: session.centerId,
+					serviceId: service.serviceId,
+					quantity: session.quantity,
+				},
+			})
+			index++
+			sessionBar.update(index)
+		}
 	}
 
-	for (const session of dailySessions) {
-		await prisma.dailySessions.create({
-			data: {
-				centerId: session.centerId,
-				serviceId: session.serviceId,
-				quantity: session.quantity,
-			},
-		})
-	}
+	sessionBar.stop()
+
+	console.log(colors.green.bold("\n✨ Database seeding completed successfully!\n"))
 }
 
 seed()
-	.then(() => console.log("Seeding done!"))
-	.catch((error) => console.error("Error en la función seed:", error))
+	.then(() => process.exit(0))
+	.catch((error) => {
+		console.error(colors.red.bold("\n❌ Error during seeding:"), error)
+		process.exit(1)
+	})

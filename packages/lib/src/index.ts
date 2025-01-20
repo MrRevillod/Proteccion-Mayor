@@ -1,5 +1,3 @@
-import { match } from "ts-pattern"
-
 export const log = (...args: unknown[]): void => {
 	console.log("LOGGER: ", ...args)
 }
@@ -13,16 +11,6 @@ export const startService = (serviceName: string, url: string, port: number): vo
 	})
 }
 
-export const dayToNumber = (day: string): number => {
-	return match(day)
-		.with("monday", () => 1)
-		.with("tuesday", () => 2)
-		.with("wednesday", () => 3)
-		.with("thursday", () => 4)
-		.with("friday", () => 5)
-		.otherwise(() => 0)
-}
-
 export * as jwt from "./utils/jsonwebtoken"
 export * as rules from "./utils/rules"
 export * as users from "./utils/users"
@@ -31,28 +19,13 @@ export * as credentials from "./utils/credentials"
 export * as validations from "./utils/validations"
 export * as uploads from "./utils/uploads"
 
-export {
-	findAdministrator,
-	findCenter,
-	findEvent,
-	findProfessional,
-	findSenior,
-	findService,
-} from "./utils/actions"
+export { findAdministrator, findCenter, findEvent, findProfessional, findSenior, findService } from "./utils/actions"
 
 export { MailerService } from "./services/mailer"
 export { StorageService } from "./services/storage"
 export { AuthenticationService } from "./services/authentication"
 
-export type {
-	UserRole,
-	User,
-	Controller,
-	Middleware,
-	DailyEvents,
-	WeeklyEvents,
-	WeekDay,
-} from "./types"
+export type { UserRole, User, Controller, Middleware } from "./types"
 
 export { Router } from "./application/routing"
 export { Module } from "./application/module"

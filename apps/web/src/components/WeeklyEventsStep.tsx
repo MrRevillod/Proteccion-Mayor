@@ -8,7 +8,7 @@ import { SuperSelectField } from "@/lib/types"
 
 interface Props {
 	centers: SuperSelectField[]
-	dailySessions: number
+	dailySessions: Record<string, number>
 	minutesPerSession: number
 	date: string
 	day: string
@@ -28,20 +28,15 @@ export const WeeklyEventsStep: React.FC<Props> = ({ centers, ...props }) => {
 	return (
 		<div className="flex flex-col gap-4">
 			<p className="text-base">
-				Selecciona las atenciones diarias del día{" "}
-				<strong>{day + " " + dayjs(date).format("DD/MM/YYYY")}</strong>
+				Selecciona las atenciones diarias del día <strong>{day + " " + dayjs(date).format("DD/MM/YYYY")}</strong>
 			</p>
 
-			<SuperSelect
-				label="Selecciona un centro de atención"
-				options={centers}
-				name={`${date}-centerId`}
-			/>
+			<SuperSelect label="Selecciona un centro de atención" options={centers} name={`${date}-centerId`} />
 
 			{dailySessions ? <h2 className="text-base">Horas de atención:</h2> : null}
 
 			<div className="grid grid-rows-5 grid-flow-col gap-x-10 gap-y-8">
-				{Array.from({ length: dailySessions }).map((_, index) => {
+				{Array.from({ length: dailySessions[date] }).map((_, index) => {
 					const start = dayjs()
 						.hour(9)
 						.minute(0)

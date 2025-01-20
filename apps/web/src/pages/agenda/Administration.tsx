@@ -24,9 +24,7 @@ import { CreateWeeklyEvents } from "@/components/forms/create/WeeklyEvents"
 const AdministrationAgendaPage: React.FC = () => {
 	const location = useLocation()
 	const navigate = useNavigate()
-	const [pageQuery, setPageQuery] = useState<string>(
-		new URLSearchParams(location.search).toString()
-	)
+	const [pageQuery, setPageQuery] = useState<string>(new URLSearchParams(location.search).toString())
 
 	const [events, setEvents] = useState<Events>({} as Events)
 	const [centers, setCenters] = useState<SuperSelectField[]>([])
@@ -59,7 +57,6 @@ const AdministrationAgendaPage: React.FC = () => {
 	const { data: rawCenters } = useRequest<Center[]>({
 		action: getCenters,
 		onSuccess: (data) => {
-			console.log(data)
 			selectDataFormatter({ data, setData: setCenters })
 		},
 	})
@@ -96,27 +93,17 @@ const AdministrationAgendaPage: React.FC = () => {
 		<PageLayout pageTitle="Agenda y horas de atención" create>
 			<div className="flex flex-row gap-4 min-h-[70vh] w-full agenda-container bg-gray-50 dark:bg-primary-darker rounded-lg">
 				{loading && <Loading />}
-				<EventFilter
-					data={{ centers, services, professionals }}
-					onSubmit={onFilterSubmit}
-				/>
+				<EventFilter data={{ centers, services, professionals }} onSubmit={onFilterSubmit} />
 				<Calendar events={events} />
 				<UpcomingEvents title="Próximas atenciones" center={true} events={upcomingEvents} />
 			</div>
 
-			<CreateWeeklyEvents
-				services={services}
-				centers={rawCenters as Center[]}
-				formattedCenters={centers}
-			/>
+			<CreateWeeklyEvents services={services} centers={rawCenters as Center[]} formattedCenters={centers} />
 
 			<CreateEvent centers={centers} services={services} professionals={professionals} />
 			<UpdateEvent centers={centers} professionals={professionals} />
 
-			<ConfirmAction<Event>
-				text="¿Estás seguro(a) de que deseas eliminar este evento?"
-				action={deleteEvent}
-			/>
+			<ConfirmAction<Event> text="¿Estás seguro(a) de que deseas eliminar este evento?" action={deleteEvent} />
 		</PageLayout>
 	)
 }

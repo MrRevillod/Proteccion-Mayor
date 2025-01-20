@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { Prisma } from "@prisma/client"
 import { rules, Schema } from "@repo/lib"
 
 export class EventsSchemas extends Schema {
@@ -13,7 +14,7 @@ export class EventsSchemas extends Schema {
 		})
 	}
 
-	get defaultSelect() {
+	get defaultSelect(): Prisma.EventSelect {
 		return {
 			id: true,
 			start: true,
@@ -54,6 +55,18 @@ export class EventsSchemas extends Schema {
 			})
 	}
 
+	get createMany() {
+		return z
+			.object({
+				start: rules.dateTimeSchema,
+				end: rules.dateTimeSchema,
+				weeklyEvents: rules.weeklyEventsSchema,
+			})
+			.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
+				message: "No es posible crear eventos los fin de semana",
+			})
+	}
+
 	get update() {
 		return z
 			.object({
@@ -76,3 +89,6 @@ export class EventsSchemas extends Schema {
 			})
 	}
 }
+
+export type EventQuery = z.infer<typeof EventsSchemas.prototype.query>
+export type WeeklyEvents = z.infer<typeof EventsSchemas.prototype.createMany>

@@ -19,9 +19,7 @@ type EventOverlapWhere = {
 export class EventService {
 	constructor() {}
 
-	public splitTime = (time: string) => {
-		return dayjs(time).format("HH:mm").toString().split(":").map(Number)
-	}
+	public splitTime = (time: string) => time.split(":").map((t) => Number(t))
 
 	public singleFormat = (event: any) => {
 		return {
@@ -47,11 +45,7 @@ export class EventService {
 	// Función que verifica si hay superposición de eventos en una fecha y hora determinada
 	// para un profesional o un adulto mayor dados
 
-	public hasOverlap = async ({
-		startDate,
-		endDate,
-		...props
-	}: HasOverlapProps): Promise<boolean> => {
+	public hasOverlap = async ({ startDate, endDate, ...props }: HasOverlapProps): Promise<boolean> => {
 		const { professionalId, seniorId } = props
 
 		// Para verificar si hay superposición de eventos, se busca en la base de datos

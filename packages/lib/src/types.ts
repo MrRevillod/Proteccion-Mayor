@@ -22,12 +22,3 @@ export type ServiceInfo = {
 
 export type User = Administrator | Senior | Professional
 export type UserRole = "ADMIN" | "PROFESSIONAL" | "SENIOR"
-
-export type WeekDay = "monday" | "tuesday" | "wednesday" | "thursday" | "friday"
-
-export type DailyEvents = {
-	centerId: number
-	events: Array<{ start: string; end: string }>
-}
-
-export type WeeklyEvents = Record<WeekDay, DailyEvents>
