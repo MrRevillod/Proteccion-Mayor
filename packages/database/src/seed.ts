@@ -67,6 +67,7 @@ const seed = async () => {
 		prisma.center.deleteMany(),
 		prisma.service.deleteMany(),
 		prisma.senior.deleteMany(),
+		prisma.revokedToken.deleteMany(),
         prisma.staff.deleteMany()
 	])
 
