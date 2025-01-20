@@ -80,11 +80,17 @@ export class AccountController {
 					await prisma.senior.update(queryData)
 				})
 				.with("ADMIN", async () => {
-					await prisma.administrator.update(queryData)
+					await prisma.staff.update(queryData)
 				})
+                .with("FUNCTIONARY", async () => {
+                    await prisma.staff.update(queryData)
+                })
 				.with("PROFESSIONAL", async () => {
 					await prisma.professional.update(queryData)
-				})
+                })
+                .with("STAFF", async () => {
+					await prisma.professional.update(queryData)
+                })
 				.run()
 
 			return res.status(200).json({ message: "Contraseña actualizada correctamente" })

@@ -13,7 +13,7 @@ export class ServicesRouter extends Router {
 		this.get({
 			path: "/",
 			handler: this.controller.getMany,
-			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL", "SENIOR"])],
+            middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL", "SENIOR","FUNCTIONARY"])],
 		})
 
 		this.post({

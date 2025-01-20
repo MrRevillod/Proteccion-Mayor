@@ -27,14 +27,15 @@ interface FormProps<T> {
 	actionType: "update" | "create"
 	deletable?: boolean
 	setLoading?: Dispatch<SetStateAction<boolean>>
-	refetch?: () => void
+    refetch?: () => void
+    disabled?: boolean
 }
 
 // refetch es una función opcional que se utiliza para volver a obtener los datos en caso
 // de que se realice alguna acción que modifique los datos
 // (opcional ya que se pueden filtrar en el cliente)
 
-export const Form = <T extends BaseDataType>({ data, setData, ...props }: FormProps<T>) => {
+export const Form = <T extends BaseDataType>({ data, setData, disabled = false, ...props }: FormProps<T>) => {
 	const { action, children, actionType, deletable, setLoading, refetch } = props
 
 	const { handleSubmit, reset, setError, clearErrors } = useFormContext()
@@ -68,9 +69,8 @@ export const Form = <T extends BaseDataType>({ data, setData, ...props }: FormPr
 		// estructurarse de forma diferente
 		const body = buildRequestBody(formData)
 
-		let hasChanges = false
-
-		if (actionType === "update") {
+        if (actionType === "update") {
+            let hasChanges = false
 			for (const key in formData) {
 				// 1. Si existe en selectedData y es diferente a formData[key], hay cambios
 				if (selectedData[key] && formData[key] !== selectedData[key]) {
@@ -82,11 +82,11 @@ export const Form = <T extends BaseDataType>({ data, setData, ...props }: FormPr
 				if (!selectedData[key] && formData[key]) {
 					hasChanges = true
 					break // Si ya hay un cambio, no es necesario seguir verificando
-				}
+                }
 			}
-
 			// Si no se detectaron cambios
 			if (!hasChanges) {
+                console.log(selectedData,formData)
 				return message.error("No se han realizado cambios")
 			}
 		}
@@ -153,21 +153,23 @@ export const Form = <T extends BaseDataType>({ data, setData, ...props }: FormPr
 					return React.cloneElement(child, { imageFile, setImageFile } as any)
 				}
 				return child
-			})}
-			<div className="flex flex-row gap-4 w-full justify-end -mb-6">
-				{deletable && (
-					<Button type="button" className="justify" variant="delete" onClick={onDelete}>
-						Eliminar
-					</Button>
-				)}
-				<Button type="button" variant="secondary" onClick={onCancel}>
-					Cancelar
-				</Button>
+            })}
+            { !disabled &&
+                <div className="flex flex-row gap-4 w-full justify-end -mb-6" >
+                    {deletable && (
+                        <Button type="button" className="justify" variant="delete" onClick={onDelete}>
+                            Eliminar
+                        </Button>
+                    )}
+                    <Button type="button" variant="secondary" onClick={onCancel}>
+                        Cancelar
+                    </Button>
 
-				<Button type="submit" variant="primary">
-					Guardar
-				</Button>
-			</div>
+                    <Button type="submit" variant="primary">
+                        Guardar
+                    </Button>
+                </div>
+            }
 		</form>
 	)
 }

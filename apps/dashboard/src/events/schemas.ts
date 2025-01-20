@@ -6,7 +6,7 @@ export class EventsSchemas extends Schema {
 	get query() {
 		return z.object({
 			professionalId: z.string().optional(),
-			centerId: z.coerce.number().optional(),
+			centerId: z.optional(rules.centerIdSchema),
 			seniorId: z.string().optional(),
 			serviceId: z.coerce.number().optional(),
 			start: z.string().optional(),
@@ -76,7 +76,7 @@ export class EventsSchemas extends Schema {
 				serviceId: z.number(),
 				assistance: z.boolean(),
 				seniorId: z.optional(rules.rutSchema),
-				centerId: z.number(),
+				centerId: rules.centerIdSchema,
 			})
 			.refine((data) => data.start < data.end, {
 				message: "La fecha de inicio no puede ser mayor a la fecha de finalización",

@@ -81,8 +81,9 @@ const seed = async () => {
 		prisma.center.deleteMany(),
 		prisma.service.deleteMany(),
 		prisma.senior.deleteMany(),
-		prisma.administrator.deleteMany(),
 		prisma.dailySessions.deleteMany(),
+		prisma.revokedToken.deleteMany(),
+    prisma.staff.deleteMany()
 	])
 
 	console.log(colors.yellow.bold("\n🌱 Starting database seeding...\n"))
@@ -90,27 +91,15 @@ const seed = async () => {
 	await uploadImage(DEFAULT_PROFILE_PICTURE, "default-profile", "/upload?path=%2Fusers")
 
 	const data = JSON.parse(readFileSync("./src/data.json", "utf-8"))
-	const { services, centers, administrators, professionals, dailySessions } = data
 
 	const adminBar = createProgressBar("Administrators", administrators.length)
 	adminBar.start(administrators.length, 0, { title: "Administrators" })
 
-	for (const [index, admin] of administrators.entries()) {
-		const AdminRUT = generateRUT()
-
-		await prisma.administrator.upsert({
-			where: { id: AdminRUT },
-			create: {
-				id: AdminRUT,
-				email: admin.email,
-				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
-				name: admin.name,
-			},
-			update: {},
-		})
-		adminBar.update(index + 1)
-	}
-	adminBar.stop()
+	const services = data.services
+	const centers = data.centers
+  const professionals = data.professionals
+	const functionarys = data.functionarys
+  const dailySessions = data.dailySessions
 
 	const serviceBar = createProgressBar("Services", services.length)
 	serviceBar.start(services.length, 0, { title: "Services" })
@@ -243,9 +232,25 @@ const seed = async () => {
 			index++
 			sessionBar.update(index)
 		}
-	}
+    }
+  	sessionBar.stop()
+    
+    for (const functionary of functionarys) {
+		const functionaryRUT = generateRUT()
 
-	sessionBar.stop()
+		await prisma.staff.upsert({
+			where: { id: functionaryRUT },
+			create: {
+				id: functionaryRUT,
+				email: functionary.email,
+				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
+                name: functionary.name,
+                centerId: Math.floor(Math.random() * 8) + 1,
+                role:"FUNCTIONARY"
+			},
+			update: {},
+		})
+	}
 
 	console.log(colors.green.bold("\n✨ Database seeding completed successfully!\n"))
 }

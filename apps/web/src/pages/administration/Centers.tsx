@@ -51,7 +51,7 @@ const CentersPage: React.FC = () => {
 							updatable
 							dailySessions
 							onCardClick={(item) => {
-								navigate(`/agenda/administradores?centerId=${item.id}`)
+								navigate(`/agenda/funcionarios?centerId=${item.id}`)
 							}}
 						/>
 					)}

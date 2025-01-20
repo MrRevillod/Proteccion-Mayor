@@ -3,7 +3,7 @@ import { prisma } from "@repo/database"
 import { UserRole } from ".."
 
 export const isValidRole = (role: string) => {
-	return ["ADMIN", "SENIOR", "PROFESSIONAL"].includes(role)
+	return ["ADMIN", "SENIOR", "PROFESSIONAL","FUNCTIONARY","STAFF"].includes(role)
 }
 
 // Función que busca un usuario en la base de datos según
@@ -28,13 +28,20 @@ export const find = async ({ role, filter }: FindUserArgs) => {
 
 	return await match(role)
 		.with("ADMIN", () => {
-			return prisma.administrator.findFirst({ where: filter })
+			return prisma.staff.findFirst({ where: {...filter,role} })
+        })
+        .with("FUNCTIONARY", () => {
+			return prisma.staff.findFirst({ where: {...filter,role} })
+        })
+        .with("STAFF", () => {
+			return prisma.staff.findFirst({ where:filter })
 		})
 		.with("SENIOR", () => {
 			return prisma.senior.findFirst({ where: filter })
 		})
 		.with("PROFESSIONAL", () => {
 			return prisma.professional.findFirst({ where: filter, select: professionalSelect })
-		})
+        })
+
 		.run()
 }

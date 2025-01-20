@@ -11,7 +11,7 @@ export class ReportsRouter extends Router {
 		this.get({
 			path: "/",
 			handler: this.controller.generateStatisticReport,
-			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL"])],
+			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL",])],
 		})
 	}
 }

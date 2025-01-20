@@ -173,7 +173,8 @@ export class EventsController {
 				})
 			})
 
-			io.to("ADMIN").emit("event:create", null)
+            io.to("ADMIN").emit("event:create", null)
+			io.to("FUNCTIONARY").emit("event:create", null)
 			io.to(professionalId as string).emit("event:create", null)
 
 			return res.status(201).json({ values: { modified: null } })
@@ -193,10 +194,11 @@ export class EventsController {
 	 */
 
 	public updateOne: Controller = async (req, res, handleError) => {
+		const { id } = req.params
 		const { seniorId, professionalId, serviceId, centerId, start, end, assistance } = req.body
 
 		try {
-			const [professional, service, senior, center] = await Promise.all([
+			const [professional, service, senior, center, eventExists] = await Promise.all([
 				prisma.professional.findUnique({ where: { id: professionalId } }),
 				prisma.service.findUnique({ where: { id: Number(serviceId) } }),
 				seniorId ? prisma.senior.findUnique({ where: { id: seniorId } }) : Promise.resolve(null),
@@ -208,6 +210,16 @@ export class EventsController {
 			if (!service) throw new AppError(400, "Servicio no encontrado")
 			if (seniorId && !senior) throw new AppError(400, "Adulto mayor no encontrado")
 			if (centerId && !center) throw new AppError(400, "Centro no encontrado")
+
+			//Benja
+			if (!eventExists) throw new AppError(400, "Evento no encontrado")
+			const eventExistsChange = eventExists.assistance !== assistance
+			if (eventExistsChange && dayjs().isAfter(dayjs(eventExists.end).add(3, "days"))) {
+				throw new AppError(
+					400,
+					"No se puede autorizar la asistencia despues de 3 dias de la finalización del evento",
+				)
+			}
 
 			// Convertir las fechas a objetos Date
 			const startDate = new Date(start)
@@ -244,7 +256,6 @@ export class EventsController {
 			if (events.length !== 0) throw new AppError(409, "Superposición de horas")
 
 			let event = await prisma.event.update({
-				select: this.schemas.defaultSelect,
 				where: { id: Number(req.params.id) },
 				data: {
 					start: startDate,
@@ -259,7 +270,9 @@ export class EventsController {
 
 			event = this.service.singleFormat(event)
 
-			io.to("ADMIN").emit("event:update", event)
+            io.to("ADMIN").emit("event:update", event)
+			io.to("FUNCTIONARY").emit("event:update", event)
+            
 			io.to(event.professionalId as string).emit("event:update", event)
 
 			return res.status(200).json({ values: { modified: event } })
@@ -289,7 +302,9 @@ export class EventsController {
 
 			const formatted = this.service.singleFormat(event)
 
-			io.to("ADMIN").emit("event:delete", formatted)
+            io.to("ADMIN").emit("event:delete", formatted)
+			io.to("FUNCTIONARY").emit("event:delete", formatted)
+            
 			io.to(event.professionalId as string).emit("event:delete", formatted)
 
 			return res.status(200).json({ values: { modified: formatted } })

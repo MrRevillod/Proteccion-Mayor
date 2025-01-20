@@ -21,7 +21,7 @@ import { Center, Event, Events, Professional, Service, SuperSelectField } from "
 import { deleteEvent, getCenters, getEvents, getProfessionals, getServices } from "@/lib/actions"
 import { CreateWeeklyEvents } from "@/components/forms/create/WeeklyEvents"
 
-const AdministrationAgendaPage: React.FC = () => {
+const StaffAgendaPage: React.FC = () => {
 	const location = useLocation()
 	const navigate = useNavigate()
 	const [pageQuery, setPageQuery] = useState<string>(new URLSearchParams(location.search).toString())
@@ -56,9 +56,8 @@ const AdministrationAgendaPage: React.FC = () => {
 
 	const { data: rawCenters } = useRequest<Center[]>({
 		action: getCenters,
-		onSuccess: (data) => {
-			selectDataFormatter({ data, setData: setCenters })
-		},
+		query: "select=name,id",
+    onSuccess: (data) => selectDataFormatter({ data, setData: setCenters, allString: true }),
 	})
 
 	useRequest<Service[]>({
@@ -108,4 +107,4 @@ const AdministrationAgendaPage: React.FC = () => {
 	)
 }
 
-export default AdministrationAgendaPage
+export default StaffAgendaPage
