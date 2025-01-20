@@ -39,6 +39,12 @@ export type Service = {
 	color: HexColor
 }
 
+export type Operatives = {
+	id: number
+	name: string
+	description: string
+}
+
 export type Center = {
 	id: number
 	name: string

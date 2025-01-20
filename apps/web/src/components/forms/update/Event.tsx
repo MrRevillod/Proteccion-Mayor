@@ -38,7 +38,7 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 	const [selectProfessionals, setSelectProfessionals] = useState<SuperSelectField[]>([])
 
 	const isAfterToday = (date: string) => dayjs(date).isAfter(dayjs())
-	const isBeforeToday = (date: string) => dayjs(date).isBefore(dayjs())
+	const isEnd = (date: string) => dayjs().isAfter(dayjs(date).add(3, "days"))
 
 	const methods = useForm({ resolver: zodResolver(EventSchemas.Update) })
 
@@ -68,7 +68,7 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 
 		if (role === "ADMIN") {
 			const serviceProfessionals = professionals?.filter(
-				(professional) => professional.serviceId === selectedData?.serviceId,
+				(professional) => professional.serviceId === selectedData?.serviceId
 			)
 			selectDataFormatter({ data: serviceProfessionals as Professional[], setData: setSelectProfessionals })
 		}
@@ -125,7 +125,9 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 						</div>
 					</Show>
 
-					<Show when={selectedData?.seniorId && isBeforeToday(selectedData?.end)}>
+					<Show
+						when={selectedData?.seniorId && !isAfterToday(selectedData?.start) && !isEnd(selectedData?.end)}
+					>
 						<BooleanSelect
 							name="assistance"
 							options={[

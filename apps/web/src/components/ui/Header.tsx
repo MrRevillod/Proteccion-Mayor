@@ -29,7 +29,7 @@ export const Header: React.FC = () => {
 			!isDropdownItem && selectedPage === page
 				? "text-neutral-50 underline decoration-2 underline-offset-8"
 				: "text-neutral-200",
-			"hover:text-neutral-50 cursor-pointer",
+			"hover:text-neutral-50 cursor-pointer"
 		)
 	}
 
@@ -169,6 +169,13 @@ export const Header: React.FC = () => {
 							onClick={() => handlePageSelected("Estadisticas")}
 						>
 							Estadísticas
+						</Link>
+						<Link
+							to="/operativos"
+							className={linkClasses("Operativos")}
+							onClick={() => handlePageSelected("Operativos")}
+						>
+							Operativos
 						</Link>
 					</Show>
 				</Navbar.Collapse>

@@ -31,6 +31,10 @@ export const getAdministrators = async (props: QueryActionProps) => {
 	return await apiRequest.get(`/dashboard/administrators${props.query ? "?" + props.query : ""}`)
 }
 
+export const getOperatives = async (props: QueryActionProps) => {
+	return await apiRequest.get(`/dashboard/operatives${props.query ? "?" + props.query : ""}`)
+}
+
 export const createAdministrator = async (props: MutateActionProps) => {
 	return await apiRequest.post("/dashboard/administrators", props)
 }
