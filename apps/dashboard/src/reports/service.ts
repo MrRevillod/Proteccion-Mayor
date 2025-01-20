@@ -85,8 +85,8 @@ export class ReportsService {
 				unreserved: this.getMonthlyEventCount(unreserved, month),
 			}
 		})
-	}
-w
+    }
+    
 	public getByCenterReport = async (date: Dayjs) => {
 		const centers = await prisma.center.findMany({ select: { name: true, id: true } })
 
