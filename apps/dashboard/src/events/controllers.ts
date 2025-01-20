@@ -24,7 +24,7 @@ export class EventsController {
 						? { equals: query.professionalId }
 						: undefined,
 					serviceId: query.serviceId ? { equals: query.serviceId } : undefined,
-					centerId: query.centerId ? { equals: query.centerId } : undefined,
+					centerId: query.centerId ? { equals: Number(query.centerId) } : undefined,
 					seniorId: query.seniorId ? { equals: query.seniorId } : undefined,
 				},
 			})
@@ -76,7 +76,8 @@ export class EventsController {
 				throw new AppError(409, error.message)
 			})
 
-			io.to("ADMIN").emit("event:create", null)
+            io.to("ADMIN").emit("event:create", null)
+			io.to("FUNCTIONARY").emit("event:create", null)
 			io.to(professionalId as string).emit("event:create", null)
 
 			return res.status(201).json({ values: { modified: null } })
@@ -177,7 +178,9 @@ export class EventsController {
 
 			event = this.service.singleFormat(event)
 
-			io.to("ADMIN").emit("event:update", event)
+            io.to("ADMIN").emit("event:update", event)
+			io.to("FUNCTIONARY").emit("event:update", event)
+            
 			io.to(event.professionalId as string).emit("event:update", event)
 
 			return res.status(200).json({ values: { modified: event } })
@@ -207,7 +210,9 @@ export class EventsController {
 
 			const formatted = this.service.singleFormat(event)
 
-			io.to("ADMIN").emit("event:delete", formatted)
+            io.to("ADMIN").emit("event:delete", formatted)
+			io.to("FUNCTIONARY").emit("event:delete", formatted)
+            
 			io.to(event.professionalId as string).emit("event:delete", formatted)
 
 			return res.status(200).json({ values: { modified: formatted } })

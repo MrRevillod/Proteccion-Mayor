@@ -1,17 +1,19 @@
 import { z } from "zod"
-import { BadRequest } from "../errors/custom"
+import { AppError, BadRequest } from "../errors/custom"
 import { CONSTANTS, jwt, rules, users } from ".."
 import { validateBufferMIMEType } from "validate-image-type"
 import { Request, Response, NextFunction } from "express"
 import { FileMiddleware, Middleware, SchemaBasedMiddleware, UserRole } from "../types"
+import { Staff } from "@prisma/client"
+import { prisma } from "@repo/database"
 
 export const body: SchemaBasedMiddleware = (schema) => (req, res, next) => {
 	console.log(req.body)
 	try {
 		schema.parse(req.body)
 		next()
-	} catch (error) {
-		next(new BadRequest("Error en la validación de campos en el formulario"))
+	} catch (error: any) {
+		next(new BadRequest(error))
 	}
 }
 
@@ -55,7 +57,7 @@ export const files: FileMiddleware =
 	}
 
 export const resourceId =
-	(fn: (id: string) => Promise<any>) =>
+    (fn: (id: string) => Promise<any>) =>
 	async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const exists = await fn(req.params.id)
@@ -109,4 +111,40 @@ export const resetPasswordRequest: Middleware = async (req, res, next) => {
 	} catch (error) {
 		next(error)
 	}
+}
+
+export const validateEventPermissions: Middleware = async (req,res,next) => {
+    const { params } = req
+    const user = req.getExtension("user") as Staff
+    const userRole = req.getExtension("role") as string
+
+    if (userRole === "FUNCTIONARY") {
+        try {
+            const event = await prisma.event.findFirst({
+                where: { id: Number(params.id), centerId: user.centerId },
+            })
+
+            if (!event) {
+                throw new AppError(403, "No tienes permisos para realizar esta acción")
+            }
+
+        } catch (error) {
+            next(error)
+        }
+     }
+     next()
+}
+
+export const validateSameCenter: Middleware = async (req, res, next) => { 
+    const user = req.getExtension("user") as Staff
+    const userRole = req.getExtension("role") as string
+    
+    if (userRole === "FUNCTIONARY") {
+        const centerId = req.body.centerId
+        console.log(centerId, user.centerId)
+        if(Number(centerId) !== Number(user.centerId)) {
+            throw new AppError(403, "No tienes permisos para realizar esta acción")
+        }
+    }
+    next()
 }

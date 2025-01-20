@@ -9,7 +9,7 @@ export class CentersController {
 		private storage: StorageService,
 	) {}
 
-	public getMany: Controller = async (req, res, handleError) => {
+    public getMany: Controller = async (req, res, handleError) => {
 		try {
 			const query = this.schemas.query.parse(req.query)
 			const centers = await prisma.center.findMany({

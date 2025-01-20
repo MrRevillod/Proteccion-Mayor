@@ -20,7 +20,7 @@ import { filterUpcomingEvents, selectDataFormatter } from "@/lib/formatters"
 import { Center, Event, Events, Professional, Service, SuperSelectField } from "@/lib/types"
 import { deleteEvent, getCenters, getEvents, getProfessionals, getServices } from "@/lib/actions"
 
-const AdministrationAgendaPage: React.FC = () => {
+const StaffAgendaPage: React.FC = () => {
 	const location = useLocation()
 	const navigate = useNavigate()
 	const [pageQuery, setPageQuery] = useState<string>(new URLSearchParams(location.search).toString())
@@ -56,7 +56,7 @@ const AdministrationAgendaPage: React.FC = () => {
 	useRequest<Center[]>({
 		action: getCenters,
 		query: "select=name,id",
-		onSuccess: (data) => selectDataFormatter({ data, setData: setCenters }),
+        onSuccess: (data) => selectDataFormatter({ data, setData: setCenters, allString: true }),
 	})
 
 	useRequest<Service[]>({
@@ -104,4 +104,4 @@ const AdministrationAgendaPage: React.FC = () => {
 	)
 }
 
-export default AdministrationAgendaPage
+export default StaffAgendaPage

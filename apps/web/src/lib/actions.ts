@@ -23,28 +23,29 @@ const apiRequest = {
 	},
 }
 
-// Acciones CRUD para los administradores
 
 import { AxiosResponse } from "axios"
 
-export const getAdministrators = async (props: QueryActionProps) => {
-	return await apiRequest.get(`/dashboard/administrators${props.query ? "?" + props.query : ""}`)
-}
-
 export const getOperatives = async (props: QueryActionProps) => {
-	return await apiRequest.get(`/dashboard/operatives${props.query ? "?" + props.query : ""}`)
+    return await apiRequest.get(`/dashboard/operatives${props.query ? "?" + props.query : ""}`)
 }
 
-export const createAdministrator = async (props: MutateActionProps) => {
-	return await apiRequest.post("/dashboard/administrators", props)
+// Acciones CRUD para los funcionarios
+
+export const getStaff = async (props: QueryActionProps) => {
+	return await apiRequest.get(`/dashboard/staff${props.query ? "?" + props.query : ""}`)
 }
 
-export const updateAdministrator = async (props: MutateActionProps) => {
-	return await apiRequest.patch("/dashboard/administrators", props)
+export const createStaff = async (props: MutateActionProps) => {
+	return await apiRequest.post("/dashboard/staff", props)
 }
 
-export const deleteAdministrator = async (props: MutateActionProps) => {
-	return await apiRequest.delete("/dashboard/administrators", props)
+export const updateStaff = async (props: MutateActionProps) => {
+	return await apiRequest.patch("/dashboard/staff", props)
+}
+
+export const deleteStaff = async (props: MutateActionProps) => {
+	return await apiRequest.delete("/dashboard/staff", props)
 }
 
 // Acciones CRUD para los profesionales
@@ -152,3 +153,4 @@ export const getReports = async (props: QueryActionProps) => {
 export const getRegisterImages = async (props: QueryActionProps) => {
 	return await apiRequest.get(`/storage/public/seniors/${props?.params?.id}/register-files`)
 }
+

@@ -21,6 +21,20 @@
 			"email": "cs@dev.admin.com"
 		}
 	],
+    "functionarys": [
+		{
+			"name": "Benjamín Espinoza",
+			"email": "be@dev.help.com"
+		},
+		{
+			"name": "Luciano Revillod",
+			"email": "lr@dev.help.com"
+		},
+		{
+			"name": "Carlos Riquelme",
+			"email": "cr@dev.help.com"
+		}
+	],
 	"professionals": [
 		{
 			"name": "Tomás Curihual",

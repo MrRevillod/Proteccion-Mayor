@@ -1,4 +1,5 @@
 import dayjs from "dayjs"
+import { isNumberObject } from "node:util/types"
 
 import { z } from "zod"
 
@@ -161,3 +162,16 @@ export const isWeekend = (date: string) => {
 	const day = dayjs(date).day()
 	return day !== 0 && day !== 6
 }
+    export const staffRoleSchema =  z.enum(["ADMIN", "FUNCTIONARY"], {
+        message: "El rol debe ser administrador o funcionario",
+})
+
+export const centerIdSchema = z.string().refine(
+    (value) => {
+      // Verifica si el valor es un número válido o "null"
+      return !isNaN(Number(value)) || value === "null";
+    },
+    {
+      message: "El valor debe ser un número válido o 'null'",
+    }
+).nullable()
