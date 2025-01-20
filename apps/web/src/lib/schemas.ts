@@ -1,11 +1,12 @@
-import { z } from "zod"
-import * as rules from "./validationRules"
 import dayjs from "dayjs"
+import * as rules from "./validationRules"
+
+import { z } from "zod"
 
 export const LoginFormSchema = z.object({
 	email: z.string().email().min(1, "El correo electrónico es requerido"),
 	password: z.string().min(1, "La contraseña es requerida"),
-	role: z.enum(["ADMIN", "PROFESSIONAL","FUNCTIONARY"]),
+	role: z.enum(["ADMIN", "PROFESSIONAL", "FUNCTIONARY"]),
 })
 
 export const SeniorSchemas = {
@@ -78,10 +79,9 @@ export const StaffSchemas = {
 	Create: z.object({
 		id: rules.rutSchema,
 		name: rules.nameSchema,
-        email: rules.emailSchema,
-        role: rules.staffRoleSchema,
-        centerId: rules.centerIdSchema,
-        
+		email: rules.emailSchema,
+		role: rules.staffRoleSchema,
+		centerId: z.coerce.number(),
 	}),
 
 	Update: z
@@ -90,9 +90,9 @@ export const StaffSchemas = {
 			email: rules.emailSchema,
 			password: rules.optionalPasswordSchema,
 			confirmPassword: rules.optionalPasswordSchema,
-            image: rules.imageSchemaUpdate,
-            role: rules.staffRoleSchema,
-            centerId: rules.centerIdSchema,
+			image: rules.imageSchemaUpdate,
+			role: rules.staffRoleSchema,
+			centerId: z.coerce.number(),
 		})
 		.refine((data) => data.password === data.confirmPassword, {
 			message: "Las contraseñas ingresadas no coinciden",
@@ -209,6 +209,7 @@ export const EventSchemas = {
 				message: "La duración máxima de un evento es de 5 horas",
 			}
 		),
+
 	Update: z
 		.object({
 			start: z.string({ message: "La fecha de inicio es requerida" }),

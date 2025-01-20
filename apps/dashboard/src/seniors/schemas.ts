@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { Prisma } from "@prisma/client"
 import { rules, Schema } from "@repo/lib"
 
 export class SeniorSchemas extends Schema {
@@ -18,7 +19,7 @@ export class SeniorSchemas extends Schema {
 		})
 	}
 
-	get defaultSelect() {
+	get defaultSelect(): Prisma.SeniorSelect {
 		return {
 			id: true,
 			name: true,
@@ -74,9 +75,7 @@ export class SeniorSchemas extends Schema {
 					name: rules.nameSchema.optional(),
 					email: rules.emailSchema.optional(),
 					address: rules.addressSchema.optional(),
-					birthDate: z
-						.string({ message: "La fecha de nacimiento es requerida" })
-						.optional(),
+					birthDate: z.string({ message: "La fecha de nacimiento es requerida" }).optional(),
 					gender: rules.genderSchema.optional(),
 				})
 				.refine((data) => !data.birthDate || rules.isValidDate(data.birthDate), {

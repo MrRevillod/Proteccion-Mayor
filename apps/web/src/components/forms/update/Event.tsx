@@ -36,17 +36,16 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 	const [seniors, setSeniors] = useState<SuperSelectField[]>([])
 	const [seniorsSearch, setSeniorsSearch] = useState<string>("")
 	const [selectProfessionals, setSelectProfessionals] = useState<SuperSelectField[]>([])
-    const [disabled,setDisabled] = useState(false)  
+	const [disabled, setDisabled] = useState(false)
 
 	const isAfterToday = (date: string) => dayjs(date).isAfter(dayjs())
 	const isEnd = (date: string) => dayjs().isAfter(dayjs(date).add(3, "days"))
 
 	const methods = useForm({ resolver: zodResolver(EventSchemas.Update) })
 
-	const { role,user } = useAuth()
+	const { role, user } = useAuth()
 	const { selectedData } = useModal()
 	const { isModalOpen, modalType } = useModal()
-
 
 	useRequest<Senior[]>({
 		action: getSeniors,
@@ -55,8 +54,8 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 		trigger: isModalOpen && modalType === "Edit",
 	})
 
-    useEffect(() => {
-        setDisabled(role === "FUNCTIONARY" && (user as Staff).centerId !== selectedData?.centerId)
+	useEffect(() => {
+		setDisabled(role === "FUNCTIONARY" && (user as Staff).centerId !== selectedData?.centerId)
 
 		if (!selectedData) return
 		methods.reset({
@@ -70,9 +69,7 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 		})
 
 		if (role === "ADMIN") {
-			const serviceProfessionals = professionals?.filter(
-				(professional) => professional.serviceId === selectedData?.serviceId
-			)
+			const serviceProfessionals = professionals?.filter((professional) => professional.serviceId === selectedData?.serviceId)
 			selectDataFormatter({ data: serviceProfessionals as Professional[], setData: setSelectProfessionals })
 		}
 
@@ -85,19 +82,10 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 				<Form action={updateEvent} disabled={disabled} actionType="update" deletable refetch={refetch} setLoading={setLoading}>
 					<Show when={isAfterToday(selectedData?.start)}>
 						<Show when={role === "ADMIN"}>
-							<SuperSelect
-								label="Seleccione el profesional"
-								name="professionalId"
-                                options={selectProfessionals}
-							/>
+							<SuperSelect label="Seleccione el profesional" name="professionalId" options={selectProfessionals} />
 						</Show>
 
-						<SuperSelect
-							label="Seleccione el centro de atención (opcional)"
-							name="centerId"
-							options={centers}
-                            disabled={disabled}
-						/>
+						<SuperSelect label="Seleccione el centro de atención (opcional)" name="centerId" options={centers} disabled={disabled} />
 					</Show>
 
 					<SuperSelect
@@ -124,21 +112,19 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 
 					<Show when={isAfterToday(selectedData?.start)}>
 						<div className="flex gap-2 justify-between">
-                            <DatetimeSelect label="Inicio del evento" name="start" disabled={disabled}/>
+							<DatetimeSelect label="Inicio del evento" name="start" disabled={disabled} />
 							<DatetimeSelect label="Finalización del evento" name="end" disabled={disabled} />
 						</div>
 					</Show>
 
-					<Show
-						when={selectedData?.seniorId && !isAfterToday(selectedData?.start) && !isEnd(selectedData?.end)}
-					>
+					<Show when={selectedData?.seniorId && !isAfterToday(selectedData?.start) && !isEnd(selectedData?.end)}>
 						<BooleanSelect
 							name="assistance"
 							options={[
 								{ label: "Asistió", value: true },
 								{ label: "No asistió", value: false },
-                            ]}
-                            disabled={disabled}
+							]}
+							disabled={disabled}
 						/>
 					</Show>
 				</Form>

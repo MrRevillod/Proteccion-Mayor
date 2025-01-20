@@ -28,8 +28,8 @@ interface IUser {
 }
 
 export interface Staff extends IUser {
-    role: UserRole
-    centerId: number | null 
+	role: UserRole
+	centerId: number | null
 }
 export interface Professional extends IUser {
 	service: Partial<Service>
@@ -150,3 +150,5 @@ export type SuperSelectField = {
 
 export type ReportType = "general" | "byService" | "byCenter" | "byProfessional"
 export type AssistanceType = "assistance" | "absence" | "unreserved"
+
+export type Operatives = any

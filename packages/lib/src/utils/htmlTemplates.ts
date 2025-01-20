@@ -1,4 +1,4 @@
-    import dayjs from "dayjs"
+import dayjs from "dayjs"
 
 import utc from "dayjs/plugin/utc"
 import timezone from "dayjs/plugin/timezone"
@@ -47,9 +47,7 @@ export const reservation = (event: any) => {
 	const professionalTemplate = `
     ${headerTemplate("Cita Confirmada")}
     <p>Hola, <strong>${professional?.name}</strong>.</p>
-    <p>Le informamos que se ha confirmado una cita para el servicio de <strong>${
-		service?.name
-	}</strong>.</p>
+    <p>Le informamos que se ha confirmado una cita para el servicio de <strong>${service?.name}</strong>.</p>
     <ul>
         <li><strong>Persona mayor:</strong> ${senior?.name}</li>
         <li><strong>Hora:</strong> ${formatDate(start)} 
@@ -84,9 +82,7 @@ export const cancelReservation = (event: any) => {
 	const professionalTemplate = `
         ${headerTemplate("Notificación de cancelación de cita")}
         <p>Hola <strong>${professional?.name}</strong>,</p>
-        <p>Lamentamos informarte que la cita programada con <strong>${
-			senior?.name
-		}</strong> ha sido cancelada.</p>
+        <p>Lamentamos informarte que la cita programada con <strong>${senior?.name}</strong> ha sido cancelada.</p>
         <p><strong>Detalles de la cita cancelada:</strong></p>
         <ul>
             <li><strong>Fecha y hora:</strong> ${formatDate(start)}</li>
@@ -97,9 +93,7 @@ export const cancelReservation = (event: any) => {
 	const seniorTemplate = `
         ${headerTemplate("Notificación de cancelación de cita")}
         <p>Estimado(a) <strong>${senior?.name}</strong>,</p>
-        <p>La cita programada del servicio de <strong>${
-			service?.name
-		}</strong> ha sido cancelada.</p>
+        <p>La cita programada del servicio de <strong>${service?.name}</strong> ha sido cancelada.</p>
         <p><strong>Detalles:</strong></p>
         <ul>
             <li><strong>Fecha y hora:</strong> ${formatDate(start)}</li>

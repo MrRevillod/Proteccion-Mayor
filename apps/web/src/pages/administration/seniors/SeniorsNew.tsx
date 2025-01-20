@@ -29,20 +29,9 @@ const NewSeniorsPage: React.FC = () => {
 	}
 
 	return (
-		<PageLayout
-			pageTitle="Solicitudes de registro de personas mayores"
-			searchKeys={["id", "name", "email"]}
-			data={data}
-			setData={setSeniors}
-		>
+		<PageLayout pageTitle="Solicitudes de registro de personas mayores" searchKeys={["id", "name", "email"]} data={data} setData={setSeniors}>
 			<section className="w-full bg-white dark:bg-primary-dark p-4 rounded-lg">
-				<Table<UnvalidatedSenior>
-					data={seniors}
-					loading={loading}
-					onView={handleView}
-					viewable
-					columnsConfig={UnvalidatedSeniorsColumns}
-				/>
+				<Table<UnvalidatedSenior> data={seniors} loading={loading} onView={handleView} viewable columnsConfig={UnvalidatedSeniorsColumns} />
 			</section>
 		</PageLayout>
 	)

@@ -23,11 +23,10 @@ const apiRequest = {
 	},
 }
 
-
 import { AxiosResponse } from "axios"
 
 export const getOperatives = async (props: QueryActionProps) => {
-    return await apiRequest.get(`/dashboard/operatives${props.query ? "?" + props.query : ""}`)
+	return await apiRequest.get(`/dashboard/operatives${props.query ? "?" + props.query : ""}`)
 }
 
 // Acciones CRUD para los funcionarios
@@ -55,9 +54,7 @@ export const getProfessionals = async (props: QueryActionProps) => {
 }
 
 export const getOneProfessional = async (props: QueryActionProps) => {
-	return await apiRequest.get(
-		`/dashboard/professionals/unique${props.query ? "?" + props.query : ""}`
-	)
+	return await apiRequest.get(`/dashboard/professionals/unique${props.query ? "?" + props.query : ""}`)
 }
 
 export const createProfessional = async (props: MutateActionProps) => {
@@ -159,4 +156,3 @@ export const getReports = async (props: QueryActionProps) => {
 export const getRegisterImages = async (props: QueryActionProps) => {
 	return await apiRequest.get(`/storage/public/seniors/${props?.params?.id}/register-files`)
 }
-

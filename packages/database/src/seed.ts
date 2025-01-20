@@ -70,7 +70,7 @@ const createProgressBar = (title: string, total: number) => {
 			barIncompleteChar: "\u2591",
 			hideCursor: true,
 		},
-		cliProgress.Presets.shades_classic
+		cliProgress.Presets.shades_classic,
 	)
 }
 
@@ -83,7 +83,7 @@ const seed = async () => {
 		prisma.senior.deleteMany(),
 		prisma.dailySessions.deleteMany(),
 		prisma.revokedToken.deleteMany(),
-    prisma.staff.deleteMany()
+		prisma.staff.deleteMany(),
 	])
 
 	console.log(colors.yellow.bold("\n🌱 Starting database seeding...\n"))
@@ -92,14 +92,34 @@ const seed = async () => {
 
 	const data = JSON.parse(readFileSync("./src/data.json", "utf-8"))
 
+	const services = data.services
+	const centers = data.centers
+	const professionals = data.professionals
+	const functionaries = data.functionaries
+	const dailySessions = data.dailySessions
+	const administrators = data.administrators
+
 	const adminBar = createProgressBar("Administrators", administrators.length)
 	adminBar.start(administrators.length, 0, { title: "Administrators" })
 
-	const services = data.services
-	const centers = data.centers
-  const professionals = data.professionals
-	const functionarys = data.functionarys
-  const dailySessions = data.dailySessions
+	for (const [index, admin] of administrators.entries()) {
+		const rut = generateRUT()
+		await prisma.staff.upsert({
+			where: { id: rut },
+			create: {
+				id: rut,
+				email: admin.email,
+				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
+				name: admin.name,
+				role: "ADMIN",
+			},
+			update: {},
+		})
+
+		adminBar.update(index + 1)
+	}
+
+	adminBar.stop()
 
 	const serviceBar = createProgressBar("Services", services.length)
 	serviceBar.start(services.length, 0, { title: "Services" })
@@ -232,10 +252,13 @@ const seed = async () => {
 			index++
 			sessionBar.update(index)
 		}
-    }
-  	sessionBar.stop()
-    
-    for (const functionary of functionarys) {
+	}
+	sessionBar.stop()
+
+	const functionaryBar = createProgressBar("Functionaries", functionaries.length)
+	functionaryBar.start(functionaries.length, 0, { title: "Functionaries" })
+
+	for (const [index, functionary] of functionaries.entries()) {
 		const functionaryRUT = generateRUT()
 
 		await prisma.staff.upsert({
@@ -244,13 +267,17 @@ const seed = async () => {
 				id: functionaryRUT,
 				email: functionary.email,
 				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
-                name: functionary.name,
-                centerId: Math.floor(Math.random() * 8) + 1,
-                role:"FUNCTIONARY"
+				name: functionary.name,
+				centerId: Math.floor(Math.random() * 8) + 1,
+				role: "FUNCTIONARY",
 			},
 			update: {},
 		})
+
+		functionaryBar.update(index + 1)
 	}
+
+	functionaryBar.stop()
 
 	console.log(colors.green.bold("\n✨ Database seeding completed successfully!\n"))
 }

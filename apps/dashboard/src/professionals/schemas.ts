@@ -1,6 +1,6 @@
 import { z } from "zod"
-import { rules, Schema } from "@repo/lib"
 import { Prisma } from "@prisma/client"
+import { rules, Schema } from "@repo/lib"
 
 export class ProfessionalsSchemas extends Schema {
 	private readonly selectValues = ["id", "name", "serviceId"]

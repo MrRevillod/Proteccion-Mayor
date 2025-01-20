@@ -33,13 +33,7 @@ const ProfessionalsPage: React.FC = () => {
 	}
 
 	return (
-		<PageLayout
-			pageTitle="Profesionales"
-			create={true}
-			data={data}
-			setData={setProfessionals}
-			searchKeys={["id", "name", "email"]}
-		>
+		<PageLayout pageTitle="Profesionales" create={true} data={data} setData={setProfessionals} searchKeys={["id", "name", "email"]}>
 			<section className="w-full bg-white dark:bg-primary-dark p-4 rounded-lg">
 				<Table<Professional>
 					loading={loading}

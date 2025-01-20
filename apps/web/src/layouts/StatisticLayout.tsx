@@ -2,8 +2,8 @@ import clsx from "clsx"
 import React from "react"
 
 import { SuperSelect } from "@/components/ui/SuperSelect"
-import { generateMonths, generateYears } from "@/lib/formatters"
 import { FormProvider, useForm } from "react-hook-form"
+import { generateMonths, generateYears } from "@/lib/formatters"
 import { SetStateAction, Dispatch, useEffect } from "react"
 
 import "../main.css"
@@ -51,7 +51,7 @@ export const ChartLayout: React.FC<StatisticLayoutProps> = ({ title, ...props })
 			className={clsx(
 				size === "sm" && "w-1/4",
 				size === "lg" && "w-full",
-				"flex flex-col gap-4 items-start justify-center bg-white dark:bg-primary-dark rounded-lg p-4",
+				"flex flex-col gap-4 items-start justify-center bg-white dark:bg-primary-dark rounded-lg p-4"
 			)}
 		>
 			<div className={clsx(size === "lg" && "px-4", "w-full flex flex-row items-center justify-between")}>

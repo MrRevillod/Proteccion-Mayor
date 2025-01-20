@@ -60,11 +60,7 @@ const RedirectRoute: React.FC<{ redirectTo?: string }> = ({ redirectTo }) => {
 	// Si el usuario está autenticado, redirigirlo dependiendo del rol
 	if (isAuthenticated) {
 		// Return el componente Navigate para que funcione correctamente
-		return role === "PROFESSIONAL" ? (
-			<Navigate to="/agenda/profesionales" />
-		) : (
-			<Navigate to="/agenda/funcionarios" />
-		)
+		return role === "PROFESSIONAL" ? <Navigate to="/agenda/profesionales" /> : <Navigate to="/agenda/funcionarios" />
 	}
 
 	// Si no está autenticado, se renderiza la ruta hija (como el login)
@@ -73,16 +69,13 @@ const RedirectRoute: React.FC<{ redirectTo?: string }> = ({ redirectTo }) => {
 
 const Router: React.FC = () => {
 	return (
-        <Routes>
-			<Route element={<ProtectedRoute allowedRoles={["ADMIN","FUNCTIONARY"]} />}>
+		<Routes>
+			<Route element={<ProtectedRoute allowedRoles={["ADMIN", "FUNCTIONARY"]} />}>
 				<Route path="/administracion/personas-mayores/" element={<SeniorsPage />} />
 				<Route path="/administracion/personas-mayores/nuevos" element={<NewSeniorsPage />} />
-				<Route
-					path="/administracion/personas-mayores/solicitud-de-registro"
-					element={<SeniorRegisterRequestPage />}
-				/>
+				<Route path="/administracion/personas-mayores/solicitud-de-registro" element={<SeniorRegisterRequestPage />} />
 				<Route path="/agenda/funcionarios" element={<StaffAgendaPage />} />
-            </Route>
+			</Route>
 			<Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
 				<Route path="/administracion/profesionales" element={<ProfessionalsPage />} />
 				<Route path="/administracion/funcionarios" element={<StaffPage />} />
@@ -95,10 +88,10 @@ const Router: React.FC = () => {
 				<Route path="/agenda/profesionales" element={<ProfessionalAgendaPage />} />
 			</Route>
 
-            <Route    element={<ProtectedRoute allowedRoles={["ADMIN", "PROFESSIONAL"]} />}>
+			<Route element={<ProtectedRoute allowedRoles={["ADMIN", "PROFESSIONAL"]} />}>
 				<Route path="/estadisticas" element={<StatisticsPage />} />
-            </Route>
-            <Route    element={<ProtectedRoute allowedRoles={["ADMIN", "PROFESSIONAL", "FUNCTIONARY"]} />}>
+			</Route>
+			<Route element={<ProtectedRoute allowedRoles={["ADMIN", "PROFESSIONAL", "FUNCTIONARY"]} />}>
 				<Route path="/historial" element={<SeniorHistoryRequestPage />} />
 				<Route path="/perfil" element={<ProfilePage />} />
 			</Route>

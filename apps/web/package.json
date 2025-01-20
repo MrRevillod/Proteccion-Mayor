@@ -9,7 +9,7 @@
 		"dev": "vite --clearScreen false",
 		"typecheck": "tsc --noEmit",
 		"preview": "vite preview",
-		"format": "pnpx prettier --config ../../.prettierrc --write \"src/*\""
+		"format": "pnpx prettier --config ./.prettierrc --write \"src/*\""
 	},
 	"dependencies": {
 		"@ant-design/cssinjs": "^1.21.1",

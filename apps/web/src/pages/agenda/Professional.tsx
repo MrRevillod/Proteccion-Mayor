@@ -87,11 +87,7 @@ const ProfessionalAgendaPage: React.FC = () => {
 			<CreateEvent centers={centers} refetch={refetchEvents} />
 			<UpdateEvent centers={centers} refetch={refetchEvents} />
 
-			<ConfirmAction<Event>
-				text="¿Estás seguro(a) de que deseas eliminar este evento?"
-				action={deleteEvent}
-				refetch={refetchEvents}
-			/>
+			<ConfirmAction<Event> text="¿Estás seguro(a) de que deseas eliminar este evento?" action={deleteEvent} refetch={refetchEvents} />
 		</PageLayout>
 	)
 }

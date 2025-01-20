@@ -1,13 +1,13 @@
-import { prisma } from "@repo/database"
-import { compare, hash } from "bcrypt"
 import { Staff } from "@prisma/client"
+import { prisma } from "@repo/database"
 import { StaffSchemas } from "./schemas"
-import { MailerService, StaffRole, StorageService, templates } from "@repo/lib"
-import { AppError, Conflict, Controller, credentials,UserRole } from "@repo/lib"
+import { compare, hash } from "bcrypt"
+import { MailerService, StorageService, templates } from "@repo/lib"
+import { AppError, Conflict, Controller, credentials } from "@repo/lib"
 
-export class staffController {
+export class StaffController {
 	constructor(
-        private mailer: MailerService,
+		private mailer: MailerService,
 		private storage: StorageService,
 		private schemas: StaffSchemas = new StaffSchemas(),
 	) {}
@@ -25,10 +25,9 @@ export class staffController {
 	}
 
 	public createOne: Controller = async (req, res, handleError) => {
-		const { id, name, email , role, centerId } = req.body
+		const { id, name, email, role, centerId } = req.body
 
-        try {
-            
+		try {
 			const exists = await prisma.staff.findFirst({
 				where: { OR: [{ id }, { email }] },
 			})
@@ -42,7 +41,7 @@ export class staffController {
 
 			const [password, hash] = await credentials.generatePassword()
 			const staff = await prisma.staff.create({
-				data: { id, name, email, password: hash,role,centerId },
+				data: { id, name, email, password: hash, role, centerId },
 				select: this.schemas.defaultSelect,
 			})
 
@@ -60,26 +59,16 @@ export class staffController {
 
 	public updateOne: Controller = async (req, res, handleError) => {
 		const { params, body, file } = req
-		const { name, email, password, centerId, role} = body
+		const { name, email, password, centerId, role } = body
 
-        let center_id = centerId
-        
-        if (centerId === "null" || centerId === "") {
-            center_id = null
-        }else if(!isNaN(Number(centerId))) {
-            center_id = Number(centerId)
-        }
-
-        console.log("centro id",center_id)
 		const reqUser = req.getExtension("reqResource") as Staff
 
-        try {
-            
+		try {
 			const exists = await prisma.staff.findFirst({
 				where: { email, id: { not: params.id } },
 			})
+
 			if (exists) {
-                console.log(exists)
 				throw new Conflict("El administrador ya existe", { conflicts: ["email"] })
 			}
 
@@ -90,9 +79,9 @@ export class staffController {
 				data: {
 					name,
 					email,
-                    role,
-                    password: updatedPassword,
-                    centerId: center_id
+					role,
+					password: updatedPassword,
+					centerId,
 				},
 				select: this.schemas.defaultSelect,
 			})
@@ -140,7 +129,6 @@ export class staffController {
 
 		try {
 			if (!password) throw new AppError(400, "Por favor, ingrese su contraseña")
-
 			const passwordMatch = await compare(password, user.password)
 			if (!passwordMatch) throw new AppError(401, "Contraseña incorrecta")
 

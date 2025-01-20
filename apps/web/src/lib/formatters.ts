@@ -12,7 +12,6 @@ export const formatBoolean = (value: boolean) => {
 	return value ? "Sí" : "No"
 }
 
-
 export const formatDate = (dateString: string) => {
 	const date = new Date(dateString)
 	return date.toLocaleDateString()
@@ -25,11 +24,8 @@ export const dateToAge = (dateString: string) => {
 	return Math.abs(ageDate.getUTCFullYear() - 1970)
 }
 
-
-
-
 export const formatStaffRole = (role: StaffRole) => {
-    return role === "ADMIN" ? "Administrador" : "Funcionario"
+	return role === "ADMIN" ? "Administrador" : "Funcionario"
 }
 
 export const tableColumnsFormatters = {
@@ -37,29 +33,35 @@ export const tableColumnsFormatters = {
 	birthDate: dateToAge,
 	updatedAt: formatDate,
 	createdAt: formatDate,
-    validated: formatBoolean,
-    role: formatStaffRole,
+	validated: formatBoolean,
+	role: formatStaffRole,
+	centerId: (centerId: any) => centerId ?? "No Aplica",
 }
 
 export const formatRole = (role: UserRole) => {
-	return role === "ADMIN" ? "Administrador" : ( role === "FUNCTIONARY" ? "Funcionario de apoyo": "Profesional")
+	return role === "ADMIN" ? "Administrador" : role === "FUNCTIONARY" ? "Funcionario de apoyo" : "Profesional"
 }
 
 interface SelectDataFormatterProps {
 	data: any[]
 	setData: Dispatch<SetStateAction<any[]>>
-    keys?: { label: string; value: string }
-    allString?: boolean
+	keys?: { label: string; value: string }
+	allString?: boolean
 }
 
 const defaultSelectKeys = { label: "name", value: "id" }
 
-export const selectDataFormatter = ({ data, setData, keys = defaultSelectKeys, allString = false }: SelectDataFormatterProps) => {
-    if (allString) {
-        setData(data.map((item) => ({ label: item[keys.label].toString(), value: item[keys.value].toString() })))
-    } else {
-        setData(data.map((item) =>  ({ label: item[keys.label], value: item[keys.value] })))
-    }
+export const selectDataFormatter = ({
+	data,
+	setData,
+	keys = defaultSelectKeys,
+	allString = false,
+}: SelectDataFormatterProps) => {
+	if (allString) {
+		setData(data.map((item) => ({ label: item[keys.label].toString(), value: item[keys.value].toString() })))
+	} else {
+		setData(data.map((item) => ({ label: item[keys.label], value: item[keys.value] })))
+	}
 }
 
 type QueryIdsValues = {
@@ -120,7 +122,7 @@ export const generateMonths = () => {
 			label: capitalize(
 				dayjs()
 					.month(i - 1)
-					.format("MMMM"),
+					.format("MMMM")
 			),
 			value: i,
 		}

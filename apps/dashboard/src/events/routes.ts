@@ -7,7 +7,7 @@ export class EventsRouter extends Router {
 	constructor(
 		private auth: AuthenticationService,
 		private schemas: EventsSchemas,
-        private controller: EventsController,
+		private controller: EventsController,
 	) {
 		super({ prefix: "/api/dashboard/events" })
 
@@ -21,10 +21,10 @@ export class EventsRouter extends Router {
 			path: "/",
 			handler: this.controller.createOne,
 			middlewares: [
-        this.auth.authorize(["ADMIN", "PROFESSIONAL", "FUNCTIONARY"]), 
-        validations.body(this.schemas.create), 
-        validations.validateSameCenter
-      ],
+				this.auth.authorize(["ADMIN", "PROFESSIONAL", "FUNCTIONARY"]),
+				validations.body(this.schemas.create),
+				validations.validateSameCenter,
+			],
 		})
 
 		this.post({
@@ -32,14 +32,14 @@ export class EventsRouter extends Router {
 			handler: this.controller.createMany,
 			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL"]), validations.body(this.schemas.createMany)],
 		})
-        
+
 		this.patch({
-      path: "/:id",
+			path: "/:id",
 			handler: this.controller.updateOne,
 			middlewares: [
-        this.auth.authorize(["ADMIN", "PROFESSIONAL", "FUNCTIONARY"]),
+				this.auth.authorize(["ADMIN", "PROFESSIONAL", "FUNCTIONARY"]),
 				validations.resourceId(findEvent),
-        validations.validateEventPermissions,
+				validations.validateEventPermissions,
 				validations.body(this.schemas.update),
 			],
 		})
@@ -47,10 +47,7 @@ export class EventsRouter extends Router {
 		this.delete({
 			path: "/:id",
 			handler: this.controller.deleteOne,
-			middlewares: [
-				this.auth.authorize(["ADMIN", "PROFESSIONAL", "FUNCTIONARY"]),
-				validations.resourceId(findEvent),
-			],
+			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL", "FUNCTIONARY"]), validations.resourceId(findEvent)],
 		})
 
 		this.patch({

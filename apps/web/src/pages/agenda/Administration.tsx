@@ -57,7 +57,7 @@ const StaffAgendaPage: React.FC = () => {
 	const { data: rawCenters } = useRequest<Center[]>({
 		action: getCenters,
 		query: "select=name,id",
-    onSuccess: (data) => selectDataFormatter({ data, setData: setCenters, allString: true }),
+		onSuccess: (data) => selectDataFormatter({ data, setData: setCenters, allString: true }),
 	})
 
 	useRequest<Service[]>({

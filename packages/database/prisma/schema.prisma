@@ -1,5 +1,4 @@
 generator client {
-    
   provider = "prisma-client-js"
 }
 
@@ -9,8 +8,8 @@ datasource db {
 }
 
 enum Role {
-    ADMIN
-    FUNCTIONARY
+  ADMIN
+  FUNCTIONARY
 }
 
 enum Gender {
@@ -30,7 +29,6 @@ model Senior {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
 
   events Event[]
 }
@@ -61,6 +59,7 @@ model Center {
   updatedAt     DateTime        @updatedAt
   Event         Event[]
   dailySessions DailySessions[]
+  Staff         Staff[]
 }
 
 model DailySessions {
@@ -115,10 +114,10 @@ model Event {
 }
 
 model RevokedToken {
-  id         Int      @id @default(autoincrement())
-  token      String   @unique
-  createdAt  DateTime @default(now())
-  expiresAt  DateTime?
+  id        Int       @id @default(autoincrement())
+  token     String    @unique
+  createdAt DateTime  @default(now())
+  expiresAt DateTime?
 }
 
 model Staff {
@@ -129,7 +128,7 @@ model Staff {
   role     Role
 
   centerId Int?
-  center Center? @relation(fields: [centerId], references: [id], onDelete: SetNull)
+  center   Center? @relation(fields: [centerId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

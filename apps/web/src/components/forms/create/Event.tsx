@@ -44,14 +44,14 @@ export const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 	// Se obtiene el id del centro de la url, con el fin de seleccionarlo por defecto
 	// ya que es posible crear un evento desde la url de un centro
 
-    useEffect(() => {
-        if (role === "FUNCTIONARY") {
-            const functionary = user as Staff
-            setValue("centerId", functionary.centerId ? functionary.centerId.toString() : undefined)
-        } else {
-            const selectedUrlCenter = getIdsFromUrl(location).centerId
-            setValue("centerId", selectedUrlCenter ? selectedUrlCenter.toString() : undefined)
-        }
+	useEffect(() => {
+		if (role === "FUNCTIONARY") {
+			const functionary = user as Staff
+			setValue("centerId", functionary.centerId ? functionary.centerId.toString() : undefined)
+		} else {
+			const selectedUrlCenter = getIdsFromUrl(location).centerId
+			setValue("centerId", selectedUrlCenter ? selectedUrlCenter.toString() : undefined)
+		}
 	}, [location.search])
 
 	// Se obtiene valores de los input, al utilizar watch se obtiene el valor
@@ -69,8 +69,9 @@ export const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 
 	useEffect(() => {
 		if (baseTrigger && selectedService && professionals) {
-			console.log(professionals)
-			const serviceProfessionals = professionals.filter((professional) => professional.serviceId === selectedService)
+			const serviceProfessionals = professionals.filter(
+				(professional) => professional.serviceId === selectedService
+			)
 			selectDataFormatter({ data: serviceProfessionals, setData: setSelectProfessionals })
 		}
 	}, [selectedService])
@@ -113,13 +114,27 @@ export const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 				<Form action={createEvent} actionType="create" refetch={refetch} setLoading={setLoading}>
 					<Show when={role === "ADMIN" || role === "FUNCTIONARY"}>
 						<SuperSelect label="Seleccione un servicio" name="serviceId" options={services} />
-						<SuperSelect label="Seleccione un profesional" name="professionalId" options={selectProfessionals} />
+						<SuperSelect
+							label="Seleccione un profesional"
+							name="professionalId"
+							options={selectProfessionals}
+						/>
 					</Show>
 
+					<SuperSelect
+						disabled={role === "FUNCTIONARY"}
+						label={"Seleccione un centro de atención"}
+						placeholder={"Solo puedes crear eventos en tu centro"}
+						name="centerId"
+						options={centers}
+					/>
 
-					<SuperSelect disabled={role === "FUNCTIONARY"} label={"Seleccione un centro de atención"} placeholder={"Solo puedes crear eventos en tu centro"} name="centerId" options={centers} />
-
-					<SuperSelect label="Seleccione una persona mayor" name="seniorId" options={seniors} setSearch={setSeniorsSearch} />
+					<SuperSelect
+						label="Seleccione una persona mayor"
+						name="seniorId"
+						options={seniors}
+						setSearch={setSeniorsSearch}
+					/>
 					<div className="flex gap-2 justify-between">
 						<DatetimeSelect label="Inicio del evento" name="start" />
 						<DatetimeSelect label="Término del evento" name="end" />

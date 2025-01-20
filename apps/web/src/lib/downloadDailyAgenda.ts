@@ -8,9 +8,7 @@ import { notification } from "antd"
 
 export const getEvents = async (id: string, start: string, end: string): Promise<Event[]> => {
 	try {
-		const response = await api.get(
-			`/dashboard/events?professionalId=${id}&start=${start}&end=${end}`
-		)
+		const response = await api.get(`/dashboard/events?professionalId=${id}&start=${start}&end=${end}`)
 		return response.data.values.formatted as Event[]
 	} catch (error) {
 		console.error(error)

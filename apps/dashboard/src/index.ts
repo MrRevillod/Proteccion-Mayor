@@ -19,13 +19,13 @@ const mailerService = new MailerService()
 const storageService = new StorageService()
 
 const modules = [
-    new SeniorsModule(authService, storageService, mailerService),
+	new SeniorsModule(authService, storageService, mailerService),
 	new ReportsModule(authService),
 	new ServicesModule(authService, storageService),
 	new CentersModule(authService, storageService),
 	new ProfessionalsModule(authService, storageService, mailerService),
-    new StaffModule(authService, storageService, mailerService),
-    new EventsModule(authService, mailerService) ,
+	new StaffModule(authService, storageService, mailerService),
+	new EventsModule(authService, mailerService),
 ]
 
 const app = createApplication(modules)

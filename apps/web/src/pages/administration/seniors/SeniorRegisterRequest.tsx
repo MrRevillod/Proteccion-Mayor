@@ -102,31 +102,14 @@ const SeniorRegisterRequestPage: React.FC = () => {
 
 	return (
 		<PageLayout pageTitle="Solicitud de registro de persona mayor">
-			<section
-				className={clsx(
-					(loading || imageLoading) && "opacity-50",
-					"bg-white dark:bg-primary-dark p-4 rounded-lg flex flex-row gap-12",
-				)}
-			>
+			<section className={clsx((loading || imageLoading) && "opacity-50", "bg-white dark:bg-primary-dark p-4 rounded-lg flex flex-row gap-12")}>
 				{(loading || imageLoading) && <Loading />}
 
 				<FormProvider {...methods}>
 					<form className="flex flex-col gap-4 w-1/3" onSubmit={handleSubmit(onSubmit)}>
-						<Input
-							name="rut"
-							label="Rut (Sin puntos ni guión)"
-							type="text"
-							placeholder="Rut"
-							readOnly={true}
-						/>
+						<Input name="rut" label="Rut (Sin puntos ni guión)" type="text" placeholder="Rut" readOnly={true} />
 						<Input name="name" label="Nombre" type="text" placeholder="Nombre" />
-						<Input
-							name="email"
-							label="Correo Electrónico"
-							type="email"
-							placeholder="Email"
-							readOnly={true}
-						/>
+						<Input name="email" label="Correo Electrónico" type="email" placeholder="Email" readOnly={true} />
 						<Input name="address" label="Dirección" type="text" placeholder="Dirección" />
 
 						<div className="flex flex-row gap-4 w-full items-center justify-center">
@@ -148,9 +131,8 @@ const SeniorRegisterRequestPage: React.FC = () => {
 
 						<div className="flex flex-col gap-8">
 							<p className="text-dark dark:text-light">
-								<strong>Nota:</strong> Al aceptar esta solicitud, la persona mayor podrá iniciar sesión
-								en la aplicación móvil, solicitar servicios y asistir a las horas de atención
-								solicitadas.
+								<strong>Nota:</strong> Al aceptar esta solicitud, la persona mayor podrá iniciar sesión en la aplicación móvil,
+								solicitar servicios y asistir a las horas de atención solicitadas.
 							</p>
 
 							<div className="flex gap-4">
@@ -162,11 +144,7 @@ const SeniorRegisterRequestPage: React.FC = () => {
 									Denegar
 								</Button>
 
-								<Button
-									variant="secondary"
-									type="button"
-									onClick={() => navigate("/administracion/personas-mayores/nuevos")}
-								>
+								<Button variant="secondary" type="button" onClick={() => navigate("/administracion/personas-mayores/nuevos")}>
 									Cancelar
 								</Button>
 							</div>

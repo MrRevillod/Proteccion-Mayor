@@ -1,6 +1,4 @@
 import dayjs from "dayjs"
-import { isNumberObject } from "node:util/types"
-
 import { z } from "zod"
 
 export const isValidRutFormat = (rut: string): boolean => {
@@ -195,7 +193,6 @@ export const weeklyEventsSchema = z.record(
 	dailyEventsSchema
 )
 
-    export const staffRoleSchema =  z.enum(["ADMIN", "FUNCTIONARY"], {
-        message: "El rol debe ser administrador o funcionario",
+export const staffRoleSchema = z.enum(["ADMIN", "FUNCTIONARY"], {
+	message: "El rol debe ser administrador o funcionario",
 })
-

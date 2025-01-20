@@ -173,7 +173,7 @@ export class EventsController {
 				})
 			})
 
-            io.to("ADMIN").emit("event:create", null)
+			io.to("ADMIN").emit("event:create", null)
 			io.to("FUNCTIONARY").emit("event:create", null)
 			io.to(professionalId as string).emit("event:create", null)
 
@@ -203,6 +203,7 @@ export class EventsController {
 				prisma.service.findUnique({ where: { id: Number(serviceId) } }),
 				seniorId ? prisma.senior.findUnique({ where: { id: seniorId } }) : Promise.resolve(null),
 				centerId ? prisma.center.findUnique({ where: { id: Number(centerId) } }) : Promise.resolve(null),
+				prisma.event.findUnique({ where: { id: Number(id) } }),
 			])
 
 			// Se verifica que los datos existan
@@ -211,17 +212,13 @@ export class EventsController {
 			if (seniorId && !senior) throw new AppError(400, "Adulto mayor no encontrado")
 			if (centerId && !center) throw new AppError(400, "Centro no encontrado")
 
-			//Benja
 			if (!eventExists) throw new AppError(400, "Evento no encontrado")
 			const eventExistsChange = eventExists.assistance !== assistance
+
 			if (eventExistsChange && dayjs().isAfter(dayjs(eventExists.end).add(3, "days"))) {
-				throw new AppError(
-					400,
-					"No se puede autorizar la asistencia despues de 3 dias de la finalización del evento",
-				)
+				throw new AppError(400, "No se puede autorizar la asistencia despues de 3 dias de la finalización del evento")
 			}
 
-			// Convertir las fechas a objetos Date
 			const startDate = new Date(start)
 			const endDate = new Date(end)
 
@@ -270,9 +267,7 @@ export class EventsController {
 
 			event = this.service.singleFormat(event)
 
-            io.to("ADMIN").emit("event:update", event)
-			io.to("FUNCTIONARY").emit("event:update", event)
-            
+			io.to("ADMIN").emit("event:update", event)
 			io.to(event.professionalId as string).emit("event:update", event)
 
 			return res.status(200).json({ values: { modified: event } })
@@ -302,9 +297,9 @@ export class EventsController {
 
 			const formatted = this.service.singleFormat(event)
 
-            io.to("ADMIN").emit("event:delete", formatted)
+			io.to("ADMIN").emit("event:delete", formatted)
 			io.to("FUNCTIONARY").emit("event:delete", formatted)
-            
+
 			io.to(event.professionalId as string).emit("event:delete", formatted)
 
 			return res.status(200).json({ values: { modified: formatted } })

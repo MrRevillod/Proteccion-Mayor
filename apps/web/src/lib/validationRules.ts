@@ -54,22 +54,14 @@ export const pinSchema = z.string().refine((value) => /^[0-9]{4}$/.test(value), 
 	message: "El PIN debe tener 4 dígitos numéricos",
 })
 
-export const optionalPinSchema = z
-	.string()
-	.refine((value) => value === "" || /^[0-9]{4}$/.test(value), {
-		message: "El pin debe contener 4 dígitos numéricos",
-	})
+export const optionalPinSchema = z.string().refine((value) => value === "" || /^[0-9]{4}$/.test(value), {
+	message: "El pin debe contener 4 dígitos numéricos",
+})
 
 export const optionalPasswordSchema = z
 	.string()
 	.refine(
-		(value) =>
-			value === "" ||
-			(value.length >= 8 &&
-				/[A-Z]/.test(value) &&
-				/[a-z]/.test(value) &&
-				/[0-9]/.test(value) &&
-				/[\W_]/.test(value)),
+		(value) => value === "" || (value.length >= 8 && /[A-Z]/.test(value) && /[a-z]/.test(value) && /[0-9]/.test(value) && /[\W_]/.test(value)),
 		{
 			message:
 				"La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial.",
@@ -79,13 +71,7 @@ export const optionalPasswordSchema = z
 export const passwordSchema = z
 	.string()
 	.refine(
-		(value) =>
-			value === "" ||
-			(value.length >= 8 &&
-				/[A-Z]/.test(value) &&
-				/[a-z]/.test(value) &&
-				/[0-9]/.test(value) &&
-				/[\W_]/.test(value)),
+		(value) => value === "" || (value.length >= 8 && /[A-Z]/.test(value) && /[a-z]/.test(value) && /[0-9]/.test(value) && /[\W_]/.test(value)),
 		{
 			message:
 				"La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial.",
@@ -124,19 +110,13 @@ export const nameServiceSchema = z
 	.string()
 	.min(2, "El nombre debe tener al menos 2 caracteres")
 	.max(50, "El nombre no debe tener más de 50 caracteres")
-	.regex(
-		/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ\-'.()]+$/,
-		"El nombre solo puede contener letras, espacios y caracteres especiales como - ' . ()"
-	)
+	.regex(/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ\-'.()]+$/, "El nombre solo puede contener letras, espacios y caracteres especiales como - ' . ()")
 
 export const titleServiceSchema = z
 	.string()
 	.min(2, "El título debe tener al menos 2 caracteres")
 	.max(50, "El título no debe tener más de 50 caracteres")
-	.regex(
-		/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ\-'.()]+$/,
-		"El título solo puede contener letras, espacios y caracteres especiales como - ' . ()"
-	)
+	.regex(/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ\-'.()]+$/, "El título solo puede contener letras, espacios y caracteres especiales como - ' . ()")
 
 export const nameCenterSchema = z
 	.string()
@@ -144,9 +124,7 @@ export const nameCenterSchema = z
 	.max(50, "El nombre no debe tener más de 50 caracteres")
 	.regex(/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ]+$/, "El nombre solo puede contener letras y espacios")
 
-export const addressCenterSchema = z
-	.string()
-	.min(2, "La dirección debe tener al menos 2 caracteres")
+export const addressCenterSchema = z.string().min(2, "La dirección debe tener al menos 2 caracteres")
 
 export const phoneSchema = z
 	.string()
@@ -195,15 +173,18 @@ export const isWeekend = (date: string) => {
 }
 
 export const staffRoleSchema = z.enum(["ADMIN", "FUNCTIONARY"], {
-    message: "El rol debe ser Administrador o Funcionario",
+	message: "El rol debe ser Administrador o Funcionario",
 })
 
-export const centerIdSchema = z.string().refine(
-    (value) => {
-      // Verifica si el valor es un número válido o "null"
-      return !isNaN(Number(value)) || value === "null";
-    },
-    {
-      message: "El valor debe ser un número válido o 'null'",
-    }
-).nullable()
+export const centerIdSchema = z
+	.string()
+	.refine(
+		(value) => {
+			// Verifica si el valor es un número válido o "null"
+			return !isNaN(Number(value)) || value === "null"
+		},
+		{
+			message: "El valor debe ser un número válido o 'null'",
+		}
+	)
+	.nullable()
