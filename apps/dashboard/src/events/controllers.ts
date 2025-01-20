@@ -2,9 +2,9 @@ import dayjs from "dayjs"
 
 import { io } from ".."
 import { prisma } from "@repo/database"
-import { Senior } from "@prisma/client"
 import { EventService } from "./service"
-import { EventsSchemas } from "./schemas"
+import { Prisma, Senior } from "@prisma/client"
+import { EventsSchemas, WeeklyEvents } from "./schemas"
 import { AppError, Controller, MailerService, templates } from "@repo/lib"
 
 export class EventsController {
@@ -14,18 +14,50 @@ export class EventsController {
 		private service: EventService = new EventService(),
 	) {}
 
+	/**
+	 * Controlador para obtener un listado de eventos y un objeto con los eventos
+	 * formateados por id
+	 *
+	 * @param req (Express Request)
+	 * @param res (Express Response)
+	 * @param handleError (Express NextFunction)
+	 *
+	 * @returns (Express Response)
+	 * @throws (AppError)
+	 */
+
 	public getMany: Controller = async (req, res, handleError) => {
 		try {
 			const query = this.schemas.query.parse(req.query)
+			const andConditions: Prisma.EventWhereInput[] = []
+
+			if (query.professionalId) {
+				andConditions.push({ professionalId: { equals: query.professionalId } })
+			}
+
+			if (query.serviceId) {
+				andConditions.push({ serviceId: { equals: query.serviceId } })
+			}
+
+			if (query.centerId) {
+				andConditions.push({ centerId: { equals: query.centerId } })
+			}
+
+			if (query.seniorId) {
+				andConditions.push({ seniorId: { equals: query.seniorId } })
+			}
+
+			if (query.start && query.end) {
+				andConditions.push({
+					start: { gte: dayjs(query.start).startOf("day").toDate() },
+					end: { lte: dayjs(query.end).endOf("day").toDate() },
+				})
+			}
+
 			const data = await prisma.event.findMany({
 				select: this.schemas.defaultSelect,
 				where: {
-					professionalId: query.professionalId
-						? { equals: query.professionalId }
-						: undefined,
-					serviceId: query.serviceId ? { equals: query.serviceId } : undefined,
-					centerId: query.centerId ? { equals: Number(query.centerId) } : undefined,
-					seniorId: query.seniorId ? { equals: query.seniorId } : undefined,
+					AND: andConditions,
 				},
 			})
 
@@ -40,16 +72,14 @@ export class EventsController {
 	}
 
 	public createOne: Controller = async (req, res, handleError) => {
-		const { start, end, professionalId, serviceId, centerId, seniorId, repeat } = req.body
+		const { start, end, professionalId, serviceId, centerId, seniorId } = req.body
 
 		try {
 			// Se buscan los datos a utilizar con Promise.all
 			const [professional, service, senior, center] = await Promise.all([
 				prisma.professional.findUnique({ where: { id: professionalId } }),
 				prisma.service.findUnique({ where: { id: Number(serviceId) } }),
-				seniorId
-					? prisma.senior.findUnique({ where: { id: seniorId } })
-					: Promise.resolve(null),
+				seniorId ? prisma.senior.findUnique({ where: { id: seniorId } }) : Promise.resolve(null),
 				prisma.center.findUnique({ where: { id: Number(centerId) } }),
 			])
 
@@ -58,10 +88,7 @@ export class EventsController {
 			if (!service) throw new AppError(400, "Servicio no encontrado")
 			if (seniorId && !senior) throw new AppError(400, "Adulto mayor no encontrado")
 			if (!center) throw new AppError(400, "Centro no encontrado")
-			if (senior && !senior?.validated)
-				throw new AppError(409, "La persona mayor no está validada")
-
-			console.log(start)
+			if (senior && !senior?.validated) throw new AppError(409, "La persona mayor no está validada")
 
 			const event = {
 				start: dayjs(start),
@@ -72,8 +99,78 @@ export class EventsController {
 				centerId: Number(centerId),
 			}
 
-			await this.service.createEvents({ ...event, repeat }).catch((error) => {
-				throw new AppError(409, error.message)
+			await prisma.event.create({
+				data: {
+					start: event.start.toISOString(),
+					end: event.end.toISOString(),
+					professionalId: event.professionalId,
+					serviceId: event.serviceId,
+					seniorId: event.seniorId,
+					centerId: event.centerId,
+					assistance: false,
+				},
+			})
+
+			io.to("ADMIN").emit("event:create", null)
+			io.to(professionalId as string).emit("event:create", null)
+
+			return res.status(201).json({ values: { modified: null } })
+		} catch (error) {
+			handleError(error)
+		}
+	}
+
+	/**
+	 * Controlador para crear los eventos correspondientes a una semana
+	 * @param req (Express Request)
+	 * @param res (Express Response)
+	 * @param handleError (Express NextFunction)
+	 *
+	 * @returns (Express Response)
+	 * @throws (AppError)
+	 */
+
+	public createMany: Controller = async (req, res, handleError) => {
+		const { query, body } = req
+
+		const { serviceId, professionalId } = query
+		const { weeklyEvents } = body as WeeklyEvents
+
+		try {
+			const [professional, service] = await Promise.all([
+				prisma.professional.findUnique({ where: { id: professionalId?.toString() } }),
+				prisma.service.findUnique({ where: { id: Number(serviceId) } }),
+			])
+
+			if (!professional || !service) {
+				throw new AppError(400, "Profesional o servicio no encontrado")
+			}
+
+			Object.keys(weeklyEvents).forEach((day) => {
+				const dayDate = dayjs(day)
+
+				const centerId = weeklyEvents[day]["centerId"]
+				const events = weeklyEvents[day]["events"]
+
+				events.forEach(async (event) => {
+					const { start, end } = event
+					const [startHH, startMM] = this.service.splitTime(start)
+					const [endHH, endMM] = this.service.splitTime(end)
+
+					const startDate = dayDate.hour(startHH).minute(startMM)
+					const endDate = dayDate.hour(endHH).minute(endMM)
+
+					await prisma.event.create({
+						data: {
+							start: startDate.toISOString(),
+							end: endDate.toISOString(),
+							professionalId: professionalId?.toString(),
+							serviceId: Number(serviceId),
+							centerId: Number(centerId),
+							assistance: false,
+						},
+					})
+				})
 			})
 
             io.to("ADMIN").emit("event:create", null)
@@ -104,13 +201,8 @@ export class EventsController {
 			const [professional, service, senior, center, eventExists] = await Promise.all([
 				prisma.professional.findUnique({ where: { id: professionalId } }),
 				prisma.service.findUnique({ where: { id: Number(serviceId) } }),
-				seniorId
-					? prisma.senior.findUnique({ where: { id: seniorId } })
-					: Promise.resolve(null),
-				centerId
-					? prisma.center.findUnique({ where: { id: Number(centerId) } })
-					: Promise.resolve(null),
-				prisma.event.findUnique({ where: { id: Number(id) } }),
+				seniorId ? prisma.senior.findUnique({ where: { id: seniorId } }) : Promise.resolve(null),
+				centerId ? prisma.center.findUnique({ where: { id: Number(centerId) } }) : Promise.resolve(null),
 			])
 
 			// Se verifica que los datos existan
@@ -250,11 +342,7 @@ export class EventsController {
 			// ultima actualización (por reserva/asistencia) dentro de los 2 meses anteriores.
 
 			const condition = {
-				AND: [
-					{ seniorId: senior.id },
-					{ serviceId: event.service.id },
-					{ updatedAt: { gte: twoMonthsAgo } },
-				],
+				AND: [{ seniorId: senior.id }, { serviceId: event.service.id }, { updatedAt: { gte: twoMonthsAgo } }],
 			}
 
 			const previousReservation = await prisma.event.findFirst({
@@ -354,11 +442,7 @@ export class EventsController {
 			const previousReservation = await prisma.event.findFirst({
 				select: this.schemas.defaultSelect,
 				where: {
-					AND: [
-						{ seniorId: user.id },
-						{ serviceId: Number(serviceId) },
-						{ updatedAt: { gte: twoMonthsAgo } },
-					],
+					AND: [{ seniorId: user.id }, { serviceId: Number(serviceId) }, { updatedAt: { gte: twoMonthsAgo } }],
 				},
 			})
 

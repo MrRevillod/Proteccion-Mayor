@@ -101,7 +101,15 @@
 }
 
 html {
-	font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial,
+	font-family:
+		ui-sans-serif,
+		system-ui,
+		-apple-system,
+		BlinkMacSystemFont,
+		Segoe UI,
+		Roboto,
+		Helvetica Neue,
+		Arial,
 		sans-serif;
 	-webkit-text-size-adjust: 100%;
 	-webkit-font-smoothing: antialiased;
@@ -221,4 +229,16 @@ body {
 	height: 100%;
 	background-color: var(--bg-color);
 	border-radius: 0 4px 4px 0;
+}
+
+.modal-small .ant-modal {
+	transition: width 0.3s ease-in-out;
+}
+
+.modal-middle .ant-modal {
+	transition: width 0.3s ease-in-out;
+}
+
+.modal-large .ant-modal {
+	transition: width 0.3s ease-in-out;
 }

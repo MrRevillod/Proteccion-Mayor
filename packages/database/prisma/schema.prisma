@@ -18,7 +18,6 @@ enum Gender {
   FE
 }
 
-
 model Senior {
   id        String   @id @db.VarChar(255)
   name      String   @db.Text
@@ -37,16 +36,18 @@ model Senior {
 }
 
 model Service {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique @db.VarChar(255)
-  title       String   @db.Text
-  description String   @db.Text
-  color       String   @db.Text
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id          Int    @id @default(autoincrement())
+  name        String @unique @db.VarChar(255)
+  title       String @db.Text
+  description String @db.Text
+  color       String @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   events        Event[]
   professionals Professional[]
+  dailySessions DailySessions[]
 }
 
 model Center {
@@ -56,11 +57,24 @@ model Center {
   phone   String @db.VarChar(255)
   color   String @db.Text
 
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  Event         Event[]
+  dailySessions DailySessions[]
+}
+
+model DailySessions {
+  id       Int @id @default(autoincrement())
+  quantity Int
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
-  Event     Event[]
-  Staff     Staff[]
+
+  serviceId Int
+  centerId  Int
+
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  center  Center  @relation(fields: [centerId], references: [id], onDelete: Cascade)
 }
 
 model Professional {
@@ -68,6 +82,8 @@ model Professional {
   name     String @db.Text
   email    String @db.VarChar(255)
   password String @db.VarChar(255)
+
+  minutesPerSession Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -104,9 +120,6 @@ model RevokedToken {
   createdAt  DateTime @default(now())
   expiresAt  DateTime?
 }
-
-
-
 
 model Staff {
   id       String @id @db.VarChar(255)

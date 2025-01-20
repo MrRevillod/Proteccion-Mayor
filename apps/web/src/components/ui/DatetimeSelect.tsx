@@ -85,9 +85,17 @@ interface DatetimeSelectProps {
 	showTime?: boolean
 	defaultValue?: Dayjs
 	width?: string
+	disablePast?: boolean
 }
 
-export const DatetimeSelect = ({ label, name, showTime = true, defaultValue, width }: DatetimeSelectProps) => {
+export const DatetimeSelect = ({
+	label,
+	name,
+	showTime = true,
+	defaultValue,
+	width,
+	disablePast = false,
+}: DatetimeSelectProps) => {
 	const {
 		control,
 		setValue,
@@ -106,7 +114,9 @@ export const DatetimeSelect = ({ label, name, showTime = true, defaultValue, wid
 		<div className="flex flex-col gap-2">
 			<div className="flex flex-row gap-2 items-center justify-between">
 				<label className="font-semibold text-dark dark:text-light">{label}</label>
-				{errors[name] && <div className="text-red text-sm">{errors[name]?.message?.toString()}</div>}
+				{errors[name] && (
+					<div className="text-red text-sm">{errors[name]?.message?.toString()}</div>
+				)}
 			</div>
 			<Controller
 				control={control}
@@ -122,21 +132,26 @@ export const DatetimeSelect = ({ label, name, showTime = true, defaultValue, wid
 						}
 						disabledTime={(_) => {
 							return {
-								disabledHours: () => [0, 1, 2, 3, 4, 4, 5, 6, 7, 19, 20, 21, 22, 23],
+								disabledHours: () => [
+									0, 1, 2, 3, 4, 4, 5, 6, 7, 19, 20, 21, 22, 23,
+								],
 							}
 						}}
 						disabledDate={
-							showTime
+							showTime || disablePast
 								? (current) =>
 										current &&
-										(current < dayjs().startOf("day") || current.day() === 0 || current.day() === 6)
+										(current < dayjs().startOf("day") ||
+											current.day() === 0 ||
+											current.day() === 6)
 								: undefined
 						}
 						showNow={showTime}
 						value={field.value ? dayjs(field.value) : null}
 						defaultValue={defaultValue ? dayjs(defaultValue) : null}
-						onChange={(event) => setValue(name, event ? dayjs(event).toISOString() : null)}
-                        disabled={disabled}
+						onChange={(event) =>
+							setValue(name, event ? dayjs(event).toISOString() : null)
+						}
 					/>
 				)}
 			/>

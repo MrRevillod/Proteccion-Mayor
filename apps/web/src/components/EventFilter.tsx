@@ -1,10 +1,11 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 
 import { Show } from "./ui/Show"
+import { Button } from "./ui/Button"
 import { useAuth } from "@/context/AuthContext"
 import { SuperSelect } from "./ui/SuperSelect"
 import { useLocation } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { generatePDF } from "@/lib/downloadDailyAgenda"
 import { FormProvider, useForm } from "react-hook-form"
 import { Staff, Professional, SuperSelectField } from "../lib/types"
 import { getIdsFromUrl, selectDataFormatter } from "../lib/formatters"
@@ -24,6 +25,7 @@ export const    EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) =
 	const location = useLocation()
 	const { serviceId, centerId, professionalId } = getIdsFromUrl(location)
     const { user, role } = useAuth()
+    const methods = useForm({})
 	// Se ejecuta un efecto para seleccionar por defecto los filtros
 	// Si existe alguno de estos ids en la url, se selecciona por defecto en el filtro
     useEffect(() => {
@@ -35,7 +37,10 @@ export const    EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) =
             methods.setValue("centerFilter", centerId ? Number(centerId) : undefined)
         }    
 		methods.setValue("serviceFilter", serviceId ? Number(serviceId) : undefined)
-		methods.setValue("professionalFilter", professionalId ? professionalId.toString() : undefined)
+		methods.setValue(
+			"professionalFilter",
+			professionalId ? professionalId.toString() : undefined
+		)
 	}, [centerId, serviceId, professionalId])
 
     const toggleCenter = (checked: boolean) => { 
@@ -51,8 +56,6 @@ export const    EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) =
 	const { centers, services, professionals } = data
 	// Estado para almacenar los profesionales que se mostrarán en el filtro
 	const [selectProfessionals, setSelectProfessionals] = useState<SuperSelectField[]>([])
-
-	const methods = useForm({})
 
 	// Función para limpiar los filtros, onSubmit corresponde
 	// a la función que se ejecutará al enviar el formulario, si el  form está vacio
@@ -126,6 +129,14 @@ export const    EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) =
 						</button>
 					</div>
 
+					<Show when={role === "PROFESSIONAL"}>
+						<Button
+							variant="secondary"
+							onClick={() => generatePDF(user as Professional)}
+						>
+							Descargar atenciones del día de hoy
+						</Button>
+					</Show>
 				</form>
 			</FormProvider>
 		</section>

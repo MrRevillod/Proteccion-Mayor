@@ -63,15 +63,14 @@ export const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 	// Los hooks useRequest se utilizan para obtener los servicios, profesionales y centros
 	// reciben un trigger que actua como un disparador de un useEffect
 
-	const baseTrigger = isModalOpen && modalType === "Create"
+	const baseTrigger = isModalOpen && modalType === "Other"
 
 	// Se obtienen los servicios al abrir el modal
 
 	useEffect(() => {
 		if (baseTrigger && selectedService && professionals) {
-			const serviceProfessionals = professionals.filter(
-				(professional) => professional.serviceId === selectedService,
-			)
+			console.log(professionals)
+			const serviceProfessionals = professionals.filter((professional) => professional.serviceId === selectedService)
 			selectDataFormatter({ data: serviceProfessionals, setData: setSelectProfessionals })
 		}
 	}, [selectedService])
@@ -109,40 +108,22 @@ export const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 	}, [selectedData])
 
 	return (
-		<Modal type="Create" title="Crear un nuevo evento" loading={loading}>
+		<Modal type="Other" title="Crear un nuevo evento" loading={loading}>
 			<FormProvider {...methods}>
 				<Form action={createEvent} actionType="create" refetch={refetch} setLoading={setLoading}>
 					<Show when={role === "ADMIN" || role === "FUNCTIONARY"}>
 						<SuperSelect label="Seleccione un servicio" name="serviceId" options={services} />
-						<SuperSelect
-							label="Seleccione un profesional"
-							name="professionalId"
-							options={selectProfessionals}
-						/>
+						<SuperSelect label="Seleccione un profesional" name="professionalId" options={selectProfessionals} />
 					</Show>
 
 
 					<SuperSelect disabled={role === "FUNCTIONARY"} label={"Seleccione un centro de atención"} placeholder={"Solo puedes crear eventos en tu centro"} name="centerId" options={centers} />
 
-					<SuperSelect
-						label="Seleccione una persona mayor"
-						name="seniorId"
-						options={seniors}
-						setSearch={setSeniorsSearch}
-					/>
+					<SuperSelect label="Seleccione una persona mayor" name="seniorId" options={seniors} setSearch={setSeniorsSearch} />
 					<div className="flex gap-2 justify-between">
 						<DatetimeSelect label="Inicio del evento" name="start" />
 						<DatetimeSelect label="Término del evento" name="end" />
 					</div>
-					<SuperSelect
-						label="Seleccione una repetición"
-						name="repeat"
-						placeholder="Las repeticiones se realizarán durante un mes"
-						options={[
-							{ label: "Diario (Todos los días a la misma hora)", value: "daily" },
-							{ label: "Semanal (Repetir en los próximos 5 días)", value: "weekly" },
-						]}
-					/>
 				</Form>
 			</FormProvider>
 		</Modal>

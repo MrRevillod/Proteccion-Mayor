@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { Prisma } from "@prisma/client"
 import { rules, Schema } from "@repo/lib"
 
 export class EventsSchemas extends Schema {
@@ -8,10 +9,12 @@ export class EventsSchemas extends Schema {
 			centerId: z.optional(rules.centerIdSchema),
 			seniorId: z.string().optional(),
 			serviceId: z.coerce.number().optional(),
+			start: z.string().optional(),
+			end: z.string().optional(),
 		})
 	}
 
-	get defaultSelect() {
+	get defaultSelect(): Prisma.EventSelect {
 		return {
 			id: true,
 			start: true,
@@ -44,12 +47,23 @@ export class EventsSchemas extends Schema {
 				professionalId: rules.rutSchema,
 				serviceId: z.number({ message: "El servicio es obligatorio" }),
 				seniorId: z.optional(rules.rutSchema),
-				centerId: rules.centerIdSchema,
-				repeat: z.optional(z.enum(["daily", "weekly"])),
+				centerId: z.number({ message: "El centro es obligatorio" }),
 			})
 			.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
 				message: "No es posible crear eventos los fin de semana",
 				path: ["end", "start"],
+			})
+	}
+
+	get createMany() {
+		return z
+			.object({
+				start: rules.dateTimeSchema,
+				end: rules.dateTimeSchema,
+				weeklyEvents: rules.weeklyEventsSchema,
+			})
+			.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
+				message: "No es posible crear eventos los fin de semana",
 			})
 	}
 
@@ -75,3 +89,6 @@ export class EventsSchemas extends Schema {
 			})
 	}
 }
+
+export type EventQuery = z.infer<typeof EventsSchemas.prototype.query>
+export type WeeklyEvents = z.infer<typeof EventsSchemas.prototype.createMany>

@@ -105,6 +105,7 @@ export const ProfessionalSchemas = {
 		id: rules.rutSchema,
 		name: rules.nameSchema,
 		email: rules.emailSchema,
+		minutesPerSession: rules.minutesPerSessionSchema,
 		serviceId: z.number({ message: "La profesión es requerida" }),
 	}),
 
@@ -114,6 +115,7 @@ export const ProfessionalSchemas = {
 			email: rules.emailSchema,
 			password: rules.optionalPasswordSchema,
 			confirmPassword: rules.optionalPasswordSchema,
+			minutesPerSession: rules.minutesPerSessionSchema,
 			image: rules.imageSchemaUpdate,
 		})
 		.refine((data) => data.password === data.confirmPassword, {
@@ -154,6 +156,17 @@ export const CentersSchemas = {
 		image: rules.imageSchemaUpdate,
 		color: rules.colorSchema,
 	}),
+
+	UpdateDailySessions: z.object({
+		servicesDailyAttentions: z.array(
+			z.object({
+				id: z.string(),
+				quantity: z.number().int().min(1),
+				serviceId: z.string(),
+				centerId: z.string(),
+			})
+		),
+	}),
 }
 
 export const EventSchemas = {
@@ -164,8 +177,7 @@ export const EventSchemas = {
 			professionalId: z.string({ message: "El profesional es requerido" }),
 			serviceId: z.number({ message: "El servicio es requerido" }),
 			seniorId: z.optional(rules.rutSchema),
-			centerId: rules.centerIdSchema,
-			repeat: z.optional(z.enum(["daily", "weekly"])),
+			centerId: z.number({ message: "El centro es requerido" }),
 		})
 		.refine((data) => data.start < data.end, {
 			message: "Rango de tiempo invalido",

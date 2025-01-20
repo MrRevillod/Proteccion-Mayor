@@ -44,7 +44,8 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 					<div className="z-50">
 						<p>{event?.seniorId ? event?.senior?.name : "Sin reserva"}</p>
 						<p>
-							{dayjs(event?.start).format("HH:mm")} - {dayjs(event?.end).format("HH:mm")}
+							{dayjs(event?.start).format("HH:mm")} -{" "}
+							{dayjs(event?.end).format("HH:mm")}
 						</p>
 					</div>
 				),
@@ -57,7 +58,6 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 	}
 
 	const handleDateClick = (info: any) => {
-
 		const date = dayjs(info.date)
 
 		if (date.isBefore(dayjs(), "day")) {
@@ -73,7 +73,7 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 			return
 		}
 
-		showModal("Create", info)
+		showModal("Other", info)
 	}
 
 	const handleEdit = (info: any) => {

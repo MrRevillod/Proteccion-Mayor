@@ -19,7 +19,6 @@ export * as credentials from "./utils/credentials"
 export * as validations from "./utils/validations"
 export * as uploads from "./utils/uploads"
 
-
 export {
     findAdministrator,
 	findCenter,
@@ -29,8 +28,6 @@ export {
     findService,
     findStaff,
 } from "./utils/actions"
-
-
 
 export { MailerService } from "./services/mailer"
 export { StorageService } from "./services/storage"

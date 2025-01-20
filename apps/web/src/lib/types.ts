@@ -24,6 +24,7 @@ interface IUser {
 	name: string
 	createdAt: string
 	updatedAt: string
+	minutesPerSession?: number
 }
 
 export interface Staff extends IUser {
@@ -33,6 +34,7 @@ export interface Staff extends IUser {
 export interface Professional extends IUser {
 	service: Partial<Service>
 	serviceId: number
+	minutesPerSession: number
 }
 
 export type Service = {
@@ -43,10 +45,12 @@ export type Service = {
 	color: HexColor
 }
 
-export type Operatives = {
+export type DailySessions = {
 	id: number
-	name: string
-	description: string
+	quantity: number
+	centerId: number
+	serviceId: number
+	service: Pick<Service, "id" | "name">
 }
 
 export type Center = {
@@ -54,6 +58,8 @@ export type Center = {
 	name: string
 	address: string
 	phone: string
+	color: string
+	dailySessions: DailySessions[]
 }
 
 export interface Senior extends IUser {

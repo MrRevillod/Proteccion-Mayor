@@ -24,12 +24,17 @@ export const UpdateProfessional: React.FC<FormProps<Professional>> = ({ data, se
 			methods.reset({
 				name: selectedData.name,
 				email: selectedData.email,
+				minutesPerSession: selectedData.minutesPerSession,
 			})
 		}
 	}, [selectedData])
 
 	return (
-		<Modal type="Edit" title={`Editar la información de ${selectedData?.name}`} loading={loading}>
+		<Modal
+			type="Edit"
+			title={`Editar la información de ${selectedData?.name}`}
+			loading={loading}
+		>
 			<FormProvider {...methods}>
 				<Form<Professional>
 					data={data as Professional[]}
@@ -39,9 +44,26 @@ export const UpdateProfessional: React.FC<FormProps<Professional>> = ({ data, se
 					setLoading={setLoading}
 				>
 					<Input name="name" label="Nombre" type="text" placeholder="Nombre" />
-					<Input name="email" label="Correo Electrónico" type="email" placeholder="Correo Electrónico" />
+					<Input
+						name="email"
+						label="Correo Electrónico"
+						type="email"
+						placeholder="Correo Electrónico"
+					/>
+					<Input
+						type="text"
+						label="Minutos por atención"
+						name="minutesPerSession"
+						maxLength={3}
+						placeholder="60"
+					/>
 					<Input name="password" label="Contraseña" type="password" placeholder="••••" />
-					<Input name="confirmPassword" label="Confirmar contraseña" type="password" placeholder="••••" />
+					<Input
+						name="confirmPassword"
+						label="Confirmar contraseña"
+						type="password"
+						placeholder="••••"
+					/>
 				</Form>
 			</FormProvider>
 		</Modal>

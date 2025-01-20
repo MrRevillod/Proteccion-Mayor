@@ -4,13 +4,13 @@
 	"scripts": {
 		"build": "turbo run build",
 		"clean": "turbo run clean",
-		"dev": "turbo run dev",
-		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
+		"dev": "turbo run dev && turbo run packages:dev",
+		"format": "turbo run format",
 		"typecheck": "turbo run typecheck"
 	},
 	"devDependencies": {
-		"eslint": "^9.9.0",
 		"tsup": "^8.0.2",
+		"tsx": "^4.19.2",
 		"turbo": "^2.2.3",
 		"typescript": "^5.3.3"
 	},
@@ -21,7 +21,6 @@
 	"dependencies": {
 		"@prisma/client": "^5.10.2",
 		"@socket.io/pm2": "^5.3.0",
-		"dotenv-cli": "^7.4.2",
-		"ts-node": "^10.9.2"
+		"dotenv-cli": "^7.4.2"
 	}
 }

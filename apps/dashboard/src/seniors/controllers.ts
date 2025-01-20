@@ -19,10 +19,6 @@ export class SeniorController {
 	 *
 	 * filtra por id, nombre, email y si está validado
 	 *
-	 * @param req (Express Request)
-	 * @param res (Express Response)
-	 * @param handleError (Express NextFunction)
-	 *
 	 * @returns (Express Response) (HTTP - 200)
 	 * @throws (AppError)
 	 */
@@ -63,10 +59,6 @@ export class SeniorController {
 	/**
 	 * Controlador para crear una persona mayor desde la aplicación web por
 	 * parte de un administrador
-	 *
-	 * @param req (Express Request)
-	 * @param res (Express Response)
-	 * @param handleError (Express NextFunction)
 	 *
 	 * @returns (Express Response) (HTTP - 201)
 	 * @throws (AppError)
@@ -117,10 +109,6 @@ export class SeniorController {
 	/**
 	 * Controlador para actualizar la información de una persona mayor
 	 * por su id desde la aplicación web por parte de un administrador
-	 *
-	 * @param req (Express Request)
-	 * @param res (Express Response)
-	 * @param handleError (Express NextFunction)
 	 *
 	 * @returns (Express Response) (HTTP - 200)
 	 * @throws (AppError)
@@ -191,10 +179,6 @@ export class SeniorController {
 	 * Se eliminan los eventos asociados a la persona mayor y se elimina la imagen
 	 * de la persona mayor del servidor de archivos
 	 *
-	 * @param req (Express Request)
-	 * @param res (Express Response)
-	 * @param handleError (Express NextFunction)
-	 *
 	 * @returns (Express Response) (HTTP - 200)
 	 * @throws (AppError)
 	 */
@@ -224,12 +208,8 @@ export class SeniorController {
 	 * Controlador para comprobar si un rut o un email ya están registrados
 	 * Se utiliza para validar los campos de los formularios de registro de la app móvil
 	 *
-	 * @param req (Express Request)
-	 * @param res (Express Response)
-	 * @param handleError (Express NextFunction)
-	 *
 	 * @returns (Express Response) (HTTP - 200)
-	 * @throws (AppError)
+	 * @throws (AppError) (HTTP - 409 | 400)
 	 */
 
 	public checkUnique: Controller = async (req, res, handleError) => {
@@ -266,12 +246,8 @@ export class SeniorController {
 	 *
 	 * Esta solicitud se revisa en la aplicación web por un administrador
 	 *
-	 * @param req (Express Request)
-	 * @param res (Express Response)
-	 * @param handleError (Express NextFunction)
-	 *
 	 * @returns (Express Response) (HTTP - 201)
-	 * @throws (AppError)
+	 * @throws (AppError) (HTTP - 409 | 400)
 	 */
 
 	public createMobile: Controller = async (req, res, handleError) => {
@@ -316,12 +292,8 @@ export class SeniorController {
 	 *
 	 * Se envía un correo electrónico a la persona mayor con la respuesta
 	 *
-	 * @param req (Express Request)
-	 * @param res (Express Response)
-	 * @param handleError (Express NextFunction)
-	 *
 	 * @returns (Express Response) (HTTP - 200)
-	 * @throws (AppError)
+	 * @throws (AppError) (HTTP - 400 | 409)
 	 */
 
 	public handleRegisterRequest: Controller = async (req, res, handleError) => {

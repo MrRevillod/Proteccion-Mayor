@@ -7,8 +7,8 @@ import { useModal } from "@/context/ModalContext"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ColorPicker } from "@/components/ColorPicker"
 import { updateService } from "@/lib/actions"
-import { ServiceSchemas } from "@/lib/schemas"
 import { ImageSelector } from "@/components/ImageSelector"
+import { ServiceSchemas } from "@/lib/schemas"
 import { Service, FormProps } from "@/lib/types"
 import { useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
@@ -35,7 +35,11 @@ export const UpdateService: React.FC<FormProps<Service>> = ({ data, setData }) =
 	}, [selectedData])
 
 	return (
-		<Modal type="Edit" title={`Editar la información de ${selectedData?.name}`} loading={loading}>
+		<Modal
+			type="Edit"
+			title={`Editar la información de ${selectedData?.name}`}
+			loading={loading}
+		>
 			<FormProvider {...methods}>
 				<Form<Service>
 					data={data as Service[]}

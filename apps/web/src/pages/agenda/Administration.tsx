@@ -19,6 +19,7 @@ import { UpcomingEvents } from "@/components/UpcomingEvents"
 import { filterUpcomingEvents, selectDataFormatter } from "@/lib/formatters"
 import { Center, Event, Events, Professional, Service, SuperSelectField } from "@/lib/types"
 import { deleteEvent, getCenters, getEvents, getProfessionals, getServices } from "@/lib/actions"
+import { CreateWeeklyEvents } from "@/components/forms/create/WeeklyEvents"
 
 const StaffAgendaPage: React.FC = () => {
 	const location = useLocation()
@@ -53,10 +54,10 @@ const StaffAgendaPage: React.FC = () => {
 		},
 	})
 
-	useRequest<Center[]>({
+	const { data: rawCenters } = useRequest<Center[]>({
 		action: getCenters,
 		query: "select=name,id",
-        onSuccess: (data) => selectDataFormatter({ data, setData: setCenters, allString: true }),
+    onSuccess: (data) => selectDataFormatter({ data, setData: setCenters, allString: true }),
 	})
 
 	useRequest<Service[]>({
@@ -95,6 +96,8 @@ const StaffAgendaPage: React.FC = () => {
 				<Calendar events={events} />
 				<UpcomingEvents title="Próximas atenciones" center={true} events={upcomingEvents} />
 			</div>
+
+			<CreateWeeklyEvents services={services} centers={rawCenters as Center[]} formattedCenters={centers} />
 
 			<CreateEvent centers={centers} services={services} professionals={professionals} />
 			<UpdateEvent centers={centers} professionals={professionals} />

@@ -8,12 +8,12 @@ import { Staff } from "@prisma/client"
 import { prisma } from "@repo/database"
 
 export const body: SchemaBasedMiddleware = (schema) => (req, res, next) => {
-	console.log(req.body)
 	try {
 		schema.parse(req.body)
 		next()
-	} catch (error: any) {
-		next(new BadRequest(error))
+	} catch (error) {
+		console.log(error)
+		next(new BadRequest("Error en la validación de campos en el formulario"))
 	}
 }
 
@@ -141,7 +141,6 @@ export const validateSameCenter: Middleware = async (req, res, next) => {
     
     if (userRole === "FUNCTIONARY") {
         const centerId = req.body.centerId
-        console.log(centerId, user.centerId)
         if(Number(centerId) !== Number(user.centerId)) {
             throw new AppError(403, "No tienes permisos para realizar esta acción")
         }

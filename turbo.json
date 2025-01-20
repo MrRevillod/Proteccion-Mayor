@@ -3,49 +3,26 @@
 	"tasks": {
 		"install": {},
 		"build": {
-			"inputs": [
-				"$TURBO_DEFAULT$",
-				".env*"
-			],
-			"dependsOn": [
-				"^build"
-			],
-			"outputs": [
-				"build/**",
-				"dist/**",
-				"node_modules/**"
-			]
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"dependsOn": ["^generate", "^build"],
+			"outputs": ["build/**", "dist/**", "node_modules/**"],
+			"cache": true
 		},
-		"db:migrate:deploy": {},
-		"db:migrate:dev": {},
-		"db:push": {},
-		"db:seed": {},
-		"db:generate:deploy": {},
 		"generate": {
 			"cache": false
 		},
-		"test": {
-			"outputs": [
-				"coverage/**"
-			],
-			"dependsOn": []
-		},
 		"typecheck": {
-			"dependsOn": [
-				"^build"
-			]
+			"dependsOn": ["^build"]
 		},
 		"dev": {
-			"dependsOn": [
-				"^clean",
-				"^install",
-				"^generate",
-				"^build"
-			],
-			"cache": false,
+			"dependsOn": ["^generate", "^build"],
+			"cache": true,
 			"persistent": true
 		},
 		"clean": {
+			"cache": false
+		},
+		"format": {
 			"cache": false
 		}
 	}

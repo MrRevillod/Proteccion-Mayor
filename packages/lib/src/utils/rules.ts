@@ -59,17 +59,11 @@ export const passwordSchema = z
 export const optionalPasswordSchema = z
 	.string()
 	.refine(
-		(value) =>
-			value === "" ||
-			(value.length >= 8 &&
-				/[A-Z]/.test(value) &&
-				/[a-z]/.test(value) &&
-				/[0-9]/.test(value) &&
-				/[\W_]/.test(value)),
+		(value) => value === "" || (value.length >= 8 && /[A-Z]/.test(value) && /[a-z]/.test(value) && /[0-9]/.test(value) && /[\W_]/.test(value)),
 		{
 			message:
 				"La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial, o ser vacía",
-		},
+		}
 	)
 
 export const nameSchema = z
@@ -93,7 +87,7 @@ export const dateTimeSchema = z.string().refine(
 	{
 		message: "La fecha de ingresada no es válida",
 		path: ["startsAt", "endsAt", "birthDate"],
-	},
+	}
 )
 
 export const isValidDate = (value: string): boolean => {
@@ -113,19 +107,13 @@ export const nameServiceSchema = z
 	.string()
 	.min(2, "El nombre debe tener al menos 2 caracteres")
 	.max(50, "El nombre no debe tener más de 50 caracteres")
-	.regex(
-		/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ\-'.()]+$/,
-		"El nombre solo puede contener letras, espacios y caracteres especiales como - ' . ()",
-	)
+	.regex(/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ\-'.()]+$/, "El nombre solo puede contener letras, espacios y caracteres especiales como - ' . ()")
 
 export const titleServiceSchema = z
 	.string()
 	.min(2, "El título debe tener al menos 2 caracteres")
 	.max(50, "El título no debe tener más de 50 caracteres")
-	.regex(
-		/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ\-'.()]+$/,
-		"El título solo puede contener letras, espacios y caracteres especiales como - ' . ()",
-	)
+	.regex(/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ\-'.()]+$/, "El título solo puede contener letras, espacios y caracteres especiales como - ' . ()")
 
 export const nameCenterSchema = z
 	.string()
@@ -140,9 +128,7 @@ export const descriptionSchema = z
 		message: "La descripción no debe tener más de 50 palabras",
 	})
 
-export const addressCenterSchema = z
-	.string()
-	.min(2, "La dirección debe tener al menos 2 caracteres")
+export const addressCenterSchema = z.string().min(2, "La dirección debe tener al menos 2 caracteres")
 
 export const phoneSchema = z
 	.string()
@@ -150,9 +136,7 @@ export const phoneSchema = z
 	.min(8, "El número de teléfono debe tener al menos 8 dígitos")
 	.max(15, "El número de teléfono no debe tener más de 15 dígitos")
 
-export const colorSchema = z
-	.string()
-	.regex(/^#?[0-9A-Fa-f]{6}$/, "El color debe ser un código hexadecimal válido")
+export const colorSchema = z.string().regex(/^#?[0-9A-Fa-f]{6}$/, "El color debe ser un código hexadecimal válido")
 
 export const genderSchema = z.enum(["MA", "FE"], {
 	message: "El género debe ser MA o FE",
@@ -160,18 +144,58 @@ export const genderSchema = z.enum(["MA", "FE"], {
 
 export const isWeekend = (date: string) => {
 	const day = dayjs(date).day()
-	return day !== 0 && day !== 6
+	return day === 0 || day === 6
 }
+
+export const minutesPerSessionSchema = z
+	.string()
+	.transform((val) => Number(val))
+	.refine((val) => !isNaN(val), { message: "Debe ser un número válido" })
+	.pipe(
+		z
+			.number()
+			.int({ message: "Debe ser un número entero" })
+			.min(15, { message: "La duración mínima es de 15 minutos" })
+			.max(180, { message: "La duración máxima es de 3 horas" })
+	)
+
+export const numberIdSchema = z
+	.string()
+	.transform((val) => Number(val))
+	.refine((val) => !isNaN(val), { message: "Debe ser un número válido" })
+	.pipe(z.number().int({ message: "Debe ser un número entero" }).min(1, { message: "El número debe ser mayor a 0" }))
+
+const timeSchema = z.string().regex(/^([01]?[0-9]|2[0-3]):([0-5]?[0-9])$/, {
+	message: "El valor debe ser una hora válida en formato HH:mm",
+})
+
+export const dailyEventsSchema = z.object({
+	centerId: z.coerce.number(),
+	events: z.array(
+		z.object({
+			start: timeSchema,
+			end: timeSchema,
+		})
+	),
+})
+
+export const weeklyEventsSchema = z.record(
+	z
+		.string()
+		.regex(/^\d{4}-\d{2}-\d{2}$/, "La clave debe ser una fecha válida en formato YYYY-MM-DD")
+		.refine(
+			(value) => {
+				const date = new Date(value)
+				return !isNaN(date.getTime()) && date.toISOString().startsWith(value) // Validación adicional de la fecha
+			},
+			{
+				message: "La fecha ingresada no es válida o no tiene el formato correcto (YYYY-MM-DD)",
+			}
+		),
+	dailyEventsSchema
+)
+
     export const staffRoleSchema =  z.enum(["ADMIN", "FUNCTIONARY"], {
         message: "El rol debe ser administrador o funcionario",
 })
 
-export const centerIdSchema = z.string().refine(
-    (value) => {
-      // Verifica si el valor es un número válido o "null"
-      return !isNaN(Number(value)) || value === "null";
-    },
-    {
-      message: "El valor debe ser un número válido o 'null'",
-    }
-).nullable()

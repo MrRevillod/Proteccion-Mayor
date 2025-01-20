@@ -3,7 +3,7 @@ import React from "react"
 import { Nullable } from "@/lib/types"
 import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from "react"
 
-export type ModalType = "Create" | "Edit" | "Confirm"
+export type ModalType = "Create" | "Edit" | "Confirm" | "Other"
 
 // Contexto para manejar los modales.
 // Se utiliza un contexto ya que los modales pueden

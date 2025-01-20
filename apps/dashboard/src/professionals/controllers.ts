@@ -12,6 +12,16 @@ export class ProfessionalsController {
 		private mailer: MailerService,
 	) {}
 
+	/**
+	 * Obtener todos los profesionales registrados, puede aceptar una query
+	 * Query: ?id=""&serviceId=""&select=""
+	 *
+	 * path: /api/dashboard/professionals - GET
+	 *
+	 * @returns (Express Response) (HTTP - 200)
+	 * @throws (AppError) (HTTP - 400)
+	 */
+
 	public getMany: Controller = async (req, res, handleError) => {
 		try {
 			const query = this.schemas.query.parse(req.query)
@@ -31,8 +41,18 @@ export class ProfessionalsController {
 		}
 	}
 
+	/**
+	 * Registrar un profesional en el sistema, debe incluir una imagen en el body
+	 *
+	 * Content-Type: multipart/form-data
+	 * path: /api/dashboard/professionals - POST
+	 *
+	 * @returns (Express Response) (HTTP - 201)
+	 * @throws (AppError) (HTTP - 409)
+	 */
+
 	public createOne: Controller = async (req, res, handleError) => {
-		const { id, name, email, serviceId } = req.body
+		const { id, name, email, serviceId, minutesPerSession } = req.body
 
 		try {
 			const [proExists, servExists] = await Promise.all([
@@ -55,7 +75,7 @@ export class ProfessionalsController {
 
 			const professional = await prisma.professional.create({
 				select: this.schemas.defaultSelect,
-				data: { id, name, email, password: hash, serviceId },
+				data: { id, name, email, password: hash, serviceId, minutesPerSession },
 			})
 
 			this.mailer.send({
@@ -70,9 +90,19 @@ export class ProfessionalsController {
 		}
 	}
 
+	/**
+	 * Actualizar un profesional en el sistema, puede incluir una imagen en el body
+	 *
+	 * Content-Type: multipart/form-data
+	 * path: /api/dashboard/professionals/:id - PATCH
+	 *
+	 * @returns (Express Response) (HTTP - 200)
+	 * @throws (AppError) (HTTP - 400 | 409)
+	 */
+
 	public updateOne: Controller = async (req, res, handleError) => {
 		const { params, body, file } = req
-		const { name, email, password } = body
+		const { name, email, password, minutesPerSession } = body
 
 		const user = req.getExtension("reqResource") as Professional
 
@@ -90,7 +120,7 @@ export class ProfessionalsController {
 			const professional = await prisma.professional.update({
 				where: { id: params.id },
 				select: this.schemas.defaultSelect,
-				data: { name, email, password: updatedPassword },
+				data: { name, email, password: updatedPassword, minutesPerSession },
 			})
 
 			const response = { modified: professional, image: null }
@@ -110,6 +140,15 @@ export class ProfessionalsController {
 			handleError(error)
 		}
 	}
+
+	/**
+	 * Eliminar un profesional en el sistema
+	 *
+	 * path: /api/dashboard/professionals/:id - DELETE
+	 *
+	 * @returns (Express Response) (HTTP - 200)
+	 * @throws (AppError)
+	 */
 
 	public deleteOne: Controller = async (req, res, handleError) => {
 		const { params } = req
