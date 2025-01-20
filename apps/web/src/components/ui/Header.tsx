@@ -90,18 +90,18 @@ export const Header: React.FC = () => {
 				</div>
 				<Navbar.Collapse className="">
 					<Show when={role === "ADMIN"}>
-						<Dropdown
+						<Dropdown    
 							label=""
 							dismissOnClick={false}
 							onClick={() => handlePageSelected("Personas")}
 							renderTrigger={() => <span className={linkClasses("Personas")}>Personas</span>}
 						>
 							<Link
-								to="/administracion/administradores"
+								to="/administracion/funcionarios"
 								className={linkClasses("Personas", true)}
 								onClick={() => handlePageSelected("Personas")}
 							>
-								<Dropdown.Item>Administradores</Dropdown.Item>
+								<Dropdown.Item>Funcionarios</Dropdown.Item>
 							</Link>
 
 							<Link
@@ -140,7 +140,7 @@ export const Header: React.FC = () => {
 						</Dropdown>
 
 						<Link
-							to="/agenda/administradores"
+							to="/agenda/funcionarios"
 							className={linkClasses("Agenda")}
 							onClick={() => handlePageSelected("Agenda")}
 						>
@@ -170,7 +170,34 @@ export const Header: React.FC = () => {
 						>
 							Estadísticas
 						</Link>
-					</Show>
+                    </Show>
+                    <Show when={role === "FUNCTIONARY"}>
+                        
+                        <Link
+                            to="/administracion/personas-mayores"
+							onClick={() => handlePageSelected("personas-mayores")}
+							className={linkClasses("personas-mayores")}
+                        >
+                            Personas mayores
+                        </Link>
+
+						<Link
+						    to="/administracion/personas-mayores/nuevos"
+                            onClick={() => handlePageSelected("personas-mayores-nuevos")}
+                            className={linkClasses("personas-mayores-nuevos")}
+						>
+							Solicitudes de registro
+						</Link>
+                        <Link
+							to="/agenda/funcionarios"
+							className={linkClasses("Agenda")}
+							onClick={() => handlePageSelected("Agenda")}
+						>
+							Agenda
+						</Link>
+
+
+                    </Show>
 				</Navbar.Collapse>
 			</Show>
 		</Navbar>

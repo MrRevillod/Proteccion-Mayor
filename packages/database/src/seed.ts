@@ -67,7 +67,8 @@ const seed = async () => {
 		prisma.center.deleteMany(),
 		prisma.service.deleteMany(),
 		prisma.senior.deleteMany(),
-		prisma.administrator.deleteMany(),
+		prisma.revokedToken.deleteMany(),
+        prisma.staff.deleteMany()
 	])
 
 	console.log("All records dropped.")
@@ -78,22 +79,28 @@ const seed = async () => {
 	const services = data.services
 	const centers = data.centers
 	const admins = data.administrators
-	const professionals = data.professionals
+    const professionals = data.professionals
+	const functionarys = data.functionarys
+    
 
 	for (const admin of admins) {
 		const AdminRUT = generateRUT()
 
-		await prisma.administrator.upsert({
+		await prisma.staff.upsert({
 			where: { id: AdminRUT },
 			create: {
-				id: AdminRUT,
+                id: AdminRUT,
 				email: admin.email,
 				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
 				name: admin.name,
+                role:"ADMIN"
 			},
 			update: {},
 		})
-	}
+    }
+    
+    
+
 
 	for (const center of centers) {
 		await prisma.center.upsert({
@@ -183,6 +190,23 @@ const seed = async () => {
 				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
 				name: professional.name,
 				serviceId: Math.floor(Math.random() * 6) + 1,
+			},
+			update: {},
+		})
+    }
+    
+    for (const functionary of functionarys) {
+		const functionaryRUT = generateRUT()
+
+		await prisma.staff.upsert({
+			where: { id: functionaryRUT },
+			create: {
+				id: functionaryRUT,
+				email: functionary.email,
+				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
+                name: functionary.name,
+                centerId: Math.floor(Math.random() * 8) + 1,
+                role:"FUNCTIONARY"
 			},
 			update: {},
 		})

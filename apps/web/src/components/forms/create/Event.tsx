@@ -16,7 +16,7 @@ import { useState, useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { createEvent, getSeniors } from "@/lib/actions"
 import { getIdsFromUrl, selectDataFormatter } from "@/lib/formatters"
-import { Professional, Senior, SuperSelectField } from "@/lib/types"
+import { Staff, Professional, Senior, SuperSelectField } from "@/lib/types"
 
 // El formulario recibe refetch, ya que en este caso es más conveniente que
 // filtrar los evento en el cliente, se vuelvan a obtener los eventos desde el servidor
@@ -44,9 +44,14 @@ export const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 	// Se obtiene el id del centro de la url, con el fin de seleccionarlo por defecto
 	// ya que es posible crear un evento desde la url de un centro
 
-	useEffect(() => {
-		const selectedUrlCenter = getIdsFromUrl(location).centerId
-		setValue("centerId", selectedUrlCenter ? Number(selectedUrlCenter) : undefined)
+    useEffect(() => {
+        if (role === "FUNCTIONARY") {
+            const functionary = user as Staff
+            setValue("centerId", functionary.centerId ? functionary.centerId.toString() : undefined)
+        } else {
+            const selectedUrlCenter = getIdsFromUrl(location).centerId
+            setValue("centerId", selectedUrlCenter ? selectedUrlCenter.toString() : undefined)
+        }
 	}, [location.search])
 
 	// Se obtiene valores de los input, al utilizar watch se obtiene el valor
@@ -107,7 +112,7 @@ export const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 		<Modal type="Create" title="Crear un nuevo evento" loading={loading}>
 			<FormProvider {...methods}>
 				<Form action={createEvent} actionType="create" refetch={refetch} setLoading={setLoading}>
-					<Show when={role === "ADMIN"}>
+					<Show when={role === "ADMIN" || role === "FUNCTIONARY"}>
 						<SuperSelect label="Seleccione un servicio" name="serviceId" options={services} />
 						<SuperSelect
 							label="Seleccione un profesional"
@@ -116,7 +121,8 @@ export const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 						/>
 					</Show>
 
-					<SuperSelect label="Seleccione un centro de atención" name="centerId" options={centers} />
+
+					<SuperSelect disabled={role === "FUNCTIONARY"} label={"Seleccione un centro de atención"} placeholder={"Solo puedes crear eventos en tu centro"} name="centerId" options={centers} />
 
 					<SuperSelect
 						label="Seleccione una persona mayor"

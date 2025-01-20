@@ -26,7 +26,7 @@ const app = createApplication()
 const auth = new AuthenticationService()
 const seniorRouter = Router()
 
-seniorRouter.get("/:id/register-files", auth.authorize(["ADMIN"]), (req, res) => {
+seniorRouter.get("/:id/register-files", auth.authorize(["ADMIN","FUNCTIONARY"]), (req, res) => {
 	const imagePaths = [
 		path.join(__dirname, `../public/seniors/${req.params.id}/dni-a.webp`),
 		path.join(__dirname, `../public/seniors/${req.params.id}/dni-b.webp`),

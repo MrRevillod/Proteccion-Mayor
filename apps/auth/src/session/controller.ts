@@ -1,3 +1,4 @@
+
 import dayjs from "dayjs"
 
 import { prisma } from "@repo/database"
@@ -13,13 +14,13 @@ export class SessionController {
 		const { email, password } = req.body
 
 		try {
-			if (variant !== "ADMIN" && variant !== "PROFESSIONAL") {
+			if (variant !== "ADMIN" && variant !== "PROFESSIONAL" && variant !== "FUNCTIONARY") {
 				throw new BadRequest("Inicio de sesión inválido")
 			}
 
 			const user = await users.find({ role: variant, filter: { email } })
 
-			if (!user || !(await compare(password, user.password))) {
+            if (!user || !(await compare(password, user.password))) {
 				throw new Unauthorized("Correo electrónico o contraseña incorrectos")
 			}
 
@@ -95,6 +96,9 @@ export class SessionController {
 
 			const expires = dayjs().add(15, "minutes").toDate()
 
+
+            if (tokens.access) { this.auth.saveRevokedToken(tokens.access) }
+
 			res.cookie("ACCESS_TOKEN", newAccessToken, { expires, httpOnly: true, path: "/" })
 
 			return res.status(200).json({ type: "success", values: { role: payload.role } })
@@ -104,6 +108,11 @@ export class SessionController {
 	}
 
 	public logout: Controller = async (req, res, handleError) => {
+        const tokens = this.auth.getClientAuthorization({ cookies: req.cookies, headers: req.headers })
+    
+        if (tokens.access) { this.auth.saveRevokedToken(tokens.access) }
+        if (tokens.refresh) { this.auth.saveRevokedToken(tokens.refresh) }
+
 		res.clearCookie("ACCESS_TOKEN")
 		res.clearCookie("REFRESH_TOKEN")
 
@@ -125,4 +134,5 @@ export class SessionController {
 			message: "Usuario autenticado",
 		})
 	}
+
 }
