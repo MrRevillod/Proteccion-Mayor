@@ -4,6 +4,7 @@ import { Dayjs } from "dayjs"
 import { match } from "ts-pattern"
 import { prisma } from "@repo/database"
 import { Event, Prisma } from "@prisma/client"
+import { date } from "zod"
 
 type AssistanceVariants = "assistance" | "absence" | "unreserved"
 
@@ -85,8 +86,8 @@ export class ReportsService {
 				unreserved: this.getMonthlyEventCount(unreserved, month),
 			}
 		})
-    }
-    
+	}
+
 	public getByCenterReport = async (date: Dayjs) => {
 		const centers = await prisma.center.findMany({ select: { name: true, id: true } })
 
@@ -105,21 +106,13 @@ export class ReportsService {
 		)
 	}
 
-	public getByServiceReport = async (date: Dayjs) => {
-		const services = await prisma.service.findMany({ select: { name: true, id: true } })
-
-		return await Promise.all(
-			services.map(async (service) => {
-				const filter = this.makeFilter(date, "month", { serviceId: service.id })
-				const [assistance, absence, unreserved] = await this.getBaseEvents(filter)
-
-				return {
-					service: service.name,
-					assistances: assistance.length,
-					absences: absence.length,
-					unreserved: unreserved.length,
-				}
-			}),
-		)
+	public getRangeStats = async (from: Dayjs, to: Dayjs) => {}
+	public getRangeEvents = async (from: Dayjs, to: Dayjs) => {
+		return await prisma.event.findMany({
+			where: {
+				start: { gte: from.startOf("day").toISOString() },
+				end: { lte: to.endOf("day").toISOString() },
+			},
+		})
 	}
 }

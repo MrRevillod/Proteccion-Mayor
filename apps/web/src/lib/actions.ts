@@ -23,6 +23,12 @@ const apiRequest = {
 	},
 }
 
+// Acciones para estadisticas
+
+export const getGeneralStatistics = async (props: QueryActionProps) => {
+    return await apiRequest.get(`/dashboard/statistics${props.query ? "?" + props.query : ""}`)
+}
+
 // Acciones CRUD para los funcionarios
 
 import { AxiosResponse } from "axios"

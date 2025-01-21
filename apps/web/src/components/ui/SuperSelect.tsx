@@ -14,12 +14,13 @@ interface SuperSelectProps {
 	placeholder?: string
 	disabled?: boolean
 	allowClear?: boolean
-	showSearch?: boolean
+    showSearch?: boolean
+    onChange?: (value: any, option: any) => void
 }
 
 export const
         SuperSelect = ({ name, label, ...props }: SuperSelectProps) => {
-	const { options, setSearch, placeholder, disabled = false, allowClear = true, showSearch = true, defaultValue } = props
+            const { options, setSearch, placeholder, disabled = false, allowClear = true, showSearch = true, defaultValue, onChange } = props
 
 	const {
 		control,
@@ -52,22 +53,20 @@ export const
 			<Controller
 				control={control}
 				name={name}
-				render={({ field }) => (
-					<Select
-						{...field}
+                render={({ field }) => (
+                    <Select
+                        {...field}
                         defaultValue={defaultValue}
-						value={field.value}
-						className={classes}
-						showSearch={showSearch}
-						placeholder={placeholder ? placeholder : `Seleccione una opción`}
-						options={options}
-						filterOption={filterOption}
-						onSearch={(value) => {
-							setSearch && setSearch(value)
-						}}
-						onChange={(value) => {
-                            field.onChange(value)
-						}}
+                        value={field.value}
+                        className={classes}
+                        showSearch={showSearch}
+                        placeholder={placeholder ? placeholder : `Seleccione una opción`}
+                        options={options}
+                        filterOption={filterOption}
+                        onSearch={(value) => {
+                            setSearch && setSearch(value)
+                        }}
+                        onChange={onChange || ((value) => { field.onChange(value) })}
 						allowClear={allowClear}
 						disabled={disabled}
 					/>

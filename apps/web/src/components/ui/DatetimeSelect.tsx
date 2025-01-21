@@ -13,9 +13,10 @@ interface DatetimeSelectProps {
 	defaultValue?: Dayjs
     width?: string
     disabled?: boolean
+    onChange?: ((date: Dayjs, dateString: string | string[]) => void)
 }
 
-export const DatetimeSelect = ({ label, name, showTime = true, defaultValue, width, disabled = false }: DatetimeSelectProps) => {
+export const DatetimeSelect = ({ label, name, showTime = true, defaultValue, width, disabled = false, onChange }: DatetimeSelectProps) => {
 	const {
 		control,
 		setValue,
@@ -63,7 +64,7 @@ export const DatetimeSelect = ({ label, name, showTime = true, defaultValue, wid
 						showNow={showTime}
 						value={field.value ? dayjs(field.value) : null}
 						defaultValue={defaultValue ? dayjs(defaultValue) : null}
-						onChange={(event) => setValue(name, event ? dayjs(event).toISOString() : null)}
+                        onChange={onChange || ((event) => setValue(name, event ? dayjs(event).toISOString() : null))}
                         disabled={disabled}
 					/>
 				)}
