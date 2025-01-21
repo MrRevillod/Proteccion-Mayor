@@ -28,7 +28,8 @@ export const WeeklyEventsStep: React.FC<Props> = ({ centers, ...props }) => {
 	return (
 		<div className="flex flex-col gap-4">
 			<p className="text-base">
-				Selecciona las atenciones diarias del día <strong>{day + " " + dayjs(date).format("DD/MM/YYYY")}</strong>
+				Selecciona las atenciones diarias del día{" "}
+				<strong>{day + " " + dayjs(date).format("DD/MM/YYYY")}</strong>
 			</p>
 
 			<SuperSelect label="Selecciona un centro de atención" options={centers} name={`${date}-centerId`} />

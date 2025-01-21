@@ -34,7 +34,9 @@ const LoginPage: React.FC = () => {
 			<div className="flex w-full login-container items-center justify-center absolute dark:shadow-none">
 				<div className="bg-white dark:bg-primary-dark flex flex-col justify-center items-center px-8 md:px-12 w-11/12 sm:w-1/2 md:w-1/2 lg:w-1/3 xl:1/3 2xl:w-1/4 rounded-lg h-2/3 min-h-[550px] login-form-container dark:shadow-none">
 					<div className="w-full max-w-md">
-						<h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-neutral-300 text-center mb-4">¡Hola!</h2>
+						<h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-neutral-300 text-center mb-4">
+							¡Hola!
+						</h2>
 						<p className="text-center text-gray-600 dark:text-gray-dark mb-6">
 							Dirección de personas mayores de la municipalidad de Temuco.
 						</p>
@@ -44,10 +46,24 @@ const LoginPage: React.FC = () => {
 						</div>
 
 						<FormProvider {...methods}>
-							<form className="flex flex-col gap-4 w-full justify-center" onSubmit={handleSubmit(onSubmit as any)}>
-								<Input name="email" label="Correo electrónico" type="email" placeholder="example@gmail.com" />
+							<form
+								className="flex flex-col gap-4 w-full justify-center"
+								onSubmit={handleSubmit(onSubmit as any)}
+							>
+								<Input
+									name="email"
+									label="Correo electrónico"
+									type="email"
+									placeholder="example@gmail.com"
+								/>
 
-								<Input name="password" label="Contraseña" type="password" placeholder="●●●●●●●●●●" login />
+								<Input
+									name="password"
+									label="Contraseña"
+									type="password"
+									placeholder="●●●●●●●●●●"
+									login
+								/>
 
 								<Input
 									name="role"
@@ -62,7 +78,10 @@ const LoginPage: React.FC = () => {
 								/>
 
 								<div className="mt-4">
-									<button type="submit" className="bg-green-800 text-neutral-100 rounded-lg p-2  w-full h-12 font-bold">
+									<button
+										type="submit"
+										className="bg-green-800 text-neutral-100 rounded-lg p-2  w-full h-12 font-bold"
+									>
 										Iniciar sesión
 									</button>
 								</div>

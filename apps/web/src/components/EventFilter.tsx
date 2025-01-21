@@ -73,7 +73,9 @@ export const EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) => {
 
 	useEffect(() => {
 		if (professionals) {
-			const serviceProfessionals = professionals.filter((professional) => professional.serviceId === selectedService)
+			const serviceProfessionals = professionals.filter(
+				(professional) => professional.serviceId === selectedService,
+			)
 			selectDataFormatter({ data: serviceProfessionals, setData: setSelectProfessionals })
 		}
 	}, [selectedService])
@@ -89,7 +91,11 @@ export const EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) => {
 
 					<Show when={role === "ADMIN" || role === "FUNCTIONARY"}>
 						<SuperSelect label="Seleccione un servicio" name="serviceFilter" options={services} />
-						<SuperSelect label="Seleccione un profesional" name="professionalFilter" options={selectProfessionals} />
+						<SuperSelect
+							label="Seleccione un profesional"
+							name="professionalFilter"
+							options={selectProfessionals}
+						/>
 					</Show>
 
 					<Show when={role === "FUNCTIONARY"}>
@@ -98,7 +104,11 @@ export const EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) => {
 								Solo eventos de mi centro
 							</label>
 							<div className="flex justify-end">
-								<Switch className="" onChange={toggleCenter} defaultValue={Number(centerId) === (user as Staff).centerId} />
+								<Switch
+									className=""
+									onChange={toggleCenter}
+									defaultValue={Number(centerId) === (user as Staff).centerId}
+								/>
 							</div>
 						</div>
 					</Show>

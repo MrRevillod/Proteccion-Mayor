@@ -31,6 +31,7 @@ export const CreateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => 
 					<Input name="name" label="Nombre" type="text" placeholder="Juan Perez" />
 					<Input name="email" label="Correo Electrónico" type="email" placeholder="JohnD@provider.com" />
 					<Input name="address" label="Dirección" type="text" placeholder="Montt #123" />
+					<Input name="phone" label="Teléfono" type="text" placeholder="955473897" />
 					<SuperSelect
 						name="gender"
 						label="Género"

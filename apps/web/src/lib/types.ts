@@ -66,6 +66,7 @@ export interface Senior extends IUser {
 	address: string
 	birthDate: string
 	validated: boolean
+	phone: string
 }
 
 export type UnvalidatedSenior = Omit<Senior, "name" & "address" & "birthDate">

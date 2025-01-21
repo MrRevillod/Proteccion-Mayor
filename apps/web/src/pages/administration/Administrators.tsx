@@ -23,7 +23,13 @@ const StaffPage: React.FC = () => {
 	})
 
 	return (
-		<PageLayout pageTitle="Funcionarios" create={true} data={data} setData={setStaff} searchKeys={["id", "name", "email"]}>
+		<PageLayout
+			pageTitle="Funcionarios"
+			create={true}
+			data={data}
+			setData={setStaff}
+			searchKeys={["id", "name", "email"]}
+		>
 			<section className="w-full bg-white dark:bg-primary-dark p-4 rounded-lg">
 				<Table<Staff> editable deletable loading={loading} data={staff} columnsConfig={StaffColumns} />
 			</section>
@@ -31,7 +37,12 @@ const StaffPage: React.FC = () => {
 			<CreateStaff data={staff} setData={setStaff} />
 			<UpdateStaff data={staff} setData={setStaff} />
 
-			<ConfirmAction<Staff> text="¿Estás seguro(a) de que deseas eliminar este usuario?" data={staff} setData={setStaff} action={deleteStaff} />
+			<ConfirmAction<Staff>
+				text="¿Estás seguro(a) de que deseas eliminar este usuario?"
+				data={staff}
+				setData={setStaff}
+				action={deleteStaff}
+			/>
 		</PageLayout>
 	)
 }

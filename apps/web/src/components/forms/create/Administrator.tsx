@@ -3,16 +3,19 @@ import React from "react"
 import { Form } from "@/components/forms/Form"
 import { Input } from "@/components/ui/Input"
 import { Modal } from "@/components/Modal"
-import { useState } from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { SuperSelect } from "@/components/ui/SuperSelect"
-import { StaffSchemas } from "@/lib/schemas"
-import { createStaff, getCenters } from "@/lib/actions"
-import { FormProvider, useForm } from "react-hook-form"
-import { Center, FormProps, Staff, StaffRole } from "@/lib/types"
-import { useRequest } from "@/hooks/useRequest"
+
+import { useState } from "react"
 import { message } from "antd"
+import { FormProvider, useForm } from "react-hook-form"
+
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useRequest } from "@/hooks/useRequest"
+
+import { StaffSchemas } from "@/lib/schemas"
 import { selectDataFormatter } from "@/lib/formatters"
+import { createStaff, getCenters } from "@/lib/actions"
+import { Center, FormProps, Staff } from "@/lib/types"
 
 export const CreateStaff: React.FC<FormProps<Staff>> = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false)
@@ -25,12 +28,17 @@ export const CreateStaff: React.FC<FormProps<Staff>> = ({ data, setData }) => {
 	})
 
 	if (error) message.error("Error al cargar los datos")
-	const selectedRole = methods.watch("role") as StaffRole
 
 	return (
 		<Modal type="Create" title="Añadir nuevo funcionario al sistema" loading={loading}>
 			<FormProvider {...methods}>
-				<Form<Staff> data={data as Staff[]} setData={setData} action={createStaff} setLoading={setLoading} actionType="create">
+				<Form<Staff>
+					data={data as Staff[]}
+					setData={setData}
+					action={createStaff}
+					setLoading={setLoading}
+					actionType="create"
+				>
 					<Input name="id" label="Rut (sin puntos ni guión)" type="text" placeholder="123456789" />
 					<Input name="name" label="Nombre" type="text" placeholder="Juan Perez" />
 					<Input name="email" label="Correo Electrónico" type="email" placeholder="JohnD@provider.com" />

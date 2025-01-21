@@ -33,15 +33,7 @@ export const Modal: React.FC<ModalProps> = ({ title, type, loading, size, childr
 			footer={[]}
 			onClose={handleClose}
 			className={modalSizeClass}
-			width={
-				size === "small"
-					? 400
-					: size === "middle"
-					? 500
-					: size === "large"
-					? 800
-					: undefined
-			}
+			width={size === "small" ? 400 : size === "middle" ? 500 : size === "large" ? 800 : undefined}
 			style={size === "large" ? { top: 40 } : {}}
 			styles={{
 				body: {

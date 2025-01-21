@@ -16,10 +16,10 @@ import { UpdateEvent } from "@/components/forms/update/Event"
 import { ConfirmAction } from "@/components/ConfirmAction"
 import { UpcomingEvents } from "@/components/UpcomingEvents"
 
+import { CreateWeeklyEvents } from "@/components/forms/create/WeeklyEvents"
 import { filterUpcomingEvents, selectDataFormatter } from "@/lib/formatters"
 import { Center, Event, Events, Professional, Service, SuperSelectField } from "@/lib/types"
 import { deleteEvent, getCenters, getEvents, getProfessionals, getServices } from "@/lib/actions"
-import { CreateWeeklyEvents } from "@/components/forms/create/WeeklyEvents"
 
 const StaffAgendaPage: React.FC = () => {
 	const location = useLocation()
@@ -56,8 +56,7 @@ const StaffAgendaPage: React.FC = () => {
 
 	const { data: rawCenters } = useRequest<Center[]>({
 		action: getCenters,
-		query: "select=name,id",
-		onSuccess: (data) => selectDataFormatter({ data, setData: setCenters, allString: true }),
+		onSuccess: (data) => selectDataFormatter({ data, setData: setCenters }),
 	})
 
 	useRequest<Service[]>({

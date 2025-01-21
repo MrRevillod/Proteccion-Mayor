@@ -178,7 +178,12 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 				<form className="space-y-4 mt-4 mb-8">
 					<Show when={formStep === 1 && role === "ADMIN"}>
 						<SuperSelect label="Selecciona un servicio" options={services} name="serviceId" allowClear />
-						<SuperSelect label="Selecciona un profesional" options={professionals} name="professionalId" allowClear />
+						<SuperSelect
+							label="Selecciona un profesional"
+							options={professionals}
+							name="professionalId"
+							allowClear
+						/>
 						<DatetimeSelect label="Fecha de inicio" name="start" showTime={false} disablePast />
 						<DatetimeSelect label="Fecha de término" name="end" showTime={false} disablePast />
 					</Show>

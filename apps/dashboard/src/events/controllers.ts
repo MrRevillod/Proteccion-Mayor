@@ -216,7 +216,10 @@ export class EventsController {
 			const eventExistsChange = eventExists.assistance !== assistance
 
 			if (eventExistsChange && dayjs().isAfter(dayjs(eventExists.end).add(3, "days"))) {
-				throw new AppError(400, "No se puede autorizar la asistencia despues de 3 dias de la finalización del evento")
+				throw new AppError(
+					400,
+					"No se puede autorizar la asistencia despues de 3 dias de la finalización del evento",
+				)
 			}
 
 			const startDate = new Date(start)
@@ -437,7 +440,11 @@ export class EventsController {
 			const previousReservation = await prisma.event.findFirst({
 				select: this.schemas.defaultSelect,
 				where: {
-					AND: [{ seniorId: user.id }, { serviceId: Number(serviceId) }, { updatedAt: { gte: twoMonthsAgo } }],
+					AND: [
+						{ seniorId: user.id },
+						{ serviceId: Number(serviceId) },
+						{ updatedAt: { gte: twoMonthsAgo } },
+					],
 				},
 			})
 

@@ -40,6 +40,16 @@ const generateRUT = (): string => {
 	return `${numero}${dv}`
 }
 
+const generateCL_PHONE = (): string => {
+	let phone = "9"
+
+	for (let i = 0; i < 8; i++) {
+		phone += Math.floor(Math.random() * 10)
+	}
+
+	return phone
+}
+
 const uploadImage = async (url: string, name: string, uploadPath: string) => {
 	const STORAGE_URL = `${process.env.SERVER_BASE_URL}/api/storage`
 
@@ -206,11 +216,13 @@ const seed = async () => {
 				birthDate: faker.date.between({ from: "1940-01-01", to: "1965-12-31" }),
 				validated: Math.floor(Math.random() * 1000) % 2 === 0,
 				gender: Math.floor(Math.random() * 1000) % 2 === 0 ? Gender.MA : Gender.FE,
+				phone: generateCL_PHONE(),
 			},
 			update: {},
 		})
 		seniorBar.update(i + 1)
 	}
+
 	seniorBar.stop()
 
 	const professionalBar = createProgressBar("Professionals", professionals.length)

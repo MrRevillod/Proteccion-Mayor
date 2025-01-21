@@ -69,7 +69,9 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 		})
 
 		if (role === "ADMIN") {
-			const serviceProfessionals = professionals?.filter((professional) => professional.serviceId === selectedData?.serviceId)
+			const serviceProfessionals = professionals?.filter(
+				(professional) => professional.serviceId === selectedData?.serviceId,
+			)
 			selectDataFormatter({ data: serviceProfessionals as Professional[], setData: setSelectProfessionals })
 		}
 
@@ -79,13 +81,29 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 	return (
 		<Modal type="Edit" title="Editar un evento" loading={loading}>
 			<FormProvider {...methods}>
-				<Form action={updateEvent} disabled={disabled} actionType="update" deletable refetch={refetch} setLoading={setLoading}>
+				<Form
+					action={updateEvent}
+					disabled={disabled}
+					actionType="update"
+					deletable
+					refetch={refetch}
+					setLoading={setLoading}
+				>
 					<Show when={isAfterToday(selectedData?.start)}>
 						<Show when={role === "ADMIN"}>
-							<SuperSelect label="Seleccione el profesional" name="professionalId" options={selectProfessionals} />
+							<SuperSelect
+								label="Seleccione el profesional"
+								name="professionalId"
+								options={selectProfessionals}
+							/>
 						</Show>
 
-						<SuperSelect label="Seleccione el centro de atención (opcional)" name="centerId" options={centers} disabled={disabled} />
+						<SuperSelect
+							label="Seleccione el centro de atención (opcional)"
+							name="centerId"
+							options={centers}
+							disabled={disabled}
+						/>
 					</Show>
 
 					<SuperSelect
@@ -117,7 +135,9 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 						</div>
 					</Show>
 
-					<Show when={selectedData?.seniorId && !isAfterToday(selectedData?.start) && !isEnd(selectedData?.end)}>
+					<Show
+						when={selectedData?.seniorId && !isAfterToday(selectedData?.start) && !isEnd(selectedData?.end)}
+					>
 						<BooleanSelect
 							name="assistance"
 							options={[

@@ -12,7 +12,7 @@ export const SeniorsColumns: TableColumnType<Partial<Senior>> = [
 	{ title: "Correo Electrónico", dataIndex: "email", key: "email" },
 	{ title: "Dirección", dataIndex: "address", key: "address" },
 	{ title: "Edad", dataIndex: "birthDate", key: "birthDate" },
-	{ title: "Verificado", dataIndex: "validated", key: "validated" },
+	{ title: "Teléfono", dataIndex: "phone", key: "phone" },
 	{ title: "Creado", dataIndex: "createdAt", key: "createdAt" },
 ]
 

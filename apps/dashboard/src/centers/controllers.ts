@@ -20,7 +20,6 @@ export class CentersController {
 	 */
 
 	public getMany: Controller = async (req, res, handleError) => {
-
 		try {
 			const query = this.schemas.query.parse(req.query)
 			const centers = await prisma.center.findMany({

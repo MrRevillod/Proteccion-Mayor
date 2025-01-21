@@ -91,7 +91,9 @@ const ValidatePasswordPage: React.FC = () => {
 				<div className="flex w-full login-container items-center justify-center absolute">
 					<div className="bg-white dark:bg-primary-dark flex flex-col justify-center items-center px-8 md:px-12 w-11/12 sm:w-1/2 md:w-1/2 lg:w-1/3 xl:1/3 2xl:w-1/4 rounded-lg h-2/3 min-h-[550px] login-form-container dark:shadow-none">
 						<div className="w-full max-w-md">
-							<h2 className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-8">Restablecer Contraseña</h2>
+							<h2 className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-8">
+								Restablecer Contraseña
+							</h2>
 							<p className="text-center text-gray-600 mb-6">Ingresa y confirma tu nueva contraseña.</p>
 
 							{errorMessage && <p className="text-red text-center mb-4">{errorMessage}</p>}
@@ -108,14 +110,21 @@ const ValidatePasswordPage: React.FC = () => {
 
 									<Input
 										name="confirmPassword"
-										label={payload.role === "SENIOR" ? "Confirma tu nuevo PIN" : "Confirma tu nueva Contraseña"}
+										label={
+											payload.role === "SENIOR"
+												? "Confirma tu nuevo PIN"
+												: "Confirma tu nueva Contraseña"
+										}
 										type="password"
 										placeholder={`Confirma tu ${payload.role === "SENIOR" ? "nuevo PIN" : "nueva contraseña"}`}
 										maxLength={payload.role === "SENIOR" ? 4 : 100}
 									/>
 
 									<div className="mt-4">
-										<button type="submit" className="bg-green-800 text-neutral-100 rounded-lg p-2 w-full h-12 font-bold">
+										<button
+											type="submit"
+											className="bg-green-800 text-neutral-100 rounded-lg p-2 w-full h-12 font-bold"
+										>
 											{payload.role === "SENIOR" ? "Restablecer PIN" : "Restablecer Contraseña"}
 										</button>
 									</div>

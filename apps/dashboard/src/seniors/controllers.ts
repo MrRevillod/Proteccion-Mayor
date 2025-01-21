@@ -83,7 +83,7 @@ export class SeniorController {
 			const [randomPin, hashedRandomPin] = await credentials.generatePin()
 
 			const data = {
-				...req.body, // id, name, email, address, gender
+				...req.body, // id, name, email, address, gender, phone
 				validated: true,
 				password: hashedRandomPin,
 				birthDate: new Date(req.body.birthDate),
@@ -116,7 +116,7 @@ export class SeniorController {
 
 	public updateOne: Controller = async (req, res, handleError) => {
 		const { body, params } = req
-		const { name, email, password, address, birthDate } = body
+		const { name, email, password, address, birthDate, phone } = body
 
 		const requestedUser = req.getExtension("reqResource") as Senior
 
@@ -144,6 +144,7 @@ export class SeniorController {
 				data: {
 					name,
 					email,
+					phone,
 					password: updatedPassword,
 					address,
 					birthDate: new Date(birthDate),
@@ -231,9 +232,7 @@ export class SeniorController {
 			}
 
 			if (email && senior.email === email) {
-				return res
-					.status(409)
-					.json({ values: { email: "Este correo ya está registrado." } })
+				return res.status(409).json({ values: { email: "Este correo ya está registrado." } })
 			}
 		} catch (error) {
 			handleError(error)
@@ -251,7 +250,7 @@ export class SeniorController {
 	 */
 
 	public createMobile: Controller = async (req, res, handleError) => {
-		const { rut, pin, email } = req.body
+		const { rut, pin, email, phone } = req.body
 
 		try {
 			const exists = await prisma.senior.findFirst({
@@ -268,6 +267,7 @@ export class SeniorController {
 				data: {
 					id: rut,
 					name: "",
+					phone,
 					email: email,
 					password: await hash(pin, 10),
 					address: "",

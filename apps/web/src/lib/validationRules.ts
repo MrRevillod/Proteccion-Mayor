@@ -10,7 +10,7 @@ export const minutesPerSessionSchema = z
 			.number()
 			.int({ message: "Debe ser un número entero" })
 			.min(15, { message: "La duración mínima es de 15 minutos" })
-			.max(180, { message: "La duración máxima es de 3 horas" })
+			.max(180, { message: "La duración máxima es de 3 horas" }),
 	)
 
 export const isValidRutFormat = (rut: string): boolean => {
@@ -61,21 +61,33 @@ export const optionalPinSchema = z.string().refine((value) => value === "" || /^
 export const optionalPasswordSchema = z
 	.string()
 	.refine(
-		(value) => value === "" || (value.length >= 8 && /[A-Z]/.test(value) && /[a-z]/.test(value) && /[0-9]/.test(value) && /[\W_]/.test(value)),
+		(value) =>
+			value === "" ||
+			(value.length >= 8 &&
+				/[A-Z]/.test(value) &&
+				/[a-z]/.test(value) &&
+				/[0-9]/.test(value) &&
+				/[\W_]/.test(value)),
 		{
 			message:
 				"La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial.",
-		}
+		},
 	)
 
 export const passwordSchema = z
 	.string()
 	.refine(
-		(value) => value === "" || (value.length >= 8 && /[A-Z]/.test(value) && /[a-z]/.test(value) && /[0-9]/.test(value) && /[\W_]/.test(value)),
+		(value) =>
+			value === "" ||
+			(value.length >= 8 &&
+				/[A-Z]/.test(value) &&
+				/[a-z]/.test(value) &&
+				/[0-9]/.test(value) &&
+				/[\W_]/.test(value)),
 		{
 			message:
 				"La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial.",
-		}
+		},
 	)
 
 export const nameSchema = z
@@ -110,13 +122,19 @@ export const nameServiceSchema = z
 	.string()
 	.min(2, "El nombre debe tener al menos 2 caracteres")
 	.max(50, "El nombre no debe tener más de 50 caracteres")
-	.regex(/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ\-'.()]+$/, "El nombre solo puede contener letras, espacios y caracteres especiales como - ' . ()")
+	.regex(
+		/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ\-'.()]+$/,
+		"El nombre solo puede contener letras, espacios y caracteres especiales como - ' . ()",
+	)
 
 export const titleServiceSchema = z
 	.string()
 	.min(2, "El título debe tener al menos 2 caracteres")
 	.max(50, "El título no debe tener más de 50 caracteres")
-	.regex(/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ\-'.()]+$/, "El título solo puede contener letras, espacios y caracteres especiales como - ' . ()")
+	.regex(
+		/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ\-'.()]+$/,
+		"El título solo puede contener letras, espacios y caracteres especiales como - ' . ()",
+	)
 
 export const nameCenterSchema = z
 	.string()
@@ -185,6 +203,6 @@ export const centerIdSchema = z
 		},
 		{
 			message: "El valor debe ser un número válido o 'null'",
-		}
+		},
 	)
 	.nullable()

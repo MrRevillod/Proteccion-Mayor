@@ -27,7 +27,13 @@ const CentersPage: React.FC = () => {
 	if (error) message.error("Error al cargar los datos")
 
 	return (
-		<PageLayout pageTitle="Centros de atención" create data={data} setData={setCenters} searchKeys={["name", "address", "phone"]}>
+		<PageLayout
+			pageTitle="Centros de atención"
+			create
+			data={data}
+			setData={setCenters}
+			searchKeys={["name", "address", "phone"]}
+		>
 			<section className="w-full bg-white dark:bg-primary-dark p-4 rounded-lg">
 				<CardLayout<Center>
 					data={centers}
