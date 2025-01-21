@@ -8,6 +8,8 @@
         "types": [
             "node"
         ],
+        "noEmit": false,
+        "allowImportingTsExtensions": false,
     },
     "include": [
         "."
@@ -15,5 +17,5 @@
     "exclude": [
         "node_modules",
         "dist"
-    ],
+    ]
 }
