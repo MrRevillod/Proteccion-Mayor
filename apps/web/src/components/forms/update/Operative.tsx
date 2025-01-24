@@ -48,20 +48,17 @@ export const UpdateOperative: React.FC<FormProps<Operatives>> = ({ data, setData
 
 	useEffect(() => {
 		if (!selectedData) return
-		console.log(selectedData)
+		console.log("data", selectedData)
 		reset({
 			name: selectedData?.name,
 			description: selectedData?.description,
 			start: selectedData?.start,
 			end: selectedData?.end,
 			centerId: selectedData?.centerId,
-			services: selectedData?.services?.map((service: any) => service.id),
+			services: selectedData?.services?.map((service: any) => Number(service.id)),
 			professionals: selectedData?.professionals?.map((professional: any) => professional.id),
-			image: selectedData?.image,
 		})
 	}, [selectedData])
-	/* console.log(watch("centerId"))
-	console.log(watch("services")) */
 
 	useEffect(() => {
 		if (!selectedServices) return

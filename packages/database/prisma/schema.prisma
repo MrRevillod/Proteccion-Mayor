@@ -42,24 +42,26 @@ model Service {
   color       String   @db.Text
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  operativeId Int?
 
   events        Event[]
   professionals Professional[]
-  operative     Operatives?    @relation(fields: [operativeId], references: [id], onDelete: SetNull)
+  operatives    Operative[]
+  DailySessions DailySessions[]
 }
 
 model Center {
-  id      Int    @id @default(autoincrement())
-  name    String @unique @db.VarChar(255)
-  address String @db.Text
-  phone   String @db.VarChar(255)
-  color   String @db.Text
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(255)
+  address   String   @db.Text
+  phone     String   @db.VarChar(255)
+  color     String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   Event         Event[]
   dailySessions DailySessions[]
   Staff         Staff[]
+  operatives    Operative[]
 }
 
 model DailySessions {
@@ -86,13 +88,12 @@ model Professional {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  serviceId Int?
 
-  events      Event[]
-  serviceId   Int?
-  operativeId Int?
+  events     Event[]
+  operatives Operative[]
 
-  operative Operatives? @relation(fields: [operativeId], references: [id], onDelete: SetNull)
-  service   Service?    @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  service Service? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
 }
 
 model Event {
@@ -115,7 +116,7 @@ model Event {
   center       Center?       @relation(fields: [centerId], references: [id], onDelete: SetNull)
 }
 
-model Operatives {
+model Operative {
   id          Int      @id @default(autoincrement())
   name        String   @db.Text
   description String   @db.Text
@@ -125,7 +126,7 @@ model Operatives {
 
   professionals Professional[]
   services      Service[]
-  centers       Center?        @relation(fields: [centerId], references: [id])
+  center        Center?        @relation(fields: [centerId], references: [id])
 }
 
 model RevokedToken {

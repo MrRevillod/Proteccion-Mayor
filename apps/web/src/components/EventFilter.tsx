@@ -31,8 +31,10 @@ export const EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) => {
 	const { showModal } = useModal()
 	const { user, role } = useAuth()
 	const { serviceId, centerId, professionalId } = getIdsFromUrl(location)
+
 	// Se ejecuta un efecto para seleccionar por defecto los filtros
 	// Si existe alguno de estos ids en la url, se selecciona por defecto en el filtro
+
 	useEffect(() => {
 		if (role === "FUNCTIONARY") {
 			const functionary = user as Staff

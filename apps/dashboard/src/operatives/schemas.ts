@@ -1,10 +1,9 @@
+import { z } from "zod"
 import { Prisma } from "@prisma/client"
 import { rules, Schema } from "@repo/lib"
-import { z } from "zod"
 
 export class OperativesSchemas extends Schema {
-	query: any
-	get defaultSelect(): Prisma.OperativesSelect {
+	get defaultSelect(): Prisma.OperativeSelect {
 		return {
 			id: true,
 			name: true,
@@ -13,7 +12,7 @@ export class OperativesSchemas extends Schema {
 			end: true,
 			professionals: true,
 			services: true,
-			centers: true,
+			center: true,
 			centerId: true,
 		}
 	}

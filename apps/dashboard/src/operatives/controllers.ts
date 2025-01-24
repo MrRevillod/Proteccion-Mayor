@@ -1,6 +1,6 @@
 import { prisma } from "@repo/database"
 import { OperativesSchemas } from "./schemas"
-import { AppError, Conflict, Controller, StorageService } from "@repo/lib"
+import { AppError, Controller, StorageService } from "@repo/lib"
 
 export class OperativesController {
 	constructor(
@@ -10,7 +10,7 @@ export class OperativesController {
 
 	public getMany: Controller = async (req, res, handleError) => {
 		try {
-			const operativos = await prisma.operatives.findMany({
+			const operativos = await prisma.operative.findMany({
 				select: this.schemas.defaultSelect,
 			})
 
@@ -23,9 +23,9 @@ export class OperativesController {
 	public createOne: Controller = async (req, res, handleError) => {
 		const { body, file } = req
 		const { name, description, start, end, centerId, services, professionals } = body
-		console.log(file)
+
 		try {
-			const exists = await prisma.operatives.findFirst({
+			const exists = await prisma.operative.findFirst({
 				where: { name },
 			})
 
@@ -33,7 +33,7 @@ export class OperativesController {
 				throw new AppError(409, "El operativo ya existe")
 			}
 
-			const operative = await prisma.operatives.create({
+			const operative = await prisma.operative.create({
 				data: {
 					name,
 					description,
@@ -45,6 +45,7 @@ export class OperativesController {
 				},
 				select: this.schemas.defaultSelect,
 			})
+
 			await this.storage.uploadFile({
 				input: file as Express.Multer.File,
 				url: `/upload?path=%2Foperatives`,
@@ -63,9 +64,9 @@ export class OperativesController {
 		const { name, description, start, end, centerId, services, professionals } = body
 
 		try {
-			// Actualizar el operativo
-			const operative = await prisma.operatives.update({
+			const operative = await prisma.operative.update({
 				where: { id: Number(id) },
+				select: this.schemas.defaultSelect,
 				data: {
 					name,
 					description,
@@ -83,8 +84,8 @@ export class OperativesController {
 							}
 						: undefined,
 				},
-				select: this.schemas.defaultSelect,
 			})
+
 			if (file) {
 				await this.storage.uploadFile({
 					input: file as Express.Multer.File,
@@ -92,6 +93,7 @@ export class OperativesController {
 					filename: operative.id.toString(),
 				})
 			}
+
 			return res.status(200).json({ values: { modified: operative } })
 		} catch (error) {
 			handleError(error)
@@ -102,7 +104,7 @@ export class OperativesController {
 		const { id } = req.params
 
 		try {
-			const operativo = await prisma.operatives.delete({
+			const operativo = await prisma.operative.delete({
 				where: { id: Number(id) },
 				select: this.schemas.defaultSelect,
 			})

@@ -1,8 +1,9 @@
+import clsx from "clsx"
 import React from "react"
+
 import { Select } from "antd"
 import { SuperSelectField } from "@/lib/types"
 import { Controller, useFormContext } from "react-hook-form"
-import clsx from "clsx"
 
 interface Props {
 	data: SuperSelectField[]
@@ -21,7 +22,7 @@ export const MultipleSelect: React.FC<Props> = ({ data, name, label, placeholder
 		"rounded-lg text-sm focus:outline-none focus:ring-primary-green",
 		"focus:border-primary-green h-10 placeholder-neutral-400",
 		"text-dark dark:text-light mb-1 border-1 bg-light dark:bg-primary-dark",
-		"w-full"
+		"w-full",
 	)
 	return (
 		<div className="flex flex-col gap-2">

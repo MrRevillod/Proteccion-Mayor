@@ -4,8 +4,7 @@ import PageLayout from "@/layouts/PageLayout"
 import { message } from "antd"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Form } from "@/components/forms/Form"
-import { Operatives, SuperSelectField } from "@/lib/types"
+import { Operatives } from "@/lib/types"
 import { useRequest } from "@/hooks/useRequest"
 import { ImageCard } from "@/components/ui/ImageCard"
 import { CardLayout } from "@/components/CardLayout"
@@ -14,6 +13,7 @@ import { CreateOperative } from "@/components/forms/create/Operative"
 import { UpdateOperative } from "@/components/forms/update/Operative"
 import { ConfirmAction } from "@/components/ConfirmAction"
 import { useModal } from "@/context/ModalContext"
+
 const OperativesPage: React.FC = () => {
 	const navigate = useNavigate()
 	const [operatives, setOperatives] = useState<Operatives[]>([])

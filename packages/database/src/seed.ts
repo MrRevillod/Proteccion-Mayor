@@ -3,6 +3,7 @@ import { Faker, es } from "@faker-js/faker"
 import { readFileSync } from "node:fs"
 import { PrismaClient, Gender } from "@prisma/client"
 
+import dayjs from "dayjs"
 import colors from "ansi-colors"
 import cliProgress from "cli-progress"
 
@@ -91,7 +92,7 @@ const seed = async () => {
 		prisma.center.deleteMany(),
 		prisma.service.deleteMany(),
 		prisma.senior.deleteMany(),
-		prisma.operatives.deleteMany(),
+		prisma.operative.deleteMany(),
 		prisma.dailySessions.deleteMany(),
 		prisma.revokedToken.deleteMany(),
 		prisma.staff.deleteMany(),
@@ -120,9 +121,9 @@ const seed = async () => {
 			where: { id: rut },
 			create: {
 				id: rut,
-				email: admin.email,
+				email: admin.email ?? "",
 				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
-				name: admin.name,
+				name: admin.name ?? "",
 				role: "ADMIN",
 			},
 			update: {},
@@ -150,6 +151,7 @@ const seed = async () => {
 				},
 				update: {},
 			})
+
 			await uploadImage(service.img, service.id.toString(), "/upload?path=%2Fservices")
 
 			for (let i = 0; i < service.professionals; i++) {
@@ -172,8 +174,10 @@ const seed = async () => {
 				})
 			}
 		}
+
 		serviceBar.update(serviceIndex + 1)
 	}
+
 	serviceBar.stop()
 
 	const centerBar = createProgressBar("Centers", centers.length)
@@ -195,6 +199,7 @@ const seed = async () => {
 		await uploadImage(center.img, center.id.toString(), "/upload?path=%2Fcenters")
 		centerBar.update(centerIndex + 1)
 	}
+
 	centerBar.stop()
 
 	const seniorBar = createProgressBar("Seniors", 50)
@@ -222,38 +227,11 @@ const seed = async () => {
 			},
 			update: {},
 		})
+
 		seniorBar.update(i + 1)
 	}
 
-	const professionalRUTs = []
-	for (const professional of professionals) {
-		const serviceId = Math.floor(Math.random() * services.length) + 1
-
 	seniorBar.stop()
-
-	const professionalBar = createProgressBar("Professionals", professionals.length)
-	professionalBar.start(professionals.length, 0, { title: "Professionals" })
-
-	for (const [index, professional] of professionals.entries()) {
-		const ProfessionalRUT = generateRUT()
-
-		await prisma.professional.upsert({
-			where: { id: professional.rut },
-			create: {
-				id: professional.rut,
-				email: professional.email,
-				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
-				name: professional.name,
-
-				serviceId,
-				serviceId: Math.floor(Math.random() * 6) + 1,
-				minutesPerSession: 30,
-			},
-			update: {},
-		})
-		professionalBar.update(index + 1)
-	}
-	professionalBar.stop()
 
 	const sessionBar = createProgressBar("Daily Sessions", dailySessions.length)
 	sessionBar.start(dailySessions.length, 0, { title: "Daily Sessions" })
@@ -294,67 +272,96 @@ const seed = async () => {
 			update: {},
 		})
 
-		professionalRUTs.push({ id: professional.rut, serviceId })
-	}
-
-	// Crear operativos y conectarlos
-	for (const operative of operatives) {
-		// Verificar que haya servicios y profesionales disponibles
-		if (services.length === 0 || professionalRUTs.length < 3) {
-			console.warn(`Operativo "${operative.name}" no pudo ser creado debido a falta de servicios o profesionales.`)
-			continue
-		}
-
-		// Seleccionar aleatoriamente hasta 3 profesionales
-		const assignedProfessionals = professionalRUTs
-			.sort(() => 0.5 - Math.random()) // Mezclar aleatoriamente
-			.slice(0, 3)
-
-		// Seleccionar aleatoriamente hasta 3 servicios
-		const assignedServices = services
-			.sort(() => 0.5 - Math.random()) // Mezclar aleatoriamente
-			.slice(0, 3)
-
-		// Crear el operativo con los datos asignados
-		await prisma.operatives.create({
-			data: {
-				name: operative.name,
-				description: operative.description,
-				start: new Date().toISOString(),
-				end: new Date().toISOString(),
-				centerId: 1,
-				services: {
-					connect: assignedServices.map((service: any) => ({ id: service.id })),
-				},
-				professionals: {
-					connect: assignedProfessionals.map((prof) => ({ id: prof.id })),
-				},
-			},
-		})
-	}
-	const operativesWithDetails = await prisma.operatives.findMany({
-		include: {
-			services: {
-				select: {
-					id: true,
-					name: true,
-				},
-			},
-			professionals: {
-				select: {
-					id: true,
-					name: true,
-					email: true,
-				},
-			},
-		},
-	})
-
-	console.log(JSON.stringify(operativesWithDetails, null, 2))
 		functionaryBar.update(index + 1)
 	}
 
 	functionaryBar.stop()
+
+	const staticProfessionalsBar = createProgressBar("Static Professionals", professionals.length)
+	staticProfessionalsBar.start(professionals.length, 0, { title: "Static Professionals" })
+
+	for (const [index, professional] of professionals.entries()) {
+		await prisma.professional.upsert({
+			where: { id: professional.rut },
+			create: {
+				id: professional.rut,
+				email: professional.email,
+				password: await hash(DEFAULT_PROFESSIONAL_PASSWORD, 10),
+				name: professional.name,
+				minutesPerSession: Number(professional.minutesPerSession),
+				serviceId: professional.serviceId,
+			},
+			update: {},
+		})
+
+		staticProfessionalsBar.update(index + 1)
+	}
+
+	staticProfessionalsBar.stop()
+
+	const OperativesBar = createProgressBar("Operatives", operatives.length)
+	OperativesBar.start(operatives.length, 0, { title: "Operatives" })
+
+	const firstOperativeStartDate = dayjs("2025-01-03").hour(9).startOf("hour")
+	const firstOperativeEndDate = dayjs("2025-01-03").hour(15).startOf("hour")
+
+	for (const [index, operative] of operatives.entries()) {
+		const randomServices: number[] = []
+		const randomProfessionals: string[] = []
+
+		const randCenter = await prisma.center.findMany({
+			take: 1,
+			orderBy: { id: "asc" },
+			skip: Math.floor(Math.random() * (await prisma.center.count())),
+			select: { id: true },
+		})
+
+		for (let i = 0; i < 8; i++) {
+			await prisma.$queryRaw`SELECT * FROM Professional ORDER BY RAND() LIMIT 1`
+				.then((res: any) => {
+					if (!randomProfessionals.includes(res[0].id)) {
+						randomProfessionals.push(res[0].id)
+
+						if (!randomServices.includes(res[0].serviceId)) {
+							randomServices.push(res[0].serviceId)
+						}
+					}
+				})
+				.catch((error) => {
+					console.error(error)
+				})
+		}
+
+		await Promise.all([
+			prisma.operative.upsert({
+				where: { id: operative.id },
+				create: {
+					id: operative.id,
+					name: operative.name,
+					description: operative.description,
+					start: firstOperativeStartDate.add(index, "week").toDate(),
+					end: firstOperativeEndDate.add(index, "week").toDate(),
+					centerId: randCenter[0].id,
+					professionals: { connect: randomProfessionals.map((id) => ({ id })) },
+					services: { connect: randomServices.map((id) => ({ id })) },
+				},
+				select: {
+					id: true,
+					name: true,
+					centerId: true,
+					professionals: true,
+					services: true,
+				},
+				update: {},
+			}),
+
+			uploadImage(operative.img, operative.id.toString(), "/upload?path=%2Foperatives"),
+		])
+
+		OperativesBar.update(index + 1)
+	}
+
+	OperativesBar.stop()
 
 	console.log(colors.green.bold("\n✨ Database seeding completed successfully!\n"))
 }

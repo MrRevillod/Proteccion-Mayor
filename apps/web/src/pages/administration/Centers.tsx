@@ -1,5 +1,5 @@
 import React from "react"
-import PageLayout from "../../layouts/PageLayout"
+import PageLayout from "@/layouts/PageLayout"
 
 import { UpdateCenter } from "@/components/forms/update/Center"
 import { CreateCenter } from "@/components/forms/create/Center"
