@@ -26,6 +26,7 @@ export {
 	findProfessional,
 	findSenior,
 	findService,
+	findOperative,
 	findStaff,
 } from "./utils/actions"
 

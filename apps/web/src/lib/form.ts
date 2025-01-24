@@ -16,7 +16,6 @@ export const getContentType = (body: any) => {
 
 export const buildRequestBody = (data: any): FormData | FieldValues => {
 	let formData = new FormData()
-
 	// Si existe una imagen entonces debemos añadir los campos del formulario
 	// al objeto formData, el campo "image" se trata de manera especial.
 
@@ -24,12 +23,16 @@ export const buildRequestBody = (data: any): FormData | FieldValues => {
 		Object.keys(data).forEach((key) => {
 			if (key === "image") {
 				formData.append("image", data.image)
+			} else if (Array.isArray(data[key])) {
+				data[key].forEach((value) => formData.append(`${key}[]`, value))
 			} else {
 				formData.append(key, data[key])
+				console.log("KEY:", key)
+				console.log("DataKey", data[key])
 			}
 		})
 	}
-
+	console.log(data)
 	// Finalmente si hay un data.image (es multipart) se retorna ese,
 	// si no la data original la cual será serializada a JSON.
 

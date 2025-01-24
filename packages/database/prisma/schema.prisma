@@ -35,18 +35,18 @@ model Senior {
 }
 
 model Service {
-  id          Int    @id @default(autoincrement())
-  name        String @unique @db.VarChar(255)
-  title       String @db.Text
-  description String @db.Text
-  color       String @db.Text
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(255)
+  title       String   @db.Text
+  description String   @db.Text
+  color       String   @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  operativeId Int?
 
   events        Event[]
   professionals Professional[]
-  dailySessions DailySessions[]
+  operative     Operatives?    @relation(fields: [operativeId], references: [id], onDelete: SetNull)
 }
 
 model Center {
@@ -55,7 +55,6 @@ model Center {
   address String @db.Text
   phone   String @db.VarChar(255)
   color   String @db.Text
-
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   Event         Event[]
@@ -88,10 +87,12 @@ model Professional {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  events    Event[]
-  serviceId Int?
+  events      Event[]
+  serviceId   Int?
+  operativeId Int?
 
-  service Service? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  operative Operatives? @relation(fields: [operativeId], references: [id], onDelete: SetNull)
+  service   Service?    @relation(fields: [serviceId], references: [id], onDelete: SetNull)
 }
 
 model Event {
@@ -112,6 +113,19 @@ model Event {
   professional Professional? @relation(fields: [professionalId], references: [id], onDelete: SetNull)
   service      Service?      @relation(fields: [serviceId], references: [id], onDelete: SetNull)
   center       Center?       @relation(fields: [centerId], references: [id], onDelete: SetNull)
+}
+
+model Operatives {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.Text
+  description String   @db.Text
+  start       DateTime @db.DateTime
+  end         DateTime @db.DateTime
+  centerId    Int?
+
+  professionals Professional[]
+  services      Service[]
+  centers       Center?        @relation(fields: [centerId], references: [id])
 }
 
 model RevokedToken {

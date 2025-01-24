@@ -69,6 +69,8 @@ export const Form = <T extends BaseDataType>({ data, setData, disabled = false, 
 		// estructurarse de forma diferente
 		const body = buildRequestBody(formData)
 
+		let hasChanges = false
+
 		if (actionType === "update") {
 			let hasChanges = false
 			for (const key in formData) {

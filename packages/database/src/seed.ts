@@ -91,6 +91,7 @@ const seed = async () => {
 		prisma.center.deleteMany(),
 		prisma.service.deleteMany(),
 		prisma.senior.deleteMany(),
+		prisma.operatives.deleteMany(),
 		prisma.dailySessions.deleteMany(),
 		prisma.revokedToken.deleteMany(),
 		prisma.staff.deleteMany(),
@@ -105,6 +106,7 @@ const seed = async () => {
 	const services = data.services
 	const centers = data.centers
 	const professionals = data.professionals
+	const operatives = data.operatives
 	const functionaries = data.functionaries
 	const dailySessions = data.dailySessions
 	const administrators = data.administrators
@@ -223,6 +225,10 @@ const seed = async () => {
 		seniorBar.update(i + 1)
 	}
 
+	const professionalRUTs = []
+	for (const professional of professionals) {
+		const serviceId = Math.floor(Math.random() * services.length) + 1
+
 	seniorBar.stop()
 
 	const professionalBar = createProgressBar("Professionals", professionals.length)
@@ -232,12 +238,14 @@ const seed = async () => {
 		const ProfessionalRUT = generateRUT()
 
 		await prisma.professional.upsert({
-			where: { id: ProfessionalRUT },
+			where: { id: professional.rut },
 			create: {
-				id: ProfessionalRUT,
+				id: professional.rut,
 				email: professional.email,
 				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
 				name: professional.name,
+
+				serviceId,
 				serviceId: Math.floor(Math.random() * 6) + 1,
 				minutesPerSession: 30,
 			},
@@ -286,6 +294,63 @@ const seed = async () => {
 			update: {},
 		})
 
+		professionalRUTs.push({ id: professional.rut, serviceId })
+	}
+
+	// Crear operativos y conectarlos
+	for (const operative of operatives) {
+		// Verificar que haya servicios y profesionales disponibles
+		if (services.length === 0 || professionalRUTs.length < 3) {
+			console.warn(`Operativo "${operative.name}" no pudo ser creado debido a falta de servicios o profesionales.`)
+			continue
+		}
+
+		// Seleccionar aleatoriamente hasta 3 profesionales
+		const assignedProfessionals = professionalRUTs
+			.sort(() => 0.5 - Math.random()) // Mezclar aleatoriamente
+			.slice(0, 3)
+
+		// Seleccionar aleatoriamente hasta 3 servicios
+		const assignedServices = services
+			.sort(() => 0.5 - Math.random()) // Mezclar aleatoriamente
+			.slice(0, 3)
+
+		// Crear el operativo con los datos asignados
+		await prisma.operatives.create({
+			data: {
+				name: operative.name,
+				description: operative.description,
+				start: new Date().toISOString(),
+				end: new Date().toISOString(),
+				centerId: 1,
+				services: {
+					connect: assignedServices.map((service: any) => ({ id: service.id })),
+				},
+				professionals: {
+					connect: assignedProfessionals.map((prof) => ({ id: prof.id })),
+				},
+			},
+		})
+	}
+	const operativesWithDetails = await prisma.operatives.findMany({
+		include: {
+			services: {
+				select: {
+					id: true,
+					name: true,
+				},
+			},
+			professionals: {
+				select: {
+					id: true,
+					name: true,
+					email: true,
+				},
+			},
+		},
+	})
+
+	console.log(JSON.stringify(operativesWithDetails, null, 2))
 		functionaryBar.update(index + 1)
 	}
 

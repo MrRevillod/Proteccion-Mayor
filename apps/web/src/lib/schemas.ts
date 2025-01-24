@@ -164,6 +164,28 @@ export const CentersSchemas = {
 		),
 	}),
 }
+export const OperativeSchemas = {
+	Create: z.object({
+		name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
+		description: z.string(),
+		start: z.string({ message: "La fecha de inicio es requerida" }),
+		end: z.string({ message: "La fecha de término es requerida" }),
+		centerId: z.coerce.number({ message: "El centro es obligatorio" }),
+		services: z.array(z.coerce.number()),
+		professionals: z.array(z.string()),
+		image: rules.imageSchemaCreate,
+	}),
+	Update: z.object({
+		name: z.string().min(2).optional(),
+		description: z.string().optional(),
+		start: z.string({ message: "La fecha de inicio es requerida" }),
+		end: z.string({ message: "La fecha de término es requerida" }),
+		centerId: z.coerce.number(),
+		services: z.array(z.coerce.number()),
+		professionals: z.array(z.string()),
+		image: rules.imageSchemaUpdate,
+	}),
+}
 
 export const EventSchemas = {
 	Create: z

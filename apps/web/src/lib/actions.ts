@@ -1,4 +1,5 @@
 import { api } from "./axios"
+import { AxiosResponse } from "axios"
 import { getContentType } from "./form"
 import { MutateActionProps, QueryActionProps } from "./types"
 
@@ -21,12 +22,6 @@ const apiRequest = {
 	delete: async (url: string, opts: MutateActionProps): Promise<AxiosResponse> => {
 		return await api.delete(`${url}/${opts.id}`)
 	},
-}
-
-import { AxiosResponse } from "axios"
-
-export const getOperatives = async (props: QueryActionProps) => {
-	return await apiRequest.get(`/dashboard/operatives${props.query ? "?" + props.query : ""}`)
 }
 
 // Acciones CRUD para los funcionarios
@@ -129,6 +124,23 @@ export const updateService = async (props: MutateActionProps) => {
 
 export const deleteService = async (props: MutateActionProps) => {
 	return await apiRequest.delete("/dashboard/services", props)
+}
+
+// Acciones CRUD para los Operativos
+export const getOperatives = async (props: QueryActionProps) => {
+	return await apiRequest.get(`/dashboard/operatives${props.query ? "?" + props.query : ""}`)
+}
+
+export const createOperative = async (props: MutateActionProps) => {
+	return await apiRequest.post("/dashboard/operatives", props)
+}
+
+export const updateOperative = async (props: MutateActionProps) => {
+	return await apiRequest.patch("/dashboard/operatives", props)
+}
+
+export const deleteOperative = async (props: MutateActionProps) => {
+	return await apiRequest.delete("/dashboard/operatives", props)
 }
 
 // Acciones CRUD para los eventos

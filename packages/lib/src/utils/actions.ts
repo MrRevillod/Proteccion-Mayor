@@ -28,6 +28,9 @@ export const findEvent = (id: string) => {
 	return prisma.event.findFirst({ where: { id: Number(id) } })
 }
 
+export const findOperative = (id: string) => {
+	return prisma.operatives.findFirst({ where: { id: Number(id) } })
+  
 export const findStaff = (id: string) => {
 	return prisma.staff.findFirst({ where: { id } })
 }

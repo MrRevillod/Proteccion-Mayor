@@ -37,24 +37,19 @@
 	],
 	"professionals": [
 		{
-			"name": "Tomás Curihual",
-			"email": "tc@dev.pro.com"
-		},
-		{
+			"rut": "211903996",
 			"name": "Benjamín Espinoza",
 			"email": "be@dev.pro.com"
 		},
 		{
+			"rut": "213953087",
 			"name": "Luciano Revillod",
 			"email": "lr@dev.pro.com"
 		},
 		{
+			"rut": "111111111",
 			"name": "Carlos Riquelme",
 			"email": "cr@dev.pro.com"
-		},
-		{
-			"name": "Cristóbal Sandoval",
-			"email": "cs@dev.pro.com"
 		}
 	],
 	"centers": [
@@ -439,6 +434,38 @@
 					"quantity": 6
 				}
 			]
+		}
+	],
+	"operatives": [
+		{
+			"id": 1,
+			"name": "Operativo1",
+			"description": "Operativo1"
+		},
+		{
+			"id": 2,
+			"name": "Operativo2",
+			"description": "Operativo2"
+		},
+		{
+			"id": 3,
+			"name": "Operativo3",
+			"description": "Operativo3"
+		},
+		{
+			"id": 4,
+			"name": "Operativo4",
+			"description": "Operativo4"
+		},
+		{
+			"id": 5,
+			"name": "Operativo5",
+			"description": "Operativo5"
+		},
+		{
+			"id": 6,
+			"name": "Operativo6",
+			"description": "Operativo6"
 		}
 	]
 }
