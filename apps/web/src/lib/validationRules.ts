@@ -59,7 +59,7 @@ export const optionalPasswordSchema = z
 		{
 			message:
 				"La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial.",
-		},
+		}
 	)
 
 export const passwordSchema = z
@@ -75,7 +75,7 @@ export const passwordSchema = z
 		{
 			message:
 				"La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial.",
-		},
+		}
 	)
 
 export const nameSchema = z
@@ -112,7 +112,7 @@ export const nameServiceSchema = z
 	.max(50, "El nombre no debe tener más de 50 caracteres")
 	.regex(
 		/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ\-'.()]+$/,
-		"El nombre solo puede contener letras, espacios y caracteres especiales como - ' . ()",
+		"El nombre solo puede contener letras, espacios y caracteres especiales como - ' . ()"
 	)
 
 export const titleServiceSchema = z
@@ -121,7 +121,7 @@ export const titleServiceSchema = z
 	.max(50, "El título no debe tener más de 50 caracteres")
 	.regex(
 		/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ\-'.()]+$/,
-		"El título solo puede contener letras, espacios y caracteres especiales como - ' . ()",
+		"El título solo puede contener letras, espacios y caracteres especiales como - ' . ()"
 	)
 
 export const nameCenterSchema = z

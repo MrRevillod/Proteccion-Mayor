@@ -67,7 +67,7 @@ export const Form = <T extends BaseDataType>({ data, setData, ...props }: FormPr
 		// necesario ya que el body puede contener un archivo y debe
 		// estructurarse de forma diferente
 		const body = buildRequestBody(formData)
-
+		console.log(body)
 		let hasChanges = false
 
 		if (actionType === "update") {

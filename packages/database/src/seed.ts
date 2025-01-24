@@ -68,6 +68,7 @@ const seed = async () => {
 		prisma.service.deleteMany(),
 		prisma.senior.deleteMany(),
 		prisma.administrator.deleteMany(),
+		prisma.operatives.deleteMany(),
 	])
 
 	console.log("All records dropped.")
@@ -79,6 +80,7 @@ const seed = async () => {
 	const centers = data.centers
 	const admins = data.administrators
 	const professionals = data.professionals
+	const operatives = data.operatives
 
 	for (const admin of admins) {
 		const AdminRUT = generateRUT()
@@ -127,7 +129,7 @@ const seed = async () => {
 			if (!serviceExists) {
 				await uploadImage(service.img, service.id.toString(), "/upload?path=%2Fservices")
 
-				for (let i = 0; i < service.professionals; i++) {
+				/* for (let i = 0; i < service.professionals; i++) {
 					const ProfessionalRUT = generateRUT()
 					const professionalFirstName = faker.person.firstName()
 					const professionalLastName = faker.person.lastName()
@@ -144,7 +146,7 @@ const seed = async () => {
 						},
 						update: {},
 					})
-				}
+				} */
 			}
 		}
 
@@ -171,22 +173,103 @@ const seed = async () => {
 			})
 		}
 	}
+	/* await prisma.center.create({
+		data: {
+			id: 1,
+			name: "Pedro",
+			address: "Lolaso",
+			phone: "777",
+			color: "Negro",
+		},
+	}) 
 
-	for (const professional of professionals) {
-		const ProfessionalRUT = generateRUT()
-
-		await prisma.professional.upsert({
-			where: { id: ProfessionalRUT },
+	// Crear servicios
+	for (const service of services) {
+		await prisma.service.upsert({
+			where: { id: service.id },
 			create: {
-				id: ProfessionalRUT,
-				email: professional.email,
-				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
-				name: professional.name,
-				serviceId: Math.floor(Math.random() * 6) + 1,
+				id: service.id,
+				name: service.name,
+				title: service.title,
+				description: service.description,
+				color: service.color,
 			},
 			update: {},
 		})
+	}*/
+	const professionalRUTs = []
+	for (const professional of professionals) {
+		const serviceId = Math.floor(Math.random() * services.length) + 1
+
+		await prisma.professional.upsert({
+			where: { id: professional.rut },
+			create: {
+				id: professional.rut,
+				email: professional.email,
+				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
+				name: professional.name,
+				serviceId,
+			},
+			update: {},
+		})
+
+		professionalRUTs.push({ id: professional.rut, serviceId })
 	}
+
+	// Crear operativos y conectarlos
+	for (const operative of operatives) {
+		// Verificar que haya servicios y profesionales disponibles
+		if (services.length === 0 || professionalRUTs.length < 3) {
+			console.warn(`Operativo "${operative.name}" no pudo ser creado debido a falta de servicios o profesionales.`)
+			continue
+		}
+
+		// Seleccionar aleatoriamente hasta 3 profesionales
+		const assignedProfessionals = professionalRUTs
+			.sort(() => 0.5 - Math.random()) // Mezclar aleatoriamente
+			.slice(0, 3)
+
+		// Seleccionar aleatoriamente hasta 3 servicios
+		const assignedServices = services
+			.sort(() => 0.5 - Math.random()) // Mezclar aleatoriamente
+			.slice(0, 3)
+
+		// Crear el operativo con los datos asignados
+		await prisma.operatives.create({
+			data: {
+				name: operative.name,
+				description: operative.description,
+				start: new Date().toISOString(),
+				end: new Date().toISOString(),
+				centerId: 1,
+				services: {
+					connect: assignedServices.map((service: any) => ({ id: service.id })),
+				},
+				professionals: {
+					connect: assignedProfessionals.map((prof) => ({ id: prof.id })),
+				},
+			},
+		})
+	}
+	const operativesWithDetails = await prisma.operatives.findMany({
+		include: {
+			services: {
+				select: {
+					id: true,
+					name: true,
+				},
+			},
+			professionals: {
+				select: {
+					id: true,
+					name: true,
+					email: true,
+				},
+			},
+		},
+	})
+
+	console.log(JSON.stringify(operativesWithDetails, null, 2))
 }
 
 seed()

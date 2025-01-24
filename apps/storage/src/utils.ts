@@ -18,8 +18,9 @@ export const initFileSystem = (): void => {
 	const usersPath = path.join(publicPath, "users")
 	const servicesPath = path.join(publicPath, "services")
 	const centersPath = path.join(publicPath, "centers")
+	const operativesPath = path.join(publicPath, "operatives")
 
-	const paths = [publicPath, seniorsPath, usersPath, servicesPath, centersPath]
+	const paths = [publicPath, seniorsPath, usersPath, servicesPath, centersPath, operativesPath]
 
 	paths.forEach((path) => {
 		if (!fs.existsSync(path)) fs.mkdirSync(path, { recursive: true })

@@ -26,6 +26,7 @@ export {
 	findProfessional,
 	findSenior,
 	findService,
+	findOperative,
 } from "./utils/actions"
 
 export { MailerService } from "./services/mailer"

@@ -12,9 +12,19 @@ interface DatetimeSelectProps {
 	showTime?: boolean
 	defaultValue?: Dayjs
 	width?: string
+	disabled?: boolean
+	disablePast?: boolean
 }
 
-export const DatetimeSelect = ({ label, name, showTime = true, defaultValue, width }: DatetimeSelectProps) => {
+export const DatetimeSelect = ({
+	label,
+	name,
+	showTime = true,
+	defaultValue,
+	width,
+	disabled = false,
+	disablePast = false,
+}: DatetimeSelectProps) => {
 	const {
 		control,
 		setValue,
@@ -29,9 +39,8 @@ export const DatetimeSelect = ({ label, name, showTime = true, defaultValue, wid
 		width ? width : "w-full"
 	)
 
-	// Definir el rango de años
 	const minYear = dayjs().subtract(110, "year").startOf("year")
-	const maxYear = dayjs().endOf("day")
+	const today = dayjs()
 
 	return (
 		<div className="flex flex-col gap-2">
@@ -56,81 +65,14 @@ export const DatetimeSelect = ({ label, name, showTime = true, defaultValue, wid
 								disabledHours: () => [0, 1, 2, 3, 4, 4, 5, 6, 7, 19, 20, 21, 22, 23],
 							}
 						}}
-						disabledDate={(current) =>
-							current && (current.isBefore(minYear, "day") || current.isAfter(maxYear, "day"))
-						}
-						showNow={showTime}
-						value={field.value ? dayjs(field.value) : null}
-						defaultValue={defaultValue ? dayjs(defaultValue) : null}
-						onChange={(event) => setValue(name, event ? dayjs(event).toISOString() : null)}
-					/>
-				)}
-			/>
-		</div>
-	)
-}
-
-/* import clsx from "clsx"
-import React from "react"
-import dayjs from "dayjs"
-
-import { Dayjs } from "dayjs"
-import { DatePicker } from "antd"
-import { Controller, useFormContext } from "react-hook-form"
-
-interface DatetimeSelectProps {
-	label: string
-	name: string
-	showTime?: boolean
-	defaultValue?: Dayjs
-	width?: string
-}
-
-export const DatetimeSelect = ({ label, name, showTime = true, defaultValue, width }: DatetimeSelectProps) => {
-	const {
-		control,
-		setValue,
-		formState: { errors },
-	} = useFormContext()
-
-	const classes = clsx(
-		errors[name] ? "border-red" : "border-gray-dark",
-		"rounded-lg text-sm focus:outline-none focus:ring-primary-green",
-		"focus:border-primary-green w-full h-10 placeholder-neutral-400",
-		"text-dark dark:text-light mb-1 border-1 bg-light dark:bg-primary-dark",
-		width ? width : "w-full"
-	)
-
-	return (
-		<div className="flex flex-col gap-2">
-			<div className="flex flex-row gap-2 items-center justify-between">
-				<label className="font-semibold text-dark dark:text-light">{label}</label>
-				{errors[name] && <div className="text-red text-sm">{errors[name]?.message?.toString()}</div>}
-			</div>
-			<Controller
-				control={control}
-				name={name}
-				render={({ field }) => (
-					<DatePicker
-						{...field}
-						className={classes}
-						showTime={
-							showTime && {
-								hideDisabledOptions: true,
+						disabledDate={(current) => {
+							// Si disablePast es true, deshabilita las fechas pasadas
+							if (disablePast && current && current.isBefore(today, "day")) {
+								return true
 							}
-						}
-						disabledTime={(_) => {
-							return {
-								disabledHours: () => [0, 1, 2, 3, 4, 4, 5, 6, 7, 19, 20, 21, 22, 23],
-							}
+							// Deshabilita fechas antes del mínimo año
+							return current && current.isBefore(minYear, "day")
 						}}
-						disabledDate={
-							showTime
-								? (current) =>
-										current &&
-										(current < dayjs().startOf("day") || current.day() === 0 || current.day() === 6)
-								: undefined
-						}
 						showNow={showTime}
 						value={field.value ? dayjs(field.value) : null}
 						defaultValue={defaultValue ? dayjs(defaultValue) : null}
@@ -141,4 +83,3 @@ export const DatetimeSelect = ({ label, name, showTime = true, defaultValue, wid
 		</div>
 	)
 }
- */

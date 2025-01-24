@@ -17,7 +17,7 @@ router.post("/upload", upload.array("files"), async (req, res, next) => {
 	const query: Query = req.query as Query
 	const files = req.files as File[]
 
-	const allowedPaths = ["seniors", "users", "services", "centers"]
+	const allowedPaths = ["seniors", "users", "services", "centers", "operatives"]
 
 	try {
 		if (!query.path) throw new AppError(400, "Path is required")
