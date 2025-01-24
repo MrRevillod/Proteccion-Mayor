@@ -81,7 +81,7 @@ const createProgressBar = (title: string, total: number) => {
 			barIncompleteChar: "\u2591",
 			hideCursor: true,
 		},
-		cliProgress.Presets.shades_classic,
+		cliProgress.Presets.shades_classic
 	)
 }
 
@@ -355,7 +355,7 @@ const seed = async () => {
 				update: {},
 			}),
 
-			uploadImage(operative.img, operative.id.toString(), "/upload?path=%2Foperatives"),
+			uploadImage(operative.image, operative.id.toString(), "/upload?path=%2Foperatives"),
 		])
 
 		OperativesBar.update(index + 1)
