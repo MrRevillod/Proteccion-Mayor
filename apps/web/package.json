@@ -8,7 +8,8 @@
 		"clean": "rm -rf dist",
 		"dev": "vite --clearScreen false",
 		"typecheck": "tsc --noEmit",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"format": "pnpx prettier --config ../../.prettierrc --write \"src/*\" \"src/**/*\""
 	},
 	"dependencies": {
 		"@ant-design/cssinjs": "^1.21.1",
@@ -26,6 +27,8 @@
 		"dayjs": "^1.11.13",
 		"flowbite-react": "^0.10.1",
 		"fullcalendar": "^6.1.15",
+		"jspdf": "^2.5.2",
+		"jspdf-autotable": "^3.8.4",
 		"jwt-decode": "^4.0.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",

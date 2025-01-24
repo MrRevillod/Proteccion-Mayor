@@ -4,12 +4,16 @@ export const findProfessional = (id: string) => {
 	return prisma.professional.findFirst({ where: { id } })
 }
 
+export const findFunctionary = (id: string) => {
+	return prisma.staff.findFirst({ where: { id, role: "FUNCTIONARY" } })
+}
+
 export const findSenior = (id: string) => {
 	return prisma.senior.findFirst({ where: { id } })
 }
 
 export const findAdministrator = (id: string) => {
-	return prisma.administrator.findFirst({ where: { id } })
+	return prisma.staff.findFirst({ where: { id, role: "ADMIN" } })
 }
 
 export const findService = (id: string) => {
@@ -26,4 +30,7 @@ export const findEvent = (id: string) => {
 
 export const findOperative = (id: string) => {
 	return prisma.operatives.findFirst({ where: { id: Number(id) } })
+  
+export const findStaff = (id: string) => {
+	return prisma.staff.findFirst({ where: { id } })
 }

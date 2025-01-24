@@ -3,13 +3,15 @@
 	"version": "0.0.0",
 	"private": true,
 	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"files": [
 		"dist/**"
 	],
 	"scripts": {
 		"build": "tsup",
 		"dev": "tsup --watch",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"format": "pnpx prettier --config ../../.prettierrc --write \"src/*\""
 	},
 	"dependencies": {
 		"@prisma/client": "^5.10.2",

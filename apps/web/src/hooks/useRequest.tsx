@@ -81,6 +81,7 @@ export const useRequest = <T,>({ action, ...props }: useRequestProps<T>): useReq
 
 			if (onSuccess) onSuccess(response.data.values as T)
 		} catch (err: any) {
+			console.log(err)
 			if (err.response?.data) {
 				setStatus(err.response?.status)
 				setError(err.response?.data?.message || "Error desconocido")

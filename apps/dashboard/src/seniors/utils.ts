@@ -1,5 +1,5 @@
-import { compare } from "bcrypt"
 import { Senior } from "@prisma/client"
+import { compare } from "bcrypt"
 import { RequestHandler } from "express"
 import { BadRequest, Unauthorized, UserRole } from "@repo/lib"
 

@@ -1,4 +1,4 @@
-import { Administrator, Professional, Senior, TableColumnType, UnvalidatedSenior } from "./types"
+import { Professional, Senior, Staff, TableColumnType, UnvalidatedSenior } from "./types"
 
 export const UnvalidatedSeniorsColumns: TableColumnType<UnvalidatedSenior> = [
 	{ title: "RUT", dataIndex: "id", key: "id" },
@@ -12,16 +12,18 @@ export const SeniorsColumns: TableColumnType<Partial<Senior>> = [
 	{ title: "Correo Electrónico", dataIndex: "email", key: "email" },
 	{ title: "Dirección", dataIndex: "address", key: "address" },
 	{ title: "Edad", dataIndex: "birthDate", key: "birthDate" },
-	{ title: "Verificado", dataIndex: "validated", key: "validated" },
+	{ title: "Teléfono", dataIndex: "phone", key: "phone" },
 	{ title: "Creado", dataIndex: "createdAt", key: "createdAt" },
 ]
 
-export const AdministratorColumns: TableColumnType<Partial<Administrator>> = [
+export const StaffColumns: TableColumnType<Partial<Staff>> = [
 	{ title: "RUT", dataIndex: "id", key: "id" },
 	{ title: "Nombre", dataIndex: "name", key: "name" },
 	{ title: "Correo Electrónico", dataIndex: "email", key: "email" },
 	{ title: "Creado", dataIndex: "createdAt", key: "createdAt" },
 	{ title: "Actualizado", dataIndex: "updatedAt", key: "updatedAt" },
+	{ title: "Rol", dataIndex: "role", key: "role" },
+	{ title: "Centro", dataIndex: "centerId", key: "centerId" },
 ]
 
 export const ProfessionalColumns: TableColumnType<Partial<Professional>> = [

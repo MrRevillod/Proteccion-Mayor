@@ -36,6 +36,7 @@ export const CreateService: React.FC<FormProps<Service>> = ({ data, setData }) =
 						type="text"
 						placeholder="Descripción breve del servicio"
 					/>
+
 					<ColorPicker label="Color del servicio" />
 					<ImageSelector imageLabel="Imagen del servicio" size={[400, 250]} />
 				</Form>

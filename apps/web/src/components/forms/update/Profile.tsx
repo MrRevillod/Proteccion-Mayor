@@ -7,11 +7,11 @@ import { message } from "antd"
 import { useMutation } from "@/hooks/useMutation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ImageSelector } from "@/components/ImageSelector"
-import { AdministratorSchemas } from "@/lib/schemas"
-import { MutationResponse, User } from "@/lib/types"
+import { StaffSchemas } from "@/lib/schemas"
+import { MutationResponse, Staff, User } from "@/lib/types"
 import { buildRequestBody, handleFormError } from "@/lib/form"
 import { useEffect, Dispatch, SetStateAction } from "react"
-import { updateAdministrator, updateProfessional } from "@/lib/actions"
+import { updateStaff, updateProfessional } from "@/lib/actions"
 import { FieldValues, FormProvider, SubmitHandler, useForm } from "react-hook-form"
 
 interface UpdateProfileProps {
@@ -20,19 +20,35 @@ interface UpdateProfileProps {
 }
 
 export const UpdateProfile: React.FC<UpdateProfileProps> = ({ setImageSrc, setShowUpdateForm }) => {
-	const methods = useForm({ resolver: zodResolver(AdministratorSchemas.Update) })
+	const methods = useForm({ resolver: zodResolver(StaffSchemas.Update) })
 
 	const { user, setUser, role } = useAuth()
 	const { reset, handleSubmit, setError } = methods
 
+	const {
+		formState: { errors },
+	} = methods
+
 	const handleReset = () => {
-		reset({
-			name: user?.name,
-			email: user?.email,
-			password: "",
-			confirmPassword: "",
-			image: null,
-		})
+		if (role === "PROFESSIONAL") {
+			reset({
+				name: user?.name,
+				email: user?.email,
+				password: "",
+				confirmPassword: "",
+				image: null,
+			})
+		} else {
+			reset({
+				name: user?.name,
+				email: user?.email,
+				password: "",
+				confirmPassword: "",
+				image: null,
+				role: (user as Staff)?.role,
+				centerId: (user as Staff).centerId ? (user as Staff).centerId?.toString() : "",
+			})
+		}
 	}
 
 	const handleCancel = () => {
@@ -45,17 +61,29 @@ export const UpdateProfile: React.FC<UpdateProfileProps> = ({ setImageSrc, setSh
 	}, [user])
 
 	const mutation = useMutation<MutationResponse<User>>({
-		mutateFn: role === "ADMIN" ? updateAdministrator : updateProfessional,
+		mutateFn: role === "PROFESSIONAL" ? updateProfessional : updateStaff,
 	})
 
 	const onSubmit: SubmitHandler<FieldValues> = async (formData) => {
-		const originalData = {
+		const staffData = {
 			name: user?.name,
 			email: user?.email,
 			password: "",
 			confirmPassword: "",
 			image: null,
+			role: (user as Staff)?.role,
+			centerId: (user as Staff).centerId ? (user as Staff).centerId?.toString() : "",
 		}
+		const originalData =
+			role !== "PROFESSIONAL"
+				? staffData
+				: {
+						name: user?.name,
+						email: user?.email,
+						password: "",
+						confirmPassword: "",
+						image: null,
+					}
 
 		if (JSON.stringify(formData) === JSON.stringify(originalData)) {
 			message.error("No se han realizado cambios")

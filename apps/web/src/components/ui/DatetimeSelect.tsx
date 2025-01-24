@@ -36,7 +36,7 @@ export const DatetimeSelect = ({
 		"rounded-lg text-sm focus:outline-none focus:ring-primary-green",
 		"focus:border-primary-green w-full h-10 placeholder-neutral-400",
 		"text-dark dark:text-light mb-1 border-1 bg-light dark:bg-primary-dark",
-		width ? width : "w-full"
+		width ? width : "w-full",
 	)
 
 	const minYear = dayjs().subtract(110, "year").startOf("year")

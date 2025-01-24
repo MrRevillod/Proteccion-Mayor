@@ -86,6 +86,7 @@ const ResetPasswordPage: React.FC = () => {
 									{ value: "ADMIN", label: "Administrador" },
 									{ value: "PROFESSIONAL", label: "Profesional" },
 									{ value: "SENIOR", label: "Persona Mayor" },
+									{ value: "FUNCTIONARY", label: "Funcionario de Apoyo" },
 								]}
 								defaultValue={searchParams.get("variant") || "ADMIN"}
 							/>

@@ -1,4 +1,5 @@
 import { prisma } from "@repo/database"
+import { DailySessions } from "@prisma/client"
 import { CentersSchemas } from "./schemas"
 import { StorageService } from "@repo/lib"
 import { Conflict, BadRequest, Controller } from "@repo/lib"
@@ -9,11 +10,20 @@ export class CentersController {
 		private storage: StorageService,
 	) {}
 
+	/**
+	 * Obtener todos los centros de atención registrados, puede aceptar una query
+	 * Para seleccionar los campos a devolver
+	 *
+	 * path: /api/dashboard/centers - GET
+	 *
+	 * @returns Promise<Response>
+	 */
+
 	public getMany: Controller = async (req, res, handleError) => {
 		try {
 			const query = this.schemas.query.parse(req.query)
 			const centers = await prisma.center.findMany({
-				select: query.select ?? undefined,
+				select: query.select ?? this.schemas.defaultSelect,
 			})
 
 			return res.status(200).json({ values: centers })
@@ -21,6 +31,17 @@ export class CentersController {
 			handleError(error)
 		}
 	}
+
+	/**
+	 * Crear un centro de atención
+	 * Se debe enviar un archivo en el body con el nombre de "file"
+	 *
+	 * path: /api/dashboard/centers - POST
+	 *
+	 * @returns Promise<Response>
+	 * @throws BadRequest
+	 * @throws Conflict
+	 */
 
 	public createOne: Controller = async (req, res, handleError) => {
 		const { body, file } = req
@@ -53,6 +74,17 @@ export class CentersController {
 		}
 	}
 
+	/**
+	 * Actualizar un centro de atención
+	 * Se puede enviar un archivo en el body con el nombre de "file"
+	 * Se debe enviar el id del centro en los parámetros
+	 *
+	 * path: /api/dashboard/centers/:id - PATCH
+	 *
+	 * @returns Promise<Response>
+	 * @throws AppError HTTP 400 | HTTP 409
+	 */
+
 	public updateOne: Controller = async (req, res, handleError) => {
 		const { body, file, params } = req
 
@@ -69,9 +101,9 @@ export class CentersController {
 			}
 
 			const center = await prisma.center.update({
+				select: this.schemas.defaultSelect,
 				where: { id: Number(id) },
 				data: { name, address, phone, color },
-				select: this.schemas.defaultSelect,
 			})
 
 			if (file) {
@@ -87,6 +119,18 @@ export class CentersController {
 			handleError(error)
 		}
 	}
+
+	/**
+	 * Eliminar un centro de atención
+	 * Se debe enviar el id del centro en los parámetros
+	 * Se eliminarán todos los eventos asociados a este centro
+	 * Se eliminará archivo asociado a este centro
+	 *
+	 * path: /api/dashboard/centers/:id - DELETE
+	 *
+	 * @returns Promise<Response>
+	 * @throws AppError HTTP 400
+	 */
 
 	public deleteOne: Controller = async (req, res, handleError) => {
 		const { params } = req
@@ -113,33 +157,46 @@ export class CentersController {
 			handleError(error)
 		}
 	}
+
+	/**
+	 * Actualiza las atenciones diarias de los servicios en un centro (centerId)
+	 *
+	 * path: /dashboard/centers/daily-sessions/:centerId - HTTP PATCH
+	 *
+	 * @returns Promise<Response>
+	 * @throws AppError
+	 */
+
+	public updateDailySessions: Controller = async (req, res, handleError) => {
+		const { body, params } = req
+
+		try {
+			const sessions = await prisma.dailySessions.findMany({
+				where: { centerId: Number(params.id) },
+			})
+
+			const changes: DailySessions[] = []
+
+			for (let i = 0; i < sessions.length; i++) {
+				const session = sessions[i]
+
+				if (body[session.id] !== session.quantity) {
+					changes.push({ ...session, quantity: Number(body[session.id]) })
+				}
+			}
+
+			await prisma.$transaction(
+				changes.map((change) =>
+					prisma.dailySessions.update({
+						where: { id: change.id },
+						data: { quantity: change.quantity },
+					}),
+				),
+			)
+
+			return res.status(200).json({ values: { modified: "" } })
+		} catch (error) {
+			handleError(error)
+		}
+	}
 }
-
-// export const getAll = async (req: Request, res: Response, next: NextFunction) => {
-// 	const selectQuery = req.query.select?.toString()
-// 	const select = generateSelect<Prisma.CenterSelect>(selectQuery, centerSelect)
-
-// 	let filter = {} as Prisma.CenterWhereInput
-
-// 	if (req.query.professionalId) {
-// 		filter = {
-// 			Event: {
-// 				some: {
-// 					professionalId: req.query.professionalId.toString(),
-// 				},
-// 			},
-// 		}
-// 	}
-
-// 	try {
-// 		const centers = await prisma.center.findMany({
-// 			where: filter ? { ...filter } : undefined,
-// 			select,
-// 			distinct: ["id"],
-// 		})
-
-// 		return res.status(200).json({ values: centers })
-// 	} catch (error) {
-// 		next(error)
-// 	}
-// }

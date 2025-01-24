@@ -1,7 +1,7 @@
 import dayjs from "dayjs"
 
 import { Location } from "react-router-dom"
-import { Event, UserRole } from "./types"
+import { Event, StaffRole, UserRole } from "./types"
 import { Dispatch, SetStateAction } from "react"
 
 export const formatRut = (rut: string) => {
@@ -24,28 +24,44 @@ export const dateToAge = (dateString: string) => {
 	return Math.abs(ageDate.getUTCFullYear() - 1970)
 }
 
+export const formatStaffRole = (role: StaffRole) => {
+	return role === "ADMIN" ? "Administrador" : "Funcionario"
+}
+
 export const tableColumnsFormatters = {
 	id: formatRut,
 	birthDate: dateToAge,
 	updatedAt: formatDate,
 	createdAt: formatDate,
 	validated: formatBoolean,
+	role: formatStaffRole,
+	centerId: (centerId: any) => centerId ?? "No Aplica",
 }
 
 export const formatRole = (role: UserRole) => {
-	return role === "ADMIN" ? "Administrador" : "Profesional"
+	return role === "ADMIN" ? "Administrador" : role === "FUNCTIONARY" ? "Funcionario de apoyo" : "Profesional"
 }
 
 interface SelectDataFormatterProps {
 	data: any[]
 	setData: Dispatch<SetStateAction<any[]>>
 	keys?: { label: string; value: string }
+	allString?: boolean
 }
 
 const defaultSelectKeys = { label: "name", value: "id" }
 
-export const selectDataFormatter = ({ data, setData, keys = defaultSelectKeys }: SelectDataFormatterProps) => {
-	setData(data.map((item) => ({ label: item[keys.label], value: item[keys.value] })))
+export const selectDataFormatter = ({
+	data,
+	setData,
+	keys = defaultSelectKeys,
+	allString = false,
+}: SelectDataFormatterProps) => {
+	if (allString) {
+		setData(data.map((item) => ({ label: item[keys.label].toString(), value: item[keys.value].toString() })))
+	} else {
+		setData(data.map((item) => ({ label: item[keys.label], value: item[keys.value] })))
+	}
 }
 
 type QueryIdsValues = {

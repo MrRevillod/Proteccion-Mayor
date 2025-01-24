@@ -56,11 +56,7 @@ export class ReportsService {
 		return await Promise.all([assistance, absence, unreserved])
 	}
 
-	private makeFilter = (
-		date: Dayjs,
-		dateType: "year" | "month",
-		other?: Prisma.EventWhereInput,
-	) => {
+	private makeFilter = (date: Dayjs, dateType: "year" | "month", other?: Prisma.EventWhereInput) => {
 		return {
 			start: { gte: date.startOf(dateType).toISOString() },
 			end: { lt: date.endOf(dateType).toISOString() },
@@ -69,9 +65,7 @@ export class ReportsService {
 	}
 
 	public getGeneralReport = async (date: Dayjs, professionalId?: string) => {
-		const professionalFilter = professionalId
-			? { professionalId: { equals: professionalId } }
-			: undefined
+		const professionalFilter = professionalId ? { professionalId: { equals: professionalId } } : undefined
 		const [assistance, absence, unreserved] = await this.getBaseEvents(
 			this.makeFilter(date, "year", professionalFilter),
 		)

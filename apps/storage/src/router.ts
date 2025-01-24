@@ -40,7 +40,10 @@ router.post("/upload", upload.array("files"), async (req, res, next) => {
 
 		await Promise.all(uploadPromises)
 
-		const image = files.length === 1 ? `${SERVICES.STORAGE.URL}/public/${query.path}/${files[0].originalname.split(".")[0]}.webp` : null
+		const image =
+			files.length === 1
+				? `${SERVICES.STORAGE.URL}/public/${query.path}/${files[0].originalname.split(".")[0]}.webp`
+				: null
 
 		return res.status(201).json({
 			message: "Files uploaded",

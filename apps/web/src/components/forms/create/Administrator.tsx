@@ -3,30 +3,54 @@ import React from "react"
 import { Form } from "@/components/forms/Form"
 import { Input } from "@/components/ui/Input"
 import { Modal } from "@/components/Modal"
-import { useState } from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { createAdministrator } from "@/lib/actions"
-import { AdministratorSchemas } from "@/lib/schemas"
-import { FormProvider, useForm } from "react-hook-form"
-import { FormProps, Administrator } from "@/lib/types"
+import { SuperSelect } from "@/components/ui/SuperSelect"
 
-export const CreateAdministrator: React.FC<FormProps<Administrator>> = ({ data, setData }) => {
+import { useState } from "react"
+import { message } from "antd"
+import { FormProvider, useForm } from "react-hook-form"
+
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useRequest } from "@/hooks/useRequest"
+
+import { StaffSchemas } from "@/lib/schemas"
+import { selectDataFormatter } from "@/lib/formatters"
+import { createStaff, getCenters } from "@/lib/actions"
+import { Center, FormProps, Staff } from "@/lib/types"
+
+export const CreateStaff: React.FC<FormProps<Staff>> = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false)
-	const methods = useForm({ resolver: zodResolver(AdministratorSchemas.Create) })
+	const [centers, setCenters] = useState<Center[]>([])
+	const methods = useForm({ resolver: zodResolver(StaffSchemas.Create) })
+
+	const { error } = useRequest<Center[]>({
+		action: getCenters,
+		onSuccess: (centers) => selectDataFormatter({ data: centers, setData: setCenters }),
+	})
+
+	if (error) message.error("Error al cargar los datos")
 
 	return (
-		<Modal type="Create" title="Añadir nuevo administrador al sistema" loading={loading}>
+		<Modal type="Create" title="Añadir nuevo funcionario al sistema" loading={loading}>
 			<FormProvider {...methods}>
-				<Form<Administrator>
-					data={data as Administrator[]}
+				<Form<Staff>
+					data={data as Staff[]}
 					setData={setData}
-					action={createAdministrator}
+					action={createStaff}
 					setLoading={setLoading}
 					actionType="create"
 				>
 					<Input name="id" label="Rut (sin puntos ni guión)" type="text" placeholder="123456789" />
 					<Input name="name" label="Nombre" type="text" placeholder="Juan Perez" />
 					<Input name="email" label="Correo Electrónico" type="email" placeholder="JohnD@provider.com" />
+					<SuperSelect
+						name="role"
+						label="Rol"
+						options={[
+							{ label: "Administrador", value: "ADMIN" },
+							{ label: "Funcionario", value: "FUNCTIONARY" },
+						]}
+					/>
+					<SuperSelect name="centerId" label="centro" options={centers} />
 				</Form>
 			</FormProvider>
 		</Modal>

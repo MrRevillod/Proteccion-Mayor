@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { Prisma } from "@prisma/client"
 import { rules, Schema } from "@repo/lib"
 
 export class SeniorSchemas extends Schema {
@@ -18,11 +19,12 @@ export class SeniorSchemas extends Schema {
 		})
 	}
 
-	get defaultSelect() {
+	get defaultSelect(): Prisma.SeniorSelect {
 		return {
 			id: true,
 			name: true,
 			email: true,
+			phone: true,
 			address: true,
 			birthDate: true,
 			validated: true,
@@ -38,6 +40,7 @@ export class SeniorSchemas extends Schema {
 			rut: rules.rutSchema,
 			email: rules.emailSchema,
 			pin: rules.pinSchema,
+			phone: rules.phoneSchema,
 		})
 	}
 
@@ -49,6 +52,7 @@ export class SeniorSchemas extends Schema {
 			address: rules.addressSchema,
 			birthDate: rules.dateTimeSchema,
 			gender: rules.genderSchema,
+			phone: rules.phoneSchema,
 		})
 	}
 
@@ -60,6 +64,7 @@ export class SeniorSchemas extends Schema {
 				birthDate: rules.dateTimeSchema,
 				password: rules.optionalPinSchema,
 				confirmPassword: rules.optionalPinSchema,
+				phone: rules.phoneSchema.optional(),
 			})
 			.refine((data) => data.password === data.confirmPassword, {
 				message: "Los PIN ingresados no coinciden",
@@ -74,9 +79,7 @@ export class SeniorSchemas extends Schema {
 					name: rules.nameSchema.optional(),
 					email: rules.emailSchema.optional(),
 					address: rules.addressSchema.optional(),
-					birthDate: z
-						.string({ message: "La fecha de nacimiento es requerida" })
-						.optional(),
+					birthDate: z.string({ message: "La fecha de nacimiento es requerida" }).optional(),
 					gender: rules.genderSchema.optional(),
 				})
 				.refine((data) => !data.birthDate || rules.isValidDate(data.birthDate), {

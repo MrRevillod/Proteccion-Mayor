@@ -16,11 +16,12 @@ import { UpdateEvent } from "@/components/forms/update/Event"
 import { ConfirmAction } from "@/components/ConfirmAction"
 import { UpcomingEvents } from "@/components/UpcomingEvents"
 
+import { CreateWeeklyEvents } from "@/components/forms/create/WeeklyEvents"
 import { filterUpcomingEvents, selectDataFormatter } from "@/lib/formatters"
 import { Center, Event, Events, Professional, Service, SuperSelectField } from "@/lib/types"
 import { deleteEvent, getCenters, getEvents, getProfessionals, getServices } from "@/lib/actions"
 
-const AdministrationAgendaPage: React.FC = () => {
+const StaffAgendaPage: React.FC = () => {
 	const location = useLocation()
 	const navigate = useNavigate()
 	const [pageQuery, setPageQuery] = useState<string>(new URLSearchParams(location.search).toString())
@@ -53,9 +54,8 @@ const AdministrationAgendaPage: React.FC = () => {
 		},
 	})
 
-	useRequest<Center[]>({
+	const { data: rawCenters } = useRequest<Center[]>({
 		action: getCenters,
-		query: "select=name,id",
 		onSuccess: (data) => selectDataFormatter({ data, setData: setCenters }),
 	})
 
@@ -96,6 +96,8 @@ const AdministrationAgendaPage: React.FC = () => {
 				<UpcomingEvents title="Próximas atenciones" center={true} events={upcomingEvents} />
 			</div>
 
+			<CreateWeeklyEvents services={services} centers={rawCenters as Center[]} formattedCenters={centers} />
+
 			<CreateEvent centers={centers} services={services} professionals={professionals} />
 			<UpdateEvent centers={centers} professionals={professionals} />
 
@@ -104,4 +106,4 @@ const AdministrationAgendaPage: React.FC = () => {
 	)
 }
 
-export default AdministrationAgendaPage
+export default StaffAgendaPage

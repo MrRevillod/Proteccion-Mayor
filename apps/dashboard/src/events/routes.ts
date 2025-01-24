@@ -1,6 +1,6 @@
-import { findEvent, Router } from "@repo/lib"
 import { EventsSchemas } from "./schemas"
 import { EventsController } from "./controllers"
+import { findEvent, Router } from "@repo/lib"
 import { AuthenticationService, validations } from "@repo/lib"
 
 export class EventsRouter extends Router {
@@ -14,24 +14,32 @@ export class EventsRouter extends Router {
 		this.get({
 			path: "/",
 			handler: this.controller.getMany,
-			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL", "SENIOR"])],
+			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL", "SENIOR", "FUNCTIONARY"])],
 		})
 
 		this.post({
 			path: "/",
 			handler: this.controller.createOne,
 			middlewares: [
-				this.auth.authorize(["ADMIN", "PROFESSIONAL"]),
+				this.auth.authorize(["ADMIN", "PROFESSIONAL", "FUNCTIONARY"]),
 				validations.body(this.schemas.create),
+				validations.validateSameCenter,
 			],
+		})
+
+		this.post({
+			path: "/weekly",
+			handler: this.controller.createMany,
+			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL"]), validations.body(this.schemas.createMany)],
 		})
 
 		this.patch({
 			path: "/:id",
 			handler: this.controller.updateOne,
 			middlewares: [
-				this.auth.authorize(["ADMIN", "PROFESSIONAL"]),
+				this.auth.authorize(["ADMIN", "PROFESSIONAL", "FUNCTIONARY"]),
 				validations.resourceId(findEvent),
+				validations.validateEventPermissions,
 				validations.body(this.schemas.update),
 			],
 		})
@@ -40,7 +48,7 @@ export class EventsRouter extends Router {
 			path: "/:id",
 			handler: this.controller.deleteOne,
 			middlewares: [
-				this.auth.authorize(["ADMIN", "PROFESSIONAL"]),
+				this.auth.authorize(["ADMIN", "PROFESSIONAL", "FUNCTIONARY"]),
 				validations.resourceId(findEvent),
 			],
 		})

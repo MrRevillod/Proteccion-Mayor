@@ -10,9 +10,10 @@ type Opt = {
 type Props = {
 	name: string
 	options: Array<Opt>
+	disabled?: boolean
 }
 
-export const BooleanSelect: React.FC<Props> = ({ name, options }) => {
+export const BooleanSelect: React.FC<Props> = ({ name, options, disabled = false }) => {
 	const { control } = useFormContext()
 
 	return (
@@ -24,6 +25,7 @@ export const BooleanSelect: React.FC<Props> = ({ name, options }) => {
 					value={field.value}
 					defaultValue={field.value}
 					onChange={(ev) => field.onChange(ev.target.value)}
+					disabled={disabled}
 				>
 					{options.map((op, index) => (
 						<Radio.Button key={index} value={op.value}>

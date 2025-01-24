@@ -18,11 +18,20 @@ interface SuperSelectProps {
 }
 
 export const SuperSelect = ({ name, label, ...props }: SuperSelectProps) => {
-	const { options, setSearch, placeholder, disabled = false, allowClear = true, showSearch = true } = props
+	const {
+		options,
+		setSearch,
+		placeholder,
+		disabled = false,
+		allowClear = true,
+		showSearch = true,
+		defaultValue,
+	} = props
 
 	const {
 		control,
 		formState: { errors },
+		getValues,
 	} = useFormContext()
 
 	const classes = clsx(
@@ -53,6 +62,7 @@ export const SuperSelect = ({ name, label, ...props }: SuperSelectProps) => {
 				render={({ field }) => (
 					<Select
 						{...field}
+						defaultValue={defaultValue}
 						value={field.value}
 						className={classes}
 						showSearch={showSearch}

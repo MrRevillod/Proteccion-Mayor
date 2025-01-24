@@ -1,34 +1,34 @@
+import { Staff } from "@prisma/client"
 import { prisma } from "@repo/database"
+import { StaffSchemas } from "./schemas"
 import { compare, hash } from "bcrypt"
-import { Administrator } from "@prisma/client"
-import { AdministratorsSchemas } from "./schemas"
 import { MailerService, StorageService, templates } from "@repo/lib"
 import { AppError, Conflict, Controller, credentials } from "@repo/lib"
 
-export class AdministratorsController {
+export class StaffController {
 	constructor(
-		private schemas: AdministratorsSchemas,
 		private mailer: MailerService,
 		private storage: StorageService,
+		private schemas: StaffSchemas = new StaffSchemas(),
 	) {}
 
 	public getMany: Controller = async (req, res, handleError) => {
 		try {
-			const administrators = await prisma.administrator.findMany({
+			const staffs = await prisma.staff.findMany({
 				select: this.schemas.defaultSelect,
 			})
 
-			return res.status(200).json({ values: administrators })
+			return res.status(200).json({ values: staffs })
 		} catch (error) {
 			handleError(error)
 		}
 	}
 
 	public createOne: Controller = async (req, res, handleError) => {
-		const { id, name, email } = req.body
+		const { id, name, email, role, centerId } = req.body
 
 		try {
-			const exists = await prisma.administrator.findFirst({
+			const exists = await prisma.staff.findFirst({
 				where: { OR: [{ id }, { email }] },
 			})
 
@@ -40,8 +40,8 @@ export class AdministratorsController {
 			}
 
 			const [password, hash] = await credentials.generatePassword()
-			const administrator = await prisma.administrator.create({
-				data: { id, name, email, password: hash },
+			const staff = await prisma.staff.create({
+				data: { id, name, email, password: hash, role, centerId },
 				select: this.schemas.defaultSelect,
 			})
 
@@ -51,7 +51,7 @@ export class AdministratorsController {
 				html: templates.welcome(name, email, password),
 			})
 
-			return res.status(201).json({ values: { modified: administrator } })
+			return res.status(201).json({ values: { modified: staff } })
 		} catch (error) {
 			handleError(error)
 		}
@@ -59,12 +59,12 @@ export class AdministratorsController {
 
 	public updateOne: Controller = async (req, res, handleError) => {
 		const { params, body, file } = req
-		const { name, email, password } = body
+		const { name, email, password, centerId, role } = body
 
-		const reqUser = req.getExtension("reqResource") as Administrator
+		const reqUser = req.getExtension("reqResource") as Staff
 
 		try {
-			const exists = await prisma.administrator.findFirst({
+			const exists = await prisma.staff.findFirst({
 				where: { email, id: { not: params.id } },
 			})
 
@@ -74,17 +74,19 @@ export class AdministratorsController {
 
 			const updatedPassword = password ? await hash(password, 10) : reqUser.password
 
-			const administrator = await prisma.administrator.update({
+			const staff = await prisma.staff.update({
 				where: { id: params.id },
 				data: {
 					name,
 					email,
+					role,
 					password: updatedPassword,
+					centerId,
 				},
 				select: this.schemas.defaultSelect,
 			})
 
-			const response = { modified: administrator, image: null }
+			const response = { modified: staff, image: null }
 
 			if (file) {
 				const storage = await this.storage.uploadFile({
@@ -106,7 +108,7 @@ export class AdministratorsController {
 		const { params } = req
 
 		try {
-			const administrator = await prisma.administrator.delete({
+			const staff = await prisma.staff.delete({
 				where: { id: params.id },
 				select: this.schemas.defaultSelect,
 			})
@@ -115,7 +117,7 @@ export class AdministratorsController {
 				url: `/delete?path=%2Fusers%2F${params.id}`,
 			})
 
-			return res.status(200).json({ values: { modified: administrator } })
+			return res.status(200).json({ values: { modified: staff } })
 		} catch (error) {
 			handleError(error)
 		}
@@ -123,11 +125,10 @@ export class AdministratorsController {
 
 	public confirmAction: Controller = async (req, res, handleError) => {
 		const password = req.body.password
-		const user = req.getExtension("user") as Administrator
+		const user = req.getExtension("user") as Staff
 
 		try {
 			if (!password) throw new AppError(400, "Por favor, ingrese su contraseña")
-
 			const passwordMatch = await compare(password, user.password)
 			if (!passwordMatch) throw new AppError(401, "Contraseña incorrecta")
 

@@ -1,4 +1,5 @@
 import { api } from "./axios"
+import { AxiosResponse } from "axios"
 import { getContentType } from "./form"
 import { MutateActionProps, QueryActionProps } from "./types"
 
@@ -23,24 +24,22 @@ const apiRequest = {
 	},
 }
 
-// Acciones CRUD para los administradores
+// Acciones CRUD para los funcionarios
 
-import { AxiosResponse } from "axios"
-
-export const getAdministrators = async (props: QueryActionProps) => {
-	return await apiRequest.get(`/dashboard/administrators${props.query ? "?" + props.query : ""}`)
+export const getStaff = async (props: QueryActionProps) => {
+	return await apiRequest.get(`/dashboard/staff${props.query ? "?" + props.query : ""}`)
 }
 
-export const createAdministrator = async (props: MutateActionProps) => {
-	return await apiRequest.post("/dashboard/administrators", props)
+export const createStaff = async (props: MutateActionProps) => {
+	return await apiRequest.post("/dashboard/staff", props)
 }
 
-export const updateAdministrator = async (props: MutateActionProps) => {
-	return await apiRequest.patch("/dashboard/administrators", props)
+export const updateStaff = async (props: MutateActionProps) => {
+	return await apiRequest.patch("/dashboard/staff", props)
 }
 
-export const deleteAdministrator = async (props: MutateActionProps) => {
-	return await apiRequest.delete("/dashboard/administrators", props)
+export const deleteStaff = async (props: MutateActionProps) => {
+	return await apiRequest.delete("/dashboard/staff", props)
 }
 
 // Acciones CRUD para los profesionales
@@ -103,6 +102,10 @@ export const updateCenter = async (props: MutateActionProps) => {
 
 export const deleteCenter = async (props: MutateActionProps) => {
 	return await apiRequest.delete("/dashboard/centers", props)
+}
+
+export const updateDailySessions = async (props: MutateActionProps) => {
+	return await apiRequest.patch(`/dashboard/centers/daily-sessions`, props)
 }
 
 // Acciones CRUD para los servicios

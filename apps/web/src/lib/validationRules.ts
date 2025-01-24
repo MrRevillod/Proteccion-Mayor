@@ -1,6 +1,18 @@
 import dayjs from "dayjs"
 import { z } from "zod"
 
+export const minutesPerSessionSchema = z
+	.string()
+	.transform((val) => Number(val))
+	.refine((val) => !isNaN(val), { message: "Debe ser un número válido" })
+	.pipe(
+		z
+			.number()
+			.int({ message: "Debe ser un número entero" })
+			.min(15, { message: "La duración mínima es de 15 minutos" })
+			.max(180, { message: "La duración máxima es de 3 horas" }),
+	)
+
 export const isValidRutFormat = (rut: string): boolean => {
 	const rutRegex = /^[0-9]+[0-9Kk]$/
 	return rutRegex.test(rut)
@@ -175,5 +187,22 @@ export const genderSchema = z.enum(["MA", "FE"], {
 
 export const isWeekend = (date: string) => {
 	const day = dayjs(date).day()
-	return day !== 0 && day !== 6
+	return day === 0 || day === 6
 }
+
+export const staffRoleSchema = z.enum(["ADMIN", "FUNCTIONARY"], {
+	message: "El rol debe ser Administrador o Funcionario",
+})
+
+export const centerIdSchema = z
+	.string()
+	.refine(
+		(value) => {
+			// Verifica si el valor es un número válido o "null"
+			return !isNaN(Number(value)) || value === "null"
+		},
+		{
+			message: "El valor debe ser un número válido o 'null'",
+		},
+	)
+	.nullable()

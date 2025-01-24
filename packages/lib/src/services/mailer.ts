@@ -30,7 +30,7 @@ export class MailerService {
 				subject,
 				html,
 			})
-			.catch(() => {
+			.catch((error) => {
 				throw new Error("Error al enviar el correo")
 			})
 	}

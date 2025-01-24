@@ -27,13 +27,14 @@ export {
 	findSenior,
 	findService,
 	findOperative,
+	findStaff,
 } from "./utils/actions"
 
 export { MailerService } from "./services/mailer"
 export { StorageService } from "./services/storage"
 export { AuthenticationService } from "./services/authentication"
 
-export type { UserRole, User, Controller, Middleware } from "./types"
+export type { UserRole, User, Controller, Middleware, StaffRole } from "./types"
 
 export { Router } from "./application/routing"
 export { Module } from "./application/module"

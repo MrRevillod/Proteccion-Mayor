@@ -19,10 +19,6 @@ export class SeniorController {
 	 *
 	 * filtra por id, nombre, email y si está validado
 	 *
-	 * @param req (Express Request)
-	 * @param res (Express Response)
-	 * @param handleError (Express NextFunction)
-	 *
 	 * @returns (Express Response) (HTTP - 200)
 	 * @throws (AppError)
 	 */
@@ -64,10 +60,6 @@ export class SeniorController {
 	 * Controlador para crear una persona mayor desde la aplicación web por
 	 * parte de un administrador
 	 *
-	 * @param req (Express Request)
-	 * @param res (Express Response)
-	 * @param handleError (Express NextFunction)
-	 *
 	 * @returns (Express Response) (HTTP - 201)
 	 * @throws (AppError)
 	 */
@@ -91,7 +83,7 @@ export class SeniorController {
 			const [randomPin, hashedRandomPin] = await credentials.generatePin()
 
 			const data = {
-				...req.body, // id, name, email, address, gender
+				...req.body, // id, name, email, address, gender, phone
 				validated: true,
 				password: hashedRandomPin,
 				birthDate: new Date(req.body.birthDate),
@@ -118,17 +110,13 @@ export class SeniorController {
 	 * Controlador para actualizar la información de una persona mayor
 	 * por su id desde la aplicación web por parte de un administrador
 	 *
-	 * @param req (Express Request)
-	 * @param res (Express Response)
-	 * @param handleError (Express NextFunction)
-	 *
 	 * @returns (Express Response) (HTTP - 200)
 	 * @throws (AppError)
 	 */
 
 	public updateOne: Controller = async (req, res, handleError) => {
 		const { body, params } = req
-		const { name, email, password, address, birthDate } = body
+		const { name, email, password, address, birthDate, phone } = body
 
 		const requestedUser = req.getExtension("reqResource") as Senior
 
@@ -156,6 +144,7 @@ export class SeniorController {
 				data: {
 					name,
 					email,
+					phone,
 					password: updatedPassword,
 					address,
 					birthDate: new Date(birthDate),
@@ -191,10 +180,6 @@ export class SeniorController {
 	 * Se eliminan los eventos asociados a la persona mayor y se elimina la imagen
 	 * de la persona mayor del servidor de archivos
 	 *
-	 * @param req (Express Request)
-	 * @param res (Express Response)
-	 * @param handleError (Express NextFunction)
-	 *
 	 * @returns (Express Response) (HTTP - 200)
 	 * @throws (AppError)
 	 */
@@ -224,12 +209,8 @@ export class SeniorController {
 	 * Controlador para comprobar si un rut o un email ya están registrados
 	 * Se utiliza para validar los campos de los formularios de registro de la app móvil
 	 *
-	 * @param req (Express Request)
-	 * @param res (Express Response)
-	 * @param handleError (Express NextFunction)
-	 *
 	 * @returns (Express Response) (HTTP - 200)
-	 * @throws (AppError)
+	 * @throws (AppError) (HTTP - 409 | 400)
 	 */
 
 	public checkUnique: Controller = async (req, res, handleError) => {
@@ -251,9 +232,7 @@ export class SeniorController {
 			}
 
 			if (email && senior.email === email) {
-				return res
-					.status(409)
-					.json({ values: { email: "Este correo ya está registrado." } })
+				return res.status(409).json({ values: { email: "Este correo ya está registrado." } })
 			}
 		} catch (error) {
 			handleError(error)
@@ -266,16 +245,12 @@ export class SeniorController {
 	 *
 	 * Esta solicitud se revisa en la aplicación web por un administrador
 	 *
-	 * @param req (Express Request)
-	 * @param res (Express Response)
-	 * @param handleError (Express NextFunction)
-	 *
 	 * @returns (Express Response) (HTTP - 201)
-	 * @throws (AppError)
+	 * @throws (AppError) (HTTP - 409 | 400)
 	 */
 
 	public createMobile: Controller = async (req, res, handleError) => {
-		const { rut, pin, email } = req.body
+		const { rut, pin, email, phone } = req.body
 
 		try {
 			const exists = await prisma.senior.findFirst({
@@ -292,6 +267,7 @@ export class SeniorController {
 				data: {
 					id: rut,
 					name: "",
+					phone,
 					email: email,
 					password: await hash(pin, 10),
 					address: "",
@@ -316,12 +292,8 @@ export class SeniorController {
 	 *
 	 * Se envía un correo electrónico a la persona mayor con la respuesta
 	 *
-	 * @param req (Express Request)
-	 * @param res (Express Response)
-	 * @param handleError (Express NextFunction)
-	 *
 	 * @returns (Express Response) (HTTP - 200)
-	 * @throws (AppError)
+	 * @throws (AppError) (HTTP - 400 | 409)
 	 */
 
 	public handleRegisterRequest: Controller = async (req, res, handleError) => {

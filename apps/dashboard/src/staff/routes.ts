@@ -1,14 +1,14 @@
-import { AdministratorsSchemas } from "./schemas"
-import { AdministratorsController } from "./controllers"
-import { AuthenticationService, Router, validations, uploads, findAdministrator } from "@repo/lib"
+import { StaffSchemas } from "./schemas"
+import { StaffController } from "../staff/controllers"
+import { AuthenticationService, Router, validations, uploads, findStaff } from "@repo/lib"
 
-export class AdministratorsRouter extends Router {
+export class StaffRouter extends Router {
 	constructor(
 		private auth: AuthenticationService,
-		private schemas: AdministratorsSchemas,
-		private controller: AdministratorsController,
+		private schemas: StaffSchemas,
+		private controller: StaffController,
 	) {
-		super({ prefix: "/api/dashboard/administrators" })
+		super({ prefix: "/api/dashboard/staff" })
 
 		this.get({
 			path: "/",
@@ -27,8 +27,8 @@ export class AdministratorsRouter extends Router {
 			handler: this.controller.updateOne,
 			middlewares: [
 				uploads.singleImage,
-				this.auth.authorize(["ADMIN"]),
-				validations.resourceId(findAdministrator),
+				this.auth.authorize(["ADMIN", "FUNCTIONARY"]),
+				validations.resourceId(findStaff),
 				validations.body(this.schemas.update),
 				validations.files({ required: false }),
 			],
@@ -37,16 +37,13 @@ export class AdministratorsRouter extends Router {
 		this.delete({
 			path: "/:id",
 			handler: this.controller.deleteOne,
-			middlewares: [
-				this.auth.authorize(["ADMIN"]),
-				validations.resourceId(findAdministrator),
-			],
+			middlewares: [this.auth.authorize(["ADMIN"]), validations.resourceId(findStaff)],
 		})
 
 		this.post({
 			path: "/confirm-action",
 			handler: this.controller.confirmAction,
-			middlewares: [this.auth.authorize(["ADMIN"])],
+			middlewares: [this.auth.authorize(["ADMIN", "FUNCTIONARY"])],
 		})
 	}
 }

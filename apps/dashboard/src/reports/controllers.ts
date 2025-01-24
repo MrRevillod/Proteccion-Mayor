@@ -32,10 +32,7 @@ export class ReportsController {
 			const data = await match(reportType)
 				.with("byCenter", async () => await this.service.getByCenterReport(date))
 				.with("byService", async () => await this.service.getByServiceReport(date))
-				.with(
-					"byProfessional",
-					async () => await this.service.getGeneralReport(date, professionalId),
-				)
+				.with("byProfessional", async () => await this.service.getGeneralReport(date, professionalId))
 				.with("general", async () => await this.service.getGeneralReport(date))
 				.run()
 

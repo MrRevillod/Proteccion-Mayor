@@ -4,14 +4,16 @@ import React from "react"
 import { Form } from "@/components/forms/Form"
 import { Modal } from "@/components/Modal"
 import { Input } from "@/components/ui/Input"
+import { DatetimeSelect } from "@/components/ui/DatetimeSelect"
+
 import { useModal } from "@/context/ModalContext"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { updateSenior } from "@/lib/actions"
-import { SeniorSchemas } from "@/lib/schemas"
-import { DatetimeSelect } from "@/components/ui/DatetimeSelect"
-import { Senior, FormProps } from "@/lib/types"
 import { useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
+
+import { updateSenior } from "@/lib/actions"
+import { SeniorSchemas } from "@/lib/schemas"
+import { Senior, FormProps } from "@/lib/types"
 
 export const UpdateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false)
@@ -30,6 +32,7 @@ export const UpdateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => 
 				birthDate: dayjs(selectedData.birthDate).toISOString(),
 				password: "",
 				confirmPassword: "",
+				phone: selectedData.phone,
 			})
 		}
 	}, [selectedData])
@@ -47,6 +50,7 @@ export const UpdateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => 
 					<Input name="name" label="Nombre" type="text" placeholder="Nombre" />
 					<Input name="email" label="Correo Electrónico" type="email" placeholder="Correo Electrónico" />
 					<Input name="address" label="Dirección" type="text" placeholder="Dirección" />
+					<Input name="phone" label="Teléfono" type="text" placeholder="Teléfono" />
 					<DatetimeSelect name="birthDate" label="Fecha de nacimiento" showTime={false} />
 					<Input name="password" label="PIN" type="password" placeholder="••••" />
 					<Input name="confirmPassword" label="Confirmar PIN" type="password" placeholder="••••" />

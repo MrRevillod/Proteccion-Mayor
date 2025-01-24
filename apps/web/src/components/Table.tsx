@@ -4,7 +4,7 @@ import { useModal } from "../context/ModalContext"
 import { Table as DataTable, Space } from "antd"
 import { tableColumnsFormatters } from "../lib/formatters"
 import { BaseDataType, TableColumnType } from "../lib/types"
-import { AiFillEdit, AiFillDelete, AiFillEye, AiOutlineHistory } from "react-icons/ai"
+import { AiFillEdit, AiFillDelete, AiFillEye, AiOutlineHistory, AiFillCalendar } from "react-icons/ai"
 
 interface TableProps<T> {
 	data: T[]
@@ -14,12 +14,16 @@ interface TableProps<T> {
 	history?: boolean
 	editable?: boolean
 	deletable?: boolean
+	downloadable?: boolean
 	onView?: (record: T) => void
 	onHistory?: (record: T) => void
+	onDownloadAgenda?: (record: T) => void
 }
 
 export const Table = <T extends BaseDataType>({ data, ...props }: TableProps<T>) => {
-	const { columnsConfig, loading, editable, deletable, viewable, onView, onHistory } = props
+	const { columnsConfig, loading, editable, deletable, viewable, onView, onHistory, downloadable, onDownloadAgenda } =
+		props
+
 	const { showModal } = useModal()
 
 	return (
@@ -69,6 +73,12 @@ export const Table = <T extends BaseDataType>({ data, ...props }: TableProps<T>)
 						{viewable && onView && (
 							<a title="Ver" onClick={() => onView(record)}>
 								<AiFillEye className="text-blue dark:text-light text-md font-light h-6 w-6" />
+							</a>
+						)}
+
+						{downloadable && onDownloadAgenda && (
+							<a title="Descargar agenda" onClick={() => onDownloadAgenda(record)}>
+								<AiFillCalendar className="text-green dark:text-light text-md font-light h-6 w-6" />
 							</a>
 						)}
 					</Space>

@@ -101,7 +101,15 @@
 }
 
 html {
-	font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial,
+	font-family:
+		ui-sans-serif,
+		system-ui,
+		-apple-system,
+		BlinkMacSystemFont,
+		Segoe UI,
+		Roboto,
+		Helvetica Neue,
+		Arial,
 		sans-serif;
 	-webkit-text-size-adjust: 100%;
 	-webkit-font-smoothing: antialiased;
@@ -221,4 +229,50 @@ body {
 	height: 100%;
 	background-color: var(--bg-color);
 	border-radius: 0 4px 4px 0;
+}
+
+.modal-small .ant-modal {
+	transition: width 0.3s ease-in-out;
+}
+
+.modal-middle .ant-modal {
+	transition: width 0.3s ease-in-out;
+}
+
+.modal-large .ant-modal {
+	transition: width 0.3s ease-in-out;
+}
+
+/* Estilos para el modal */
+.modal-expand {
+	transition:
+		width 0.3s ease-in-out,
+		height 0.2s ease-in-out,
+		transform 0.3s ease-in-out; /* Animación intermedia */
+}
+
+.modal-expand .ant-modal-body {
+	transition:
+		height 0.2s ease-in-out,
+		opacity 0.3s ease-in-out; /* Animación intermedia */
+	overflow: hidden; /* Evita desbordamiento durante la animación */
+}
+
+/* Efecto de escala para hacer la animación más perceptible */
+.modal-expand {
+	transform: scale(1); /* Escala normal */
+}
+
+.modal-expand.ant-modal {
+	transform: scale(1); /* Ligero aumento de escala al expandirse */
+}
+
+/* Ajustes para suavizar la transición */
+.ant-modal {
+	transition: transform 0.3s ease-in-out; /* Animación suave al abrir/cerrar */
+}
+
+.ant-modal-content {
+	border-radius: 8px; /* Bordes redondeados para un aspecto más moderno */
+	overflow: hidden; /* Evita que el contenido se desborde */
 }

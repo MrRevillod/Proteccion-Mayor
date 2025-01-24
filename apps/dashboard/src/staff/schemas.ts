@@ -1,12 +1,14 @@
 import { z } from "zod"
 import { rules, Schema } from "@repo/lib"
 
-export class AdministratorsSchemas extends Schema {
+export class StaffSchemas extends Schema {
 	get defaultSelect() {
 		return {
 			id: true,
 			name: true,
 			email: true,
+			centerId: true,
+			role: true,
 			createdAt: true,
 			updatedAt: true,
 		}
@@ -17,6 +19,8 @@ export class AdministratorsSchemas extends Schema {
 			id: rules.rutSchema,
 			name: rules.nameSchema,
 			email: rules.emailSchema,
+			role: rules.staffRoleSchema,
+			centerId: z.coerce.number(),
 		})
 	}
 
@@ -25,6 +29,8 @@ export class AdministratorsSchemas extends Schema {
 			.object({
 				name: rules.nameSchema,
 				email: rules.emailSchema,
+				centerId: z.coerce.number(),
+				role: rules.staffRoleSchema,
 				password: rules.optionalPasswordSchema,
 				confirmPassword: rules.optionalPasswordSchema,
 			})

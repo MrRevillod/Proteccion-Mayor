@@ -5,6 +5,8 @@ import { IncomingHttpHeaders } from "node:http"
 
 import * as jwt from "../utils/jsonwebtoken"
 import * as users from "../utils/users"
+import { prisma } from "@repo/database"
+import dayjs from "dayjs"
 
 type ServerTokens = {
 	access: string | null
@@ -25,7 +27,13 @@ export class AuthenticationService {
 
 		try {
 			if (!tokens.access) throw new Unauthorized()
+			if (!tokens.refresh) throw new Unauthorized()
+
 			const payload = jwt.verify(tokens.access)
+
+			const [isRevokedAccess, isRevokedRefresh] = await Promise.all([this.isRevokedToken(tokens.access), this.isRevokedToken(tokens.refresh)])
+
+			if (isRevokedAccess || isRevokedRefresh) throw new Unauthorized()
 
 			if (!payload.id || !payload.role || !users.isValidRole(payload.role)) {
 				throw new Unauthorized()
@@ -63,5 +71,21 @@ export class AuthenticationService {
 		}
 
 		return { access: ACCESS_TOKEN, refresh: REFRESH_TOKEN }
+	}
+
+	public saveRevokedToken = async (token: string) => {
+		const payload = jwt.verify(token)
+
+		if (!payload || !payload.exp) return
+
+		const expires = dayjs(payload.exp * 1000).toDate()
+
+		await prisma.revokedToken.create({ data: { token, expiresAt: expires } })
+	}
+
+	public isRevokedToken = async (token: string) => {
+		const revoked = await prisma.revokedToken.findFirst({ where: { token } })
+
+		return revoked ? true : false
 	}
 }

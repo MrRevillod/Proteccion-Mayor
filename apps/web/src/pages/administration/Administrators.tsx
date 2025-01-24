@@ -2,55 +2,49 @@ import React from "react"
 import PageLayout from "@/layouts/PageLayout"
 
 import { Table } from "@/components/Table"
+import { UpdateStaff } from "@/components/forms/update/Staff"
+import { CreateStaff } from "@/components/forms/create/Administrator"
 import { ConfirmAction } from "@/components/ConfirmAction"
-import { UpdateAdministrator } from "@/components/forms/update/Administrator"
-import { CreateAdministrator } from "@/components/forms/create/Administrator"
 
+import { Staff } from "@/lib/types"
 import { message } from "antd"
 import { useState } from "react"
 import { useRequest } from "@/hooks/useRequest"
-import { Administrator } from "@/lib/types"
-import { AdministratorColumns } from "@/lib/columns"
-import { deleteAdministrator, getAdministrators } from "@/lib/actions"
+import { StaffColumns } from "@/lib/columns"
+import { deleteStaff, getStaff } from "@/lib/actions"
 
-const AdministratorsPage: React.FC = () => {
-	const [administrators, setAdministrators] = useState<Administrator[]>([])
+const StaffPage: React.FC = () => {
+	const [staff, setStaff] = useState<Staff[]>([])
 
-	const { loading, data } = useRequest<Administrator[]>({
-		action: getAdministrators,
-		onSuccess: (data) => setAdministrators(data),
+	const { loading, data } = useRequest<Staff[]>({
+		action: getStaff,
+		onSuccess: (data) => setStaff(data),
 		onError: () => message.error("Error al cargar los datos"),
 	})
 
 	return (
 		<PageLayout
-			pageTitle="Administradores"
+			pageTitle="Funcionarios"
 			create={true}
 			data={data}
-			setData={setAdministrators}
+			setData={setStaff}
 			searchKeys={["id", "name", "email"]}
 		>
 			<section className="w-full bg-white dark:bg-primary-dark p-4 rounded-lg">
-				<Table<Administrator>
-					editable
-					deletable
-					loading={loading}
-					data={administrators}
-					columnsConfig={AdministratorColumns}
-				/>
+				<Table<Staff> editable deletable loading={loading} data={staff} columnsConfig={StaffColumns} />
 			</section>
 
-			<CreateAdministrator data={administrators} setData={setAdministrators} />
-			<UpdateAdministrator data={administrators} setData={setAdministrators} />
+			<CreateStaff data={staff} setData={setStaff} />
+			<UpdateStaff data={staff} setData={setStaff} />
 
-			<ConfirmAction<Administrator>
+			<ConfirmAction<Staff>
 				text="¿Estás seguro(a) de que deseas eliminar este usuario?"
-				data={administrators}
-				setData={setAdministrators}
-				action={deleteAdministrator}
+				data={staff}
+				setData={setStaff}
+				action={deleteStaff}
 			/>
 		</PageLayout>
 	)
 }
 
-export default AdministratorsPage
+export default StaffPage
