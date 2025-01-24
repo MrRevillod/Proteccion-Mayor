@@ -83,7 +83,7 @@ export class EventsSchemas extends Schema {
 				path: ["start", "end"],
 			})
 
-			.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
+			.refine((data) => !rules.isWeekend(data.start) && !rules.isWeekend(data.end), {
 				message: "No es posible crear eventos los fin de semana",
 				path: ["end", "start"],
 			})

@@ -214,7 +214,7 @@ export const EventSchemas = {
 			serviceId: z.number(),
 			assistance: z.boolean(),
 			seniorId: z.optional(rules.rutSchema),
-			centerId: rules.centerIdSchema,
+			centerId: z.coerce.number(),
 		})
 		.refine((data) => data.start < data.end, {
 			path: ["end", "start"],
@@ -232,7 +232,7 @@ export const EventSchemas = {
 			message: "La fecha de ingresada no es válida",
 			path: ["end"],
 		})
-		.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
+		.refine((data) => !rules.isWeekend(data.start) && !rules.isWeekend(data.end), {
 			message: "No es posible crear eventos los fin de semana",
 			path: ["end", "start"],
 		}),

@@ -5,11 +5,11 @@ import { jsPDF } from "jspdf"
 import { notification } from "antd"
 import { Event, Professional } from "./types"
 
-export const generatePDF = (professional: Professional, events: Event[]) => {
+export const generatePDF = (professional: Professional, events: Event[], date: string) => {
 	const headerData = {
 		name: professional.name,
 		service: professional.service.name,
-		date: dayjs().format("DD/MM/YYYY"),
+		date: dayjs(date).format("DD/MM/YYYY"),
 		center: "",
 	}
 
@@ -29,8 +29,8 @@ export const generatePDF = (professional: Professional, events: Event[]) => {
 		(index + 1).toString(),
 		`${dayjs(event.start).format("HH:mm")} - ${dayjs(event.end).format("HH:mm")}`,
 		event.senior?.name && event.seniorId ? event.senior.name : "No reservado",
-		event.senior?.phone ? event.senior.phone : "Sin teléfono Registrado",
-		"",
+		event.senior?.phone ? event.senior.phone : !event.senior ? "" : "Sin teléfono Registrado",
+		event.assistance ? "Asiste" : event?.seniorId && !event.assistance ? "No asiste" : "",
 		"",
 	])
 

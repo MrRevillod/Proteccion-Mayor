@@ -1,12 +1,12 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
+import { FormProvider, useForm } from "react-hook-form"
 
 import { Form } from "@/components/forms/Form"
 import { Input } from "@/components/ui/Input"
 import { Modal } from "@/components/Modal"
+
 import { useModal } from "@/context/ModalContext"
-import { useEffect, useState } from "react"
 import { updateDailySessions } from "@/lib/actions"
-import { FormProvider, useForm } from "react-hook-form"
 import { Center, DailySessions, FormProps } from "@/lib/types"
 
 export const UpdateDailySessions: React.FC<FormProps<Center>> = ({ refetch }) => {
@@ -27,7 +27,7 @@ export const UpdateDailySessions: React.FC<FormProps<Center>> = ({ refetch }) =>
 	}, [selectedData])
 
 	return (
-		<Modal type="Other" loading={loading} title={`Número de atenciones diarias ${selectedData?.name}`}>
+		<Modal type="DownloadAgenda" loading={loading} title={`Número de atenciones diarias ${selectedData?.name}`}>
 			<FormProvider {...methods}>
 				<Form actionType="update" refetch={refetch} setLoading={setLoading} action={updateDailySessions}>
 					<p>

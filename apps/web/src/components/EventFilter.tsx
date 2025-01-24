@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react"
 
-import { Show } from "./ui/Show"
-import { Button } from "./ui/Button"
 import { Switch } from "antd"
-import { useAuth } from "@/context/AuthContext"
-import { SuperSelect } from "./ui/SuperSelect"
 import { useLocation } from "react-router-dom"
-import { generatePDF } from "@/lib/downloadDailyAgenda"
 import { FormProvider, useForm } from "react-hook-form"
-import { Staff, Professional, SuperSelectField } from "../lib/types"
-import { getIdsFromUrl, selectDataFormatter } from "../lib/formatters"
+
+import { Show } from "@/components/ui/Show"
+import { Button } from "@/components/ui/Button"
+import { SuperSelect } from "@/components/ui/SuperSelect"
+
+import { useAuth } from "@/context/AuthContext"
+import { useModal } from "@/context/ModalContext"
+
+import { Staff, Professional, SuperSelectField } from "@/lib/types"
+import { getIdsFromUrl, selectDataFormatter } from "@/lib/formatters"
 
 interface EventFilterProps {
 	data: {
@@ -23,9 +26,11 @@ interface EventFilterProps {
 export const EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) => {
 	// Se obtiene la localización de la página para obtener los ids de los filtros
 	const location = useLocation()
-	const { serviceId, centerId, professionalId } = getIdsFromUrl(location)
-	const { user, role } = useAuth()
 	const methods = useForm({})
+
+	const { showModal } = useModal()
+	const { user, role } = useAuth()
+	const { serviceId, centerId, professionalId } = getIdsFromUrl(location)
 	// Se ejecuta un efecto para seleccionar por defecto los filtros
 	// Si existe alguno de estos ids en la url, se selecciona por defecto en el filtro
 	useEffect(() => {
@@ -130,8 +135,8 @@ export const EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) => {
 					</div>
 
 					<Show when={role === "PROFESSIONAL"}>
-						<Button variant="secondary" onClick={() => generatePDF(user as Professional)}>
-							Descargar atenciones del día de hoy
+						<Button variant="secondary" onClick={() => showModal("DownloadAgenda", user)}>
+							Exportar Agenda a PDF
 						</Button>
 					</Show>
 				</form>

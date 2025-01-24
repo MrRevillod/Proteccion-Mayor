@@ -16,8 +16,10 @@ import { Modal } from "@/components/Modal"
 import { Button } from "@/components/ui/Button"
 import { SuperSelect } from "@/components/ui/SuperSelect"
 import { DatetimeSelect } from "@/components/ui/DatetimeSelect"
+import { useAuth } from "@/context/AuthContext"
 
 export const DownloadAgenda: React.FC = () => {
+	const { user, role } = useAuth()
 	const { selectedData: professional, handleCancel } = useModal() as {
 		selectedData: Professional
 		handleCancel: () => void
@@ -25,6 +27,7 @@ export const DownloadAgenda: React.FC = () => {
 
 	const [query, setQuery] = useState("")
 	const [submit, setSubmit] = useState(false)
+	const [selectedDate, setSelectedDate] = useState("")
 
 	const selectOptions = [
 		{ value: "today", label: `Hoy (${dayjs().format("DD/MM/YYYY")})` },
@@ -54,7 +57,8 @@ export const DownloadAgenda: React.FC = () => {
 		query,
 		trigger: !!submit,
 		onSuccess: (data) => {
-			generatePDF(professional, data.formatted as Event[])
+			const userData = (role === "PROFESSIONAL" ? user : professional) as Professional
+			generatePDF(userData, data.formatted as Event[], selectedDate)
 			setSubmit(false)
 		},
 	})
@@ -63,6 +67,8 @@ export const DownloadAgenda: React.FC = () => {
 		const agenda = methods.getValues("agenda")
 		const agendaDate = methods.getValues("agenda-date")
 		const day = agenda === "today" ? dayjs().toISOString() : agendaDate
+
+		setSelectedDate(day)
 
 		const start = dayjs(day).startOf("day").toISOString()
 		const end = dayjs(day).endOf("day").toISOString()
@@ -79,7 +85,7 @@ export const DownloadAgenda: React.FC = () => {
 	}
 
 	return (
-		<Modal title="Exportar Agenda Diaria" type="Other">
+		<Modal title="Exportar Agenda Diaria" type="DownloadAgenda">
 			<FormProvider {...methods}>
 				<div className="flex flex-col space-y-4">
 					<p>

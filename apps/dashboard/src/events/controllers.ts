@@ -266,6 +266,7 @@ export class EventsController {
 					centerId: Number(centerId),
 					assistance,
 				},
+				select: this.schemas.defaultSelect,
 			})
 
 			event = this.service.singleFormat(event)

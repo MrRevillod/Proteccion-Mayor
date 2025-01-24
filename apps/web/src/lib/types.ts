@@ -70,7 +70,7 @@ export interface Senior extends IUser {
 }
 
 export type UnvalidatedSenior = Omit<Senior, "name" & "address" & "birthDate">
-export type User = Staff | Professional | Senior
+export type User = Staff | Professional
 
 export type ApiResponse = {
 	status?: number

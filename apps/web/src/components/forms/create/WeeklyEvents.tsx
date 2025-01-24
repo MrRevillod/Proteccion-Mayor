@@ -32,7 +32,6 @@ type WeekDay = {
 }
 
 export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formattedCenters }) => {
-	const { role } = useAuth()
 	const [formStep, setFormStep] = useState(1)
 	const [modalSize, setModalSize] = useState("middle")
 
@@ -44,6 +43,8 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 	const [selectedProfessional, setSelectedProfessional] = useState<Professional>()
 
 	const methods = useForm()
+
+	const { user, role } = useAuth()
 	const { watch, getValues } = methods
 	const { handleCancel, handleOk } = useModal()
 
@@ -54,7 +55,7 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 	useRequest<Professional[]>({
 		action: getProfessionals,
 		query: `serviceId=${selectedServiceId}${selectedProfessionalId ? `&id=${selectedProfessionalId}` : ""}`,
-		trigger: !!selectedServiceId,
+		trigger: !!selectedServiceId && role !== "PROFESSIONAL",
 		onSuccess: (data) => {
 			selectDataFormatter({ data, setData: setProfessionals })
 			selectedProfessionalId && setSelectedProfessional(data[0])
@@ -76,6 +77,7 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 			setDailySessions((prev) => ({ ...prev, [currentWeekDay]: 0 }))
 			return
 		}
+
 		const center = centers.find((c) => c.id === Number(selectedCenterId))
 		const dsForService = center?.dailySessions.find((ds) => ds.serviceId === Number(selectedServiceId))
 
@@ -132,17 +134,20 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 	const handlePreviousStep = () => setFormStep((prev) => Math.max(prev - 1, 1))
 
 	const reduceWeekDays = (): Record<string, any> => {
-		return weekDays.reduce((acc, { date }) => {
-			const centerId = getValues(`${date}-centerId`)
-			acc[date] = {
-				centerId,
-				events: Array.from({ length: dailySessions[date] }).map((_, index) => ({
-					start: getValues(`${date}[${index}].start`),
-					end: getValues(`${date}[${index}].end`),
-				})),
-			}
-			return acc
-		}, {} as Record<string, any>)
+		return weekDays.reduce(
+			(acc, { date }) => {
+				const centerId = getValues(`${date}-centerId`)
+				acc[date] = {
+					centerId,
+					events: Array.from({ length: dailySessions[date] }).map((_, index) => ({
+						start: getValues(`${date}[${index}].start`),
+						end: getValues(`${date}[${index}].end`),
+					})),
+				}
+				return acc
+			},
+			{} as Record<string, any>,
+		)
 	}
 
 	const handleSubmit = async () => {
@@ -172,18 +177,38 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 		setSelectedProfessional(undefined)
 	}
 
+	useEffect(() => {
+		if (role === "PROFESSIONAL") {
+			const professional = user as Professional
+			methods.setValue("professionalId", professional?.id)
+			methods.setValue("serviceId", professional?.serviceId)
+		}
+	}, [])
+
 	return (
-		<Modal type="Create" title="Crear agenda semanal" size={modalSize as any}>
+		<Modal
+			type="Create"
+			title="Crear agenda semanal"
+			size={modalSize as any}
+			hasDailySessions={dailySessions[currentWeekDay] > 0}
+		>
 			<FormProvider {...methods}>
 				<form className="space-y-4 mt-4 mb-8">
-					<Show when={formStep === 1 && role === "ADMIN"}>
-						<SuperSelect label="Selecciona un servicio" options={services} name="serviceId" allowClear />
-						<SuperSelect
-							label="Selecciona un profesional"
-							options={professionals}
-							name="professionalId"
-							allowClear
-						/>
+					<Show when={formStep === 1}>
+						<Show when={role === "ADMIN"}>
+							<SuperSelect
+								label="Selecciona un servicio"
+								options={services}
+								name="serviceId"
+								allowClear
+							/>
+							<SuperSelect
+								label="Selecciona un profesional"
+								options={professionals}
+								name="professionalId"
+								allowClear
+							/>
+						</Show>
 						<DatetimeSelect label="Fecha de inicio" name="start" showTime={false} disablePast />
 						<DatetimeSelect label="Fecha de término" name="end" showTime={false} disablePast />
 					</Show>
@@ -207,9 +232,11 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 						Cancelar
 					</Button>
 
-					<Button variant="secondary" onClick={handlePreviousStep}>
-						Anterior
-					</Button>
+					<Show when={formStep > 1}>
+						<Button variant="secondary" onClick={handlePreviousStep}>
+							Anterior
+						</Button>
+					</Show>
 
 					<Button variant="primary" onClick={() => handleNextStep()}>
 						{formStep === 6 ? "Guardar" : "Siguiente"}

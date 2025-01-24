@@ -2,7 +2,7 @@
 	"name": "auth",
 	"version": "0.0.0",
 	"private": true,
-	"main": "./dist/index.mjs",
+	"main": "./dist/index.js",
 	"scripts": {
 		"start": "node dist/index.mjs",
 		"dev": "tsx watch  --clearScreen=false --include \"src/*\" src/index.ts",

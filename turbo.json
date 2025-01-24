@@ -5,8 +5,7 @@
 		"build": {
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"dependsOn": ["^generate", "^build"],
-			"outputs": ["build/**", "dist/**", "node_modules/**"],
-			"cache": true
+			"outputs": ["build/**", "dist/**", "node_modules/**"]
 		},
 		"generate": {
 			"cache": false
@@ -15,8 +14,7 @@
 			"dependsOn": ["^build"]
 		},
 		"dev": {
-			"dependsOn": ["^generate", "^build"],
-			"cache": true,
+			"dependsOn": ["^build"],
 			"persistent": true
 		},
 		"clean": {

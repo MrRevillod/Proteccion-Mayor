@@ -2,14 +2,14 @@
 	"name": "@repo/database",
 	"version": "0.0.0",
 	"private": true,
-	"main": "./dist/index.mjs",
-	"types": "./dist/index.d.mts",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"files": [
 		"dist/**"
 	],
 	"scripts": {
-		"build": "tsup",
-		"dev": "tsup --watch",
+		"build": "tsup --dts",
+		"dev": "tsup --watch --dts",
 		"format": "pnpx prettier --config ../../.prettierrc --write \"src/*\"",
 		"db:generate": "dotenv -e ../../.env -- prisma generate",
 		"db:generate:deploy": "dotenv -e ../../.env.production -- prisma generate",
