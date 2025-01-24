@@ -8,7 +8,7 @@
 	],
 	"scripts": {
 		"build": "tsup --dts",
-		"dev": "tsup --watch --dts",
+		"dev": "tsx watch --clearScreen=false --include \"src/*\" src/index.ts",
 		"format": "pnpx prettier --config ../../.prettierrc --write \"src/*\"",
 		"db:generate": "dotenv -e ../../.env -- prisma generate",
 		"db:generate:deploy": "dotenv -e ../../.env.production -- prisma generate",

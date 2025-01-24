@@ -5,7 +5,7 @@
 	"main": "./dist/index.js",
 	"scripts": {
 		"start": "node dist/index.mjs",
-		"dev": "tsx watch  --clearScreen=false --include \"src/*\" src/index.ts",
+		"dev": "tsx watch  --clearScreen=false --include \"src/*\" --include \"../../packages/lib/*\" src/index.ts",
 		"build": "tsup",
 		"clean": "rm -rf dist",
 		"typecheck": "tsc --noEmit",

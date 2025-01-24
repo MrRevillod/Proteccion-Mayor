@@ -8,7 +8,7 @@
 	],
 	"scripts": {
 		"build": "tsup",
-		"dev": "tsup --watch",
+		"dev": "tsx watch --clearScreen=false --include \"src/*\" src/index.ts",
 		"typecheck": "tsc --noEmit",
 		"format": "pnpx prettier --config ../../.prettierrc --write \"src/*\""
 	},
