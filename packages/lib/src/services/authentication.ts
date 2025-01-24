@@ -1,3 +1,6 @@
+import dayjs from "dayjs"
+
+import { prisma } from "@repo/database"
 import { Unauthorized } from "../errors/custom"
 import { JsonWebTokenError } from "jsonwebtoken"
 import { RoleBasedMiddleware } from "../types"
@@ -5,8 +8,6 @@ import { IncomingHttpHeaders } from "node:http"
 
 import * as jwt from "../utils/jsonwebtoken"
 import * as users from "../utils/users"
-import { prisma } from "@repo/database"
-import dayjs from "dayjs"
 
 type ServerTokens = {
 	access: string | null
@@ -31,7 +32,10 @@ export class AuthenticationService {
 
 			const payload = jwt.verify(tokens.access)
 
-			const [isRevokedAccess, isRevokedRefresh] = await Promise.all([this.isRevokedToken(tokens.access), this.isRevokedToken(tokens.refresh)])
+			const [isRevokedAccess, isRevokedRefresh] = await Promise.all([
+				this.isRevokedToken(tokens.access),
+				this.isRevokedToken(tokens.refresh),
+			])
 
 			if (isRevokedAccess || isRevokedRefresh) throw new Unauthorized()
 

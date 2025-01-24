@@ -29,7 +29,7 @@ export const findEvent = (id: string) => {
 }
 
 export const findOperative = (id: string) => {
-	return prisma.operatives.findFirst({ where: { id: Number(id) } })
+	return prisma.operative.findFirst({ where: { id: Number(id) } })
 }
 
 export const findStaff = (id: string) => {
