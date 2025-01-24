@@ -139,13 +139,16 @@ export type SuperSelectField = {
 export type ReportType = "general" | "byService" | "byCenter" | "byProfessional"
 export type AssistanceType = "assistance" | "absence" | "unreserved"
 
+
+
 export type Report = {
-    date: string
-    assistance: number
-    absence: number
-    unreserved: number
+    assistance: [number, number][]
+    absence: [number, number][]
+    unreserved: [number, number][]
+    
 }
 
 export type StatisticResponse = {
     report: Report[]
+    
 }

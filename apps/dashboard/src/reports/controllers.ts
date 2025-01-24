@@ -35,6 +35,9 @@ export class ReportsController {
                 throw new AppError(400, "Invalid date range")
             }
 
+            let fromDay = fromDate.startOf("day")
+            let toDay = toDate.endOf("day")
+
             if (centerId) {
                 filters.push({ centerId: Number(centerId) })
             }
@@ -51,23 +54,52 @@ export class ReportsController {
                 where: {
                     start: { gte: fromDate.startOf("day").toISOString() },
                     end: { lte: toDate.endOf("day").toISOString() },
-                    ...filters
+                    AND: filters
 
                 }
             })
 
             let eventsParsedByDay: eventDayDict = {}
 
+            let assistance: [number, number][] = []
+            let absence: [number, number][] = []
+            let unreserved: [number, number][] = []
+
+
+
             events.map(event => {
-                eventsParsedByDay[event.start.toISOString()].push(event)
+                const dayISO = event.start.toISOString().split("T")[0] + "T00:00:00.000Z"
+                if (!eventsParsedByDay[dayISO]) {
+                    eventsParsedByDay[dayISO] = []
+                }
+                eventsParsedByDay[dayISO].push(event)
             })
 
             const days = Object.keys(eventsParsedByDay)
-            const report = days.map(day => {
+            // crear un arreglo con todas las fechas desde from hasta to 
+
+            let curDay = fromDay
+            
+            while (curDay.isBefore(toDay)) {
+                const dayISO = curDay.toISOString().split("T")[0] + "T00:00:00.000Z"
+                if (days.indexOf(dayISO) === -1) {
+                    absence.push([new Date(dayISO).getTime(), 0])
+                    assistance.push([new Date(dayISO).getTime(), 0])
+                    unreserved.push([new Date(dayISO).getTime(), 0])
+                }
+                curDay = curDay.add(1, "day")
+            }
+
+            days.map(day => {
+                
                 const events = eventsParsedByDay[day]
                 const assistances = events.filter(event => event.assistance)
                 const absences = events.filter(event => !event.assistance)
-                const unreserved = events.filter(event => !event.seniorId)
+                const unreserveds = events.filter(event => !event.seniorId)
+
+                absence.push([new Date(day).getTime(), absences.length])
+                assistance.push([new Date(day).getTime(), assistances.length])
+                unreserved.push([new Date(day).getTime(), unreserveds.length])
 
                 return {
                     date: day,
@@ -77,7 +109,14 @@ export class ReportsController {
                 }
             })
 
-            res.json({ values: { report } })
+
+            absence = absence.sort((a, b) => a[0] - b[0])
+            assistance = assistance.sort((a, b) => a[0] - b[0])
+            unreserved = unreserved.sort((a, b) => a[0] - b[0])
+
+            res.json({
+                values: { absence, assistance, unreserved },
+            })
 
         } catch (error) {
             next(error)

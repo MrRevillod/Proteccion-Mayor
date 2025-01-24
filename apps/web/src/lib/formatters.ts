@@ -3,6 +3,7 @@ import dayjs from "dayjs"
 import { Location } from "react-router-dom"
 import { Event, StaffRole, UserRole } from "./types"
 import { Dispatch, SetStateAction } from "react"
+import { set } from "react-hook-form"
 
 export const formatRut = (rut: string) => {
 	return rut.replace(/(\d{1,3})(\d{3})(\d{3})(\w{1})/, "$1.$2.$3-$4")
@@ -50,16 +51,24 @@ interface SelectDataFormatterProps {
 	setData: Dispatch<SetStateAction<any[]>>
     keys?: { label: string; value: string }
     allString?: boolean
+    addAll?: boolean
 }
 
 const defaultSelectKeys = { label: "name", value: "id" }
 
-export const selectDataFormatter = ({ data, setData, keys = defaultSelectKeys, allString = false }: SelectDataFormatterProps) => {
+export const selectDataFormatter = ({ data, setData, keys = defaultSelectKeys, allString = false, addAll = false }: SelectDataFormatterProps) => {
+    let newData = []
+   
     if (allString) {
-        setData(data.map((item) => ({ label: item[keys.label].toString(), value: item[keys.value].toString() })))
+        newData = data.map((item) => ({ label: item[keys.label].toString(), value: item[keys.value].toString() }))
     } else {
-        setData(data.map((item) =>  ({ label: item[keys.label], value: item[keys.value] })))
+        newData = data.map((item) =>  ({ label: item[keys.label], value: item[keys.value] }))
     }
+
+    if (addAll) {
+        newData.unshift({ label: "Todos", value: "" })
+    }
+    setData(newData)
 }
 
 type QueryIdsValues = {

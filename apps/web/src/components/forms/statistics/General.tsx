@@ -1,9 +1,9 @@
-import React from "react"
+import React, { useEffect } from "react"
 
 import { useState } from "react"
 import { useRequest } from "@/hooks/useRequest"
 
-import dayjs, { Dayjs } from "dayjs"
+import dayjs from "dayjs"
 
 import { Center, Professional, Service, StatisticResponse, Report } from "@/lib/types"
 import { getCenters, getGeneralStatistics, getProfessionals, getServices } from "@/lib/actions"
@@ -13,55 +13,73 @@ import { SuperSelect } from "@/components/ui/SuperSelect"
 import { message } from "antd"
 import { DatetimeSelect } from "@/components/ui/DatetimeSelect"
 import { Button } from "@/components/ui/Button"
+import { FormProvider, get, set, useForm, useFormContext } from "react-hook-form"
+import { statisticsSchemas } from "@/lib/schemas"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Form } from "../Form"
 
 
 
 type GeneralStatisticsFormProps = {
-    setReportData: (data: Report[]) => void
+    setReportData: (data: Report) => void
 }
 
 const GeneralStatisticsForm = ({ setReportData }: GeneralStatisticsFormProps) => {
+    const methods = useFormContext()
 
     const [centers, setCenters] = useState<Center[]>([])
-    const [proffesionals, setProfessionals] = useState<Professional[]>([])
+    const [professionals, setProfessionals] = useState<Professional[]>([])
     const [services, setServices] = useState<Service[]>([])
 
-    const [from, setFrom] = useState<string>((new Dayjs().subtract(1, "year")).toISOString())
-    const [to, setTo] = useState<string>((new Dayjs()).toISOString())
+    const professional = methods.watch("professional")
+    const service = methods.watch("service")
+    const center = methods.watch("center")
 
-    const [center, setCenter] = useState<string>()
-    const [service, setService] = useState<string>()
-    const [professional, setProfessional] = useState<string>()
+    const from = methods.watch("from")
+    const to = methods.watch("to")
+
+    const getStatistics = async () => {
+        if (!from || !to) {
+            message.error("Debe seleccionar un rango de fechas")
+            return
+        }
+
+        try {
+            const query = `from=${from}&to=${to}&${center ? `centerId=${center}` : ""}&${service ? `serviceId=${service}` : ""}&${professional ? `professionalId=${professional}` : ""}`
+            const res = await getGeneralStatistics({ query })
+            setReportData(res.data.values as Report)
+        } catch (error) {
+            message.error("Error al generar estadísticas")
+        }
+    }
 
 
-
-    const handleSubmit: React.FormEventHandler<HTMLFormElement> = (ev) => {
+    useEffect(() => {
+        getStatistics()
+    },[])
+    const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (ev) => {
         ev.preventDefault()
-        useRequest<StatisticResponse>({
-            action: getGeneralStatistics,
-            query: `from=${from}&to=${to}&${center ? `centerId=${center}` : ""}&${service ? `serviceId=${service}` : ""}&${professional ? `professionalId=${professional}` : ""}`,
-            onSuccess: (data) => {
-                setReportData(data.report)
-            },
-        })
+        getStatistics()
     }
 
     const centerReq = useRequest<Center[]>({
         action: getCenters,
         query: "select=name,id",
-        onSuccess: (data) => selectDataFormatter({ data, setData: setCenters, allString: true }),
+        onSuccess: (data) => selectDataFormatter({ data, setData: setCenters, allString: true, addAll: true }),
     })
 
     const serviceReq = useRequest<Service[]>({
         action: getServices,
         query: "select=name,id",
-        onSuccess: (data) => selectDataFormatter({ data, setData: setServices }),
+        onSuccess: (data) => selectDataFormatter({ data, setData: setServices, addAll: true }),
     })
 
     const professionalReq = useRequest<Professional[]>({
         action: getProfessionals,
         query: "select=name,id",
-        onSuccess: (data) => setProfessionals(data),
+        onSuccess: (data) => {
+            selectDataFormatter({ data, setData: setProfessionals, addAll: true })
+        },
     })
 
     if (centerReq.error || serviceReq.error || professionalReq.error) {
@@ -69,17 +87,17 @@ const GeneralStatisticsForm = ({ setReportData }: GeneralStatisticsFormProps) =>
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <DatetimeSelect label="Desde" name="from" defaultValue={new Dayjs(from)} onChange={(date) => { setFrom(date ? dayjs(date).toISOString() : from) }} />
-            <DatetimeSelect label="Hasta" name="to" defaultValue={new Dayjs(to)} onChange={(date) => { setTo(date ? dayjs(date).toISOString() : to) }} />
+            <form className="md:grid grid-cols-6 gap-4 w-full items-end p-4  " onSubmit={handleSubmit}>
+                <DatetimeSelect showTime={false} label="Desde" name="from" defaultValue={(dayjs().subtract(1, "month"))} />
+                <DatetimeSelect showTime={false} label="Hasta" name="to" defaultValue={dayjs().add(1,"month")} />
 
-            <SuperSelect name="center" label="Centro" options={centers} onChange={(value) => setCenter(value)} />
-            <SuperSelect name="service" label="Servicio" options={services} onChange={(value) => setService(value)} />
-            <SuperSelect name="professional" label="Profesional" options={proffesionals} onChange={(value) => setProfessional(value)} />
-            <Button type="submit" variant="primary" >
-                Guardar
-            </Button>
-        </form>
+                <SuperSelect name="center" label="Centro" options={centers} />
+                <SuperSelect disabled={Boolean(professional)} name="service" label="Servicio" options={services} />
+                <SuperSelect disabled={Boolean(service)} name="professional" label="Profesional" options={professionals} />
+                <Button className="h-3/4" type="submit" variant="primary" >
+                    Generar estadísticas
+                </Button>
+            </form>
     )
 }
 
