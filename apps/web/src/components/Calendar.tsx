@@ -44,8 +44,7 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 					<div className="z-50">
 						<p>{event?.seniorId ? event?.senior?.name : "Sin reserva"}</p>
 						<p>
-							{dayjs(event?.start).format("HH:mm")} -{" "}
-							{dayjs(event?.end).format("HH:mm")}
+							{dayjs(event?.start).format("HH:mm")} - {dayjs(event?.end).format("HH:mm")}
 						</p>
 					</div>
 				),

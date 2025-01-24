@@ -33,11 +33,7 @@ export const UpdateCenter: React.FC<FormProps<Center>> = ({ data, setData }) => 
 	}, [selectedData])
 
 	return (
-		<Modal
-			type="Edit"
-			title={`Editar la información del ${selectedData?.name}`}
-			loading={loading}
-		>
+		<Modal type="Edit" title={`Editar la información del ${selectedData?.name}`} loading={loading}>
 			<FormProvider {...methods}>
 				<Form<Center>
 					data={data as Center[]}

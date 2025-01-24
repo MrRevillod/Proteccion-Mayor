@@ -34,7 +34,11 @@ const StatisticsPage: React.FC = () => {
 	const [reportSelection, setReportSelection] = useState<ReportType>("general")
 	const [selectedProfessional, setSelectedProfessional] = useState<SelectedProfessional>({ id: "", name: "" })
 	const [reportData, setReportData] = useState<any[]>([])
-	const [assistanceSelection, setAssistanceSelection] = useState<AssistanceType[]>(["assistance", "absence", "unreserved"])
+	const [assistanceSelection, setAssistanceSelection] = useState<AssistanceType[]>([
+		"assistance",
+		"absence",
+		"unreserved",
+	])
 
 	const handleAssistanceSelection = (selection: AssistanceType) => {
 		if (assistanceSelection.includes(selection)) {
@@ -83,7 +87,12 @@ const StatisticsPage: React.FC = () => {
 	return (
 		<PageLayout
 			pageTitle="Reporte general del sistema"
-			customRightSide={<StatisticSelection setReportSelection={setReportSelection} setSelectedProfessional={setSelectedProfessional} />}
+			customRightSide={
+				<StatisticSelection
+					setReportSelection={setReportSelection}
+					setSelectedProfessional={setSelectedProfessional}
+				/>
+			}
 		>
 			<StatisticMainLayout>
 				<ChartLayout
@@ -94,7 +103,12 @@ const StatisticsPage: React.FC = () => {
 					monthSelect={reportSelection !== "general" && reportSelection !== "byProfessional"}
 					yearSelect
 				>
-					<Show when={reportSelection === "general" || (reportSelection === "byProfessional" && !!selectedProfessional.id)}>
+					<Show
+						when={
+							reportSelection === "general" ||
+							(reportSelection === "byProfessional" && !!selectedProfessional.id)
+						}
+					>
 						<ResponsiveContainer width="100%" height={500} style={{ marginLeft: "0px" }}>
 							<LineChart data={reportData} margin={{ top: 20, right: 20, left: -25, bottom: 40 }}>
 								<CartesianGrid strokeDasharray="3 3" />
@@ -132,17 +146,30 @@ const StatisticsPage: React.FC = () => {
 								<CartesianGrid strokeDasharray="3 3" />
 								<XAxis
 									dataKey={reportSelection === "byCenter" ? "center" : "service"}
-									tickFormatter={reportSelection === "byCenter" ? (value) => abbreviateCenterName(value) : undefined}
+									tickFormatter={
+										reportSelection === "byCenter"
+											? (value) => abbreviateCenterName(value)
+											: undefined
+									}
 								/>
 								<YAxis allowDecimals={false} />
 								<Tooltip />
-								{assistanceSelection.includes("assistance") && <Bar dataKey="assistances" fill="#008000" name="Asistencia" />}
-								{assistanceSelection.includes("absence") && <Bar dataKey="absences" fill="#FF0000" name="Inasistencia" />}
-								{assistanceSelection.includes("unreserved") && <Bar dataKey="unreserved" fill="#0000ff" name="No Reservado" />}
+								{assistanceSelection.includes("assistance") && (
+									<Bar dataKey="assistances" fill="#008000" name="Asistencia" />
+								)}
+								{assistanceSelection.includes("absence") && (
+									<Bar dataKey="absences" fill="#FF0000" name="Inasistencia" />
+								)}
+								{assistanceSelection.includes("unreserved") && (
+									<Bar dataKey="unreserved" fill="#0000ff" name="No Reservado" />
+								)}
 							</BarChart>
 						</ResponsiveContainer>
 					</Show>
-					<AssistanceSelection assistanceSelection={assistanceSelection} setSelection={handleAssistanceSelection} />
+					<AssistanceSelection
+						assistanceSelection={assistanceSelection}
+						setSelection={handleAssistanceSelection}
+					/>
 				</ChartLayout>
 			</StatisticMainLayout>
 		</PageLayout>

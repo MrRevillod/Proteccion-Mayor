@@ -8,16 +8,19 @@ import { UpdateProfessional } from "@/components/forms/update/Professional"
 
 import { message } from "antd"
 import { useState } from "react"
+import { useModal } from "@/context/ModalContext"
 import { useRequest } from "@/hooks/useRequest"
 import { useNavigate } from "react-router-dom"
-import { generatePDF } from "@/lib/downloadDailyAgenda"
 import { Professional } from "@/lib/types"
+import { DownloadAgenda } from "@/components/DownloadAgenda"
 import { ProfessionalColumns } from "@/lib/columns"
 import { deleteProfessional, getProfessionals } from "@/lib/actions"
 
 const ProfessionalsPage: React.FC = () => {
 	const [professionals, setProfessionals] = useState<Professional[]>([])
 	const navigate = useNavigate()
+
+	const { showModal } = useModal()
 
 	const { error, loading, data } = useRequest<Professional[]>({
 		action: getProfessionals,
@@ -32,14 +35,24 @@ const ProfessionalsPage: React.FC = () => {
 		})
 	}
 
+	const handleDownloadAgenda = (professional: Professional) => {
+		showModal("DownloadAgenda", professional)
+	}
+
 	return (
-		<PageLayout pageTitle="Profesionales" create={true} data={data} setData={setProfessionals} searchKeys={["id", "name", "email"]}>
+		<PageLayout
+			pageTitle="Profesionales"
+			create={true}
+			data={data}
+			setData={setProfessionals}
+			searchKeys={["id", "name", "email"]}
+		>
 			<section className="w-full bg-white dark:bg-primary-dark p-4 rounded-lg">
 				<Table<Professional>
 					loading={loading}
 					data={professionals}
 					onHistory={handleHistory}
-					onDownloadAgenda={generatePDF}
+					onDownloadAgenda={handleDownloadAgenda}
 					columnsConfig={ProfessionalColumns}
 					editable
 					deletable
@@ -50,6 +63,8 @@ const ProfessionalsPage: React.FC = () => {
 
 			<CreateProfessional data={professionals} setData={setProfessionals} />
 			<UpdateProfessional data={professionals} setData={setProfessionals} />
+
+			<DownloadAgenda />
 
 			<ConfirmAction<Professional>
 				text="¿Estás seguro de que deseas eliminar este profesional?"

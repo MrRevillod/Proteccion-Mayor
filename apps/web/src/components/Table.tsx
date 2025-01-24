@@ -4,13 +4,7 @@ import { useModal } from "../context/ModalContext"
 import { Table as DataTable, Space } from "antd"
 import { tableColumnsFormatters } from "../lib/formatters"
 import { BaseDataType, TableColumnType } from "../lib/types"
-import {
-	AiFillEdit,
-	AiFillDelete,
-	AiFillEye,
-	AiOutlineHistory,
-	AiFillCalendar,
-} from "react-icons/ai"
+import { AiFillEdit, AiFillDelete, AiFillEye, AiOutlineHistory, AiFillCalendar } from "react-icons/ai"
 
 interface TableProps<T> {
 	data: T[]
@@ -27,17 +21,8 @@ interface TableProps<T> {
 }
 
 export const Table = <T extends BaseDataType>({ data, ...props }: TableProps<T>) => {
-	const {
-		columnsConfig,
-		loading,
-		editable,
-		deletable,
-		viewable,
-		onView,
-		onHistory,
-		downloadable,
-		onDownloadAgenda,
-	} = props
+	const { columnsConfig, loading, editable, deletable, viewable, onView, onHistory, downloadable, onDownloadAgenda } =
+		props
 
 	const { showModal } = useModal()
 
@@ -55,9 +40,7 @@ export const Table = <T extends BaseDataType>({ data, ...props }: TableProps<T>)
 					title={col.title}
 					dataIndex={col.dataIndex as string}
 					render={(value: any) => {
-						if (
-							tableColumnsFormatters[col.key as keyof typeof tableColumnsFormatters]
-						) {
+						if (tableColumnsFormatters[col.key as keyof typeof tableColumnsFormatters]) {
 							const colKey = col.key as keyof typeof tableColumnsFormatters
 							return tableColumnsFormatters[colKey](value as never)
 						}

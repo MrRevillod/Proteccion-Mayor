@@ -12,6 +12,7 @@ import { CreateEvent } from "@/components/forms/create/Event"
 import { UpdateEvent } from "@/components/forms/update/Event"
 import { ConfirmAction } from "@/components/ConfirmAction"
 import { UpcomingEvents } from "@/components/UpcomingEvents"
+import { CreateWeeklyEvents } from "@/components/forms/create/WeeklyEvents"
 
 import { useAuth } from "@/context/AuthContext"
 import { useSocket } from "@/context/SocketContext"
@@ -19,6 +20,7 @@ import { useRequest } from "@/hooks/useRequest"
 import { deleteEvent, getCenters, getEvents } from "@/lib/actions"
 import { Center, Events, Event, SuperSelectField } from "@/lib/types"
 import { filterUpcomingEvents, selectDataFormatter } from "@/lib/formatters"
+import { DownloadAgenda } from "@/components/DownloadAgenda"
 
 const ProfessionalAgendaPage: React.FC = () => {
 	const location = useLocation()
@@ -56,9 +58,8 @@ const ProfessionalAgendaPage: React.FC = () => {
 		},
 	})
 
-	useRequest<Center[]>({
+	const { data: rawCenters } = useRequest<Center[]>({
 		action: getCenters,
-		query: "select=name,id",
 		onSuccess: (data) => selectDataFormatter({ data, setData: setCenters }),
 	})
 
@@ -87,7 +88,14 @@ const ProfessionalAgendaPage: React.FC = () => {
 			<CreateEvent centers={centers} refetch={refetchEvents} />
 			<UpdateEvent centers={centers} refetch={refetchEvents} />
 
-			<ConfirmAction<Event> text="¿Estás seguro(a) de que deseas eliminar este evento?" action={deleteEvent} refetch={refetchEvents} />
+			<CreateWeeklyEvents services={[]} centers={rawCenters as Center[]} formattedCenters={centers} />
+			<DownloadAgenda />
+
+			<ConfirmAction<Event>
+				text="¿Estás seguro(a) de que deseas eliminar este evento?"
+				action={deleteEvent}
+				refetch={refetchEvents}
+			/>
 		</PageLayout>
 	)
 }

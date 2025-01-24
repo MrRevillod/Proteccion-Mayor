@@ -83,7 +83,7 @@ export const UpdateProfile: React.FC<UpdateProfileProps> = ({ setImageSrc, setSh
 						password: "",
 						confirmPassword: "",
 						image: null,
-				  }
+					}
 
 		if (JSON.stringify(formData) === JSON.stringify(originalData)) {
 			message.error("No se han realizado cambios")

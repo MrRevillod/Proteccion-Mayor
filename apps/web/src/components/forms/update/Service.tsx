@@ -35,11 +35,7 @@ export const UpdateService: React.FC<FormProps<Service>> = ({ data, setData }) =
 	}, [selectedData])
 
 	return (
-		<Modal
-			type="Edit"
-			title={`Editar la información de ${selectedData?.name}`}
-			loading={loading}
-		>
+		<Modal type="Edit" title={`Editar la información de ${selectedData?.name}`} loading={loading}>
 			<FormProvider {...methods}>
 				<Form<Service>
 					data={data as Service[]}

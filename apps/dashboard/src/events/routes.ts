@@ -47,7 +47,10 @@ export class EventsRouter extends Router {
 		this.delete({
 			path: "/:id",
 			handler: this.controller.deleteOne,
-			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL", "FUNCTIONARY"]), validations.resourceId(findEvent)],
+			middlewares: [
+				this.auth.authorize(["ADMIN", "PROFESSIONAL", "FUNCTIONARY"]),
+				validations.resourceId(findEvent),
+			],
 		})
 
 		this.patch({

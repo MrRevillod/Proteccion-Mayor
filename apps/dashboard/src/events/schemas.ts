@@ -33,7 +33,7 @@ export class EventsSchemas extends Schema {
 				select: { id: true, name: true, address: true },
 			},
 			senior: {
-				select: { id: true, name: true, email: true },
+				select: { id: true, name: true, email: true, phone: true },
 			},
 			professional: { select: { name: true, email: true } },
 		}
@@ -49,7 +49,7 @@ export class EventsSchemas extends Schema {
 				seniorId: z.optional(rules.rutSchema),
 				centerId: z.number({ message: "El centro es obligatorio" }),
 			})
-			.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
+			.refine((data) => !rules.isWeekend(data.start) && !rules.isWeekend(data.end), {
 				message: "No es posible crear eventos los fin de semana",
 				path: ["end", "start"],
 			})
@@ -62,7 +62,7 @@ export class EventsSchemas extends Schema {
 				end: rules.dateTimeSchema,
 				weeklyEvents: rules.weeklyEventsSchema,
 			})
-			.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
+			.refine((data) => !rules.isWeekend(data.start) && !rules.isWeekend(data.end), {
 				message: "No es posible crear eventos los fin de semana",
 			})
 	}
@@ -83,7 +83,7 @@ export class EventsSchemas extends Schema {
 				path: ["start", "end"],
 			})
 
-			.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
+			.refine((data) => !rules.isWeekend(data.start) && !rules.isWeekend(data.end), {
 				message: "No es posible crear eventos los fin de semana",
 				path: ["end", "start"],
 			})

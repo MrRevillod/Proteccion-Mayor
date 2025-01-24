@@ -14,7 +14,7 @@ import { BooleanSelect } from "@/components/ui/BooleanSelect"
 import { DatetimeSelect } from "@/components/ui/DatetimeSelect"
 import { selectDataFormatter } from "@/lib/formatters"
 import { useState, useEffect } from "react"
-import { FormProvider, set, useForm } from "react-hook-form"
+import { FormProvider, useForm } from "react-hook-form"
 import { getSeniors, updateEvent } from "@/lib/actions"
 import { Professional, Senior, Staff, SuperSelectField } from "@/lib/types"
 
@@ -55,12 +55,16 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 	})
 
 	useEffect(() => {
-		setDisabled(role === "FUNCTIONARY" && (user as Staff).centerId !== selectedData?.centerId)
-
 		if (!selectedData) return
+
+		if (role === "FUNCTIONARY") {
+			const functionary = user as Staff
+			setDisabled(functionary?.centerId !== selectedData?.centerId)
+		}
+
 		methods.reset({
 			professionalId: selectedData?.professionalId,
-			centerId: selectedData?.centerId ? selectedData?.centerId.toString() : undefined,
+			centerId: selectedData?.centerId,
 			serviceId: selectedData?.serviceId,
 			assistance: selectedData?.assistance,
 			seniorId: selectedData?.seniorId || undefined,
@@ -69,7 +73,9 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 		})
 
 		if (role === "ADMIN") {
-			const serviceProfessionals = professionals?.filter((professional) => professional.serviceId === selectedData?.serviceId)
+			const serviceProfessionals = professionals?.filter(
+				(professional) => professional.serviceId === selectedData?.serviceId,
+			)
 			selectDataFormatter({ data: serviceProfessionals as Professional[], setData: setSelectProfessionals })
 		}
 
@@ -79,14 +85,29 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 	return (
 		<Modal type="Edit" title="Editar un evento" loading={loading}>
 			<FormProvider {...methods}>
-				<Form action={updateEvent} disabled={disabled} actionType="update" deletable refetch={refetch} setLoading={setLoading}>
-					<Show when={isAfterToday(selectedData?.start)}>
-						<Show when={role === "ADMIN"}>
-							<SuperSelect label="Seleccione el profesional" name="professionalId" options={selectProfessionals} />
-						</Show>
-
-						<SuperSelect label="Seleccione el centro de atención (opcional)" name="centerId" options={centers} disabled={disabled} />
+				<Form
+					action={updateEvent}
+					disabled={disabled}
+					actionType="update"
+					deletable
+					refetch={refetch}
+					setLoading={setLoading}
+				>
+					<Show when={role === "ADMIN"}>
+						<SuperSelect
+							label="Seleccione el profesional"
+							name="professionalId"
+							options={selectProfessionals}
+							disabled
+						/>
 					</Show>
+
+					<SuperSelect
+						label="Seleccione el centro de atención (opcional)"
+						name="centerId"
+						options={centers}
+						disabled={role !== "ADMIN"}
+					/>
 
 					<SuperSelect
 						label="Seleccione la persona mayor"
@@ -117,7 +138,9 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 						</div>
 					</Show>
 
-					<Show when={selectedData?.seniorId && !isAfterToday(selectedData?.start) && !isEnd(selectedData?.end)}>
+					<Show
+						when={selectedData?.seniorId && !isAfterToday(selectedData?.start) && !isEnd(selectedData?.end)}
+					>
 						<BooleanSelect
 							name="assistance"
 							options={[

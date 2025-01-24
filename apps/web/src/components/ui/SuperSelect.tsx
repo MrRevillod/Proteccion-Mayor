@@ -17,14 +17,21 @@ interface SuperSelectProps {
 	showSearch?: boolean
 }
 
-export const
-        SuperSelect = ({ name, label, ...props }: SuperSelectProps) => {
-	const { options, setSearch, placeholder, disabled = false, allowClear = true, showSearch = true, defaultValue } = props
+export const SuperSelect = ({ name, label, ...props }: SuperSelectProps) => {
+	const {
+		options,
+		setSearch,
+		placeholder,
+		disabled = false,
+		allowClear = true,
+		showSearch = true,
+		defaultValue,
+	} = props
 
 	const {
 		control,
-        formState: { errors },
-        getValues
+		formState: { errors },
+		getValues,
 	} = useFormContext()
 
 	const classes = clsx(
@@ -55,7 +62,7 @@ export const
 				render={({ field }) => (
 					<Select
 						{...field}
-                        defaultValue={defaultValue}
+						defaultValue={defaultValue}
 						value={field.value}
 						className={classes}
 						showSearch={showSearch}
@@ -66,7 +73,7 @@ export const
 							setSearch && setSearch(value)
 						}}
 						onChange={(value) => {
-                            field.onChange(value)
+							field.onChange(value)
 						}}
 						allowClear={allowClear}
 						disabled={disabled}

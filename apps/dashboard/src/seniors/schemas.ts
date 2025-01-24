@@ -24,6 +24,7 @@ export class SeniorSchemas extends Schema {
 			id: true,
 			name: true,
 			email: true,
+			phone: true,
 			address: true,
 			birthDate: true,
 			validated: true,
@@ -39,6 +40,7 @@ export class SeniorSchemas extends Schema {
 			rut: rules.rutSchema,
 			email: rules.emailSchema,
 			pin: rules.pinSchema,
+			phone: rules.phoneSchema,
 		})
 	}
 
@@ -50,6 +52,7 @@ export class SeniorSchemas extends Schema {
 			address: rules.addressSchema,
 			birthDate: rules.dateTimeSchema,
 			gender: rules.genderSchema,
+			phone: rules.phoneSchema,
 		})
 	}
 
@@ -61,6 +64,7 @@ export class SeniorSchemas extends Schema {
 				birthDate: rules.dateTimeSchema,
 				password: rules.optionalPinSchema,
 				confirmPassword: rules.optionalPinSchema,
+				phone: rules.phoneSchema.optional(),
 			})
 			.refine((data) => data.password === data.confirmPassword, {
 				message: "Los PIN ingresados no coinciden",

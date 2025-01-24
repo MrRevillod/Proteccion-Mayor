@@ -122,7 +122,7 @@ export const generateMonths = () => {
 			label: capitalize(
 				dayjs()
 					.month(i - 1)
-					.format("MMMM")
+					.format("MMMM"),
 			),
 			value: i,
 		}

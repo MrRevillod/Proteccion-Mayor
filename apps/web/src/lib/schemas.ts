@@ -10,12 +10,6 @@ export const LoginFormSchema = z.object({
 })
 
 export const SeniorSchemas = {
-	MobileRegister: z.object({
-		rut: rules.rutSchema,
-		email: rules.emailSchema,
-		pin: rules.pinSchema,
-	}),
-
 	DashboardRegister: z
 		.object({
 			id: rules.rutSchema,
@@ -24,6 +18,7 @@ export const SeniorSchemas = {
 			address: rules.addressSchema,
 			birthDate: z.string({ message: "La fecha de nacimiento es requerida" }),
 			gender: rules.genderSchema,
+			phone: rules.phoneSchema,
 		})
 		.refine((data) => rules.isValidDate(data.birthDate), {
 			message: "La fecha de ingresada no es válida",
@@ -40,6 +35,7 @@ export const SeniorSchemas = {
 			email: rules.emailSchema,
 			address: rules.addressSchema,
 			birthDate: z.string({ message: "La fecha de nacimiento es requerida" }),
+			phone: rules.phoneSchema,
 			password: rules.optionalPinSchema,
 			confirmPassword: rules.optionalPinSchema,
 		})
@@ -164,7 +160,7 @@ export const CentersSchemas = {
 				quantity: z.number().int().min(1),
 				serviceId: z.string(),
 				centerId: z.string(),
-			})
+			}),
 		),
 	}),
 }
@@ -177,7 +173,7 @@ export const EventSchemas = {
 			professionalId: z.string({ message: "El profesional es requerido" }),
 			serviceId: z.number({ message: "El servicio es requerido" }),
 			seniorId: z.optional(rules.rutSchema),
-			centerId: z.number({ message: "El centro es requerido" }),
+			centerId: z.coerce.number({ message: "El centro es requerido" }),
 		})
 		.refine((data) => data.start < data.end, {
 			message: "Rango de tiempo invalido",
@@ -195,7 +191,7 @@ export const EventSchemas = {
 			message: "La fecha de ingresada no es válida",
 			path: ["end"],
 		})
-		.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
+		.refine((data) => !rules.isWeekend(data.start) && !rules.isWeekend(data.end), {
 			message: "No es posible crear eventos los fin de semana",
 			path: ["end", "start"],
 		})
@@ -207,7 +203,7 @@ export const EventSchemas = {
 			},
 			{
 				message: "La duración máxima de un evento es de 5 horas",
-			}
+			},
 		),
 
 	Update: z
@@ -218,7 +214,7 @@ export const EventSchemas = {
 			serviceId: z.number(),
 			assistance: z.boolean(),
 			seniorId: z.optional(rules.rutSchema),
-			centerId: rules.centerIdSchema,
+			centerId: z.coerce.number(),
 		})
 		.refine((data) => data.start < data.end, {
 			path: ["end", "start"],
@@ -236,7 +232,7 @@ export const EventSchemas = {
 			message: "La fecha de ingresada no es válida",
 			path: ["end"],
 		})
-		.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
+		.refine((data) => !rules.isWeekend(data.start) && !rules.isWeekend(data.end), {
 			message: "No es posible crear eventos los fin de semana",
 			path: ["end", "start"],
 		}),

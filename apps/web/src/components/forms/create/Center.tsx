@@ -3,14 +3,16 @@ import React from "react"
 import { Form } from "@/components/forms/Form"
 import { Input } from "@/components/ui/Input"
 import { Modal } from "@/components/Modal"
-import { useState } from "react"
 import { ColorPicker } from "@/components/ColorPicker"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { createCenter } from "@/lib/actions"
 import { ImageSelector } from "@/components/ImageSelector"
+
+import { useState } from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { FormProvider, useForm } from "react-hook-form"
+
+import { createCenter } from "@/lib/actions"
 import { CentersSchemas } from "@/lib/schemas"
 import { Center, FormProps } from "@/lib/types"
-import { FormProvider, useForm } from "react-hook-form"
 
 export const CreateCenter: React.FC<FormProps<Center>> = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false)

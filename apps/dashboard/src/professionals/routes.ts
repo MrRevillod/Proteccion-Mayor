@@ -14,7 +14,7 @@ export class ProfessionalsRouter extends Router {
 		this.get({
 			path: "/",
 			handler: this.controller.getMany,
-			middlewares: [this.auth.authorize(["ADMIN","FUNCTIONARY"])],
+			middlewares: [this.auth.authorize(["ADMIN", "FUNCTIONARY"])],
 		})
 
 		this.post({
@@ -38,10 +38,7 @@ export class ProfessionalsRouter extends Router {
 		this.delete({
 			path: "/:id",
 			handler: this.controller.deleteOne,
-			middlewares: [
-				this.auth.authorize(["ADMIN", "PROFESSIONAL"]),
-				validations.resourceId(findProfessional),
-			],
+			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL"]), validations.resourceId(findProfessional)],
 		})
 	}
 }

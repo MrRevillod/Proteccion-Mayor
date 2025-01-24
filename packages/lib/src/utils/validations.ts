@@ -8,6 +8,7 @@ import { Request, Response, NextFunction } from "express"
 import { FileMiddleware, Middleware, SchemaBasedMiddleware, UserRole } from "../types"
 
 export const body: SchemaBasedMiddleware = (schema) => (req, res, next) => {
+	console.log("body ", req.body)
 	try {
 		schema.parse(req.body)
 		next()
@@ -56,20 +57,21 @@ export const files: FileMiddleware =
 		}
 	}
 
-export const resourceId = (fn: (id: string) => Promise<any>) => async (req: Request, res: Response, next: NextFunction) => {
-	try {
-		const exists = await fn(req.params.id)
-		if (!exists) {
-			throw new BadRequest("El recurso solicitado no existe")
+export const resourceId =
+	(fn: (id: string) => Promise<any>) => async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const exists = await fn(req.params.id)
+			if (!exists) {
+				throw new BadRequest("El recurso solicitado no existe")
+			}
+
+			req.setExtension("reqResource", exists)
+
+			next()
+		} catch (error) {
+			next(error)
 		}
-
-		req.setExtension("reqResource", exists)
-
-		next()
-	} catch (error) {
-		next(error)
 	}
-}
 
 export const resetPasswordRequest: Middleware = async (req, res, next) => {
 	const { id, token, role } = req.params

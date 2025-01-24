@@ -70,7 +70,7 @@ export const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 	useEffect(() => {
 		if (baseTrigger && selectedService && professionals) {
 			const serviceProfessionals = professionals.filter(
-				(professional) => professional.serviceId === selectedService
+				(professional) => professional.serviceId === selectedService,
 			)
 			selectDataFormatter({ data: serviceProfessionals, setData: setSelectProfessionals })
 		}

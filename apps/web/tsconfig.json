@@ -1,20 +1,22 @@
 {
-  "exclude": [
-    "node_modules"
-  ],
-  "extends": "@repo/typescript-config/vite.json",
-  "compilerOptions": {
-    "rootDir": ".",
-    "outDir": "dist",
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+    "exclude": [
+        "node_modules"
+    ],
+    "extends": "@repo/typescript-config/vite.json",
+    "compilerOptions": {
+        "rootDir": ".",
+        "outDir": "dist",
+        "allowJs": true,
+        "noImplicitAny": false,
+        "paths": {
+            "@/*": [
+                "./src/*"
+            ]
+        },
+        "skipLibCheck": true
     },
-    "skipLibCheck": true
-  },
-  "include": [
-    "src",
-    "vite.config.ts"
-  ],
+    "include": [
+        "src",
+        "vite.config.ts"
+    ],
 }

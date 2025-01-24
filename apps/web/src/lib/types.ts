@@ -66,10 +66,11 @@ export interface Senior extends IUser {
 	address: string
 	birthDate: string
 	validated: boolean
+	phone: string
 }
 
 export type UnvalidatedSenior = Omit<Senior, "name" & "address" & "birthDate">
-export type User = Staff | Professional | Senior
+export type User = Staff | Professional
 
 export type ApiResponse = {
 	status?: number

@@ -11,11 +11,20 @@ interface DatetimeSelectProps {
 	name: string
 	showTime?: boolean
 	defaultValue?: Dayjs
-    width?: string
-    disabled?: boolean
+	width?: string
+	disabled?: boolean
+	disablePast?: boolean
 }
 
-export const DatetimeSelect = ({ label, name, showTime = true, defaultValue, width, disabled = false }: DatetimeSelectProps) => {
+export const DatetimeSelect = ({
+	label,
+	name,
+	showTime = true,
+	defaultValue,
+	width,
+	disabled = false,
+	disablePast = false,
+}: DatetimeSelectProps) => {
 	const {
 		control,
 		setValue,
@@ -27,12 +36,11 @@ export const DatetimeSelect = ({ label, name, showTime = true, defaultValue, wid
 		"rounded-lg text-sm focus:outline-none focus:ring-primary-green",
 		"focus:border-primary-green w-full h-10 placeholder-neutral-400",
 		"text-dark dark:text-light mb-1 border-1 bg-light dark:bg-primary-dark",
-		width ? width : "w-full"
+		width ? width : "w-full",
 	)
 
-	// Definir el rango de años
 	const minYear = dayjs().subtract(110, "year").startOf("year")
-	const maxYear = dayjs().endOf("day")
+	const today = dayjs()
 
 	return (
 		<div className="flex flex-col gap-2">
@@ -57,9 +65,14 @@ export const DatetimeSelect = ({ label, name, showTime = true, defaultValue, wid
 								disabledHours: () => [0, 1, 2, 3, 4, 4, 5, 6, 7, 19, 20, 21, 22, 23],
 							}
 						}}
-						disabledDate={(current) =>
-							current && (current.isBefore(minYear, "day") || current.isAfter(maxYear, "day"))
-						}
+						disabledDate={(current) => {
+							// Si disablePast es true, deshabilita las fechas pasadas
+							if (disablePast && current && current.isBefore(today, "day")) {
+								return true
+							}
+							// Deshabilita fechas antes del mínimo año
+							return current && current.isBefore(minYear, "day")
+						}}
 						showNow={showTime}
 						value={field.value ? dayjs(field.value) : null}
 						defaultValue={defaultValue ? dayjs(defaultValue) : null}

@@ -5,7 +5,7 @@ import { Spin } from "antd"
 const Spinner: React.FC = () => {
 	return (
 		<div className="flex items-center justify-center">
-			<Spin tip="Loading" size="large" />
+			<Spin size="large" />
 		</div>
 	)
 }

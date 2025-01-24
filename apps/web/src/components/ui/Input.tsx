@@ -57,7 +57,7 @@ export const Input: React.FC<InputProps> = (props) => {
 		errors[name] ? "border-red" : "border-gray-dark",
 		"rounded-lg px-2 py-2 text-sm focus:outline-none focus:ring-primary-green",
 		"focus:border-primary-green w-full pl-4 placeholder-neutral-400",
-		"text-dark dark:text-light mb-1 border-1 bg-light dark:bg-primary-dark"
+		"text-dark dark:text-light mb-1 border-1 bg-light dark:bg-primary-dark",
 	)
 
 	return (
@@ -78,11 +78,7 @@ export const Input: React.FC<InputProps> = (props) => {
 				<div className="flex flex-row gap-2 items-center justify-between">
 					<InputLabel label={label} />
 					<Show when={type !== "password"}>
-						{errors[name] && (
-							<div className="text-red text-sm">
-								{errors[name]?.message?.toString()}
-							</div>
-						)}
+						{errors[name] && <div className="text-red text-sm">{errors[name]?.message?.toString()}</div>}
 					</Show>
 
 					<Show when={type === "password"}>
@@ -101,11 +97,7 @@ export const Input: React.FC<InputProps> = (props) => {
 
 			<div className="relative flex flex-row justify-center">
 				<Show when={type === "select"}>
-					<select
-						className={classes}
-						{...register(name)}
-						defaultValue={defaultValue || ""}
-					>
+					<select className={classes} {...register(name)} defaultValue={defaultValue || ""}>
 						<option value="">Seleccione una opción</option>
 						{options?.map((option) => (
 							<option key={option.value} value={option.value}>

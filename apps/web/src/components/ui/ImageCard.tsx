@@ -21,9 +21,7 @@ interface ImageCardProps {
 export const ImageCard = ({ imagePath, title, description, other, ...props }: ImageCardProps) => {
 	const { updatable, deletable, item, onCardClick, dailySessions } = props
 
-	const [imageSrc, setImagePath] = useState<string>(
-		`${IMAGE_BASE_URL}${imagePath}/${item.id}.webp`
-	)
+	const [imageSrc, setImagePath] = useState<string>(`${IMAGE_BASE_URL}${imagePath}/${item.id}.webp`)
 	const { showModal, cachedData, modalType, isModalOpen } = useModal()
 
 	useEffect(() => {
@@ -50,7 +48,7 @@ export const ImageCard = ({ imagePath, title, description, other, ...props }: Im
 	const cardClasses = clsx(
 		onCardClick &&
 			"cursor-pointer hover:shadow-xl hover:bg-opacity-75 transition-transform transform hover:-translate-y-1 duration-300 ease-in-out",
-		"relative overflow-hidden bg-opacity-50 rounded-lg shadow-lg max-w-2xl mx-auto w-full max-h-[280px]"
+		"relative overflow-hidden bg-opacity-50 rounded-lg shadow-lg max-w-2xl mx-auto w-full max-h-[280px]",
 	)
 
 	return (

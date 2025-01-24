@@ -33,7 +33,13 @@ const SeniorsPage: React.FC = () => {
 	}
 
 	return (
-		<PageLayout pageTitle="Personas mayores" create data={data} setData={setSeniors} searchKeys={["id", "name", "email"]}>
+		<PageLayout
+			pageTitle="Personas mayores"
+			create
+			data={data}
+			setData={setSeniors}
+			searchKeys={["id", "name", "email"]}
+		>
 			<section className="w-full bg-white dark:bg-primary-dark p-4 rounded-lg">
 				<Table<Senior>
 					data={seniors}
