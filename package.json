@@ -4,7 +4,9 @@
 	"scripts": {
 		"build": "turbo run build",
 		"clean": "turbo run clean",
-		"dev": "turbo run dev && turbo run packages:dev",
+		"dev": "turbo run dev",
+		"dev:server": "turbo run dev --filter=!web",
+		"dev:web": "cd ./apps/web && pnpm run dev",
 		"format": "turbo run format",
 		"typecheck": "turbo run typecheck"
 	},

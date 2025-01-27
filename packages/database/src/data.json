@@ -479,5 +479,47 @@
 			"description": "Iniciativa que ofrece una red de apoyo y servicios especializados para personas mayores, mejorando su bienestar y calidad de vida.",
 			"image": "https://images-ext-1.discordapp.net/external/sSX6eKcs0kqP_OZHq94IGLV6gfqjPVSkkByCbNpV0Mc/https/www.munipunitaqui.cl/wp-content/uploads/2023/05/50290a13-dc63-4eac-9e4e-81e289a972ab.jpg?format=webp&width=835&height=626"
 		}
+	],
+	"sectors": [
+		{
+			"id": 1,
+			"name": "Centro"
+		},
+		{
+			"id": 2,
+			"name": "Avenida Alemania"
+		},
+		{
+			"id": 3,
+			"name": "Santa Rosa"
+		},
+		{
+			"id": 4,
+			"name": "Pueblo Nuevo"
+		},
+		{
+			"id": 5,
+			"name": "Amanecer"
+		},
+		{
+			"id": 6,
+			"name": "Pedro de Valdivia"
+		},
+		{
+			"id": 7,
+			"name": "Fundo El Carmen"
+		},
+		{
+			"id": 8,
+			"name": "Labranza"
+		},
+		{
+			"id": 9,
+			"name": "Las Quilas"
+		},
+		{
+			"id": 10,
+			"name": "Los Pablos"
+		}
 	]
 }

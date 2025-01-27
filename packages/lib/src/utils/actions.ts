@@ -35,3 +35,7 @@ export const findOperative = (id: string) => {
 export const findStaff = (id: string) => {
 	return prisma.staff.findFirst({ where: { id } })
 }
+
+export const findSector = (id: string) => {
+	return prisma.sector.findFirst({ where: { id: Number(id) } })
+}

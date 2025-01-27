@@ -27,11 +27,18 @@ model Senior {
   validated Boolean  @default(false)
   phone     String   @db.VarChar(255)
   gender    Gender?
+  rsh       Int
+  sectorId  Int?
+
+  registeredBy String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   events Event[]
+
+  sector            Sector? @relation(fields: [sectorId], references: [id], onDelete: SetNull)
+  registeredByStaff Staff?  @relation(fields: [registeredBy], references: [id], onDelete: SetNull)
 }
 
 model Service {
@@ -148,4 +155,13 @@ model Staff {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Senior    Senior[]
+}
+
+model Sector {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Senior    Senior[]
 }

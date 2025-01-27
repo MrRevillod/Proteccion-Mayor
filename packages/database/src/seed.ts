@@ -6,6 +6,7 @@ import { PrismaClient, Gender } from "@prisma/client"
 import dayjs from "dayjs"
 import colors from "ansi-colors"
 import cliProgress from "cli-progress"
+import { machine } from "node:os"
 
 const faker = new Faker({ locale: [es] })
 
@@ -96,6 +97,7 @@ const seed = async () => {
 		prisma.dailySessions.deleteMany(),
 		prisma.revokedToken.deleteMany(),
 		prisma.staff.deleteMany(),
+		prisma.sector.deleteMany(),
 	])
 
 	console.log(colors.yellow.bold("\n🌱 Starting database seeding...\n"))
@@ -104,10 +106,11 @@ const seed = async () => {
 
 	const data = JSON.parse(readFileSync("./src/data.json", "utf-8"))
 
-	const services = data.services
 	const centers = data.centers
-	const professionals = data.professionals
+	const sectors = data.sectors
+	const services = data.services
 	const operatives = data.operatives
+	const professionals = data.professionals
 	const functionaries = data.functionaries
 	const dailySessions = data.dailySessions
 	const administrators = data.administrators
@@ -202,6 +205,24 @@ const seed = async () => {
 
 	centerBar.stop()
 
+	const SectorsBar = createProgressBar("Sectors", sectors.length)
+	SectorsBar.start(sectors.length, 0, { title: "Sectors" })
+
+	for (const sector of sectors) {
+		await prisma.sector.upsert({
+			where: { id: sector.id },
+			create: {
+				id: sector.id,
+				name: sector.name,
+			},
+			update: {},
+		})
+
+		SectorsBar.increment()
+	}
+
+	SectorsBar.stop()
+
 	const seniorBar = createProgressBar("Seniors", 50)
 	seniorBar.start(50, 0, { title: "Seniors" })
 
@@ -211,6 +232,9 @@ const seed = async () => {
 		const seniorLastName = faker.person.lastName()
 
 		const seniorEmail = `${seniorFirstName[0].toLowerCase()}${seniorLastName.toLowerCase()}@seniors.com`
+
+		const nSectors = await prisma.sector.count()
+		const sectorId = Math.floor(Math.random() * nSectors) + 1
 
 		await prisma.senior.upsert({
 			where: { id: generateRUT() },
@@ -224,6 +248,8 @@ const seed = async () => {
 				validated: Math.floor(Math.random() * 1000) % 2 === 0,
 				gender: Math.floor(Math.random() * 1000) % 2 === 0 ? Gender.MA : Gender.FE,
 				phone: generateCL_PHONE(),
+				sectorId,
+				rsh: Math.floor(Math.random() * 100) + 1,
 			},
 			update: {},
 		})
