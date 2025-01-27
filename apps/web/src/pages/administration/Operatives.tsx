@@ -13,10 +13,13 @@ import { CreateOperative } from "@/components/forms/create/Operative"
 import { UpdateOperative } from "@/components/forms/update/Operative"
 import { ConfirmAction } from "@/components/ConfirmAction"
 import { useModal } from "@/context/ModalContext"
+import { OperativeDetails } from "./OperativesDetails"
 
 const OperativesPage: React.FC = () => {
 	const navigate = useNavigate()
 	const [operatives, setOperatives] = useState<Operatives[]>([])
+
+	const { showModal } = useModal()
 
 	const { error, loading, data } = useRequest<Operatives[]>({
 		action: getOperatives,
@@ -40,15 +43,15 @@ const OperativesPage: React.FC = () => {
 							imagePath={`/operatives`}
 							deletable
 							updatable
-							onCardClick={() => {
-								navigate(`/detalles-operativo/${operative.id}`)
-							}}
+							onCardClick={(operative) => showModal("Other", operative)}
 						/>
 					)}
 				/>
 			</section>
 			<CreateOperative data={operatives} setData={setOperatives} />
 			<UpdateOperative data={operatives} setData={setOperatives} />
+			<OperativeDetails />
+
 			<ConfirmAction<Operatives>
 				text="¿Estás seguro(a) de que deseas eliminar este operativo?"
 				data={operatives}
