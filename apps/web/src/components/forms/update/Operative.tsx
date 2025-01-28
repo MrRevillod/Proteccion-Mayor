@@ -8,14 +8,14 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { updateOperative, getCenters, getServices, getProfessionals } from "@/lib/actions"
 import { OperativeSchemas } from "@/lib/schemas"
 import { ImageSelector } from "@/components/ImageSelector"
-import { Operatives, FormProps, SuperSelectField, Center, Service, Professional } from "@/lib/types"
+import { Operative, FormProps, SuperSelectField, Center, Service, Professional } from "@/lib/types"
 import { useForm, FormProvider } from "react-hook-form"
 import { MultipleSelect } from "@/components/ui/MultipleSelect"
 import { useRequest } from "@/hooks/useRequest"
 import { selectDataFormatter } from "@/lib/formatters"
 import { SuperSelect } from "@/components/ui/SuperSelect"
 
-export const UpdateOperative: React.FC<FormProps<Operatives>> = ({ data, setData }) => {
+export const UpdateOperative: React.FC<FormProps<Operative>> = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false)
 	const [centers, setCenters] = useState<SuperSelectField[]>([])
 	const [services, setServices] = useState<SuperSelectField[]>([])
@@ -72,8 +72,8 @@ export const UpdateOperative: React.FC<FormProps<Operatives>> = ({ data, setData
 	return (
 		<Modal type="Edit" title="Editar operativo" loading={loading}>
 			<FormProvider {...methods}>
-				<Form<Operatives>
-					data={data as Operatives[]}
+				<Form<Operative>
+					data={data as Operative[]}
 					setData={setData}
 					action={updateOperative}
 					actionType="update"

@@ -97,7 +97,7 @@ model Professional {
 }
 
 model Event {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(uuid())
   start      DateTime @db.DateTime
   end        DateTime @db.DateTime
   assistance Boolean  @default(false)

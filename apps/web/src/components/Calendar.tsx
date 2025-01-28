@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import dayjs from "dayjs"
 import esLocale from "@fullcalendar/core/locales/es"
 import FullCalendar from "@fullcalendar/react"
@@ -6,7 +6,7 @@ import dayGridPlugin from "@fullcalendar/daygrid"
 import timeGridPlugin from "@fullcalendar/timegrid"
 import interactionPlugin from "@fullcalendar/interaction"
 
-import { Events } from "@/lib/types"
+import { Events, Operatives } from "@/lib/types"
 import { useState } from "react"
 import { useModal } from "@/context/ModalContext"
 import { message, Popover } from "antd"
@@ -15,9 +15,10 @@ import "../main.css"
 
 interface CalendarProps {
 	events: Events
+	operatives: Operatives
 }
 
-export const Calendar: React.FC<CalendarProps> = ({ events }) => {
+export const Calendar: React.FC<CalendarProps> = ({ events, operatives }) => {
 	const { showModal } = useModal()
 	const [popoverInfo, setPopoverInfo] = useState({
 		visible: false,
@@ -27,14 +28,24 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 		time: <></>,
 	})
 
-	const getEvent = (eventId: string) => events.byId[eventId]
+	const [combinedArray, setCombinedArray] = useState<any[]>([])
+
+	useEffect(() => {
+		if (events.formatted && operatives.formatted) {
+			setCombinedArray([...events.formatted, ...operatives.formatted])
+		}
+	}, [events, operatives])
+
+	const getEvent = (eventId: string) => {
+		return events.byId[eventId]
+	}
 
 	const handleEventMouseEnter = (info: any) => {
 		const event = getEvent(info.event.id)
 		const rect = info.el.getBoundingClientRect()
 		const calendarRect = document.querySelector(".fc")?.getBoundingClientRect()
 
-		if (calendarRect) {
+		if (calendarRect && event) {
 			setPopoverInfo({
 				visible: true,
 				x: rect.left - calendarRect.left,
@@ -78,6 +89,10 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 	const handleEdit = (info: any) => {
 		const event = getEvent(info.event.id)
 
+		if (!event) {
+			return message.info("Para editar un Operativo tiene que dirigirse a la página de Operativos")
+		}
+
 		if (!event.seniorId && dayjs(event.start).isBefore(dayjs())) {
 			message.info("No es posible editar eventos pasados sin reserva")
 			return
@@ -96,7 +111,7 @@ export const Calendar: React.FC<CalendarProps> = ({ events }) => {
 			<FullCalendar
 				plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
 				initialView="dayGridMonth"
-				events={events.formatted}
+				events={combinedArray as any}
 				eventClick={(event) => handleEdit(event)}
 				eventMouseEnter={handleEventMouseEnter}
 				eventMouseLeave={handleEventMouseLeave}

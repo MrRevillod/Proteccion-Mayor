@@ -25,7 +25,7 @@ export const findCenter = (id: string) => {
 }
 
 export const findEvent = (id: string) => {
-	return prisma.event.findFirst({ where: { id: Number(id) } })
+	return prisma.event.findFirst({ where: { id: id } })
 }
 
 export const findOperative = (id: string) => {
