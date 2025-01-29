@@ -57,7 +57,13 @@ export const passwordSchema = z
 export const optionalPasswordSchema = z
 	.string()
 	.refine(
-		(value) => value === "" || (value.length >= 8 && /[A-Z]/.test(value) && /[a-z]/.test(value) && /[0-9]/.test(value) && /[\W_]/.test(value)),
+		(value) =>
+			value === "" ||
+			(value.length >= 8 &&
+				/[A-Z]/.test(value) &&
+				/[a-z]/.test(value) &&
+				/[0-9]/.test(value) &&
+				/[\W_]/.test(value)),
 		{
 			message:
 				"La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial, o ser vacía",
@@ -105,13 +111,19 @@ export const nameServiceSchema = z
 	.string()
 	.min(2, "El nombre debe tener al menos 2 caracteres")
 	.max(50, "El nombre no debe tener más de 50 caracteres")
-	.regex(/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ\-'.()]+$/, "El nombre solo puede contener letras, espacios y caracteres especiales como - ' . ()")
+	.regex(
+		/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ\-'.()]+$/,
+		"El nombre solo puede contener letras, espacios y caracteres especiales como - ' . ()"
+	)
 
 export const titleServiceSchema = z
 	.string()
 	.min(2, "El título debe tener al menos 2 caracteres")
 	.max(50, "El título no debe tener más de 50 caracteres")
-	.regex(/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ\-'.()]+$/, "El título solo puede contener letras, espacios y caracteres especiales como - ' . ()")
+	.regex(
+		/^[a-zA-Z\sáéíóúÁÉÍÓÚñÑ\-'.()]+$/,
+		"El título solo puede contener letras, espacios y caracteres especiales como - ' . ()"
+	)
 
 export const nameCenterSchema = z
 	.string()
@@ -145,17 +157,11 @@ export const isWeekend = (date: string) => {
 	return day === 0 || day === 6
 }
 
-export const minutesPerSessionSchema = z
-	.string()
-	.transform((val) => Number(val))
-	.refine((val) => !isNaN(val), { message: "Debe ser un número válido" })
-	.pipe(
-		z
-			.number()
-			.int({ message: "Debe ser un número entero" })
-			.min(15, { message: "La duración mínima es de 15 minutos" })
-			.max(180, { message: "La duración máxima es de 3 horas" })
-	)
+export const minutesPerSessionSchema = z.coerce
+	.number()
+	.int()
+	.min(15, { message: "La duración mínima es de 15 minutos" })
+	.max(180, { message: "La duración máxima es de 3 horas" })
 
 export const numberIdSchema = z
 	.string()
@@ -196,3 +202,13 @@ export const weeklyEventsSchema = z.record(
 export const staffRoleSchema = z.enum(["ADMIN", "FUNCTIONARY"], {
 	message: "El rol debe ser administrador o funcionario",
 })
+
+export const rshSchema = z.enum([
+	"RSH_0_40",
+	"RSH_41_50",
+	"RSH_51_60",
+	"RSH_61_70",
+	"RSH_71_80",
+	"RSH_81_90",
+	"RSH_91_100",
+])

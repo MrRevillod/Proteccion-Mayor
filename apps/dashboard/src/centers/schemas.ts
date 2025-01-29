@@ -58,7 +58,7 @@ export class CentersSchemas extends Schema {
 			servicesDailyAttentions: z.array(
 				z.object({
 					id: rules.numberIdSchema,
-					quantity: z.number().int().min(1),
+					quantity: z.coerce.number().int().min(1),
 					serviceId: rules.numberIdSchema,
 					centerId: rules.numberIdSchema,
 				}),

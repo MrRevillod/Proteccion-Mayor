@@ -17,6 +17,16 @@ enum Gender {
   FE
 }
 
+enum RSH {
+  RSH_0_40 // 0 - 40%
+  RSH_41_50 // 41 - 50%
+  RSH_51_60 // 51 - 60%
+  RSH_61_70 // 61 - 70%
+  RSH_71_80 // 71 - 80%
+  RSH_81_90 // 81 - 90%
+  RSH_91_100 // 91 - 100%
+}
+
 model Senior {
   id        String   @id @db.VarChar(255)
   name      String   @db.Text
@@ -27,11 +37,18 @@ model Senior {
   validated Boolean  @default(false)
   phone     String   @db.VarChar(255)
   gender    Gender?
+  rsh       RSH?
+  sectorId  Int?
+
+  registeredBy String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   events Event[]
+
+  sector            Sector? @relation(fields: [sectorId], references: [id], onDelete: SetNull)
+  registeredByStaff Staff?  @relation(fields: [registeredBy], references: [id], onDelete: SetNull)
 }
 
 model Service {
@@ -148,4 +165,13 @@ model Staff {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Senior    Senior[]
+}
+
+model Sector {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Senior    Senior[]
 }

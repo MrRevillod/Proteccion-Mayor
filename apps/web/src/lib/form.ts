@@ -27,12 +27,9 @@ export const buildRequestBody = (data: any): FormData | FieldValues => {
 				data[key].forEach((value) => formData.append(`${key}[]`, value))
 			} else {
 				formData.append(key, data[key])
-				console.log("KEY:", key)
-				console.log("DataKey", data[key])
 			}
 		})
 	}
-	console.log(data)
 	// Finalmente si hay un data.image (es multipart) se retorna ese,
 	// si no la data original la cual será serializada a JSON.
 

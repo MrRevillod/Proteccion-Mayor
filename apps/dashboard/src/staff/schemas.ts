@@ -1,8 +1,9 @@
 import { z } from "zod"
+import { Prisma } from "@prisma/client"
 import { rules, Schema } from "@repo/lib"
 
 export class StaffSchemas extends Schema {
-	get defaultSelect() {
+	get defaultSelect(): Prisma.StaffSelect {
 		return {
 			id: true,
 			name: true,
@@ -11,6 +12,11 @@ export class StaffSchemas extends Schema {
 			role: true,
 			createdAt: true,
 			updatedAt: true,
+			center: {
+				select: {
+					name: true,
+				},
+			},
 		}
 	}
 

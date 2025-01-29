@@ -43,7 +43,7 @@ export const DatetimeSelect = ({
 	const today = dayjs()
 
 	return (
-		<div className="flex flex-col gap-2">
+		<div className="flex flex-col gap-3">
 			<div className="flex flex-row gap-2 items-center justify-between">
 				<label className="font-semibold text-dark dark:text-light">{label}</label>
 				{errors[name] && <div className="text-red text-sm">{errors[name]?.message?.toString()}</div>}

@@ -16,16 +16,16 @@ export const SeniorSchemas = {
 			email: rules.emailSchema,
 			name: rules.nameSchema,
 			address: rules.addressSchema,
-			birthDate: z.string({ message: "La fecha de nacimiento es requerida" }),
+			birthDate: z.string({ message: "La fecha de nacimiento es requerida" }).refine(rules.isSeniorBirthDate, {
+				message: "La fecha de nacimiento no corresponde a la de una persona mayor",
+			}),
 			gender: rules.genderSchema,
 			phone: rules.phoneSchema,
+			rsh: rules.rshSchema,
+			sectorId: z.coerce.number(),
 		})
 		.refine((data) => rules.isValidDate(data.birthDate), {
 			message: "La fecha de ingresada no es válida",
-			path: ["birthDate"],
-		})
-		.refine((data) => rules.isSeniorBirthDate(data.birthDate), {
-			message: "La fecha de nacimiento no es válida",
 			path: ["birthDate"],
 		}),
 
@@ -38,6 +38,12 @@ export const SeniorSchemas = {
 			phone: rules.phoneSchema,
 			password: rules.optionalPinSchema,
 			confirmPassword: rules.optionalPinSchema,
+			rsh: z.coerce
+				.number({ message: "Se espera un número" })
+				.min(0, { message: "El valor mínimo es 0" })
+				.max(100, { message: "El valor máximo es 100" })
+				.optional(),
+			sectorId: z.coerce.number().optional(),
 		})
 		.refine((data) => data.password === data.confirmPassword, {
 			message: "Los PIN ingresados no coinciden",
@@ -54,16 +60,12 @@ export const SeniorSchemas = {
 			name: rules.nameSchema,
 			email: rules.emailSchema,
 			address: rules.addressSchema,
-			birthDate: z.string({ message: "La fecha de nacimiento es requerida" }),
+			birthDate: z.string({ message: "La fecha de nacimiento es requerida" }).refine(rules.isSeniorBirthDate, {
+				message: "La fecha de nacimiento no corresponde a la de una persona mayor",
+			}),
 			gender: rules.genderSchema,
-		})
-		.refine((data) => rules.isValidDate(data.birthDate), {
-			message: "La fecha de ingresada no es válida",
-			path: ["birthDate"],
-		})
-		.refine((data) => rules.isSeniorBirthDate(data.birthDate), {
-			message: "La fecha de nacimiento no corresponde a la de una persona mayor",
-			path: ["birthDate"],
+			rsh: rules.rshSchema,
+			sectorId: z.coerce.number({ message: "El sector es requerido" }),
 		})
 		.refine((data) => rules.isValidRut(data.rut), {
 			message: "El RUT ingresado no es válido",
@@ -157,7 +159,7 @@ export const CentersSchemas = {
 		servicesDailyAttentions: z.array(
 			z.object({
 				id: z.string(),
-				quantity: z.number().int().min(1),
+				quantity: z.coerce.number().int().min(1),
 				serviceId: z.string(),
 				centerId: z.string(),
 			}),

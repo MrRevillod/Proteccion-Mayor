@@ -28,6 +28,7 @@ export {
 	findService,
 	findOperative,
 	findStaff,
+	findSector,
 } from "./utils/actions"
 
 export { MailerService } from "./services/mailer"
