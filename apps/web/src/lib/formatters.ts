@@ -35,7 +35,9 @@ export const tableColumnsFormatters = {
 	createdAt: formatDate,
 	validated: formatBoolean,
 	role: formatStaffRole,
-	centerId: (centerId: any) => centerId ?? "No Aplica",
+	center: (name: any) => {
+		return name ?? "No aplica"
+	},
 }
 
 export const formatRole = (role: UserRole) => {

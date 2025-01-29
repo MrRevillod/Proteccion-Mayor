@@ -483,15 +483,15 @@
 	"sectors": [
 		{
 			"id": 1,
-			"name": "Centro"
+			"name": "Amanecer"
 		},
 		{
 			"id": 2,
-			"name": "Avenida Alemania"
+			"name": "Santa Rosa"
 		},
 		{
 			"id": 3,
-			"name": "Santa Rosa"
+			"name": "San Antonio"
 		},
 		{
 			"id": 4,
@@ -499,15 +499,15 @@
 		},
 		{
 			"id": 5,
-			"name": "Amanecer"
+			"name": "Poniente"
 		},
 		{
 			"id": 6,
-			"name": "Pedro de Valdivia"
+			"name": "Lanín"
 		},
 		{
 			"id": 7,
-			"name": "Fundo El Carmen"
+			"name": "Pedro de Valdivia"
 		},
 		{
 			"id": 8,
@@ -515,11 +515,23 @@
 		},
 		{
 			"id": 9,
-			"name": "Las Quilas"
+			"name": "Sector centro"
 		},
 		{
 			"id": 10,
-			"name": "Los Pablos"
+			"name": "Acceso Norte"
+		},
+		{
+			"id": 11,
+			"name": "Sector Rural"
+		},
+		{
+			"id": 12,
+			"name": "Fundo el Carmen"
+		},
+		{
+			"id": 13,
+			"name": "Corcolén"
 		}
 	]
 }

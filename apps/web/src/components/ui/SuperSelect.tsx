@@ -1,6 +1,5 @@
 import clsx from "clsx"
 import React from "react"
-
 import { Select } from "antd"
 import { Dispatch, SetStateAction } from "react"
 import { Controller, useFormContext } from "react-hook-form"
@@ -9,11 +8,11 @@ interface SuperSelectProps {
 	name: string
 	label: string
 	options: any
-	setSearch?: Dispatch<SetStateAction<string>>
 	defaultValue?: any
 	placeholder?: string
 	disabled?: boolean
 	allowClear?: boolean
+	setSearch?: Dispatch<SetStateAction<string>>
 	showSearch?: boolean
 }
 
@@ -31,7 +30,6 @@ export const SuperSelect = ({ name, label, ...props }: SuperSelectProps) => {
 	const {
 		control,
 		formState: { errors },
-		getValues,
 	} = useFormContext()
 
 	const classes = clsx(
@@ -49,7 +47,7 @@ export const SuperSelect = ({ name, label, ...props }: SuperSelectProps) => {
 	const filterOption = setSearch ? false : clientFilterFn
 
 	return (
-		<div className="flex flex-col gap-2">
+		<div className="flex flex-col gap-3">
 			<div className="flex flex-row gap-2 items-center justify-between">
 				<label className="font-semibold dark:text-light text-dark truncate overflow-hidden whitespace-nowrap">
 					{label}
@@ -69,9 +67,7 @@ export const SuperSelect = ({ name, label, ...props }: SuperSelectProps) => {
 						placeholder={placeholder ? placeholder : `Seleccione una opción`}
 						options={options}
 						filterOption={filterOption}
-						onSearch={(value) => {
-							setSearch && setSearch(value)
-						}}
+						onSearch={setSearch ? (value) => setSearch(value) : undefined}
 						onChange={(value) => {
 							field.onChange(value)
 						}}

@@ -21,6 +21,7 @@ import StaffAgendaPage from "./agenda/Administration"
 import { useAuth } from "@/context/AuthContext"
 import { UserRole } from "@/lib/types"
 import { Routes, Route, Navigate, Outlet } from "react-router-dom"
+import SeniorData from "./administration/seniors/SeniorData"
 
 interface RouteProps {
 	redirectTo?: string
@@ -77,6 +78,7 @@ const Router: React.FC = () => {
 			<Route element={<ProtectedRoute allowedRoles={["ADMIN", "FUNCTIONARY"]} />}>
 				<Route path="/administracion/personas-mayores/" element={<SeniorsPage />} />
 				<Route path="/administracion/personas-mayores/nuevos" element={<NewSeniorsPage />} />
+				<Route path="/administracion/personas-mayores/:id" element={<SeniorData />} />
 				<Route
 					path="/administracion/personas-mayores/solicitud-de-registro"
 					element={<SeniorRegisterRequestPage />}

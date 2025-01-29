@@ -1,17 +1,11 @@
 import dayjs from "dayjs"
 import { z } from "zod"
 
-export const minutesPerSessionSchema = z
-	.string()
-	.transform((val) => Number(val))
-	.refine((val) => !isNaN(val), { message: "Debe ser un número válido" })
-	.pipe(
-		z
-			.number()
-			.int({ message: "Debe ser un número entero" })
-			.min(15, { message: "La duración mínima es de 15 minutos" })
-			.max(180, { message: "La duración máxima es de 3 horas" }),
-	)
+export const minutesPerSessionSchema = z.coerce
+	.number()
+	.int()
+	.min(15, { message: "La duración mínima es de 15 minutos" })
+	.max(180, { message: "La duración máxima es de 3 horas" })
 
 export const isValidRutFormat = (rut: string): boolean => {
 	const rutRegex = /^[0-9]+[0-9Kk]$/
@@ -110,12 +104,13 @@ export const isValidDate = (value: string): boolean => {
 	return !isNaN(date.getTime())
 }
 
-export const isSeniorBirthDate = (date: string) => {
-	const birthDate = new Date(date)
-	const now = new Date()
-	const age = now.getFullYear() - birthDate.getFullYear()
+export const isSeniorBirthDate = (date: string): boolean => {
+	const birth = dayjs(date)
+	if (birth.isAfter(dayjs())) {
+		return false
+	}
 
-	return age >= 60
+	return dayjs().diff(birth, "years") >= 60
 }
 
 export const nameServiceSchema = z
@@ -206,3 +201,8 @@ export const centerIdSchema = z
 		},
 	)
 	.nullable()
+
+export const rshSchema = z.enum(
+	["RSH_0_40", "RSH_41_50", "RSH_51_60", "RSH_61_70", "RSH_71_80", "RSH_81_90", "RSH_91_100"],
+	{ message: "El RSH seleccionado no es válido" },
+)

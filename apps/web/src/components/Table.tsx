@@ -4,7 +4,7 @@ import { useModal } from "../context/ModalContext"
 import { Table as DataTable, Space } from "antd"
 import { tableColumnsFormatters } from "../lib/formatters"
 import { BaseDataType, TableColumnType } from "../lib/types"
-import { AiFillEdit, AiFillDelete, AiFillEye, AiOutlineHistory, AiFillCalendar } from "react-icons/ai"
+import { AiFillEdit, AiFillDelete, AiFillEye, AiOutlineHistory, AiFillCalendar, AiFillInfoCircle } from "react-icons/ai"
 
 interface TableProps<T> {
 	data: T[]
@@ -72,7 +72,7 @@ export const Table = <T extends BaseDataType>({ data, ...props }: TableProps<T>)
 						)}
 						{viewable && onView && (
 							<a title="Ver" onClick={() => onView(record)}>
-								<AiFillEye className="text-blue dark:text-light text-md font-light h-6 w-6" />
+								<AiFillInfoCircle className="text-sky-700 dark:text-light text-md font-light h-6 w-6" />
 							</a>
 						)}
 

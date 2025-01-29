@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z, ZodError } from "zod"
 import { Staff } from "@prisma/client"
 import { prisma } from "@repo/database"
 import { AppError, BadRequest } from "../errors/custom"
@@ -13,7 +13,9 @@ export const body: SchemaBasedMiddleware = (schema) => (req, res, next) => {
 		schema.parse(req.body)
 		next()
 	} catch (error) {
-		console.log(error)
+		const e = error as ZodError
+		console.log(e.errors)
+		console.log(e.formErrors)
 		next(new BadRequest("Error en la validación de campos en el formulario"))
 	}
 }
