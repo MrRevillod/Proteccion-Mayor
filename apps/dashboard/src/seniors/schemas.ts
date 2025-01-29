@@ -25,6 +25,7 @@ export class SeniorSchemas extends Schema {
 			name: true,
 			email: true,
 			phone: true,
+			rsh: true,
 			address: true,
 			birthDate: true,
 			validated: true,
@@ -32,6 +33,25 @@ export class SeniorSchemas extends Schema {
 			createdAt: true,
 			updatedAt: true,
 			gender: true,
+			registeredBy: true,
+			sectorId: true,
+			registeredByStaff: {
+				select: {
+					id: true,
+					name: true,
+					center: {
+						select: {
+							name: true,
+						},
+					},
+				},
+			},
+			sector: {
+				select: {
+					id: true,
+					name: true,
+				},
+			},
 		}
 	}
 
@@ -53,6 +73,8 @@ export class SeniorSchemas extends Schema {
 			birthDate: rules.dateTimeSchema,
 			gender: rules.genderSchema,
 			phone: rules.phoneSchema,
+			rsh: rules.rshSchema,
+			sectorId: z.coerce.number(),
 		})
 	}
 
@@ -61,10 +83,13 @@ export class SeniorSchemas extends Schema {
 			.object({
 				name: rules.nameSchema,
 				address: rules.addressSchema,
+				email: z.string().email().optional(),
 				birthDate: rules.dateTimeSchema,
 				password: rules.optionalPinSchema,
 				confirmPassword: rules.optionalPinSchema,
 				phone: rules.phoneSchema.optional(),
+				rsh: rules.rshSchema.optional(),
+				sectorId: z.coerce.number().optional(),
 			})
 			.refine((data) => data.password === data.confirmPassword, {
 				message: "Los PIN ingresados no coinciden",
@@ -81,6 +106,8 @@ export class SeniorSchemas extends Schema {
 					address: rules.addressSchema.optional(),
 					birthDate: z.string({ message: "La fecha de nacimiento es requerida" }).optional(),
 					gender: rules.genderSchema.optional(),
+					rsh: rules.rshSchema.optional(),
+					sectorId: z.coerce.number().optional(),
 				})
 				.refine((data) => !data.birthDate || rules.isValidDate(data.birthDate), {
 					message: "La fecha de ingresada no es válida",
@@ -93,3 +120,6 @@ export class SeniorSchemas extends Schema {
 		)
 	}
 }
+
+export type CreateBody = z.infer<typeof SeniorSchemas.prototype.create>
+export type UpdateBody = z.infer<typeof SeniorSchemas.prototype.update>

@@ -13,7 +13,6 @@ export const SeniorsColumns: TableColumnType<Partial<Senior>> = [
 	{ title: "Dirección", dataIndex: "address", key: "address" },
 	{ title: "Edad", dataIndex: "birthDate", key: "birthDate" },
 	{ title: "Teléfono", dataIndex: "phone", key: "phone" },
-	{ title: "Creado", dataIndex: "createdAt", key: "createdAt" },
 ]
 
 export const StaffColumns: TableColumnType<Partial<Staff>> = [
@@ -23,7 +22,7 @@ export const StaffColumns: TableColumnType<Partial<Staff>> = [
 	{ title: "Creado", dataIndex: "createdAt", key: "createdAt" },
 	{ title: "Actualizado", dataIndex: "updatedAt", key: "updatedAt" },
 	{ title: "Rol", dataIndex: "role", key: "role" },
-	{ title: "Centro", dataIndex: "centerId", key: "centerId" },
+	{ title: "Centro", dataIndex: ["center", "name"], key: "center" },
 ]
 
 export const ProfessionalColumns: TableColumnType<Partial<Professional>> = [

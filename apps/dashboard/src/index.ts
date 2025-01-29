@@ -1,11 +1,12 @@
+import { StaffModule } from "./staff/module"
 import { EventsModule } from "./events/module"
 import { SeniorsModule } from "./seniors/module"
 import { CentersModule } from "./centers/module"
 import { ReportsModule } from "./reports/module"
+import { SectorsModule } from "./sectors/module"
 import { ServicesModule } from "./services/module"
-import { ProfessionalsModule } from "./professionals/module"
 import { OperativesModule } from "./operatives/module"
-import { StaffModule } from "./staff/module"
+import { ProfessionalsModule } from "./professionals/module"
 
 import { setupWorker } from "@socket.io/sticky"
 import { createServer } from "http"
@@ -28,6 +29,7 @@ const modules = [
 	new OperativesModule(authService, storageService, mailerService),
 	new StaffModule(authService, storageService, mailerService),
 	new EventsModule(authService, mailerService),
+	new SectorsModule(authService),
 ]
 
 const app = createApplication(modules)

@@ -48,7 +48,6 @@ export const UpdateOperative: React.FC<FormProps<Operative>> = ({ data, setData 
 
 	useEffect(() => {
 		if (!selectedData) return
-		console.log("data", selectedData)
 		reset({
 			name: selectedData?.name,
 			description: selectedData?.description,

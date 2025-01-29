@@ -67,6 +67,11 @@ export interface Senior extends IUser {
 	birthDate: string
 	validated: boolean
 	phone: string
+	rsh: string
+	sectorId: number
+	sector: Sector
+	registeredBy: string
+	registeredByStaff: Partial<Staff>
 }
 
 export type UnvalidatedSenior = Omit<Senior, "name" & "address" & "birthDate">
@@ -123,6 +128,13 @@ export type Events = {
 	byId: Record<string, Event>
 }
 
+export type Sector = {
+	id: number
+	name: string
+	createAt: string
+	updateAt: string
+}
+
 export type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0]
 export type ApiError = string | string[] | null
 
@@ -167,4 +179,14 @@ export type Operative = {
 export type Operatives = {
 	formatted: Operative[]
 	byId: Record<number, Operative>
+}
+
+export const RSH = {
+	RSH_0_40: "0-40%",
+	RSH_41_50: "41-50%",
+	RSH_51_60: "51-60%",
+	RSH_61_70: "61-70%",
+	RSH_71_80: "71-80%",
+	RSH_81_90: "81-90%",
+	RSH_91_100: "91-100%",
 }

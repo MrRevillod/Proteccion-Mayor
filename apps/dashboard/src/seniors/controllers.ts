@@ -2,7 +2,7 @@ import { hash } from "bcrypt"
 import { match } from "ts-pattern"
 import { prisma } from "@repo/database"
 import { Prisma, Senior } from "@prisma/client"
-import { SeniorSchemas } from "./schemas"
+import { CreateBody, SeniorSchemas, UpdateBody } from "./schemas"
 import { StorageService, MailerService, templates } from "@repo/lib"
 import { AppError, Controller, Conflict, credentials } from "@repo/lib"
 
@@ -43,7 +43,7 @@ export class SeniorController {
 
 			const seniors = await prisma.senior.findMany({
 				take: query.limit,
-				select: query.select,
+				select: query.select ?? this.schemas.defaultSelect,
 				where: {
 					...(query.validated && { validated: query.validated === "1" }),
 					...(orConditions.length > 0 && { OR: orConditions }),
@@ -65,7 +65,7 @@ export class SeniorController {
 	 */
 
 	public createOne: Controller = async (req, res, handleError) => {
-		const { id, name, email } = req.body
+		const { id, name, email, rsh, sectorId } = req.body as CreateBody
 
 		try {
 			// Verificar si la persona mayor ya existe en la base de datos
@@ -80,11 +80,23 @@ export class SeniorController {
 				throw new Conflict("La persona mayor ya existe", { conflicts })
 			}
 
+			const sector = await prisma.sector.findUnique({ where: { id: Number(sectorId) } })
+
+			if (!sector) {
+				throw new AppError(400, "Información de sector")
+			}
+
 			const [randomPin, hashedRandomPin] = await credentials.generatePin()
+
+			// Id del usuario que está realizando la solicitud
+			const registeredBy = req.getExtension("userId") as string
 
 			const data = {
 				...req.body, // id, name, email, address, gender, phone
+				rsh,
+				registeredBy,
 				validated: true,
+				sectorId: Number(sectorId),
 				password: hashedRandomPin,
 				birthDate: new Date(req.body.birthDate),
 			}
@@ -116,7 +128,7 @@ export class SeniorController {
 
 	public updateOne: Controller = async (req, res, handleError) => {
 		const { body, params } = req
-		const { name, email, password, address, birthDate, phone } = body
+		const { name, email, password, address, birthDate, phone, rsh, sectorId } = body as UpdateBody
 
 		const requestedUser = req.getExtension("reqResource") as Senior
 
@@ -145,6 +157,8 @@ export class SeniorController {
 					name,
 					email,
 					phone,
+					rsh,
+					sectorId: Number(sectorId),
 					password: updatedPassword,
 					address,
 					birthDate: new Date(birthDate),
@@ -272,6 +286,7 @@ export class SeniorController {
 					password: await hash(pin, 10),
 					address: "",
 					birthDate: new Date(),
+					rsh: null,
 				},
 			})
 
@@ -299,8 +314,10 @@ export class SeniorController {
 	public handleRegisterRequest: Controller = async (req, res, handleError) => {
 		const { params, body, query } = req
 
+		const registeredBy = req.getExtension("userId") as string
+
 		const { validate } = query
-		const { name, address, birthDate, gender } = body
+		const { name, address, birthDate, gender, rsh, sectorId } = body
 
 		try {
 			const senior = await prisma.senior.findUnique({ where: { id: params.id } })
@@ -312,8 +329,11 @@ export class SeniorController {
 				name,
 				address,
 				gender,
+				rsh,
 				validated: true,
+				sectorId: Number(sectorId),
 				birthDate: new Date(birthDate),
+				registeredBy,
 			}
 
 			const emailData = {

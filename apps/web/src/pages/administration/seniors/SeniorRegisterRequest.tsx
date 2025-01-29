@@ -10,8 +10,8 @@ import { SeniorSchemas } from "@/lib/schemas"
 import { useRequest } from "@/hooks/useRequest"
 import { DatetimeSelect } from "@/components/ui/DatetimeSelect"
 import { message, Image } from "antd"
-import { getRegisterImages } from "@/lib/actions"
-import { MutateActionProps } from "@/lib/types"
+import { getRegisterImages, getSectors } from "@/lib/actions"
+import { MutateActionProps, RSH, Sector, SuperSelectField } from "@/lib/types"
 
 import { api } from "@/lib/axios"
 import { Show } from "@/components/ui/Show"
@@ -21,6 +21,7 @@ import { Loading } from "@/components/Loading"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { FieldValues, FormProvider, SubmitHandler, useForm } from "react-hook-form"
+import { selectDataFormatter } from "@/lib/formatters"
 
 const SeniorRegisterRequestPage: React.FC = () => {
 	const location = useLocation()
@@ -28,11 +29,17 @@ const SeniorRegisterRequestPage: React.FC = () => {
 
 	const [loading, setLoading] = useState(false)
 	const [images, setImages] = useState<string[]>([])
+	const [sectors, setSectors] = useState<SuperSelectField[]>([])
 
 	const methods = useForm({ resolver: zodResolver(SeniorSchemas.Validate) })
 
 	const { senior } = location.state || {}
 	const { reset, handleSubmit } = methods
+
+	console.log("watch", methods.watch())
+	console.log("errors", methods.formState.errors)
+
+	console.log(sectors)
 
 	useEffect(() => {
 		if (!senior) navigate("/administracion/personas-mayores/nuevos")
@@ -53,6 +60,11 @@ const SeniorRegisterRequestPage: React.FC = () => {
 		onSuccess: (data) => {
 			Array.isArray(data) && setImages(data)
 		},
+	})
+
+	useRequest<Sector[]>({
+		action: getSectors,
+		onSuccess: (data) => selectDataFormatter({ data, setData: setSectors }),
 	})
 
 	const AcceptMutation = useMutation<void>({
@@ -105,7 +117,7 @@ const SeniorRegisterRequestPage: React.FC = () => {
 			<section
 				className={clsx(
 					(loading || imageLoading) && "opacity-50",
-					"bg-white dark:bg-primary-dark p-4 rounded-lg flex flex-row gap-12",
+					"bg-white dark:bg-primary-dark px-4 py-8 rounded-lg flex flex-row gap-12",
 				)}
 			>
 				{(loading || imageLoading) && <Loading />}
@@ -114,20 +126,47 @@ const SeniorRegisterRequestPage: React.FC = () => {
 					<form className="flex flex-col gap-4 w-1/3" onSubmit={handleSubmit(onSubmit)}>
 						<Input
 							name="rut"
-							label="Rut (Sin puntos ni guión)"
+							label="RUT (Sin puntos ni guión)"
 							type="text"
 							placeholder="Rut"
 							readOnly={true}
 						/>
+
 						<Input name="name" label="Nombre" type="text" placeholder="Nombre" />
-						<Input
-							name="email"
-							label="Correo Electrónico"
-							type="email"
-							placeholder="Email"
-							readOnly={true}
-						/>
-						<Input name="address" label="Dirección" type="text" placeholder="Dirección" />
+
+						<div className="flex flex-row gap-4">
+							<div className="w-1/2">
+								<Input
+									name="email"
+									label="Correo Electrónico"
+									type="email"
+									placeholder="Email"
+									readOnly={true}
+								/>
+							</div>
+							<div className="w-1/2">
+								<SuperSelect
+									name="rsh"
+									label="Registro social de hogares"
+									showSearch={false}
+									options={Object.keys(RSH).map((key) => ({ value: key, label: RSH[key] }))}
+								/>
+							</div>
+						</div>
+
+						<div className="flex flex-row gap-4">
+							<div className="w-1/2">
+								<Input name="address" label="Dirección" type="text" placeholder="Dirección" />
+							</div>
+							<div className="w-1/2">
+								<SuperSelect
+									name="sectorId"
+									label="Sector de residencia"
+									showSearch
+									options={sectors}
+								/>
+							</div>
+						</div>
 
 						<div className="flex flex-row gap-4 w-full items-center justify-center">
 							<div className="w-1/2">

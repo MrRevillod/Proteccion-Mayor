@@ -479,5 +479,59 @@
 			"description": "Iniciativa que ofrece una red de apoyo y servicios especializados para personas mayores, mejorando su bienestar y calidad de vida.",
 			"image": "https://images-ext-1.discordapp.net/external/sSX6eKcs0kqP_OZHq94IGLV6gfqjPVSkkByCbNpV0Mc/https/www.munipunitaqui.cl/wp-content/uploads/2023/05/50290a13-dc63-4eac-9e4e-81e289a972ab.jpg?format=webp&width=835&height=626"
 		}
+	],
+	"sectors": [
+		{
+			"id": 1,
+			"name": "Amanecer"
+		},
+		{
+			"id": 2,
+			"name": "Santa Rosa"
+		},
+		{
+			"id": 3,
+			"name": "San Antonio"
+		},
+		{
+			"id": 4,
+			"name": "Pueblo Nuevo"
+		},
+		{
+			"id": 5,
+			"name": "Poniente"
+		},
+		{
+			"id": 6,
+			"name": "Lanín"
+		},
+		{
+			"id": 7,
+			"name": "Pedro de Valdivia"
+		},
+		{
+			"id": 8,
+			"name": "Labranza"
+		},
+		{
+			"id": 9,
+			"name": "Sector centro"
+		},
+		{
+			"id": 10,
+			"name": "Acceso Norte"
+		},
+		{
+			"id": 11,
+			"name": "Sector Rural"
+		},
+		{
+			"id": 12,
+			"name": "Fundo el Carmen"
+		},
+		{
+			"id": 13,
+			"name": "Corcolén"
+		}
 	]
 }

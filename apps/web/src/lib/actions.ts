@@ -168,3 +168,9 @@ export const getReports = async (props: QueryActionProps) => {
 export const getRegisterImages = async (props: QueryActionProps) => {
 	return await apiRequest.get(`/storage/public/seniors/${props?.params?.id}/register-files`)
 }
+
+// Acciones CRUD para los sectores
+
+export const getSectors = async (props: QueryActionProps) => {
+	return await apiRequest.get(`/dashboard/sectors${props.query ? "?" + props.query : ""}`)
+}
