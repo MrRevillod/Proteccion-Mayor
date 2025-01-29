@@ -152,4 +152,14 @@ export const seniorCredentialsWelcome = (name: string, rut: string, pin: string)
   <p>Si tiene alguna pregunta o necesita asistencia, no dude en ponerse en contacto con nuestro equipo de soporte.</p>
   <p>¡Gracias por confiar en nosotros!</p>
   ${footerTemplate}
+
+  
 `
+export const operativeAssignation = (operative: any) => {
+	const { email, professional, name } = operative
+	return `
+    <h1>Bienvenido, ${professional.name}</h1>
+    <p>Ha sido asignado al operativo: <strong>${name}</strong></p>
+    <p>Su usuario es: ${email}</p>
+  `
+}

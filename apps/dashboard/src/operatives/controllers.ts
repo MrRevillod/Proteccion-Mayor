@@ -1,6 +1,6 @@
 import { prisma } from "@repo/database"
 import { OperativesSchemas } from "./schemas"
-import { AppError, Controller, StorageService } from "@repo/lib"
+import { AppError, Controller, StorageService, MailerService, templates } from "@repo/lib"
 import { EventService } from "../events/service"
 
 export class OperativesController {
@@ -8,6 +8,7 @@ export class OperativesController {
 		private storage: StorageService,
 		private schemas: OperativesSchemas,
 		private eventService: EventService = new EventService(),
+		private mailer: MailerService,
 	) {}
 
 	/**
@@ -80,6 +81,20 @@ export class OperativesController {
 				url: `/upload?path=%2Foperatives`,
 				filename: operative.id.toString(),
 			})
+
+			for (const { email, name } of operative.professionals) {
+				const operativeData = {
+					name: operative.name,
+					email,
+					professional: { name },
+				}
+
+				this.mailer.send({
+					to: email,
+					subject: "Nuevo operativo asignado",
+					html: templates.operativeAssignation(operativeData),
+				})
+			}
 
 			return res.status(201).json({ values: { modified: operative } })
 		} catch (error) {
