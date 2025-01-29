@@ -10,9 +10,31 @@ export class OperativesSchemas extends Schema {
 			description: true,
 			start: true,
 			end: true,
-			professionals: true,
-			services: true,
-			center: true,
+			professionals: {
+				select: {
+					id: true,
+					email: true,
+					name: true,
+					service: {
+						select: {
+							title: true,
+						},
+					},
+				},
+			},
+			services: {
+				select: {
+					id: true,
+					name: true,
+				},
+			},
+			center: {
+				select: {
+					id: true,
+					name: true,
+					address: true,
+				},
+			},
 			centerId: true,
 		}
 	}

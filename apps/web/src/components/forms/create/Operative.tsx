@@ -7,14 +7,14 @@ import { DatetimeSelect } from "@/components/ui/DatetimeSelect"
 import { createOperative, getCenters, getProfessionals, getServices } from "@/lib/actions"
 import { ImageSelector } from "@/components/ImageSelector"
 import { OperativeSchemas } from "@/lib/schemas"
-import { FormProps, Operatives, Center, SuperSelectField, Service, Professional } from "@/lib/types"
+import { FormProps, Operative, Center, SuperSelectField, Service, Professional } from "@/lib/types"
 import { FormProvider, useForm } from "react-hook-form"
 import { SuperSelect } from "@/components/ui/SuperSelect"
 import { useRequest } from "@/hooks/useRequest"
 import { selectDataFormatter } from "@/lib/formatters"
 import { MultipleSelect } from "@/components/ui/MultipleSelect"
 
-export const CreateOperative: React.FC<FormProps<Operatives>> = ({ data, setData }) => {
+export const CreateOperative: React.FC<FormProps<Operative>> = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false)
 	const [centers, setCenters] = useState<SuperSelectField[]>([])
 	const [services, setServices] = useState<SuperSelectField[]>([])
@@ -54,8 +54,8 @@ export const CreateOperative: React.FC<FormProps<Operatives>> = ({ data, setData
 	return (
 		<Modal type="Create" title="Añadir nuevo operativo al sistema" loading={loading}>
 			<FormProvider {...methods}>
-				<Form<Operatives>
-					data={data as Operatives[]}
+				<Form<Operative>
+					data={data as Operative[]}
 					setData={setData}
 					action={createOperative}
 					actionType="create"

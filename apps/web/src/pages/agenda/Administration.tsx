@@ -18,8 +18,8 @@ import { UpcomingEvents } from "@/components/UpcomingEvents"
 
 import { CreateWeeklyEvents } from "@/components/forms/create/WeeklyEvents"
 import { filterUpcomingEvents, selectDataFormatter } from "@/lib/formatters"
-import { Center, Event, Events, Professional, Service, SuperSelectField } from "@/lib/types"
-import { deleteEvent, getCenters, getEvents, getProfessionals, getServices } from "@/lib/actions"
+import { Center, Event, Events, Professional, Service, Operatives, SuperSelectField } from "@/lib/types"
+import { deleteEvent, getCenters, getEvents, getOperatives, getProfessionals, getServices } from "@/lib/actions"
 
 const StaffAgendaPage: React.FC = () => {
 	const location = useLocation()
@@ -27,6 +27,8 @@ const StaffAgendaPage: React.FC = () => {
 	const [pageQuery, setPageQuery] = useState<string>(new URLSearchParams(location.search).toString())
 
 	const [events, setEvents] = useState<Events>({} as Events)
+	const [operatives, setOperatives] = useState<Operatives>({} as Operatives)
+
 	const [centers, setCenters] = useState<SuperSelectField[]>([])
 	const [services, setServices] = useState<SuperSelectField[]>([])
 	const [professionals, setProfessionals] = useState<Professional[]>([])
@@ -53,6 +55,13 @@ const StaffAgendaPage: React.FC = () => {
 			setUpcomingEvents(filterUpcomingEvents(events.formatted))
 		},
 	})
+
+	useRequest<Operatives>({
+		action: getOperatives,
+		onSuccess: (operatives) => setOperatives(operatives),
+	})
+
+	console.log(operatives)
 
 	const { data: rawCenters } = useRequest<Center[]>({
 		action: getCenters,
@@ -92,7 +101,7 @@ const StaffAgendaPage: React.FC = () => {
 			<div className="flex flex-row gap-4 min-h-[70vh] w-full agenda-container bg-gray-50 dark:bg-primary-darker rounded-lg">
 				{loading && <Loading />}
 				<EventFilter data={{ centers, services, professionals }} onSubmit={onFilterSubmit} />
-				<Calendar events={events} />
+				<Calendar events={events} operatives={operatives} />
 				<UpcomingEvents title="Próximas atenciones" center={true} events={upcomingEvents} />
 			</div>
 

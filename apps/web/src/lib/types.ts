@@ -164,7 +164,22 @@ export type SuperSelectField = {
 export type ReportType = "general" | "byService" | "byCenter" | "byProfessional"
 export type AssistanceType = "assistance" | "absence" | "unreserved"
 
-export type Operatives = any
+export type Operative = {
+	id: number
+	name: string
+	description: string
+	start: string
+	end: string
+	professionals: Partial<Professional>[]
+	services: Pick<Service, "id" | "name">[]
+	center: Partial<Center>[]
+	centerId: number
+}
+
+export type Operatives = {
+	formatted: Operative[]
+	byId: Record<number, Operative>
+}
 
 export const RSH = {
 	RSH_0_40: "0-40%",

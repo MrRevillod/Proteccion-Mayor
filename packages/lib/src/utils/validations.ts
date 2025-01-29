@@ -123,7 +123,7 @@ export const validateEventPermissions: Middleware = async (req, res, next) => {
 	if (userRole === "FUNCTIONARY") {
 		try {
 			const event = await prisma.event.findFirst({
-				where: { id: Number(params.id), centerId: user.centerId },
+				where: { id: params.id, centerId: user.centerId },
 			})
 
 			if (!event) {

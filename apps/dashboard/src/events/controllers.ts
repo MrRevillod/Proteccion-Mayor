@@ -61,7 +61,7 @@ export class EventsController {
 				},
 			})
 
-			const events = this.service.format(data)
+			const events = this.service.format(data, [])
 
 			return res.status(200).json({
 				values: { formatted: events.formatted, byId: events.byId },
@@ -203,7 +203,7 @@ export class EventsController {
 				prisma.service.findUnique({ where: { id: Number(serviceId) } }),
 				seniorId ? prisma.senior.findUnique({ where: { id: seniorId } }) : Promise.resolve(null),
 				centerId ? prisma.center.findUnique({ where: { id: Number(centerId) } }) : Promise.resolve(null),
-				prisma.event.findUnique({ where: { id: Number(id) } }),
+				prisma.event.findUnique({ where: { id: id } }),
 			])
 
 			// Se verifica que los datos existan
@@ -247,7 +247,7 @@ export class EventsController {
 							OR: [{ professionalId, ...orDateSuperposition }, seniorOR],
 						},
 						{
-							id: { not: Number(req.params.id) },
+							id: { not: req.params.id },
 						},
 					],
 				},
@@ -256,7 +256,7 @@ export class EventsController {
 			if (events.length !== 0) throw new AppError(409, "Superposición de horas")
 
 			let event = await prisma.event.update({
-				where: { id: Number(req.params.id) },
+				where: { id: req.params.id },
 				data: {
 					start: startDate,
 					end: endDate,
@@ -295,7 +295,7 @@ export class EventsController {
 
 		try {
 			const event = await prisma.event.delete({
-				where: { id: Number(params.id) },
+				where: { id: params.id },
 				select: this.schemas.defaultSelect,
 			})
 
@@ -320,7 +320,7 @@ export class EventsController {
 		try {
 			// Validar existencia del evento solicitado
 			const event = await prisma.event.findUnique({
-				where: { id: Number(params.id) },
+				where: { id: params.id },
 				select: this.schemas.defaultSelect,
 			})
 
@@ -357,7 +357,7 @@ export class EventsController {
 			}
 
 			const updatedEvent = await prisma.event.update({
-				where: { id: Number(params.id) },
+				where: { id: params.id },
 				data: { seniorId: senior.id },
 				select: this.schemas.defaultSelect,
 			})
@@ -395,13 +395,13 @@ export class EventsController {
 		try {
 			const event = await prisma.event.findUnique({
 				select: this.schemas.defaultSelect,
-				where: { id: Number(params.id), seniorId: senior.id },
+				where: { id: params.id, seniorId: senior.id },
 			})
 
 			if (!event) throw new AppError(404, "Evento no encontrado")
 
 			const updated = await prisma.event.update({
-				where: { id: Number(params.id) },
+				where: { id: params.id },
 				data: { seniorId: null },
 				select: this.schemas.defaultSelect,
 			})

@@ -1,12 +1,27 @@
 import { prisma } from "@repo/database"
 import { OperativesSchemas } from "./schemas"
-import { AppError, Controller, StorageService } from "@repo/lib"
+import { AppError, Controller, StorageService, MailerService, templates } from "@repo/lib"
+import { EventService } from "../events/service"
 
 export class OperativesController {
 	constructor(
 		private storage: StorageService,
 		private schemas: OperativesSchemas,
+		private eventService: EventService = new EventService(),
+		private mailer: MailerService,
 	) {}
+
+	/**
+	 * Controlador para obtener un listado de eventos y un objeto con los eventos
+	 * formateados por id
+	 *
+	 * @param req (Express Request)
+	 * @param res (Express Response)
+	 * @param handleError (Express NextFunction)
+	 *
+	 * @returns (Express Response)
+	 * @throws (AppError)
+	 */
 
 	public getMany: Controller = async (req, res, handleError) => {
 		try {
@@ -14,7 +29,11 @@ export class OperativesController {
 				select: this.schemas.defaultSelect,
 			})
 
-			return res.status(200).json({ values: operativos })
+			const operatives = this.eventService.format([], operativos)
+
+			return res.status(200).json({
+				values: { formatted: operatives.formatted, byId: operativos },
+			})
 		} catch (error) {
 			handleError(error)
 		}
@@ -28,9 +47,20 @@ export class OperativesController {
 			const exists = await prisma.operative.findFirst({
 				where: { name },
 			})
+			const eventDate = await prisma.event.findFirst({
+				where: { start, end },
+			})
+
+			const operativeDate = await prisma.operative.findFirst({
+				where: { start, end },
+			})
 
 			if (exists) {
 				throw new AppError(409, "El operativo ya existe")
+			}
+
+			if (operativeDate == eventDate) {
+				eventDate
 			}
 
 			const operative = await prisma.operative.create({
@@ -51,6 +81,20 @@ export class OperativesController {
 				url: `/upload?path=%2Foperatives`,
 				filename: operative.id.toString(),
 			})
+
+			for (const { email, name } of operative.professionals) {
+				const operativeData = {
+					name: operative.name,
+					email,
+					professional: { name },
+				}
+
+				this.mailer.send({
+					to: email,
+					subject: "Nuevo operativo asignado",
+					html: templates.operativeAssignation(operativeData),
+				})
+			}
 
 			return res.status(201).json({ values: { modified: operative } })
 		} catch (error) {

@@ -26,7 +26,7 @@ const modules = [
 	new ServicesModule(authService, storageService),
 	new CentersModule(authService, storageService),
 	new ProfessionalsModule(authService, storageService, mailerService),
-	new OperativesModule(authService, storageService),
+	new OperativesModule(authService, storageService, mailerService),
 	new StaffModule(authService, storageService, mailerService),
 	new EventsModule(authService, mailerService),
 	new SectorsModule(authService),

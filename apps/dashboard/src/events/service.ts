@@ -29,16 +29,32 @@ export class EventService {
 		}
 	}
 
-	public format = (events: any[]) => {
+	public singleFormatOperative = (operative: any) => {
+		return {
+			...operative,
+			title: operative.name,
+			backgroundColor: "#4260f5",
+		}
+	}
+
+	public format = (events: any[], operatives: any[]) => {
 		const byId: Record<string, any> = {}
 		const formatted = new Array<any>()
-
-		for (const event of events) {
-			const formattedEvent = this.singleFormat(event)
-			byId[event.id as string] = formattedEvent
-			formatted.push(formattedEvent)
+		if (events) {
+			for (const event of events) {
+				const formattedEvent = this.singleFormat(event)
+				byId[event.id as string] = formattedEvent
+				formatted.push(formattedEvent)
+			}
 		}
 
+		if (operatives) {
+			for (const operative of operatives) {
+				const formattedOperative = this.singleFormatOperative(operative)
+				byId[operative.id as string] = formattedOperative
+				formatted.push(formattedOperative)
+			}
+		}
 		return { byId, formatted }
 	}
 
