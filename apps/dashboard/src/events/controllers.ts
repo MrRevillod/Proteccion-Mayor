@@ -12,7 +12,7 @@ export class EventsController {
 		private schemas: EventsSchemas,
 		private mailer: MailerService,
 		private service: EventService = new EventService(),
-	) {}
+	) { }
 
 	/**
 	 * Controlador para obtener un listado de eventos y un objeto con los eventos
@@ -56,9 +56,8 @@ export class EventsController {
 
 			const data = await prisma.event.findMany({
 				select: this.schemas.defaultSelect,
-				where: {
-					AND: andConditions,
-				},
+				orderBy: { start: "asc" },
+				where: { AND: andConditions },
 			})
 
 			const events = this.service.format(data, [])
