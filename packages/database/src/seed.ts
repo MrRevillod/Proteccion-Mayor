@@ -196,7 +196,11 @@ const seed = async () => {
 			where: { id: functionaryRUT },
 			create: {
 				id: functionaryRUT,
-				email: faker.internet.email(),
+				email: utils.generateEmail(
+					faker.person.firstName(),
+					faker.person.lastName(),
+					"help.com",
+				),
 				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
 				name: `${faker.person.firstName()} ${faker.person.lastName()}`,
 				centerId: centerIds[i],

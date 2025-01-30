@@ -81,7 +81,7 @@ export class StaffController {
 					email,
 					role,
 					password: updatedPassword,
-					centerId,
+					centerId: reqUser.role === "FUNCTIONARY" ? Number(centerId) : null,
 				},
 				select: this.schemas.defaultSelect,
 			})

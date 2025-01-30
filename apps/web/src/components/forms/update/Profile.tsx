@@ -25,9 +25,10 @@ export const UpdateProfile: React.FC<UpdateProfileProps> = ({ setImageSrc, setSh
 	const { user, setUser, role } = useAuth()
 	const { reset, handleSubmit, setError } = methods
 
-	const {
-		formState: { errors },
-	} = methods
+	console.log("user", user)
+
+	console.log(methods.watch())
+	console.log(methods.formState.errors)
 
 	const handleReset = () => {
 		if (role === "PROFESSIONAL") {
@@ -46,7 +47,7 @@ export const UpdateProfile: React.FC<UpdateProfileProps> = ({ setImageSrc, setSh
 				confirmPassword: "",
 				image: null,
 				role: (user as Staff)?.role,
-				centerId: (user as Staff).centerId ? (user as Staff).centerId?.toString() : "",
+				centerId: role === "ADMIN" ? null : (user as Staff).centerId,
 			})
 		}
 	}
@@ -78,12 +79,12 @@ export const UpdateProfile: React.FC<UpdateProfileProps> = ({ setImageSrc, setSh
 			role !== "PROFESSIONAL"
 				? staffData
 				: {
-						name: user?.name,
-						email: user?.email,
-						password: "",
-						confirmPassword: "",
-						image: null,
-					}
+					name: user?.name,
+					email: user?.email,
+					password: "",
+					confirmPassword: "",
+					image: null,
+				}
 
 		if (JSON.stringify(formData) === JSON.stringify(originalData)) {
 			message.error("No se han realizado cambios")
@@ -99,7 +100,7 @@ export const UpdateProfile: React.FC<UpdateProfileProps> = ({ setImageSrc, setSh
 				if (data.image) setImageSrc(`${data.image}?${Date.now()}`)
 				message.success("Hecho")
 				handleReset()
-				setTimeout(() => {}, 2000)
+				setTimeout(() => { }, 2000)
 				setShowUpdateForm(false)
 			},
 			onError: (error) => {

@@ -38,11 +38,7 @@ export const SeniorSchemas = {
 			phone: rules.phoneSchema,
 			password: rules.optionalPinSchema,
 			confirmPassword: rules.optionalPinSchema,
-			rsh: z.coerce
-				.number({ message: "Se espera un número" })
-				.min(0, { message: "El valor mínimo es 0" })
-				.max(100, { message: "El valor máximo es 100" })
-				.optional(),
+			rsh: rules.rshSchema,
 			sectorId: z.coerce.number().optional(),
 		})
 		.refine((data) => data.password === data.confirmPassword, {
@@ -275,11 +271,11 @@ export const resetPasswordSchema = (role: "ADMIN" | "PROFESSIONAL" | "SENIOR" | 
 }
 
 export const statisticsSchemas = {
-    General: z.object({
-        from: z.string(),
-        to: z.string(),
-        centerId: z.optional(rules.centerIdSchema),
-        professionalId: z.optional(rules.rutSchema),
-        serviceId: z.optional(z.number()),
-    }),
+	General: z.object({
+		from: z.string(),
+		to: z.string(),
+		centerId: z.optional(rules.centerIdSchema),
+		professionalId: z.optional(rules.rutSchema),
+		serviceId: z.optional(z.number()),
+	}),
 }

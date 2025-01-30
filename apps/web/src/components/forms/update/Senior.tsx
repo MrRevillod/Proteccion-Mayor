@@ -16,7 +16,7 @@ import { useRequest } from "@/hooks/useRequest"
 import { SeniorSchemas } from "@/lib/schemas"
 import { selectDataFormatter } from "@/lib/formatters"
 import { getSectors, updateSenior } from "@/lib/actions"
-import { Senior, FormProps, Sector, SuperSelectField } from "@/lib/types"
+import { Senior, FormProps, Sector, SuperSelectField, RSH } from "@/lib/types"
 
 export const UpdateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false)
@@ -90,7 +90,12 @@ export const UpdateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => 
 							/>
 						</div>
 					</div>
-					<Input name="rsh" label="Registro social de hogares" type="text" placeholder="60" />
+					<SuperSelect
+						name="rsh"
+						label="Registro social de hogares"
+						showSearch={false}
+						options={Object.keys(RSH).map((key) => ({ value: key, label: RSH[key] }))}
+					/>
 
 					<div className="flex flex-row gap-4 w-full items-center justify-between">
 						<div className="w-1/2">
