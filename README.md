@@ -41,12 +41,6 @@ pnpm install -g @socket.io/pm2
 pnpm install -g dotenv-cli
 ```
 
-##### TS-Node (Ejecución de scripts TypeScript)
-
-```bash
-pnpm install -g ts-node
-```
-
 ## Despliegue
 
 Para desplegar el sistema, se deben seguir los siguientes pasos:
