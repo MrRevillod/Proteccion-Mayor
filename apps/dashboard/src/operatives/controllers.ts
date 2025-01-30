@@ -2,6 +2,7 @@ import { prisma } from "@repo/database"
 import { OperativesSchemas } from "./schemas"
 import { AppError, Controller, StorageService, MailerService, templates } from "@repo/lib"
 import { EventService } from "../events/service"
+import dayjs from "dayjs"
 
 export class OperativesController {
 	constructor(
@@ -47,22 +48,19 @@ export class OperativesController {
 			const exists = await prisma.operative.findFirst({
 				where: { name },
 			})
-			const eventDate = await prisma.event.findFirst({
-				where: { start, end },
-			})
-
-			const operativeDate = await prisma.operative.findFirst({
-				where: { start, end },
-			})
 
 			if (exists) {
 				throw new AppError(409, "El operativo ya existe")
 			}
 
-			if (operativeDate == eventDate) {
-				eventDate
-			}
+			const startDate = dayjs(start).startOf("day").toDate()
+			const endDate = dayjs(start).endOf("day").toDate()
 
+			await prisma.event.deleteMany({
+				where: {
+					start: { gte: startDate, lte: endDate },
+				},
+			})
 			const operative = await prisma.operative.create({
 				data: {
 					name,
@@ -85,8 +83,13 @@ export class OperativesController {
 			for (const { email, name } of operative.professionals) {
 				const operativeData = {
 					name: operative.name,
+					description: operative.description,
 					email,
-					professional: { name },
+					professionalName: name,
+					start: operative.start,
+					end: operative.end,
+					services: operative.services,
+					center: operative.center,
 				}
 
 				this.mailer.send({
@@ -152,6 +155,20 @@ export class OperativesController {
 				where: { id: Number(id) },
 				select: this.schemas.defaultSelect,
 			})
+
+			for (const { email } of operativo.professionals) {
+				const operativeDataDelete = {
+					email,
+					name: operativo.name,
+					start: operativo.start,
+					end: operativo.end,
+				}
+				this.mailer.send({
+					to: email,
+					subject: "Este operativo se a eliminado",
+					html: templates.operativeAssignationDelete(operativeDataDelete),
+				})
+			}
 
 			return res.status(200).json({ values: { modified: operativo } })
 		} catch (error) {

@@ -9,6 +9,7 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 
 import { SERVICES } from "../env"
+import { Center, Service } from "@prisma/client"
 
 const formatDate = (date: string | Date, format = "dddd DD [de] MMMM [a las] HH:mm") => {
 	return dayjs(date).tz("America/Santiago").format(format)
@@ -155,11 +156,44 @@ export const seniorCredentialsWelcome = (name: string, rut: string, pin: string)
 
   
 `
-export const operativeAssignation = (operative: any) => {
-	const { email, professional, name } = operative
+type OperativeAssignationProps = {
+	email: string
+	description?: string
+	professionalName?: string
+	name: string
+	start: Date
+	end: Date
+	services?: Array<Service>
+	center?: Partial<Center> | null
+}
+
+export const operativeAssignation = (props: OperativeAssignationProps) => {
+	const { email, description, professionalName, name, start, end, services, center } = props
 	return `
-    <h1>Bienvenido, ${professional.name}</h1>
-    <p>Ha sido asignado al operativo: <strong>${name}</strong></p>
-    <p>Su usuario es: ${email}</p>
+    ${headerTemplate("Asignación al Operativo")}
+    <p>Hola, ${professionalName}.</p>
+    <p><strong>Ha sido asignado al operativo:</strong> ${name}.</p>
+    <p><strong>Descripción del operativo:</strong> ${description}.</p>
+    <p><strong>Su usuario:</strong> ${email}.</p>
+    <p><strong>Inicio del operativo:</strong> ${formatDate(start)}.</p> 
+    <p><strong>Finalización del operativo:</strong> ${formatDate(end)}.</p>
+    <p><strong>Servicios que estarán en el operativo:</strong></p>
+    <ul>
+      ${services?.map((service) => `<li>${service.name}.</li>`).join("")}
+    </ul>
+
+    <p><strong>Centro donde se realizará:</strong> ${center?.name}.</p>
+    ${footerTemplate}
+  `
+}
+
+export const operativeAssignationDelete = (props: OperativeAssignationProps) => {
+	const { email, name, start, end } = props
+	return `
+    ${headerTemplate("Operativo Eliminado")}
+    <p><strong>Ha sido eliminado el siguiente operativo:</strong> ${name}.</p>
+    <p><strong>Su usuario:</strong> ${email}.</p>
+    <p><strong>Inicio del operativo:</strong> ${formatDate(start)}.</p> 
+    <p><strong>Finalización del operativo:</strong> ${formatDate(end)}.</p>
   `
 }
