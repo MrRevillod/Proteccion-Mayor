@@ -1,8 +1,9 @@
 import dayjs from "dayjs"
 
 import { Location } from "react-router-dom"
-import { Event, StaffRole, UserRole } from "./types"
+import { Event, Splitted, StaffRole, UserRole } from "./types"
 import { Dispatch, SetStateAction } from "react"
+import { set } from "react-hook-form"
 
 export const formatRut = (rut: string) => {
 	return rut.replace(/(\d{1,3})(\d{3})(\d{3})(\w{1})/, "$1.$2.$3-$4")
@@ -49,21 +50,24 @@ interface SelectDataFormatterProps {
 	setData: Dispatch<SetStateAction<any[]>>
 	keys?: { label: string; value: string }
 	allString?: boolean
+    addAll?: boolean
 }
 
 const defaultSelectKeys = { label: "name", value: "id" }
 
-export const selectDataFormatter = ({
-	data,
-	setData,
-	keys = defaultSelectKeys,
-	allString = false,
-}: SelectDataFormatterProps) => {
-	if (allString) {
-		setData(data.map((item) => ({ label: item[keys.label].toString(), value: item[keys.value].toString() })))
-	} else {
-		setData(data.map((item) => ({ label: item[keys.label], value: item[keys.value] })))
-	}
+export const selectDataFormatter = ({ data, setData, keys = defaultSelectKeys, allString = false, addAll = false }: SelectDataFormatterProps) => {
+    let newData = []
+   
+    if (allString) {
+        newData = data.map((item) => ({ label: item[keys.label].toString(), value: item[keys.value].toString() }))
+    } else {
+        newData = data.map((item) =>  ({ label: item[keys.label], value: item[keys.value] }))
+    }
+
+    if (addAll) {
+        newData.unshift({ label: "Todos", value: "" })
+    }
+    setData(newData)
 }
 
 type QueryIdsValues = {
@@ -137,4 +141,19 @@ export const generateMonths = () => {
 export const abbreviateCenterName = (name: string) => {
 	const words = name.split(" ")
 	return words.length > 1 ? words.map((word) => word[0]).join("") : words[0]
+}
+
+export const chartSeriesFormatter = (data: Splitted) => {
+    const ausencias: number[] = [] as number[]
+    const asistencias: number[] = [] as number[]
+    const sinReservar: number[] = [] as number[]
+
+    for (const key in data) {
+        const dato = data[key]
+        ausencias.push(dato.absence)
+        asistencias.push(dato.assistance)
+        sinReservar.push(dato.unreserved)
+    }
+
+    return [{ name: "Ausencias", data: ausencias }, { name: "Asistencias", data: asistencias }, { name: "Sin reservar", data: sinReservar }]
 }

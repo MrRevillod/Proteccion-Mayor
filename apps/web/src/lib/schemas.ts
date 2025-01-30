@@ -273,3 +273,13 @@ export const resetPasswordSchema = (role: "ADMIN" | "PROFESSIONAL" | "SENIOR" | 
 			path: ["confirmPassword"],
 		})
 }
+
+export const statisticsSchemas = {
+    General: z.object({
+        from: z.string(),
+        to: z.string(),
+        centerId: z.optional(rules.centerIdSchema),
+        professionalId: z.optional(rules.rutSchema),
+        serviceId: z.optional(z.number()),
+    }),
+}

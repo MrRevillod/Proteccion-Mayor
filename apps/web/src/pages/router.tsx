@@ -6,7 +6,6 @@ import ProfilePage from "./Profile"
 import ServicesPage from "./administration/Services"
 import NotFoundPage from "./NotFound"
 import NewSeniorsPage from "./administration/seniors/SeniorsNew"
-import StatisticsPage from "./administration/Statistics"
 import ProfessionalsPage from "./administration/Professionals"
 import OperativesPages from "./administration/Operatives"
 import ResetPasswordPage from "./auth/ResetPassword"
@@ -22,6 +21,7 @@ import { useAuth } from "@/context/AuthContext"
 import { UserRole } from "@/lib/types"
 import { Routes, Route, Navigate, Outlet } from "react-router-dom"
 import SeniorData from "./administration/seniors/SeniorData"
+import GeneralStatisticsPage from "./administration/statistics/General"
 
 interface RouteProps {
 	redirectTo?: string
@@ -97,10 +97,10 @@ const Router: React.FC = () => {
 				<Route path="/agenda/profesionales" element={<ProfessionalAgendaPage />} />
 			</Route>
 
-			<Route element={<ProtectedRoute allowedRoles={["ADMIN", "PROFESSIONAL"]} />}>
-				<Route path="/estadisticas" element={<StatisticsPage />} />
-			</Route>
-			<Route element={<ProtectedRoute allowedRoles={["ADMIN", "PROFESSIONAL", "FUNCTIONARY"]} />}>
+            <Route element={<ProtectedRoute allowedRoles={["ADMIN", "PROFESSIONAL"]} />}>
+				<Route path="/estadisticas" element={<GeneralStatisticsPage />} />
+            </Route>
+            <Route    element={<ProtectedRoute allowedRoles={["ADMIN", "PROFESSIONAL", "FUNCTIONARY"]} />}>
 				<Route path="/historial" element={<SeniorHistoryRequestPage />} />
 				<Route path="/perfil" element={<ProfilePage />} />
 			</Route>

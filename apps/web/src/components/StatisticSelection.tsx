@@ -10,19 +10,15 @@ import { SelectedProfessional } from "@/pages/administration/Statistics"
 import { FormProvider, useForm } from "react-hook-form"
 import { Dispatch, SetStateAction } from "react"
 import { Professional, ReportType } from "@/lib/types"
+import { DatetimeSelect } from "./ui/DatetimeSelect"
 
 interface StatisticSelectionProps {
 	setReportSelection: Dispatch<SetStateAction<ReportType>>
 	setSelectedProfessional: Dispatch<SetStateAction<SelectedProfessional>>
 }
 
-export const StatisticSelection: React.FC<StatisticSelectionProps> = ({
-	setReportSelection,
-	setSelectedProfessional,
-}) => {
-	const methods = useForm({
-		defaultValues: { statisticSelection: "general" },
-	})
+export const StatisticSelection: React.FC<StatisticSelectionProps> = ({ setReportSelection, setSelectedProfessional }) => {
+	const methods = useForm({})
 
 	const { watch } = methods
 	const statisticSelection = watch("statisticSelection") as ReportType
@@ -63,18 +59,10 @@ export const StatisticSelection: React.FC<StatisticSelectionProps> = ({
 					</div>
 				</Show>
 
-				<div className={clsx(statisticSelection === "byProfessional" ? "w-1/2" : "w-full")}>
-					<SuperSelect
-						name="statisticSelection"
-						label=""
-						placeholder="Seleccione una opciÃ³n"
-						options={[
-							{ value: "general", label: "Reporte general de asistencia" },
-							{ value: "byService", label: "Reporte de asistencia por servicio" },
-							{ value: "byCenter", label: "Reporte de asistencia por centros" },
-							{ value: "byProfessional", label: "Reporte de asistencia por profesional" },
-						]}
-					/>
+				<div className={clsx(statisticSelection === "byProfessional" ? "w-1/2" : "w-full flex")}>
+                    <DatetimeSelect label="Desde" name="from" />
+					<DatetimeSelect label="Hasta" name="to" />
+                    
 				</div>
 			</form>
 		</FormProvider>

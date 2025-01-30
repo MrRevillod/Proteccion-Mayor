@@ -29,14 +29,14 @@ export const PageHeader: React.FC<PageHeaderProps> = ({ pageTitle, create, ...pr
 					!data && !setData && !searchKeys && "flex-row",
 				)}
 			>
-				<div className="flex flex-col w-full md:w-3/6 xl:w-4/6 gap-2">
+				<div className="flex flex-col w-full md:w-3/6 xl:w-3/6 gap-2">
 					<h1 className="text-2xl font-bold text-dark dark:text-light">{pageTitle}</h1>
 					<p className="text-sm text-gray-medium dark:text-gray-light truncate overflow-hidden whitespace-nowrap">
 						Dirección de personas mayores de la municipalidad de Temuco
 					</p>
 				</div>
 
-				<div className="flex flex-row gap-4 w-full md:w-3/6 xl:w-2/6 items-center justify-end">
+				<div className="flex flex-row gap-4 w-full md:w-3/6 xl:w-3/6 items-center justify-end">
 					{data && setData && searchKeys && <SearchBar data={data} setData={setData} keys={searchKeys} />}
 
 					<Show when={create != undefined}>
