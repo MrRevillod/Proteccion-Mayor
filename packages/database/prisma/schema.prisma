@@ -147,7 +147,7 @@ model Operative {
 }
 
 model RevokedToken {
-  id        Int       @id @default(autoincrement())
+  id        String    @id @default(uuid())
   token     String    @unique
   createdAt DateTime  @default(now())
   expiresAt DateTime?

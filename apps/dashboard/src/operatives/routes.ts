@@ -14,7 +14,7 @@ export class OperativesRouter extends Router {
 		this.get({
 			path: "/",
 			handler: this.controller.getMany,
-			middlewares: [this.auth.authorize(["ADMIN"])],
+			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL", "FUNCTIONARY"])],
 		})
 
 		this.post({

@@ -10,7 +10,7 @@ export class StaffController {
 		private mailer: MailerService,
 		private storage: StorageService,
 		private schemas: StaffSchemas = new StaffSchemas(),
-	) {}
+	) { }
 
 	public getMany: Controller = async (req, res, handleError) => {
 		try {
@@ -41,7 +41,7 @@ export class StaffController {
 
 			const [password, hash] = await credentials.generatePassword()
 			const staff = await prisma.staff.create({
-				data: { id, name, email, password: hash, role, centerId },
+				data: { id, name, email, password: hash, role, centerId: Number(centerId) },
 				select: this.schemas.defaultSelect,
 			})
 

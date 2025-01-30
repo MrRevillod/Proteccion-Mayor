@@ -14,7 +14,7 @@ import { SeniorSchemas } from "@/lib/schemas"
 import { selectDataFormatter } from "@/lib/formatters"
 import { FormProvider, useForm } from "react-hook-form"
 import { createSenior, getSectors } from "@/lib/actions"
-import { FormProps, Sector, Senior, SuperSelectField } from "@/lib/types"
+import { FormProps, RSH, Sector, Senior, SuperSelectField } from "@/lib/types"
 
 export const CreateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false)
@@ -85,12 +85,11 @@ export const CreateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => 
 							<Input name="phone" label="Teléfono" type="text" placeholder="955473897" />
 						</div>
 						<div className="w-1/2">
-							<Input
+							<SuperSelect
 								name="rsh"
 								label="Registro social de hogares"
-								type="text"
-								maxLength={3}
-								placeholder="60"
+								showSearch={false}
+								options={Object.keys(RSH).map((key) => ({ value: key, label: RSH[key] }))}
 							/>
 						</div>
 					</div>
@@ -110,10 +109,6 @@ export const CreateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => 
 						placeholder="Sector centro"
 						allowClear
 					/>
-
-					<div className="hidden">
-						<Input name="registeredBy" label="Registrado por" type="text" readOnly />
-					</div>
 				</Form>
 			</FormProvider>
 		</Modal>

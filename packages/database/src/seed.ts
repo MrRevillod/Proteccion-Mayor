@@ -168,6 +168,25 @@ const seed = async () => {
 	const functionaryBar = utils.createProgressBar("Functionaries", functionaries.length)
 	functionaryBar.start(functionaries.length, 0, { title: "Functionaries" })
 
+	for (const [index, functionary] of functionaries.entries()) {
+		const functionaryRUT = utils.generateRUT()
+
+		await prisma.staff.upsert({
+			where: { id: functionaryRUT },
+			create: {
+				id: functionaryRUT,
+				email: functionary.email ?? "",
+				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
+				name: functionary.name ?? "",
+				centerId: functionary.centerId,
+				role: "FUNCTIONARY",
+			},
+			update: {},
+		})
+
+		functionaryBar.update(index + 1)
+	}
+
 	const centerIds = Array.from({ length: 16 }, (_, i) => Math.floor(i / 2) + 1)
 
 	for (let i = 0; i < centers.length * 2; i++) {
@@ -298,7 +317,7 @@ const seed = async () => {
 			create: {
 				id: professional.rut,
 				email: professional.email,
-				password: await hash(DEFAULT_PROFESSIONAL_PASSWORD, 10),
+				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
 				name: professional.name,
 				minutesPerSession: Number(professional.minutesPerSession),
 				serviceId: professional.serviceId,

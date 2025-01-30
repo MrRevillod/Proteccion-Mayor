@@ -24,15 +24,18 @@
 	"functionaries": [
 		{
 			"name": "Benjamín Espinoza",
-			"email": "be@dev.help.com"
+			"email": "be@dev.help.com",
+			"centerId": 1
 		},
 		{
 			"name": "Luciano Revillod",
-			"email": "lr@dev.help.com"
+			"email": "lr@dev.help.com",
+			"centerId": 2
 		},
 		{
 			"name": "Carlos Riquelme",
-			"email": "cr@dev.help.com"
+			"email": "cr@dev.help.com",
+			"centerId": 3
 		}
 	],
 	"professionals": [
