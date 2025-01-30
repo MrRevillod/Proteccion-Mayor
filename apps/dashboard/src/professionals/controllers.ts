@@ -10,7 +10,7 @@ export class ProfessionalsController {
 		private schemas: ProfessionalsSchemas,
 		private storage: StorageService,
 		private mailer: MailerService,
-	) {}
+	) { }
 
 	/**
 	 * Obtener todos los profesionales registrados, puede aceptar una query
