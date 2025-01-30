@@ -93,7 +93,7 @@ export const Calendar: React.FC<CalendarProps> = ({ events, operatives }) => {
 			return message.info("Para editar un Operativo tiene que dirigirse a la página de Operativos")
 		}
 
-		if (!event.seniorId && dayjs(event.start).isBefore(dayjs())) {
+		if (!event.seniorId && dayjs(event.start).isBefore(dayjs()) && dayjs(event.end).isBefore(dayjs())) {
 			message.info("No es posible editar eventos pasados sin reserva")
 			return
 		}

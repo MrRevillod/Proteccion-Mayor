@@ -61,8 +61,6 @@ const StaffAgendaPage: React.FC = () => {
 		onSuccess: (operatives) => setOperatives(operatives),
 	})
 
-	console.log(operatives)
-
 	const { data: rawCenters } = useRequest<Center[]>({
 		action: getCenters,
 		onSuccess: (data) => selectDataFormatter({ data, setData: setCenters }),

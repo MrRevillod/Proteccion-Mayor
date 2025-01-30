@@ -70,7 +70,7 @@ export const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 	useEffect(() => {
 		if (baseTrigger && selectedService && professionals) {
 			const serviceProfessionals = professionals.filter(
-				(professional) => professional.serviceId === selectedService,
+				(professional) => professional.serviceId === selectedService
 			)
 			selectDataFormatter({ data: serviceProfessionals, setData: setSelectProfessionals })
 		}
@@ -136,8 +136,8 @@ export const CreateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 						setSearch={setSeniorsSearch}
 					/>
 					<div className="flex gap-2 justify-between">
-						<DatetimeSelect label="Inicio del evento" name="start" />
-						<DatetimeSelect label="Término del evento" name="end" />
+						<DatetimeSelect label="Inicio del evento" name="start" disablePast />
+						<DatetimeSelect label="Término del evento" name="end" disablePast />
 					</div>
 				</Form>
 			</FormProvider>

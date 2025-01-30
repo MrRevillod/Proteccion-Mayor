@@ -82,6 +82,12 @@ export class EventsRouter extends Router {
 			handler: this.controller.getCentersByService,
 			middlewares: [this.auth.authorize(["SENIOR"])],
 		})
+
+		this.get({
+			path: "/week-availability",
+			handler: this.controller.checkWeekAvailability,
+			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL"])],
+		})
 	}
 }
 

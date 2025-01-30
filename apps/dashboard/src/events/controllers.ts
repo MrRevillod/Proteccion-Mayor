@@ -3,7 +3,7 @@ import dayjs from "dayjs"
 import { io } from ".."
 import { prisma } from "@repo/database"
 import { EventService } from "./service"
-import { Prisma, Senior } from "@prisma/client"
+import { Prisma, Senior, Event } from "@prisma/client"
 import { EventsSchemas, WeeklyEvents } from "./schemas"
 import { AppError, Controller, MailerService, templates } from "@repo/lib"
 
@@ -90,19 +90,21 @@ export class EventsController {
 			if (!center) throw new AppError(400, "Centro no encontrado")
 			if (senior && !senior?.validated) throw new AppError(409, "La persona mayor no está validada")
 
-			const event = {
-				start: dayjs(start),
-				end: dayjs(end),
+			const event: Partial<Event> = {
+				start: dayjs(start).toDate(),
+				end: dayjs(end).toDate(),
 				professionalId,
 				serviceId: Number(serviceId),
 				seniorId: seniorId ?? null,
 				centerId: Number(centerId),
 			}
 
+			await this.service.validareRestrictions(event)
+
 			await prisma.event.create({
 				data: {
-					start: event.start.toISOString(),
-					end: event.end.toISOString(),
+					start: event?.start?.toISOString() as string,
+					end: event?.end?.toISOString() as string,
 					professionalId: event.professionalId,
 					serviceId: event.serviceId,
 					seniorId: event.seniorId,
@@ -133,8 +135,8 @@ export class EventsController {
 	public createMany: Controller = async (req, res, handleError) => {
 		const { query, body } = req
 
+		const { weeklyEvents, start, end } = body as WeeklyEvents
 		const { serviceId, professionalId } = query
-		const { weeklyEvents } = body as WeeklyEvents
 
 		try {
 			const [professional, service] = await Promise.all([
@@ -144,6 +146,22 @@ export class EventsController {
 
 			if (!professional || !service) {
 				throw new AppError(400, "Profesional o servicio no encontrado")
+			}
+
+			const orDateSuperposition = {
+				start: { lte: dayjs(end).toDate() },
+				end: { gte: dayjs(start).toDate() },
+			}
+
+			const events = await prisma.event.findMany({
+				where: {
+					professionalId: professionalId?.toString(),
+					OR: [orDateSuperposition],
+				},
+			})
+
+			if (events.length !== 0) {
+				throw new AppError(409, "El profesional ya tiene eventos en el rango de fechas")
 			}
 
 			Object.keys(weeklyEvents).forEach((day) => {
@@ -213,12 +231,13 @@ export class EventsController {
 			if (centerId && !center) throw new AppError(400, "Centro no encontrado")
 
 			if (!eventExists) throw new AppError(400, "Evento no encontrado")
+
 			const eventExistsChange = eventExists.assistance !== assistance
 
 			if (eventExistsChange && dayjs().isAfter(dayjs(eventExists.end).add(3, "days"))) {
 				throw new AppError(
 					400,
-					"No se puede autorizar la asistencia despues de 3 dias de la finalización del evento",
+					"No se puede autorizar la asistencia después de 3 días de la finalización del evento",
 				)
 			}
 
@@ -226,28 +245,21 @@ export class EventsController {
 			const endDate = new Date(end)
 
 			const orDateSuperposition = {
-				start: { lte: endDate },
-				end: { gte: startDate },
-			}
-
-			// Se buscan eventos donde la id del evento sea diferente a la que se quiere actualizar
-			// Y que se superpongan con las fechas del evento a actualizar
-
-			let seniorOR = {} as any
-
-			if (seniorId) {
-				seniorOR["seniorId"] = seniorId
-				seniorOR = { ...seniorOR, ...orDateSuperposition }
+				start: { lt: endDate },
+				end: { gt: startDate },
 			}
 
 			const events = await prisma.event.findMany({
 				where: {
-					AND: [
+					id: { not: id },
+					OR: [
 						{
-							OR: [{ professionalId, ...orDateSuperposition }, seniorOR],
+							professionalId,
+							...orDateSuperposition,
 						},
 						{
-							id: { not: req.params.id },
+							seniorId,
+							...orDateSuperposition,
 						},
 					],
 				},
@@ -256,7 +268,7 @@ export class EventsController {
 			if (events.length !== 0) throw new AppError(409, "Superposición de horas")
 
 			let event = await prisma.event.update({
-				where: { id: req.params.id },
+				where: { id: id },
 				data: {
 					start: startDate,
 					end: endDate,
@@ -511,6 +523,32 @@ export class EventsController {
 			})
 
 			return res.status(200).json({ values: events })
+		} catch (error) {
+			handleError(error)
+		}
+	}
+
+	public checkWeekAvailability: Controller = async (req, res, handleError) => {
+		const { professionalId, start, end } = req.query
+
+		try {
+			const orDateSuperposition = {
+				start: { lte: dayjs(end as string).toDate() },
+				end: { gte: dayjs(start as string).toDate() },
+			}
+
+			const events = await prisma.event.findMany({
+				where: {
+					professionalId: professionalId?.toString(),
+					OR: [orDateSuperposition],
+				},
+			})
+
+			if (events.length !== 0) {
+				throw new AppError(409, "El profesional ya tiene eventos en el rango de fechas")
+			}
+
+			return res.status(200).json({ values: { available: true } })
 		} catch (error) {
 			handleError(error)
 		}

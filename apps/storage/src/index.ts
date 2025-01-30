@@ -36,7 +36,6 @@ seniorRouter.get("/:id/register-files", auth.authorize(["ADMIN", "FUNCTIONARY"])
 	]
 
 	const images = imagePaths.map((imagePath) => {
-		console.log(imagePath)
 		if (fs.existsSync(imagePath)) {
 			const image = fs.readFileSync(imagePath)
 			return `data:image/webp;base64,${image.toString("base64")}`

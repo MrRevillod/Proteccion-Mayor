@@ -169,6 +169,10 @@ export const getRegisterImages = async (props: QueryActionProps) => {
 	return await apiRequest.get(`/storage/public/seniors/${props?.params?.id}/register-files`)
 }
 
+export const checkWeekAvailability = async (props: QueryActionProps) => {
+	return await apiRequest.get(`/dashboard/events/week-availability${props.query ? "?" + props.query : ""}`)
+}
+
 // Acciones CRUD para los sectores
 
 export const getSectors = async (props: QueryActionProps) => {

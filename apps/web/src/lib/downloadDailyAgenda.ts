@@ -13,7 +13,7 @@ export const generatePDF = (professional: Professional, events: Event[], date: s
 		center: "",
 	}
 
-	const columns = ["Nº", "Horario", "Nombre", "Teléfono", "Asistencia", "Firma          "]
+	const columns = ["Nº", "Horario", "RUT", "Nombre", "Teléfono", "Asistencia", "Firma          "]
 
 	if (!events || events.length === 0) {
 		notification.info({
@@ -28,6 +28,7 @@ export const generatePDF = (professional: Professional, events: Event[], date: s
 	const data = events.map((event, index) => [
 		(index + 1).toString(),
 		`${dayjs(event.start).format("HH:mm")} - ${dayjs(event.end).format("HH:mm")}`,
+		event.senior?.id ? event.senior.id : "",
 		event.senior?.name && event.seniorId ? event.senior.name : "No reservado",
 		event.senior?.phone ? event.senior.phone : !event.senior ? "" : "Sin teléfono Registrado",
 		event.assistance ? "Asiste" : event?.seniorId && !event.assistance ? "No asiste" : "",

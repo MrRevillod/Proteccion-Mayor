@@ -36,11 +36,6 @@ const SeniorRegisterRequestPage: React.FC = () => {
 	const { senior } = location.state || {}
 	const { reset, handleSubmit } = methods
 
-	console.log("watch", methods.watch())
-	console.log("errors", methods.formState.errors)
-
-	console.log(sectors)
-
 	useEffect(() => {
 		if (!senior) navigate("/administracion/personas-mayores/nuevos")
 		else {
@@ -117,7 +112,7 @@ const SeniorRegisterRequestPage: React.FC = () => {
 			<section
 				className={clsx(
 					(loading || imageLoading) && "opacity-50",
-					"bg-white dark:bg-primary-dark px-4 py-8 rounded-lg flex flex-row gap-12",
+					"bg-white dark:bg-primary-dark px-4 py-8 rounded-lg flex flex-row gap-12"
 				)}
 			>
 				{(loading || imageLoading) && <Loading />}
