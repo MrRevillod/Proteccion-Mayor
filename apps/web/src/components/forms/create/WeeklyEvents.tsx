@@ -84,7 +84,7 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 		setDailySessions((prev) => ({ ...prev, [currentWeekDay]: dsForService?.quantity ?? 0 }))
 	}, [selectedServiceId, selectedCenterId, centers])
 
-	const handleNextStep = () => {
+	const handleNextStep = async () => {
 		if (formStep === 1) {
 			let start = getValues("start")
 			let end = getValues("end")
@@ -100,6 +100,17 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 			if (start.isAfter(end)) {
 				message.error("La fecha de término debe ser posterior a la de inicio.")
 				return false
+			}
+
+			try {
+				await api.get(
+					`/dashboard/events/week-availability?professionalId=${selectedProfessionalId}&start=${start}&end=${end}`
+				)
+			} catch (error: any) {
+				if (error.response && error.response.status === 409) {
+					message.error("Ya existe una agenda semanal para las fechas seleccionadas.")
+					return
+				}
 			}
 
 			const days: WeekDay[] = []
@@ -134,20 +145,17 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 	const handlePreviousStep = () => setFormStep((prev) => Math.max(prev - 1, 1))
 
 	const reduceWeekDays = (): Record<string, any> => {
-		return weekDays.reduce(
-			(acc, { date }) => {
-				const centerId = getValues(`${date}-centerId`)
-				acc[date] = {
-					centerId,
-					events: Array.from({ length: dailySessions[date] }).map((_, index) => ({
-						start: getValues(`${date}[${index}].start`),
-						end: getValues(`${date}[${index}].end`),
-					})),
-				}
-				return acc
-			},
-			{} as Record<string, any>,
-		)
+		return weekDays.reduce((acc, { date }) => {
+			const centerId = getValues(`${date}-centerId`)
+			acc[date] = {
+				centerId,
+				events: Array.from({ length: dailySessions[date] }).map((_, index) => ({
+					start: getValues(`${date}[${index}].start`),
+					end: getValues(`${date}[${index}].end`),
+				})),
+			}
+			return acc
+		}, {} as Record<string, any>)
 	}
 
 	const handleSubmit = async () => {

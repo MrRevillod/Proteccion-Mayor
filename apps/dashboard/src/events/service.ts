@@ -1,5 +1,8 @@
-import { Dayjs } from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
+
 import { prisma } from "@repo/database"
+import { Event } from "@prisma/client"
+import { BadRequest } from "@repo/lib"
 
 type HasOverlapProps = {
 	startDate: Dayjs
@@ -61,26 +64,29 @@ export class EventService {
 	// Función que verifica si hay superposición de eventos en una fecha y hora determinada
 	// para un profesional o un adulto mayor dados
 
-	public hasOverlap = async ({ startDate, endDate, ...props }: HasOverlapProps): Promise<boolean> => {
-		const { professionalId, seniorId } = props
-
+	public hasOverlap = async (event: Partial<Event>) => {
 		// Para verificar si hay superposición de eventos, se busca en la base de datos
 		// si hay eventos donde la fecha de inicio sea menor o igual a la fecha de término
 		// y la fecha de término sea mayor o igual a la fecha de inicio
 
 		const orDateSuperposition = {
-			start: { lte: endDate.toDate() },
-			end: { gte: startDate.toDate() },
+			start: { lte: dayjs(event.end).toDate() },
+			end: { gte: dayjs(event.start).toDate() },
 		}
 
 		// Se crea un objeto con las condiciones de superposición de fechas
 		// de profesionales y adultos mayores
 
 		const eventWhere: EventOverlapWhere = {
-			OR: [{ professionalId, OR: [orDateSuperposition] }],
+			OR: [
+				{
+					professionalId: event?.professionalId as string,
+					OR: [orDateSuperposition],
+				},
+			],
 		}
 
-		if (seniorId) eventWhere.OR.push({ seniorId, OR: [orDateSuperposition] })
+		if (event.seniorId) eventWhere.OR.push({ seniorId: event.seniorId, OR: [orDateSuperposition] })
 
 		// Se buscan eventos que cumplan con las condiciones de superposición
 		// y se retorna si hay eventos que cumplan con esas condiciones
@@ -90,5 +96,30 @@ export class EventService {
 		})
 
 		return events.length !== 0
+	}
+
+	public validareRestrictions = async (event: Partial<Event>) => {
+		const startDate = dayjs(event?.start)
+		const endDate = dayjs(event?.end)
+
+		if (startDate.isAfter(endDate)) {
+			throw new BadRequest("La fecha de inicio no puede ser mayor a la fecha de término")
+		}
+
+		if (startDate.isBefore(dayjs()) || endDate.isBefore(dayjs())) {
+			throw new BadRequest("El evento no puede ser creado en el pasado")
+		}
+
+		if (startDate.isSame(endDate)) {
+			throw new BadRequest("El evento debe tener una duración mayor a 0")
+		}
+
+		if (endDate.diff(startDate, "hours") > 3) {
+			throw new BadRequest("El evento no puede durar más de 3 horas")
+		}
+
+		if (await this.hasOverlap(event)) {
+			throw new BadRequest("El evento tiene superposición con otro evento")
+		}
 	}
 }
