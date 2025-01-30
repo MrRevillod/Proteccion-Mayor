@@ -25,6 +25,7 @@
 		"axios": "^1.7.4",
 		"clsx": "^2.1.1",
 		"dayjs": "^1.11.13",
+		"exceljs": "^4.4.0",
 		"flowbite-react": "^0.10.1",
 		"fullcalendar": "^6.1.15",
 		"jwt-decode": "^4.0.0",

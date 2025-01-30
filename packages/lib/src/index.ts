@@ -18,6 +18,7 @@ export * as templates from "./utils/htmlTemplates"
 export * as credentials from "./utils/credentials"
 export * as validations from "./utils/validations"
 export * as uploads from "./utils/uploads"
+export * as documents from "./utils/documents"
 
 
 export {

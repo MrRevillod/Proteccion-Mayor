@@ -74,7 +74,8 @@ export type PasswordFields = {
 export type TableColumnType<T> = Array<{
 	title: string
 	dataIndex: keyof T | string[]
-	key: string
+    key: string
+    sorter?: (a: T, b: T) => number
 }>
 
 export type FormProps<T> = {
@@ -140,11 +141,35 @@ export type ReportType = "general" | "byService" | "byCenter" | "byProfessional"
 export type AssistanceType = "assistance" | "absence" | "unreserved"
 
 
+export type Splitted = { [key: string]: { assistance: number, absence: number, unreserved: number } }
+
+export type reportHead = {
+    from: string,
+    to: string,
+    centerName: string,
+    serviceName: string,
+    professionalName: string,
+}
+
+export type ProfessionalTableRow = {
+    id:string,
+    professionalName: string,
+    assistance: number,
+    absence: number,
+    unreserved: number,
+    total: number
+}
 
 export type Report = {
+    head: reportHead
     assistance: [number, number][]
     absence: [number, number][]
     unreserved: [number, number][]
+    splitted: {
+        center: Splitted
+        service: Splitted
+        professional: Splitted
+    }
     
 }
 
