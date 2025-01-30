@@ -17,7 +17,7 @@ import { message } from "antd"
 
 export const UpdateStaff: React.FC<FormProps<Staff>> = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false)
-    const [centers, setCenters] = useState<Center[]>([])
+	const [centers, setCenters] = useState<Center[]>([])
 
 	const methods = useForm({
 		resolver: zodResolver(StaffSchemas.Update),
@@ -26,25 +26,23 @@ export const UpdateStaff: React.FC<FormProps<Staff>> = ({ data, setData }) => {
 	const { reset, getValues } = methods
 	const { selectedData } = useModal() as { selectedData: Staff }
 
-    useEffect(() => {
-        
-        if (selectedData) {
-            reset({
-                name: selectedData?.name,
-                email: selectedData?.email,
-                password: "",
-                confirmPassword: "",
-                image: null,
-                role: selectedData?.role,
-                centerId:  selectedData.centerId ? selectedData.centerId?.toString() : "" ,
-            })
-        }
-        console.log(getValues())
+	useEffect(() => {
+		if (selectedData) {
+			reset({
+				name: selectedData?.name,
+				email: selectedData?.email,
+				password: "",
+				confirmPassword: "",
+				image: null,
+				role: selectedData?.role,
+				centerId: selectedData.centerId ? selectedData.centerId?.toString() : "",
+			})
+		}
 	}, [selectedData])
 
-    const { error } = useRequest<Center[]>({
+	const { error } = useRequest<Center[]>({
 		action: getCenters,
-		onSuccess: (centers) => selectDataFormatter({ data: centers, setData: setCenters,allString:true }),
+		onSuccess: (centers) => selectDataFormatter({ data: centers, setData: setCenters }),
 	})
 
 	if (error) message.error("Error al cargar los datos")
@@ -61,17 +59,22 @@ export const UpdateStaff: React.FC<FormProps<Staff>> = ({ data, setData }) => {
 					<Input name="name" label="Nombre" type="text" placeholder="Nombre" />
 					<Input name="email" label="Correo Electrónico" type="email" placeholder="Correo Electrónico" />
 					<Input name="password" label="Contraseña" type="password" placeholder="••••" />
-					<Input  name="confirmPassword" label="Confirmar contraseña" type="password" placeholder="••••" />
-                    <SuperSelect
-                        name="role"
-                        label="Rol"
-                        options={[{ label: "Administrador", value: "ADMIN" }, { label: "Funcionario", value: "FUNCTIONARY" }]}
-                        placeholder="Escoja un rol"
-                    />
-                    <SuperSelect
-                        name="centerId" label="Centro"
-                        options={centers} placeholder="Escoja un centro para el funcionario"
-                    />
+					<Input name="confirmPassword" label="Confirmar contraseña" type="password" placeholder="••••" />
+					<SuperSelect
+						name="role"
+						label="Rol"
+						options={[
+							{ label: "Administrador", value: "ADMIN" },
+							{ label: "Funcionario", value: "FUNCTIONARY" },
+						]}
+						placeholder="Escoja un rol"
+					/>
+					<SuperSelect
+						name="centerId"
+						label="Centro"
+						options={centers}
+						placeholder="Escoja un centro para el funcionario"
+					/>
 				</Form>
 			</FormProvider>
 		</Modal>

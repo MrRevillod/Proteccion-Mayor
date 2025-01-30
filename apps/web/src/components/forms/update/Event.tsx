@@ -14,7 +14,7 @@ import { BooleanSelect } from "@/components/ui/BooleanSelect"
 import { DatetimeSelect } from "@/components/ui/DatetimeSelect"
 import { selectDataFormatter } from "@/lib/formatters"
 import { useState, useEffect } from "react"
-import { FormProvider, set, useForm } from "react-hook-form"
+import { FormProvider, useForm } from "react-hook-form"
 import { getSeniors, updateEvent } from "@/lib/actions"
 import { Professional, Senior, Staff, SuperSelectField } from "@/lib/types"
 
@@ -34,19 +34,18 @@ type EventFormProps = {
 export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, refetch }) => {
 	const [loading, setLoading] = useState(false)
 	const [seniors, setSeniors] = useState<SuperSelectField[]>([])
+	const [disabled, setDisabled] = useState(false)
 	const [seniorsSearch, setSeniorsSearch] = useState<string>("")
 	const [selectProfessionals, setSelectProfessionals] = useState<SuperSelectField[]>([])
-    const [disabled,setDisabled] = useState(false)  
 
 	const isAfterToday = (date: string) => dayjs(date).isAfter(dayjs())
-	const isBeforeToday = (date: string) => dayjs(date).isBefore(dayjs())
+	const isEnd = (date: string) => dayjs().isAfter(dayjs(date).add(3, "days"))
 
 	const methods = useForm({ resolver: zodResolver(EventSchemas.Update) })
 
-	const { role,user } = useAuth()
+	const { role, user } = useAuth()
 	const { selectedData } = useModal()
 	const { isModalOpen, modalType } = useModal()
-
 
 	useRequest<Senior[]>({
 		action: getSeniors,
@@ -55,13 +54,19 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 		trigger: isModalOpen && modalType === "Edit",
 	})
 
-    useEffect(() => {
-        setDisabled(role === "FUNCTIONARY" && (user as Staff).centerId !== selectedData?.centerId)
-
+	useEffect(() => {
 		if (!selectedData) return
+
+		if (role === "FUNCTIONARY") {
+			const functionary = user as Staff
+			setDisabled(functionary?.centerId !== selectedData?.centerId)
+		}
+
+		console.log(disabled)
+
 		methods.reset({
 			professionalId: selectedData?.professionalId,
-			centerId: selectedData?.centerId ? selectedData?.centerId.toString() : undefined,
+			centerId: selectedData?.centerId,
 			serviceId: selectedData?.serviceId,
 			assistance: selectedData?.assistance,
 			seniorId: selectedData?.seniorId || undefined,
@@ -71,7 +76,7 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 
 		if (role === "ADMIN") {
 			const serviceProfessionals = professionals?.filter(
-				(professional) => professional.serviceId === selectedData?.serviceId,
+				(professional) => professional.serviceId === selectedData?.serviceId
 			)
 			selectDataFormatter({ data: serviceProfessionals as Professional[], setData: setSelectProfessionals })
 		}
@@ -82,23 +87,29 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 	return (
 		<Modal type="Edit" title="Editar un evento" loading={loading}>
 			<FormProvider {...methods}>
-				<Form action={updateEvent} disabled={disabled} actionType="update" deletable refetch={refetch} setLoading={setLoading}>
-					<Show when={isAfterToday(selectedData?.start)}>
-						<Show when={role === "ADMIN"}>
-							<SuperSelect
-								label="Seleccione el profesional"
-								name="professionalId"
-                                options={selectProfessionals}
-							/>
-						</Show>
-
+				<Form
+					action={updateEvent}
+					disabled={disabled}
+					actionType="update"
+					deletable
+					refetch={refetch}
+					setLoading={setLoading}
+				>
+					<Show when={role === "ADMIN"}>
 						<SuperSelect
-							label="Seleccione el centro de atención (opcional)"
-							name="centerId"
-							options={centers}
-                            disabled={disabled}
+							label="Seleccione el profesional"
+							name="professionalId"
+							options={selectProfessionals}
+							disabled
 						/>
 					</Show>
+
+					<SuperSelect
+						label="Seleccione el centro de atención (opcional)"
+						name="centerId"
+						options={centers}
+						disabled={role !== "ADMIN"}
+					/>
 
 					<SuperSelect
 						label="Seleccione la persona mayor"
@@ -106,7 +117,7 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 						options={seniors}
 						setSearch={setSeniorsSearch}
 						placeholder="Buscar por nombre o su Rut"
-						disabled={!selectedData?.seniorId || disabled}
+						disabled={selectedData?.seniorId || disabled}
 					/>
 
 					<Show when={role === "ADMIN" && isAfterToday(selectedData?.start)}>
@@ -124,19 +135,26 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 
 					<Show when={isAfterToday(selectedData?.start)}>
 						<div className="flex gap-2 justify-between">
-                            <DatetimeSelect label="Inicio del evento" name="start" disabled={disabled}/>
-							<DatetimeSelect label="Finalización del evento" name="end" disabled={disabled} />
+							<DatetimeSelect label="Inicio del evento" name="start" disabled={disabled} disablePast />
+							<DatetimeSelect
+								label="Finalización del evento"
+								name="end"
+								disabled={disabled}
+								disablePast
+							/>
 						</div>
 					</Show>
 
-					<Show when={selectedData?.seniorId && isBeforeToday(selectedData?.end)}>
+					<Show
+						when={selectedData?.seniorId && !isAfterToday(selectedData?.start) && !isEnd(selectedData?.end)}
+					>
 						<BooleanSelect
 							name="assistance"
 							options={[
 								{ label: "Asistió", value: true },
 								{ label: "No asistió", value: false },
-                            ]}
-                            disabled={disabled}
+							]}
+							disabled={disabled}
 						/>
 					</Show>
 				</Form>

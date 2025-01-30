@@ -4,7 +4,7 @@ import router from "./router"
 import express from "express"
 
 import { Router } from "express"
-import { verifyStorageKey } from "./utils"
+import { initFileSystem, verifyStorageKey } from "./utils"
 import { createApplication, startService } from "@repo/lib"
 import { SERVICES, AuthenticationService } from "@repo/lib"
 
@@ -23,10 +23,12 @@ import { SERVICES, AuthenticationService } from "@repo/lib"
 // ---------------------------------------------------
 
 const app = createApplication()
+initFileSystem()
+
 const auth = new AuthenticationService()
 const seniorRouter = Router()
 
-seniorRouter.get("/:id/register-files", auth.authorize(["ADMIN","FUNCTIONARY"]), (req, res) => {
+seniorRouter.get("/:id/register-files", auth.authorize(["ADMIN", "FUNCTIONARY"]), (req, res) => {
 	const imagePaths = [
 		path.join(__dirname, `../public/seniors/${req.params.id}/dni-a.webp`),
 		path.join(__dirname, `../public/seniors/${req.params.id}/dni-b.webp`),

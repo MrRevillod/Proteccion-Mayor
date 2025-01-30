@@ -1,17 +1,20 @@
 import { z } from "zod"
+import { Prisma } from "@prisma/client"
 import { rules, Schema } from "@repo/lib"
 
 export class EventsSchemas extends Schema {
 	get query() {
 		return z.object({
 			professionalId: z.string().optional(),
-			centerId: z.optional(rules.centerIdSchema),
+			centerId: z.coerce.number().optional(),
 			seniorId: z.string().optional(),
 			serviceId: z.coerce.number().optional(),
+			start: z.string().optional(),
+			end: z.string().optional(),
 		})
 	}
 
-	get defaultSelect() {
+	get defaultSelect(): Prisma.EventSelect {
 		return {
 			id: true,
 			start: true,
@@ -30,7 +33,7 @@ export class EventsSchemas extends Schema {
 				select: { id: true, name: true, address: true },
 			},
 			senior: {
-				select: { id: true, name: true, email: true },
+				select: { id: true, name: true, email: true, phone: true },
 			},
 			professional: { select: { name: true, email: true } },
 		}
@@ -44,12 +47,23 @@ export class EventsSchemas extends Schema {
 				professionalId: rules.rutSchema,
 				serviceId: z.number({ message: "El servicio es obligatorio" }),
 				seniorId: z.optional(rules.rutSchema),
-				centerId: rules.centerIdSchema,
-				repeat: z.optional(z.enum(["daily", "weekly"])),
+				centerId: z.number({ message: "El centro es obligatorio" }),
 			})
-			.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
+			.refine((data) => !rules.isWeekend(data.start) && !rules.isWeekend(data.end), {
 				message: "No es posible crear eventos los fin de semana",
 				path: ["end", "start"],
+			})
+	}
+
+	get createMany() {
+		return z
+			.object({
+				start: rules.dateTimeSchema,
+				end: rules.dateTimeSchema,
+				weeklyEvents: rules.weeklyEventsSchema,
+			})
+			.refine((data) => !rules.isWeekend(data.start) && !rules.isWeekend(data.end), {
+				message: "No es posible crear eventos los fin de semana",
 			})
 	}
 
@@ -62,16 +76,19 @@ export class EventsSchemas extends Schema {
 				serviceId: z.number(),
 				assistance: z.boolean(),
 				seniorId: z.optional(rules.rutSchema),
-				centerId: rules.centerIdSchema,
+				centerId: z.coerce.number(),
 			})
 			.refine((data) => data.start < data.end, {
 				message: "La fecha de inicio no puede ser mayor a la fecha de finalización",
 				path: ["start", "end"],
 			})
 
-			.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
+			.refine((data) => !rules.isWeekend(data.start) && !rules.isWeekend(data.end), {
 				message: "No es posible crear eventos los fin de semana",
 				path: ["end", "start"],
 			})
 	}
 }
+
+export type EventQuery = z.infer<typeof EventsSchemas.prototype.query>
+export type WeeklyEvents = z.infer<typeof EventsSchemas.prototype.createMany>

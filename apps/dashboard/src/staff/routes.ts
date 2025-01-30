@@ -1,12 +1,12 @@
-import { staffController } from "../staff/controllers"
 import { StaffSchemas } from "./schemas"
+import { StaffController } from "../staff/controllers"
 import { AuthenticationService, Router, validations, uploads, findStaff } from "@repo/lib"
 
 export class StaffRouter extends Router {
 	constructor(
 		private auth: AuthenticationService,
 		private schemas: StaffSchemas,
-		private controller: staffController ,
+		private controller: StaffController,
 	) {
 		super({ prefix: "/api/dashboard/staff" })
 
@@ -27,7 +27,7 @@ export class StaffRouter extends Router {
 			handler: this.controller.updateOne,
 			middlewares: [
 				uploads.singleImage,
-				this.auth.authorize(["ADMIN","FUNCTIONARY"]),
+				this.auth.authorize(["ADMIN", "FUNCTIONARY"]),
 				validations.resourceId(findStaff),
 				validations.body(this.schemas.update),
 				validations.files({ required: false }),
@@ -37,16 +37,13 @@ export class StaffRouter extends Router {
 		this.delete({
 			path: "/:id",
 			handler: this.controller.deleteOne,
-			middlewares: [
-				this.auth.authorize(["ADMIN"]),
-				validations.resourceId(findStaff),
-			],
+			middlewares: [this.auth.authorize(["ADMIN"]), validations.resourceId(findStaff)],
 		})
 
 		this.post({
 			path: "/confirm-action",
 			handler: this.controller.confirmAction,
-			middlewares: [this.auth.authorize(["ADMIN","FUNCTIONARY"])],
+			middlewares: [this.auth.authorize(["ADMIN", "FUNCTIONARY"])],
 		})
 	}
 }

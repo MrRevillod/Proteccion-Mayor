@@ -24,6 +24,7 @@ export const UpdateProfessional: React.FC<FormProps<Professional>> = ({ data, se
 			methods.reset({
 				name: selectedData.name,
 				email: selectedData.email,
+				minutesPerSession: selectedData.minutesPerSession,
 			})
 		}
 	}, [selectedData])
@@ -40,6 +41,13 @@ export const UpdateProfessional: React.FC<FormProps<Professional>> = ({ data, se
 				>
 					<Input name="name" label="Nombre" type="text" placeholder="Nombre" />
 					<Input name="email" label="Correo Electrónico" type="email" placeholder="Correo Electrónico" />
+					<Input
+						type="text"
+						label="Minutos por atención"
+						name="minutesPerSession"
+						maxLength={3}
+						placeholder="60"
+					/>
 					<Input name="password" label="Contraseña" type="password" placeholder="••••" />
 					<Input name="confirmPassword" label="Confirmar contraseña" type="password" placeholder="••••" />
 				</Form>

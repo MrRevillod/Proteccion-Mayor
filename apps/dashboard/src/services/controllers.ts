@@ -9,6 +9,15 @@ export class ServicesController {
 		private schemas: ServicesSchemas,
 	) {}
 
+	/**
+	 * Obtener todos los servicios registrados, puede aceptar una query
+	 * Para seleccionar los campos a devolver
+	 *
+	 * path: /api/dashboard/services - GET
+	 *
+	 * @returns (Express Response) (HTTP - 200)
+	 */
+
 	public getMany: Controller = async (req, res, handleError) => {
 		try {
 			const query = this.schemas.query.parse(req.query)
@@ -21,6 +30,16 @@ export class ServicesController {
 			handleError(error)
 		}
 	}
+
+	/**
+	 * Registrar un servicio en el sistema, debe incluir una imagen en el body
+	 *
+	 * Content-Type: multipart/form-data
+	 * path: /api/dashboard/services - POST
+	 *
+	 * @returns (Express Response) (HTTP - 201)
+	 * @throws (AppError) (HTTP - 409)
+	 */
 
 	public createOne: Controller = async (req, res, handleError) => {
 		const { body, file } = req
@@ -56,6 +75,16 @@ export class ServicesController {
 		}
 	}
 
+	/**
+	 * Actualizar un servicio en el sistema, puede incluir una imagen en el body
+	 * Se comprueba que no exista un servicio con el mismo nombre o color
+	 *
+	 * /api/dashboard/services/:id - PATCH
+	 *
+	 * @returns (Express Response) (HTTP - 200)
+	 * @throws (AppError) (HTTP - 409)
+	 */
+
 	public updateOne: Controller = async (req, res, handleError) => {
 		const { params, body, file } = req
 		const { name, title, description, color } = body
@@ -78,9 +107,9 @@ export class ServicesController {
 			}
 
 			const service = await prisma.service.update({
+				select: this.schemas.defaultSelect,
 				where: { id: Number(params.id) },
 				data: { name, title, description, color },
-				select: this.schemas.defaultSelect,
 			})
 
 			if (file) {
@@ -96,6 +125,17 @@ export class ServicesController {
 			handleError(error)
 		}
 	}
+
+	/**
+	 * Eliminar un servicio del sistema, se eliminan los eventos y se desvinculan
+	 * los profesionales asociados a este servicio
+	 * Se elimina la imagen asociada al servicio
+	 *
+	 * /api/dashboard/services/:id - DELETE
+	 *
+	 * @returns (Express Response) (HTTP - 200)
+	 * @throws (AppError) (HTTP - 500)
+	 */
 
 	public deleteOne: Controller = async (req, res, handleError) => {
 		const { params } = req

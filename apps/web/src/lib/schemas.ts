@@ -1,35 +1,31 @@
-import { z } from "zod"
-import * as rules from "./validationRules"
 import dayjs from "dayjs"
+import * as rules from "./validationRules"
+
+import { z } from "zod"
 
 export const LoginFormSchema = z.object({
 	email: z.string().email().min(1, "El correo electrónico es requerido"),
 	password: z.string().min(1, "La contraseña es requerida"),
-	role: z.enum(["ADMIN", "PROFESSIONAL","FUNCTIONARY"]),
+	role: z.enum(["ADMIN", "PROFESSIONAL", "FUNCTIONARY"]),
 })
 
 export const SeniorSchemas = {
-	MobileRegister: z.object({
-		rut: rules.rutSchema,
-		email: rules.emailSchema,
-		pin: rules.pinSchema,
-	}),
-
 	DashboardRegister: z
 		.object({
 			id: rules.rutSchema,
 			email: rules.emailSchema,
 			name: rules.nameSchema,
 			address: rules.addressSchema,
-			birthDate: z.string({ message: "La fecha de nacimiento es requerida" }),
+			birthDate: z.string({ message: "La fecha de nacimiento es requerida" }).refine(rules.isSeniorBirthDate, {
+				message: "La fecha de nacimiento no corresponde a la de una persona mayor",
+			}),
 			gender: rules.genderSchema,
+			phone: rules.phoneSchema,
+			rsh: rules.rshSchema,
+			sectorId: z.coerce.number(),
 		})
 		.refine((data) => rules.isValidDate(data.birthDate), {
 			message: "La fecha de ingresada no es válida",
-			path: ["birthDate"],
-		})
-		.refine((data) => rules.isSeniorBirthDate(data.birthDate), {
-			message: "La fecha de nacimiento no es válida",
 			path: ["birthDate"],
 		}),
 
@@ -39,8 +35,15 @@ export const SeniorSchemas = {
 			email: rules.emailSchema,
 			address: rules.addressSchema,
 			birthDate: z.string({ message: "La fecha de nacimiento es requerida" }),
+			phone: rules.phoneSchema,
 			password: rules.optionalPinSchema,
 			confirmPassword: rules.optionalPinSchema,
+			rsh: z.coerce
+				.number({ message: "Se espera un número" })
+				.min(0, { message: "El valor mínimo es 0" })
+				.max(100, { message: "El valor máximo es 100" })
+				.optional(),
+			sectorId: z.coerce.number().optional(),
 		})
 		.refine((data) => data.password === data.confirmPassword, {
 			message: "Los PIN ingresados no coinciden",
@@ -57,16 +60,12 @@ export const SeniorSchemas = {
 			name: rules.nameSchema,
 			email: rules.emailSchema,
 			address: rules.addressSchema,
-			birthDate: z.string({ message: "La fecha de nacimiento es requerida" }),
+			birthDate: z.string({ message: "La fecha de nacimiento es requerida" }).refine(rules.isSeniorBirthDate, {
+				message: "La fecha de nacimiento no corresponde a la de una persona mayor",
+			}),
 			gender: rules.genderSchema,
-		})
-		.refine((data) => rules.isValidDate(data.birthDate), {
-			message: "La fecha de ingresada no es válida",
-			path: ["birthDate"],
-		})
-		.refine((data) => rules.isSeniorBirthDate(data.birthDate), {
-			message: "La fecha de nacimiento no corresponde a la de una persona mayor",
-			path: ["birthDate"],
+			rsh: rules.rshSchema,
+			sectorId: z.coerce.number({ message: "El sector es requerido" }),
 		})
 		.refine((data) => rules.isValidRut(data.rut), {
 			message: "El RUT ingresado no es válido",
@@ -78,10 +77,9 @@ export const StaffSchemas = {
 	Create: z.object({
 		id: rules.rutSchema,
 		name: rules.nameSchema,
-        email: rules.emailSchema,
-        role: rules.staffRoleSchema,
-        centerId: rules.centerIdSchema,
-        
+		email: rules.emailSchema,
+		role: rules.staffRoleSchema,
+		centerId: z.coerce.number(),
 	}),
 
 	Update: z
@@ -90,9 +88,9 @@ export const StaffSchemas = {
 			email: rules.emailSchema,
 			password: rules.optionalPasswordSchema,
 			confirmPassword: rules.optionalPasswordSchema,
-            image: rules.imageSchemaUpdate,
-            role: rules.staffRoleSchema,
-            centerId: rules.centerIdSchema,
+			image: rules.imageSchemaUpdate,
+			role: rules.staffRoleSchema,
+			centerId: z.coerce.number(),
 		})
 		.refine((data) => data.password === data.confirmPassword, {
 			message: "Las contraseñas ingresadas no coinciden",
@@ -105,6 +103,7 @@ export const ProfessionalSchemas = {
 		id: rules.rutSchema,
 		name: rules.nameSchema,
 		email: rules.emailSchema,
+		minutesPerSession: rules.minutesPerSessionSchema,
 		serviceId: z.number({ message: "La profesión es requerida" }),
 	}),
 
@@ -114,6 +113,7 @@ export const ProfessionalSchemas = {
 			email: rules.emailSchema,
 			password: rules.optionalPasswordSchema,
 			confirmPassword: rules.optionalPasswordSchema,
+			minutesPerSession: rules.minutesPerSessionSchema,
 			image: rules.imageSchemaUpdate,
 		})
 		.refine((data) => data.password === data.confirmPassword, {
@@ -154,6 +154,39 @@ export const CentersSchemas = {
 		image: rules.imageSchemaUpdate,
 		color: rules.colorSchema,
 	}),
+
+	UpdateDailySessions: z.object({
+		servicesDailyAttentions: z.array(
+			z.object({
+				id: z.string(),
+				quantity: z.coerce.number().int().min(1),
+				serviceId: z.string(),
+				centerId: z.string(),
+			}),
+		),
+	}),
+}
+export const OperativeSchemas = {
+	Create: z.object({
+		name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
+		description: z.string(),
+		start: z.string({ message: "La fecha de inicio es requerida" }),
+		end: z.string({ message: "La fecha de término es requerida" }),
+		centerId: z.coerce.number({ message: "El centro es obligatorio" }),
+		services: z.array(z.coerce.number()),
+		professionals: z.array(z.string()),
+		image: rules.imageSchemaCreate,
+	}),
+	Update: z.object({
+		name: z.string().min(2).optional(),
+		description: z.string().optional(),
+		start: z.string({ message: "La fecha de inicio es requerida" }),
+		end: z.string({ message: "La fecha de término es requerida" }),
+		centerId: z.coerce.number(),
+		services: z.array(z.coerce.number()),
+		professionals: z.array(z.string()),
+		image: rules.imageSchemaUpdate,
+	}),
 }
 
 export const EventSchemas = {
@@ -164,8 +197,7 @@ export const EventSchemas = {
 			professionalId: z.string({ message: "El profesional es requerido" }),
 			serviceId: z.number({ message: "El servicio es requerido" }),
 			seniorId: z.optional(rules.rutSchema),
-			centerId: rules.centerIdSchema,
-			repeat: z.optional(z.enum(["daily", "weekly"])),
+			centerId: z.coerce.number({ message: "El centro es requerido" }),
 		})
 		.refine((data) => data.start < data.end, {
 			message: "Rango de tiempo invalido",
@@ -183,7 +215,7 @@ export const EventSchemas = {
 			message: "La fecha de ingresada no es válida",
 			path: ["end"],
 		})
-		.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
+		.refine((data) => !rules.isWeekend(data.start) && !rules.isWeekend(data.end), {
 			message: "No es posible crear eventos los fin de semana",
 			path: ["end", "start"],
 		})
@@ -195,8 +227,9 @@ export const EventSchemas = {
 			},
 			{
 				message: "La duración máxima de un evento es de 5 horas",
-			}
+			},
 		),
+
 	Update: z
 		.object({
 			start: z.string({ message: "La fecha de inicio es requerida" }),
@@ -205,7 +238,7 @@ export const EventSchemas = {
 			serviceId: z.number(),
 			assistance: z.boolean(),
 			seniorId: z.optional(rules.rutSchema),
-			centerId: rules.centerIdSchema,
+			centerId: z.coerce.number(),
 		})
 		.refine((data) => data.start < data.end, {
 			path: ["end", "start"],
@@ -223,7 +256,7 @@ export const EventSchemas = {
 			message: "La fecha de ingresada no es válida",
 			path: ["end"],
 		})
-		.refine((data) => rules.isWeekend(data.start) && rules.isWeekend(data.end), {
+		.refine((data) => !rules.isWeekend(data.start) && !rules.isWeekend(data.end), {
 			message: "No es posible crear eventos los fin de semana",
 			path: ["end", "start"],
 		}),

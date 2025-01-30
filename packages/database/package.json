@@ -7,26 +7,35 @@
 		"dist/**"
 	],
 	"scripts": {
-		"build": "tsup",
+		"build": "tsup --dts",
+		"dev": "tsx watch --clearScreen=false --include \"src/*\" src/index.ts",
+		"format": "pnpx prettier --config ../../.prettierrc --write \"src/*\"",
 		"db:generate": "dotenv -e ../../.env -- prisma generate",
+		"db:generate:deploy": "dotenv -e ../../.env.production -- prisma generate",
 		"db:migrate:reset": "dotenv -e ../../.env -- prisma migrate reset",
 		"db:migrate:dev": "dotenv -e ../../.env -- prisma migrate dev",
 		"db:migrate:deploy": "dotenv -e ../../.env.production -- prisma migrate deploy",
-		"db:generate:deploy": "dotenv -e ../../.env.production -- prisma generate",
-		"db:seed": "dotenv -e ../../.env -- ts-node src/seed.ts"
+		"db:seed": "dotenv -e ../../.env -- tsx src/seed.ts"
 	},
 	"devDependencies": {
 		"@repo/typescript-config": "workspace:*",
+		"@types/bcrypt": "^5.0.2",
+		"@types/cli-progress": "^3.11.6",
 		"@types/node": "^20.11.24",
 		"@types/uuid": "^10.0.0",
 		"dotenv-cli": "^7.4.2",
-		"prisma": "^5.10.2"
+		"prisma": "^5.10.2",
+		"sharp": "^0.33.5"
 	},
 	"dependencies": {
 		"@faker-js/faker": "^9.0.3",
 		"@prisma/client": "^5.10.2",
+		"ansi-colors": "^4.1.3",
+		"axios": "^1.7.4",
+		"bcrypt": "^5.1.1",
+		"cli-progress": "^3.12.0",
+		"dayjs": "^1.11.13",
 		"dotenv": "^16.4.5",
-		"ts-node": "^10.9.2",
 		"uuid": "^10.0.0"
 	}
 }

@@ -3,13 +3,15 @@ import React from "react"
 import { Form } from "@/components/forms/Form"
 import { Input } from "@/components/ui/Input"
 import { Modal } from "@/components/Modal"
-import { useState } from "react"
-import { useRequest } from "@/hooks/useRequest"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { SuperSelect } from "@/components/ui/SuperSelect"
+
+import { useState } from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { FormProvider, useForm } from "react-hook-form"
+
+import { useRequest } from "@/hooks/useRequest"
 import { ProfessionalSchemas } from "@/lib/schemas"
 import { selectDataFormatter } from "@/lib/formatters"
-import { FormProvider, useForm } from "react-hook-form"
 import { createProfessional, getServices } from "@/lib/actions"
 import { FormProps, Professional, Service } from "@/lib/types"
 
@@ -49,6 +51,13 @@ export const CreateProfessional: React.FC<FormProps<Professional>> = ({ data, se
 					<Input name="name" label="Nombre" type="text" placeholder="Juan Perez" />
 					<Input name="email" label="Correo Electrónico" type="email" placeholder="JohnD@provider.com" />
 					<SuperSelect label="Profesión" name="serviceId" options={services} />
+					<Input
+						type="text"
+						label="Minutos por atención"
+						name="minutesPerSession"
+						maxLength={3}
+						placeholder="60"
+					/>
 				</Form>
 			</FormProvider>
 		</Modal>

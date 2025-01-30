@@ -15,10 +15,12 @@ interface InputProps {
 	placeholder?: string
 	name: string
 	login?: boolean
-	defaultValue?: string
+	defaultValue?: string | number
 	readOnly?: boolean
 	options?: { value: string; label: string }[]
 	maxLength?: number
+	minNumber?: number
+	maxNumber?: number
 }
 
 const InputLabel: React.FC<{ label: string }> = ({ label }) => {
@@ -26,7 +28,19 @@ const InputLabel: React.FC<{ label: string }> = ({ label }) => {
 }
 
 export const Input: React.FC<InputProps> = (props) => {
-	const { label, type, placeholder, name, login = false, options, defaultValue, readOnly, maxLength } = props
+	const {
+		label,
+		type,
+		placeholder,
+		name,
+		login = false,
+		options,
+		defaultValue,
+		readOnly,
+		maxLength,
+		maxNumber,
+		minNumber,
+	} = props
 
 	const {
 		register,
@@ -98,10 +112,14 @@ export const Input: React.FC<InputProps> = (props) => {
 						<input
 							className={classes}
 							placeholder={placeholder}
-							{...register(name)}
+							{...register(name, {
+								valueAsNumber: type === "number",
+							})}
 							type={showPassword && type === "password" ? "text" : type}
 							readOnly={readOnly ? true : false}
 							maxLength={maxLength ?? 100}
+							min={minNumber}
+							max={maxNumber}
 						/>
 						<Show when={type === "password"}>
 							<button

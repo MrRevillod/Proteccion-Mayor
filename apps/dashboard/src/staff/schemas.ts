@@ -1,16 +1,22 @@
 import { z } from "zod"
+import { Prisma } from "@prisma/client"
 import { rules, Schema } from "@repo/lib"
 
 export class StaffSchemas extends Schema {
-	get defaultSelect() {
+	get defaultSelect(): Prisma.StaffSelect {
 		return {
 			id: true,
 			name: true,
-            email: true,
-            centerId: true,
-            role: true,
+			email: true,
+			centerId: true,
+			role: true,
 			createdAt: true,
 			updatedAt: true,
+			center: {
+				select: {
+					name: true,
+				},
+			},
 		}
 	}
 
@@ -19,8 +25,8 @@ export class StaffSchemas extends Schema {
 			id: rules.rutSchema,
 			name: rules.nameSchema,
 			email: rules.emailSchema,
-            role: rules.staffRoleSchema,
-            centerId: rules.centerIdSchema,
+			role: rules.staffRoleSchema,
+			centerId: z.coerce.number(),
 		})
 	}
 
@@ -29,13 +35,13 @@ export class StaffSchemas extends Schema {
 			.object({
 				name: rules.nameSchema,
 				email: rules.emailSchema,
-                centerId: rules.centerIdSchema,
-                role: rules.staffRoleSchema,
+				centerId: z.coerce.number(),
+				role: rules.staffRoleSchema,
 				password: rules.optionalPasswordSchema,
-				confirmPassword: rules.optionalPasswordSchema,  
+				confirmPassword: rules.optionalPasswordSchema,
 			})
 			.refine((data) => data.password === data.confirmPassword, {
 				message: "Las contraseñas ingresadas no coinciden",
 			})
 	}
-}   
+}

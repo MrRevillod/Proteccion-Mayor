@@ -25,28 +25,30 @@ export const UpdateProfile: React.FC<UpdateProfileProps> = ({ setImageSrc, setSh
 	const { user, setUser, role } = useAuth()
 	const { reset, handleSubmit, setError } = methods
 
-    const { formState: { errors } } = methods
-    
-    const handleReset = () => {
-        if (role === "PROFESSIONAL") {
-            reset({
-                name: user?.name,
-                email: user?.email,
-                password: "",
-                confirmPassword: "",
-                image: null,
-            })
-        } else {
-            reset({
-                name: user?.name,
-                email: user?.email,
-                password: "",
-                confirmPassword: "",
-                image: null,
-                role: (user as Staff)?.role,
-                centerId:  (user as Staff).centerId ? ( user as Staff).centerId?.toString() : "",
-            })
-        }
+	const {
+		formState: { errors },
+	} = methods
+
+	const handleReset = () => {
+		if (role === "PROFESSIONAL") {
+			reset({
+				name: user?.name,
+				email: user?.email,
+				password: "",
+				confirmPassword: "",
+				image: null,
+			})
+		} else {
+			reset({
+				name: user?.name,
+				email: user?.email,
+				password: "",
+				confirmPassword: "",
+				image: null,
+				role: (user as Staff)?.role,
+				centerId: (user as Staff).centerId ? (user as Staff).centerId?.toString() : "",
+			})
+		}
 	}
 
 	const handleCancel = () => {
@@ -61,32 +63,27 @@ export const UpdateProfile: React.FC<UpdateProfileProps> = ({ setImageSrc, setSh
 	const mutation = useMutation<MutationResponse<User>>({
 		mutateFn: role === "PROFESSIONAL" ? updateProfessional : updateStaff,
 	})
-    
-    // ver errores
-    useEffect(() => {
-        if (errors) {
-            console.log(errors)
-        }   
-    },[errors])
 
-    const onSubmit: SubmitHandler<FieldValues> = async (formData) => {
-        console.log(formData)
-        const staffData = {
-            name: user?.name,
-			email: user?.email,
-			password: "",
-			confirmPassword: "",
-            image: null,
-            role: (user as Staff)?.role,
-            centerId:  (user as Staff).centerId ? ( user as Staff).centerId?.toString() : "",
-        }
-		const originalData = role !== "PROFESSIONAL" ? staffData : {
+	const onSubmit: SubmitHandler<FieldValues> = async (formData) => {
+		const staffData = {
 			name: user?.name,
 			email: user?.email,
 			password: "",
 			confirmPassword: "",
-            image: null,
+			image: null,
+			role: (user as Staff)?.role,
+			centerId: (user as Staff).centerId ? (user as Staff).centerId?.toString() : "",
 		}
+		const originalData =
+			role !== "PROFESSIONAL"
+				? staffData
+				: {
+						name: user?.name,
+						email: user?.email,
+						password: "",
+						confirmPassword: "",
+						image: null,
+					}
 
 		if (JSON.stringify(formData) === JSON.stringify(originalData)) {
 			message.error("No se han realizado cambios")

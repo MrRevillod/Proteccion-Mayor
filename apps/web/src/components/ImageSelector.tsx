@@ -51,13 +51,15 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({ imageLabel, imageF
 					modalTitle="Editar imagen"
 					modalOk="Confirmar"
 					modalCancel="Cancelar"
-					cropperProps={{
-						cropSize: { width: size[0], height: size[1] },
-						style: {},
-						zoomSpeed: 1,
-						restrictPosition: true,
-						mediaProps: {},
-					}}
+					cropperProps={
+						{
+							cropSize: { width: size[0], height: size[1] },
+							style: {},
+							zoomSpeed: 1,
+							restrictPosition: true,
+							mediaProps: {},
+						} as any
+					}
 				>
 					<Upload
 						fileList={imageFile}

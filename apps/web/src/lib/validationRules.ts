@@ -1,6 +1,12 @@
 import dayjs from "dayjs"
 import { z } from "zod"
 
+export const minutesPerSessionSchema = z.coerce
+	.number()
+	.int()
+	.min(15, { message: "La duración mínima es de 15 minutos" })
+	.max(180, { message: "La duración máxima es de 3 horas" })
+
 export const isValidRutFormat = (rut: string): boolean => {
 	const rutRegex = /^[0-9]+[0-9Kk]$/
 	return rutRegex.test(rut)
@@ -98,12 +104,13 @@ export const isValidDate = (value: string): boolean => {
 	return !isNaN(date.getTime())
 }
 
-export const isSeniorBirthDate = (date: string) => {
-	const birthDate = new Date(date)
-	const now = new Date()
-	const age = now.getFullYear() - birthDate.getFullYear()
+export const isSeniorBirthDate = (date: string): boolean => {
+	const birth = dayjs(date)
+	if (birth.isAfter(dayjs())) {
+		return false
+	}
 
-	return age >= 60
+	return dayjs().diff(birth, "years") >= 60
 }
 
 export const nameServiceSchema = z
@@ -175,19 +182,27 @@ export const genderSchema = z.enum(["MA", "FE"], {
 
 export const isWeekend = (date: string) => {
 	const day = dayjs(date).day()
-	return day !== 0 && day !== 6
+	return day === 0 || day === 6
 }
 
 export const staffRoleSchema = z.enum(["ADMIN", "FUNCTIONARY"], {
-    message: "El rol debe ser Administrador o Funcionario",
+	message: "El rol debe ser Administrador o Funcionario",
 })
 
-export const centerIdSchema = z.string().refine(
-    (value) => {
-      // Verifica si el valor es un número válido o "null"
-      return !isNaN(Number(value)) || value === "null";
-    },
-    {
-      message: "El valor debe ser un número válido o 'null'",
-    }
-).nullable()
+export const centerIdSchema = z
+	.string()
+	.refine(
+		(value) => {
+			// Verifica si el valor es un número válido o "null"
+			return !isNaN(Number(value)) || value === "null"
+		},
+		{
+			message: "El valor debe ser un número válido o 'null'",
+		},
+	)
+	.nullable()
+
+export const rshSchema = z.enum(
+	["RSH_0_40", "RSH_41_50", "RSH_51_60", "RSH_61_70", "RSH_71_80", "RSH_81_90", "RSH_91_100"],
+	{ message: "El RSH seleccionado no es válido" },
+)

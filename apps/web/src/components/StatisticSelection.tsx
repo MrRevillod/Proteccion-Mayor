@@ -36,15 +36,15 @@ export const StatisticSelection: React.FC<StatisticSelectionProps> = ({ setRepor
 		setReportSelection(statisticSelection)
 		if (selectedProfessional && statisticSelection === "byProfessional") {
 			setSelectedProfessional({
-				id: selectedProfessional, name: "",
+				id: selectedProfessional,
+				name: "",
 			})
 		}
-
 	}, [statisticSelection, setReportSelection, selectedProfessional])
 
 	return (
 		<FormProvider {...methods}>
-			<form className={clsx(statisticSelection === "byProfessional" ? "w-full" : "w-1/2", "flex flex-row gap-4")} >
+			<form className={clsx(statisticSelection === "byProfessional" ? "w-full" : "w-1/2", "flex flex-row gap-4")}>
 				<Show when={statisticSelection === "byProfessional"}>
 					<div className="w-1/2">
 						<SuperSelect
@@ -65,6 +65,6 @@ export const StatisticSelection: React.FC<StatisticSelectionProps> = ({ setRepor
                     
 				</div>
 			</form>
-		</FormProvider >
+		</FormProvider>
 	)
 }

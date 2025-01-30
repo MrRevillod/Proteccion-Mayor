@@ -17,7 +17,7 @@ router.post("/upload", upload.array("files"), async (req, res, next) => {
 	const query: Query = req.query as Query
 	const files = req.files as File[]
 
-	const allowedPaths = ["seniors", "users", "services", "centers"]
+	const allowedPaths = ["seniors", "users", "services", "centers", "operatives"]
 
 	try {
 		if (!query.path) throw new AppError(400, "Path is required")
@@ -40,7 +40,10 @@ router.post("/upload", upload.array("files"), async (req, res, next) => {
 
 		await Promise.all(uploadPromises)
 
-		const image = files.length === 1 ? `${SERVICES.STORAGE.URL}/public/${query.path}/${files[0].originalname.split(".")[0]}.webp` : null
+		const image =
+			files.length === 1
+				? `${SERVICES.STORAGE.URL}/public/${query.path}/${files[0].originalname.split(".")[0]}.webp`
+				: null
 
 		return res.status(201).json({
 			message: "Files uploaded",

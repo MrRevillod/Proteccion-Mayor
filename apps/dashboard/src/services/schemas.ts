@@ -1,5 +1,8 @@
 import { z } from "zod"
+import { Prisma } from "@prisma/client"
 import { rules, Schema } from "@repo/lib"
+
+export type ServiceSchemas = typeof ServicesSchemas
 
 export class ServicesSchemas extends Schema {
 	private readonly selectValues = ["id", "name", "title"]
@@ -13,7 +16,7 @@ export class ServicesSchemas extends Schema {
 		})
 	}
 
-	get defaultSelect() {
+	get defaultSelect(): Prisma.ServiceSelect {
 		return {
 			id: true,
 			name: true,

@@ -11,13 +11,22 @@ interface DatetimeSelectProps {
 	name: string
 	showTime?: boolean
 	defaultValue?: Dayjs
-    width?: string
-    disabled?: boolean
-    disabledPastDays?: boolean
+	width?: string
+	disabled?: boolean
+	disablePast?: boolean    
     onChange?: ((date: Dayjs, dateString: string | string[]) => void)
 }
 
-export const DatetimeSelect = ({ label, name, showTime = true, defaultValue, width, disabled = false, onChange, disabledPastDays = true }: DatetimeSelectProps) => {
+export const DatetimeSelect = ({
+	label,
+	name,
+	showTime = true,
+	defaultValue,
+	width,
+	disabled = false,
+    disablePast = false,
+    onChange,
+}: DatetimeSelectProps) => {
 	const {
 		control,
 		setValue,
@@ -32,8 +41,11 @@ export const DatetimeSelect = ({ label, name, showTime = true, defaultValue, wid
 		width ? width : "w-full",
 	)
 
+	const minYear = dayjs().subtract(110, "year").startOf("year")
+	const today = dayjs()
+
 	return (
-		<div className="flex flex-col gap-2">
+		<div className="flex flex-col gap-3">
 			<div className="flex flex-row gap-2 items-center justify-between">
 				<label className="font-semibold text-dark dark:text-light">{label}</label>
 				{errors[name] && <div className="text-red text-sm">{errors[name]?.message?.toString()}</div>}
@@ -56,13 +68,14 @@ export const DatetimeSelect = ({ label, name, showTime = true, defaultValue, wid
 								disabledHours: () => [0, 1, 2, 3, 4, 4, 5, 6, 7, 19, 20, 21, 22, 23],
 							}
 						}}
-						disabledDate={
-							showTime
-								? (current) =>
-										current &&
-										(current < dayjs().startOf("day") || current.day() === 0 || current.day() === 6)
-								: undefined
-						}
+						disabledDate={(current) => {
+							// Si disablePast es true, deshabilita las fechas pasadas
+							if (disablePast && current && current.isBefore(today, "day")) {
+								return true
+							}
+							// Deshabilita fechas antes del mínimo año
+							return current && current.isBefore(minYear, "day")
+						}}
 						showNow={showTime}
 						value={field.value ? dayjs(field.value) : null}
 						defaultValue={defaultValue ? dayjs(defaultValue) : null}

@@ -1,4 +1,5 @@
 import { api } from "./axios"
+import { AxiosResponse } from "axios"
 import { getContentType } from "./form"
 import { MutateActionProps, QueryActionProps } from "./types"
 
@@ -34,8 +35,6 @@ export const getGeneralDocument = async (props: QueryActionProps) => {
 }
 
 // Acciones CRUD para los funcionarios
-
-import { AxiosResponse } from "axios"
 
 export const getStaff = async (props: QueryActionProps) => {
 	return await apiRequest.get(`/dashboard/staff${props.query ? "?" + props.query : ""}`)
@@ -115,6 +114,10 @@ export const deleteCenter = async (props: MutateActionProps) => {
 	return await apiRequest.delete("/dashboard/centers", props)
 }
 
+export const updateDailySessions = async (props: MutateActionProps) => {
+	return await apiRequest.patch(`/dashboard/centers/daily-sessions`, props)
+}
+
 // Acciones CRUD para los servicios
 
 export const getServices = async (props: QueryActionProps) => {
@@ -131,6 +134,23 @@ export const updateService = async (props: MutateActionProps) => {
 
 export const deleteService = async (props: MutateActionProps) => {
 	return await apiRequest.delete("/dashboard/services", props)
+}
+
+// Acciones CRUD para los Operativos
+export const getOperatives = async (props: QueryActionProps) => {
+	return await apiRequest.get(`/dashboard/operatives${props.query ? "?" + props.query : ""}`)
+}
+
+export const createOperative = async (props: MutateActionProps) => {
+	return await apiRequest.post("/dashboard/operatives", props)
+}
+
+export const updateOperative = async (props: MutateActionProps) => {
+	return await apiRequest.patch("/dashboard/operatives", props)
+}
+
+export const deleteOperative = async (props: MutateActionProps) => {
+	return await apiRequest.delete("/dashboard/operatives", props)
 }
 
 // Acciones CRUD para los eventos
@@ -159,3 +179,12 @@ export const getRegisterImages = async (props: QueryActionProps) => {
 	return await apiRequest.get(`/storage/public/seniors/${props?.params?.id}/register-files`)
 }
 
+export const checkWeekAvailability = async (props: QueryActionProps) => {
+	return await apiRequest.get(`/dashboard/events/week-availability${props.query ? "?" + props.query : ""}`)
+}
+
+// Acciones CRUD para los sectores
+
+export const getSectors = async (props: QueryActionProps) => {
+	return await apiRequest.get(`/dashboard/sectors${props.query ? "?" + props.query : ""}`)
+}

@@ -13,7 +13,6 @@ export const formatBoolean = (value: boolean) => {
 	return value ? "Sí" : "No"
 }
 
-
 export const formatDate = (dateString: string) => {
 	const date = new Date(dateString)
 	return date.toLocaleDateString()
@@ -26,11 +25,8 @@ export const dateToAge = (dateString: string) => {
 	return Math.abs(ageDate.getUTCFullYear() - 1970)
 }
 
-
-
-
 export const formatStaffRole = (role: StaffRole) => {
-    return role === "ADMIN" ? "Administrador" : "Funcionario"
+	return role === "ADMIN" ? "Administrador" : "Funcionario"
 }
 
 export const tableColumnsFormatters = {
@@ -38,19 +34,22 @@ export const tableColumnsFormatters = {
 	birthDate: dateToAge,
 	updatedAt: formatDate,
 	createdAt: formatDate,
-    validated: formatBoolean,
-    role: formatStaffRole,
+	validated: formatBoolean,
+	role: formatStaffRole,
+	center: (name: any) => {
+		return name ?? "No aplica"
+	},
 }
 
 export const formatRole = (role: UserRole) => {
-	return role === "ADMIN" ? "Administrador" : ( role === "FUNCTIONARY" ? "Funcionario de apoyo": "Profesional")
+	return role === "ADMIN" ? "Administrador" : role === "FUNCTIONARY" ? "Funcionario de apoyo" : "Profesional"
 }
 
 interface SelectDataFormatterProps {
 	data: any[]
 	setData: Dispatch<SetStateAction<any[]>>
-    keys?: { label: string; value: string }
-    allString?: boolean
+	keys?: { label: string; value: string }
+	allString?: boolean
     addAll?: boolean
 }
 

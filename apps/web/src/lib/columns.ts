@@ -12,8 +12,7 @@ export const SeniorsColumns: TableColumnType<Partial<Senior>> = [
 	{ title: "Correo Electrónico", dataIndex: "email", key: "email" },
 	{ title: "Dirección", dataIndex: "address", key: "address" },
 	{ title: "Edad", dataIndex: "birthDate", key: "birthDate" },
-	{ title: "Verificado", dataIndex: "validated", key: "validated" },
-	{ title: "Creado", dataIndex: "createdAt", key: "createdAt" },
+	{ title: "Teléfono", dataIndex: "phone", key: "phone" },
 ]
 
 export const StaffColumns: TableColumnType<Partial<Staff>> = [
@@ -21,9 +20,9 @@ export const StaffColumns: TableColumnType<Partial<Staff>> = [
 	{ title: "Nombre", dataIndex: "name", key: "name" },
 	{ title: "Correo Electrónico", dataIndex: "email", key: "email" },
 	{ title: "Creado", dataIndex: "createdAt", key: "createdAt" },
-    { title: "Actualizado", dataIndex: "updatedAt", key: "updatedAt" },
+	{ title: "Actualizado", dataIndex: "updatedAt", key: "updatedAt" },
 	{ title: "Rol", dataIndex: "role", key: "role" },
-	{ title: "Centro", dataIndex: "centerId", key: "centerId" },
+	{ title: "Centro", dataIndex: ["center", "name"], key: "center" },
 ]
 
 export const ProfessionalReportColumns: TableColumnType<ProfessionalTableRow> = [

@@ -16,6 +16,7 @@ import { deleteSenior, getSeniors } from "@/lib/actions"
 
 const SeniorsPage: React.FC = () => {
 	const [seniors, setSeniors] = useState<Senior[]>([])
+
 	const navigate = useNavigate()
 
 	const { error, loading, data } = useRequest<Senior[]>({
@@ -29,6 +30,12 @@ const SeniorsPage: React.FC = () => {
 	const handleHistory = (senior: Senior) => {
 		navigate(`/historial?id=${senior.id}`, {
 			state: { type: "senior", data: senior },
+		})
+	}
+
+	const handleView = (senior: Senior) => {
+		navigate(`/administracion/personas-mayores/${senior.id}`, {
+			state: { type: "senior", senior },
 		})
 	}
 
@@ -49,7 +56,8 @@ const SeniorsPage: React.FC = () => {
 					history
 					onHistory={handleHistory}
 					loading={loading}
-					viewable={false}
+					viewable
+					onView={handleView}
 				/>
 			</section>
 

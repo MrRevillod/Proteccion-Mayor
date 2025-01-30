@@ -7,6 +7,7 @@ import ServicesPage from "./administration/Services"
 import NotFoundPage from "./NotFound"
 import NewSeniorsPage from "./administration/seniors/SeniorsNew"
 import ProfessionalsPage from "./administration/Professionals"
+import OperativesPages from "./administration/Operatives"
 import ResetPasswordPage from "./auth/ResetPassword"
 import DownloadApplication from "./DownloadApplication"
 import ValidatePasswordPage from "./auth/Password"
@@ -19,6 +20,7 @@ import StaffAgendaPage from "./agenda/Administration"
 import { useAuth } from "@/context/AuthContext"
 import { UserRole } from "@/lib/types"
 import { Routes, Route, Navigate, Outlet } from "react-router-dom"
+import SeniorData from "./administration/seniors/SeniorData"
 import GeneralStatisticsPage from "./administration/statistics/General"
 
 interface RouteProps {
@@ -72,28 +74,30 @@ const RedirectRoute: React.FC<{ redirectTo?: string }> = ({ redirectTo }) => {
 
 const Router: React.FC = () => {
 	return (
-        <Routes>
-			<Route element={<ProtectedRoute allowedRoles={["ADMIN","FUNCTIONARY"]} />}>
+		<Routes>
+			<Route element={<ProtectedRoute allowedRoles={["ADMIN", "FUNCTIONARY"]} />}>
 				<Route path="/administracion/personas-mayores/" element={<SeniorsPage />} />
 				<Route path="/administracion/personas-mayores/nuevos" element={<NewSeniorsPage />} />
+				<Route path="/administracion/personas-mayores/:id" element={<SeniorData />} />
 				<Route
 					path="/administracion/personas-mayores/solicitud-de-registro"
 					element={<SeniorRegisterRequestPage />}
 				/>
 				<Route path="/agenda/funcionarios" element={<StaffAgendaPage />} />
-            </Route>
+			</Route>
 			<Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
 				<Route path="/administracion/profesionales" element={<ProfessionalsPage />} />
 				<Route path="/administracion/funcionarios" element={<StaffPage />} />
 				<Route path="/administracion/servicios" element={<ServicesPage />} />
 				<Route path="/administracion/centros-de-atencion" element={<CentersPage />} />
+				<Route path="/operativos" element={<OperativesPages />} />
 			</Route>
 
 			<Route element={<ProtectedRoute allowedRoles={["PROFESSIONAL"]} />}>
 				<Route path="/agenda/profesionales" element={<ProfessionalAgendaPage />} />
 			</Route>
 
-            <Route    element={<ProtectedRoute allowedRoles={["ADMIN", "PROFESSIONAL"]} />}>
+            <Route element={<ProtectedRoute allowedRoles={["ADMIN", "PROFESSIONAL"]} />}>
 				<Route path="/estadisticas" element={<GeneralStatisticsPage />} />
             </Route>
             <Route    element={<ProtectedRoute allowedRoles={["ADMIN", "PROFESSIONAL", "FUNCTIONARY"]} />}>

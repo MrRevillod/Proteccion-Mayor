@@ -8,15 +8,19 @@ import { UpdateProfessional } from "@/components/forms/update/Professional"
 
 import { message } from "antd"
 import { useState } from "react"
+import { useModal } from "@/context/ModalContext"
 import { useRequest } from "@/hooks/useRequest"
 import { useNavigate } from "react-router-dom"
 import { Professional } from "@/lib/types"
+import { DownloadAgenda } from "@/components/DownloadAgenda"
 import { ProfessionalColumns } from "@/lib/columns"
 import { deleteProfessional, getProfessionals } from "@/lib/actions"
 
 const ProfessionalsPage: React.FC = () => {
 	const [professionals, setProfessionals] = useState<Professional[]>([])
 	const navigate = useNavigate()
+
+	const { showModal } = useModal()
 
 	const { error, loading, data } = useRequest<Professional[]>({
 		action: getProfessionals,
@@ -29,6 +33,10 @@ const ProfessionalsPage: React.FC = () => {
 		navigate(`/historial?id=${professional.id}`, {
 			state: { type: "professional", data: professional },
 		})
+	}
+
+	const handleDownloadAgenda = (professional: Professional) => {
+		showModal("DownloadAgenda", professional)
 	}
 
 	return (
@@ -44,15 +52,19 @@ const ProfessionalsPage: React.FC = () => {
 					loading={loading}
 					data={professionals}
 					onHistory={handleHistory}
+					onDownloadAgenda={handleDownloadAgenda}
 					columnsConfig={ProfessionalColumns}
 					editable
 					deletable
+					downloadable
 					history
 				/>
 			</section>
 
 			<CreateProfessional data={professionals} setData={setProfessionals} />
 			<UpdateProfessional data={professionals} setData={setProfessionals} />
+
+			<DownloadAgenda />
 
 			<ConfirmAction<Professional>
 				text="¿Estás seguro de que deseas eliminar este profesional?"

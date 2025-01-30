@@ -1,5 +1,4 @@
 generator client {
-    
   provider = "prisma-client-js"
 }
 
@@ -9,8 +8,8 @@ datasource db {
 }
 
 enum Role {
-    ADMIN
-    FUNCTIONARY
+  ADMIN
+  FUNCTIONARY
 }
 
 enum Gender {
@@ -18,6 +17,15 @@ enum Gender {
   FE
 }
 
+enum RSH {
+  RSH_0_40 // 0 - 40%
+  RSH_41_50 // 41 - 50%
+  RSH_51_60 // 51 - 60%
+  RSH_61_70 // 61 - 70%
+  RSH_71_80 // 71 - 80%
+  RSH_81_90 // 81 - 90%
+  RSH_91_100 // 91 - 100%
+}
 
 model Senior {
   id        String   @id @db.VarChar(255)
@@ -27,13 +35,20 @@ model Senior {
   address   String   @db.Text
   birthDate DateTime @db.Date
   validated Boolean  @default(false)
+  phone     String   @db.VarChar(255)
   gender    Gender?
+  rsh       RSH?
+  sectorId  Int?
+
+  registeredBy String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-
   events Event[]
+
+  sector            Sector? @relation(fields: [sectorId], references: [id], onDelete: SetNull)
+  registeredByStaff Staff?  @relation(fields: [registeredBy], references: [id], onDelete: SetNull)
 }
 
 model Service {
@@ -47,20 +62,37 @@ model Service {
 
   events        Event[]
   professionals Professional[]
+  operatives    Operative[]
+  DailySessions DailySessions[]
 }
 
 model Center {
-  id      Int    @id @default(autoincrement())
-  name    String @unique @db.VarChar(255)
-  address String @db.Text
-  phone   String @db.VarChar(255)
-  color   String @db.Text
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(255)
+  address   String   @db.Text
+  phone     String   @db.VarChar(255)
+  color     String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Event         Event[]
+  dailySessions DailySessions[]
+  Staff         Staff[]
+  operatives    Operative[]
+}
+
+model DailySessions {
+  id       Int @id @default(autoincrement())
+  quantity Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
-  Event     Event[]
-  Staff     Staff[]
+
+  serviceId Int
+  centerId  Int
+
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  center  Center  @relation(fields: [centerId], references: [id], onDelete: Cascade)
 }
 
 model Professional {
@@ -69,17 +101,20 @@ model Professional {
   email    String @db.VarChar(255)
   password String @db.VarChar(255)
 
+  minutesPerSession Int
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  events    Event[]
   serviceId Int?
+
+  events     Event[]
+  operatives Operative[]
 
   service Service? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
 }
 
 model Event {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(uuid())
   start      DateTime @db.DateTime
   end        DateTime @db.DateTime
   assistance Boolean  @default(false)
@@ -98,15 +133,25 @@ model Event {
   center       Center?       @relation(fields: [centerId], references: [id], onDelete: SetNull)
 }
 
-model RevokedToken {
-  id         Int      @id @default(autoincrement())
-  token      String   @unique
-  createdAt  DateTime @default(now())
-  expiresAt  DateTime?
+model Operative {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.Text
+  description String   @db.Text
+  start       DateTime @db.DateTime
+  end         DateTime @db.DateTime
+  centerId    Int?
+
+  professionals Professional[]
+  services      Service[]
+  center        Center?        @relation(fields: [centerId], references: [id])
 }
 
-
-
+model RevokedToken {
+  id        Int       @id @default(autoincrement())
+  token     String    @unique
+  createdAt DateTime  @default(now())
+  expiresAt DateTime?
+}
 
 model Staff {
   id       String @id @db.VarChar(255)
@@ -116,8 +161,17 @@ model Staff {
   role     Role
 
   centerId Int?
-  center Center? @relation(fields: [centerId], references: [id], onDelete: SetNull)
+  center   Center? @relation(fields: [centerId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Senior    Senior[]
+}
+
+model Sector {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Senior    Senior[]
 }

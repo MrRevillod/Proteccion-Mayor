@@ -54,7 +54,9 @@ const StatisticsPage: React.FC = () => {
 
 	useRequest<StatisticResponse>({
 		action: getReports,
-		query: `type=${reportSelection}&date=${selectedDate}&${reportSelection === "byProfessional" ? `professionalId=${selectedProfessional.id}` : ""}`,
+		query: `type=${reportSelection}&date=${selectedDate}&${
+			reportSelection === "byProfessional" ? `professionalId=${selectedProfessional.id}` : ""
+		}`,
 		onSuccess: (data) => {
 			setReportData(data.report)
 		},

@@ -24,15 +24,17 @@ interface IUser {
 	name: string
 	createdAt: string
 	updatedAt: string
+	minutesPerSession?: number
 }
 
 export interface Staff extends IUser {
-    role: UserRole
-    centerId: number | null 
+	role: UserRole
+	centerId: number | null
 }
 export interface Professional extends IUser {
 	service: Partial<Service>
 	serviceId: number
+	minutesPerSession: number
 }
 
 export type Service = {
@@ -43,21 +45,37 @@ export type Service = {
 	color: HexColor
 }
 
+export type DailySessions = {
+	id: number
+	quantity: number
+	centerId: number
+	serviceId: number
+	service: Pick<Service, "id" | "name">
+}
+
 export type Center = {
 	id: number
 	name: string
 	address: string
 	phone: string
+	color: string
+	dailySessions: DailySessions[]
 }
 
 export interface Senior extends IUser {
 	address: string
 	birthDate: string
 	validated: boolean
+	phone: string
+	rsh: string
+	sectorId: number
+	sector: Sector
+	registeredBy: string
+	registeredByStaff: Partial<Staff>
 }
 
 export type UnvalidatedSenior = Omit<Senior, "name" & "address" & "birthDate">
-export type User = Staff | Professional | Senior
+export type User = Staff | Professional
 
 export type ApiResponse = {
 	status?: number
@@ -111,6 +129,13 @@ export type Events = {
 	byId: Record<string, Event>
 }
 
+export type Sector = {
+	id: number
+	name: string
+	createAt: string
+	updateAt: string
+}
+
 export type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0]
 export type ApiError = string | string[] | null
 
@@ -139,6 +164,38 @@ export type SuperSelectField = {
 
 export type ReportType = "general" | "byService" | "byCenter" | "byProfessional"
 export type AssistanceType = "assistance" | "absence" | "unreserved"
+
+export type Operative = {
+	id: number
+	name: string
+	description: string
+	start: string
+	end: string
+	professionals: Partial<Professional>[]
+	services: Pick<Service, "id" | "name">[]
+	center: Partial<Center>[]
+	centerId: number
+}
+
+export type Operatives = {
+	formatted: Operative[]
+	byId: Record<number, Operative>
+}
+
+export const RSH = {
+	RSH_0_40: "0-40%",
+	RSH_41_50: "41-50%",
+	RSH_51_60: "51-60%",
+	RSH_61_70: "61-70%",
+	RSH_71_80: "71-80%",
+	RSH_81_90: "81-90%",
+	RSH_91_100: "91-100%",
+}
+
+
+
+
+
 
 
 export type Splitted = { [key: string]: { assistance: number, absence: number, unreserved: number } }

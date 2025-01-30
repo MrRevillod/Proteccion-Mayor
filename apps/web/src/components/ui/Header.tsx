@@ -75,9 +75,7 @@ export const Header: React.FC = () => {
 							<span className="block truncate text-sm font-medium">{user?.email}</span>
 						</Dropdown.Header>
 						<Dropdown.Item onClick={() => toggleTheme()}>
-							<span className="block truncate text-sm font-medium">
-								{`Tema: ${isDarkMode ? "Oscuro" : "Claro"}`}
-							</span>
+							<span className="block truncate text-sm font-medium">{`Tema: ${isDarkMode ? "Oscuro" : "Claro"}`}</span>
 						</Dropdown.Item>
 						<Dropdown.Divider />
 						<Link to="/perfil">
@@ -90,7 +88,7 @@ export const Header: React.FC = () => {
 				</div>
 				<Navbar.Collapse className="">
 					<Show when={role === "ADMIN"}>
-						<Dropdown    
+						<Dropdown
 							label=""
 							dismissOnClick={false}
 							onClick={() => handlePageSelected("Personas")}
@@ -170,34 +168,38 @@ export const Header: React.FC = () => {
 						>
 							Estadísticas
 						</Link>
-                    </Show>
-                    <Show when={role === "FUNCTIONARY"}>
-                        
-                        <Link
-                            to="/administracion/personas-mayores"
+						<Link
+							to="/operativos"
+							className={linkClasses("Operativos")}
+							onClick={() => handlePageSelected("Operativos")}
+						>
+							Operativos
+						</Link>
+					</Show>
+					<Show when={role === "FUNCTIONARY"}>
+						<Link
+							to="/administracion/personas-mayores"
 							onClick={() => handlePageSelected("personas-mayores")}
 							className={linkClasses("personas-mayores")}
-                        >
-                            Personas mayores
-                        </Link>
+						>
+							Personas mayores
+						</Link>
 
 						<Link
-						    to="/administracion/personas-mayores/nuevos"
-                            onClick={() => handlePageSelected("personas-mayores-nuevos")}
-                            className={linkClasses("personas-mayores-nuevos")}
+							to="/administracion/personas-mayores/nuevos"
+							onClick={() => handlePageSelected("personas-mayores-nuevos")}
+							className={linkClasses("personas-mayores-nuevos")}
 						>
 							Solicitudes de registro
 						</Link>
-                        <Link
+						<Link
 							to="/agenda/funcionarios"
 							className={linkClasses("Agenda")}
 							onClick={() => handlePageSelected("Agenda")}
 						>
 							Agenda
 						</Link>
-
-
-                    </Show>
+					</Show>
 				</Navbar.Collapse>
 			</Show>
 		</Navbar>
