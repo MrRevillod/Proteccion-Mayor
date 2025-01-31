@@ -86,7 +86,7 @@ const GeneralStatisticsForm = ({ setReportData }: GeneralStatisticsFormProps) =>
     }
 
     return (
-        <form className="md:grid grid-cols-6 gap-4 w-full items-end p-4  " onSubmit={handleSubmit}>
+        <form className="md:grid grid-cols-6 gap-4 w-full items-end px-10 py-4  " onSubmit={handleSubmit}>
             <DatetimeSelect showTime={false} label="Desde" name="from" defaultValue={(dayjs().subtract(1, "month"))} />
             <DatetimeSelect showTime={false} label="Hasta" name="to" defaultValue={dayjs().add(1, "month")} />
             <SuperSelect name="centerId" label="Centro" options={centers} />
@@ -95,6 +95,7 @@ const GeneralStatisticsForm = ({ setReportData }: GeneralStatisticsFormProps) =>
             <Button className="h-min mb-1" type="submit" variant="primary" >
                     Generar estadísticas
             </Button>
+            
         </form>
     )
 }

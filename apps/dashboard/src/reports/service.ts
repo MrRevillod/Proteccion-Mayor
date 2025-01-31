@@ -253,7 +253,14 @@ export class ReportsService {
         },
         senior: {
             select: {
-                name: true
+                name: true,
+                rsh: true,
+                birthDate: true,
+                sector: {
+                    select: {
+                        name: true
+                    }
+                }
             }
         },
         service: {
