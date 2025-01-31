@@ -6,7 +6,7 @@ export class OperativesSchemas extends Schema {
 
 	get query() {
 		return z.object({
-			professionalId: z.string()
+			professionalId: z.string().optional(),
 		})
 	}
 
