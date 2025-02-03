@@ -20,6 +20,7 @@ import { CreateWeeklyEvents } from "@/components/forms/create/WeeklyEvents"
 import { filterUpcomingEvents, selectDataFormatter } from "@/lib/formatters"
 import { Center, Event, Events, Professional, Service, Operatives, SuperSelectField } from "@/lib/types"
 import { deleteEvent, getCenters, getEvents, getOperatives, getProfessionals, getServices } from "@/lib/actions"
+import { OperativeDetails } from "@/components/OperativesDetails"
 
 const StaffAgendaPage: React.FC = () => {
 	const location = useLocation()
@@ -107,7 +108,7 @@ const StaffAgendaPage: React.FC = () => {
 
 			<CreateEvent centers={centers} services={services} professionals={professionals} />
 			<UpdateEvent centers={centers} professionals={professionals} />
-
+			<OperativeDetails />
 			<ConfirmAction<Event> text="¿Estás seguro(a) de que deseas eliminar este evento?" action={deleteEvent} />
 		</PageLayout>
 	)

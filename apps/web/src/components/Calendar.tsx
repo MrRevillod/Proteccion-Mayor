@@ -6,7 +6,7 @@ import dayGridPlugin from "@fullcalendar/daygrid"
 import timeGridPlugin from "@fullcalendar/timegrid"
 import interactionPlugin from "@fullcalendar/interaction"
 
-import { Events, Operatives } from "@/lib/types"
+import { Events, Operative, Operatives, Event } from "@/lib/types"
 import { useState } from "react"
 import { useModal } from "@/context/ModalContext"
 import { message, Popover } from "antd"
@@ -29,19 +29,26 @@ export const Calendar: React.FC<CalendarProps> = ({ events, operatives }) => {
 	})
 
 	const [combinedArray, setCombinedArray] = useState<any[]>([])
+	const [combinedById, setCombinedById] = useState<any>()
 
 	useEffect(() => {
 		if (events.formatted && operatives.formatted) {
 			setCombinedArray([...events.formatted, ...operatives.formatted])
 		}
+		if (events.byId && operatives.byId) {
+			setCombinedById({ ...events.byId, ...operatives.byId })
+		}
 	}, [events, operatives])
 
-	const getEvent = (eventId: string) => {
-		return events.byId[eventId]
+
+
+	const getEventOrOperativeById = (id: string): Operative | Event => {
+		return combinedById[id]
 	}
 
+
 	const handleEventMouseEnter = (info: any) => {
-		const event = getEvent(info.event.id)
+		const event = getEventOrOperativeById(info.event.id)
 		const rect = info.el.getBoundingClientRect()
 		const calendarRect = document.querySelector(".fc")?.getBoundingClientRect()
 
@@ -53,7 +60,7 @@ export const Calendar: React.FC<CalendarProps> = ({ events, operatives }) => {
 				center: event?.center?.name as string,
 				time: (
 					<div className="z-50">
-						<p>{event?.seniorId ? event?.senior?.name : "Sin reserva"}</p>
+						<p>{(event as any)?.seniorId ? (event as any)?.senior?.name : "Sin reserva"}</p>
 						<p>
 							{dayjs(event?.start).format("HH:mm")} - {dayjs(event?.end).format("HH:mm")}
 						</p>
@@ -87,18 +94,22 @@ export const Calendar: React.FC<CalendarProps> = ({ events, operatives }) => {
 	}
 
 	const handleEdit = (info: any) => {
-		const event = getEvent(info.event.id)
+		const eventOrOperative = getEventOrOperativeById(info.event.id)
 
-		if (!event) {
-			return message.info("Para editar un Operativo tiene que dirigirse a la página de Operativos")
+		if (!eventOrOperative) {
+			return message.info("Evento u Operativo no encontrado")
 		}
-
-		if (!event.seniorId && dayjs(event.start).isBefore(dayjs()) && dayjs(event.end).isBefore(dayjs())) {
-			message.info("No es posible editar eventos pasados sin reserva")
+		if (dayjs(eventOrOperative.start).isBefore(dayjs()) && dayjs(eventOrOperative.end).isBefore(dayjs())) {
+			message.info("No es posible editar eventos u operativos pasados sin reserva")
 			return
 		}
 
-		showModal("Edit", event)
+		if (!(eventOrOperative as any)?.professionals) {
+			showModal("Edit", eventOrOperative)
+			return
+		}
+		showModal("Details", eventOrOperative)
+
 	}
 
 	const isWeekend = (date: Date) => {

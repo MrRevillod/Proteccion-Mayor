@@ -77,16 +77,19 @@ export class EventsController {
 			const eventStart = dayjs(start).startOf("day").toDate()
 			const eventEnd = dayjs(end).endOf("day").toDate()
 
-			// Verificar si hay un operativo en el mismo día
 			const operativeExists = await prisma.operative.findFirst({
 				where: {
 					start: { gte: eventStart, lte: eventEnd },
+					professionals: {
+						some: { id: professionalId }
+					}
 				},
 			})
 
 			if (operativeExists) {
-				throw new AppError(400, "No se pueden crear eventos en un día con operativo.")
+				throw new AppError(400, "El profesional ya tiene un operativo asignado en este día.")
 			}
+
 			// Se buscan los datos a utilizar con Promise.all
 			const [professional, service, senior, center] = await Promise.all([
 				prisma.professional.findUnique({ where: { id: professionalId } }),

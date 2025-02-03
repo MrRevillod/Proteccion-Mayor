@@ -8,6 +8,10 @@ export const OperativeDetails: React.FC = () => {
 	const methods = useForm()
 	const { selectedData: operative } = useModal()
 
+	if (!operative || !operative.professionals) {
+		return
+	}
+
 	const groupedProfessionals = operative?.professionals.reduce((acc, professional) => {
 		const serviceTitle = professional.service?.title || "Sin servicio"
 
@@ -20,7 +24,7 @@ export const OperativeDetails: React.FC = () => {
 	}, {} as Record<string, any[]>)
 
 	return (
-		<Modal type="Other" title={`Detalles del operativo: ${operative?.name}`}>
+		<Modal type="Details" title={`Detalles del operativo: ${operative?.name}`}>
 			<FormProvider {...methods}>
 				<div className="space-y-4">
 					<p>
@@ -54,7 +58,9 @@ export const OperativeDetails: React.FC = () => {
 										))}
 									</div>
 								</div>
-							))}
+
+							))
+							}
 						</div>
 					</div>
 				</div>

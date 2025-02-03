@@ -41,7 +41,7 @@ const OperativesPage: React.FC = () => {
 							imagePath={`/operatives`}
 							deletable
 							updatable
-							onCardClick={(operative) => showModal("Other", operative)}
+							onCardClick={(operative) => showModal("Details", operative)}
 						/>
 					)}
 				/>
