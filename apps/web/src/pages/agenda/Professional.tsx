@@ -17,8 +17,8 @@ import { CreateWeeklyEvents } from "@/components/forms/create/WeeklyEvents"
 import { useAuth } from "@/context/AuthContext"
 import { useSocket } from "@/context/SocketContext"
 import { useRequest } from "@/hooks/useRequest"
-import { deleteEvent, getCenters, getEvents } from "@/lib/actions"
-import { Center, Events, Event, SuperSelectField } from "@/lib/types"
+import { deleteEvent, getCenters, getEvents, getOperatives } from "@/lib/actions"
+import { Center, Events, Event, SuperSelectField, Operatives } from "@/lib/types"
 import { filterUpcomingEvents, selectDataFormatter } from "@/lib/formatters"
 import { DownloadAgenda } from "@/components/DownloadAgenda"
 
@@ -29,6 +29,7 @@ const ProfessionalAgendaPage: React.FC = () => {
 	const { user } = useAuth()
 	const { eventListener } = useSocket()
 
+	const [operatives, setOperatives] = useState<Operatives>({} as Operatives)
 	const [events, setEvents] = useState<Events>({} as Events)
 	const [centers, setCenters] = useState<SuperSelectField[]>([])
 	const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([])
@@ -58,6 +59,12 @@ const ProfessionalAgendaPage: React.FC = () => {
 		},
 	})
 
+	useRequest<Operatives>({
+		action: getOperatives,
+		query: `professionalId=${user?.id}`,
+		onSuccess: (operatives) => setOperatives(operatives),
+	})
+
 	const { data: rawCenters } = useRequest<Center[]>({
 		action: getCenters,
 		onSuccess: (data) => selectDataFormatter({ data, setData: setCenters }),
@@ -81,7 +88,7 @@ const ProfessionalAgendaPage: React.FC = () => {
 			<div className="flex flex-row gap-4 min-h-[70vh] w-full agenda-container bg-gray-50 dark:bg-primary-darker rounded-lg">
 				{loading && <Loading />}
 				<EventFilter data={{ centers }} onSubmit={onFilterSubmit} />
-				<Calendar events={events} />
+				<Calendar events={events} operatives={operatives} />
 				<UpcomingEvents title="Próximas atenciones" center={true} events={upcomingEvents} />
 			</div>
 

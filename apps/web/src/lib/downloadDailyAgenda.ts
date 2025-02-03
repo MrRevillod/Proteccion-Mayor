@@ -31,7 +31,7 @@ export const generatePDF = (professional: Professional, events: Event[], date: s
 		event.senior?.id ? event.senior.id : "",
 		event.senior?.name && event.seniorId ? event.senior.name : "No reservado",
 		event.senior?.phone ? event.senior.phone : !event.senior ? "" : "Sin teléfono Registrado",
-		event.assistance ? "Asiste" : event?.seniorId && !event.assistance ? "No asiste" : "",
+		event.assistance ? "Asiste" : event?.seniorId && !event.assistance && dayjs(event.end).isBefore(dayjs()) ? "No asiste" : "",
 		"",
 	])
 
