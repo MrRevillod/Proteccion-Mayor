@@ -44,7 +44,7 @@ export class OperativesController {
 			const operatives = this.eventService.format([], operativos)
 
 			return res.status(200).json({
-				values: { formatted: operatives.formatted, byId: operativos },
+				values: { formatted: operatives.formatted, byId: operatives.byId },
 			})
 		} catch (error) {
 			handleError(error)
@@ -125,7 +125,7 @@ export class OperativesController {
 
 		try {
 			const operative = await prisma.operative.update({
-				where: { id: Number(id) },
+				where: { id: id },
 				select: this.schemas.defaultSelect,
 				data: {
 					name,
@@ -165,7 +165,7 @@ export class OperativesController {
 
 		try {
 			const operativo = await prisma.operative.delete({
-				where: { id: Number(id) },
+				where: { id: id },
 				select: this.schemas.defaultSelect,
 			})
 

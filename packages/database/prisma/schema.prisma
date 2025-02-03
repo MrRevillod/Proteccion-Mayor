@@ -134,7 +134,7 @@ model Event {
 }
 
 model Operative {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid())
   name        String   @db.Text
   description String   @db.Text
   start       DateTime @db.DateTime
