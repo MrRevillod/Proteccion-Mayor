@@ -133,8 +133,9 @@ export class ReportsController {
                 }
                 curDay = curDay.add(1, "day")
             }
-
             
+            const professional = !professionalId ? (serviceId ? await this.service.splitByProfessional(events, Number(serviceId)) :
+                await this.service.splitByProfessional(events)) : {}
 
             res.json({
                 values: {
@@ -143,7 +144,7 @@ export class ReportsController {
                     splitted: {
                         center: !centerId ? await this.service.splitByCenter(events) : {},
                         service: !serviceId ? await this.service.splitByService(events) : {},
-                        professional: !professionalId ? await this.service.splitByProfessional(events) : {}
+                        professional: professional 
                     }
                 },
             })

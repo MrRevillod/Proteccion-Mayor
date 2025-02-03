@@ -8,7 +8,7 @@ import ReactApexChart from 'react-apexcharts'
 import dayjs from "dayjs"
 import { PiFilePdfFill, PiMicrosoftExcelLogoFill } from "react-icons/pi"
 import { FaFilePdf } from "react-icons/fa6"
-import { Descriptions, message } from "antd"
+import { Descriptions, message, Tooltip } from "antd"
 
 import PageLayout from "@/layouts/PageLayout"
 import GeneralStatisticsForm from "@/components/forms/statistics/General"
@@ -171,11 +171,14 @@ const GeneralStatisticsPage: React.FC = () => {
         >
             <FormProvider {...methods}>
                 <GeneralStatisticsForm setReportData={setReportData} />
+                <Tooltip title="Descargar resumen" placement="top" >
+
                 <div className="fixed z-50 bottom-10 right-10">
-                    <Button variant="primary" onClick={() => { generateReportPDF(reportData) }} >
-                        <FaFilePdf className="text-3xl" />
+                        <Button variant="primary" title="Descargar resumen" onClick={() => { generateReportPDF(reportData) }} >
+                            <FaFilePdf className="text-3xl" />
                     </Button>
                 </div>
+                </Tooltip>
 
                 <div className="grid gap-7 p-10">
                     <div className={"grid grid-cols-4 gap-7"}>
@@ -197,7 +200,7 @@ const GeneralStatisticsPage: React.FC = () => {
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-7 ">
-                        <Show when={reportData?.head.professionalName === "" && Object.keys(proffesionalState).length > 0}>
+                        <Show when={!Boolean(reportData?.head.professionalName)}>
                             <div className="bg-white rounded-md dark:bg-primary-darker p-4 h-[550px] col-span-2 ">
                                 <PageHeader
                                     pageTitle="Profesionales"
@@ -219,7 +222,7 @@ const GeneralStatisticsPage: React.FC = () => {
                                 <ReactApexChart options={centerState.options} series={centerState.series} type="bar" />
                             </div>
                         </Show>
-                        <Show when={reportData?.head.serviceName === "" && serviceState.series.length > 0}>
+                        <Show when={!Boolean(reportData?.head.serviceName) && !Boolean(reportData?.head.professionalName)}>
                             <div className="bg-white rounded-md p-4 dark:bg-primary-darker">
                                 <ReactApexChart options={serviceState.options} series={serviceState.series} type="bar" />
                             </div>
