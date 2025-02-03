@@ -23,7 +23,7 @@ interface TableProps<T> {
 }
 
 export const Table = <T extends BaseDataType>({ data, ...props }: TableProps<T>) => {
-    const { columnsConfig, loading, editable, deletable, viewable, onView, onHistory, downloadable, onDownloadAgenda } =
+    const { columnsConfig, loading, editable, deletable, history, viewable, onView, onHistory, downloadable, onDownloadAgenda } =
         props
 
     const { showModal } = useModal()
@@ -31,7 +31,7 @@ export const Table = <T extends BaseDataType>({ data, ...props }: TableProps<T>)
     return (
         <DataTable
             {...props}
-            loading={loading}
+        loading={loading}
             dataSource={data}
             rowKey={(record) => record.id}
             size="middle"

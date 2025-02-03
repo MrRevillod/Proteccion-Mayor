@@ -193,10 +193,11 @@ export class ReportsService {
         return report
     }
 
-    public splitByProfessional = async (events: documents.EventPrismaResult[]) => {
+    public splitByProfessional = async (events: documents.EventPrismaResult[], serviceId?: number) => {
         const report: eventSplitedDict = {}
 
-        const professionals = await prisma.professional.findMany({})
+        const filter = serviceId ? { serviceId } : {}
+        const professionals = await prisma.professional.findMany({ where: filter })
 
         for (const professional of professionals) {
             report[professional.name] = {
@@ -208,14 +209,7 @@ export class ReportsService {
 
         for (const event of events) {
             const professional = event.professional?.name
-            if (professional) {
-                if (!report[professional]) {
-                    report[professional] = {
-                        assistance: 0,
-                        absence: 0,
-                        unreserved: 0
-                    }
-                }
+            if (professional && report[professional]) {
                 if (event.seniorId) {
                     if (event.assistance) {
                         report[professional].assistance++
@@ -253,7 +247,14 @@ export class ReportsService {
         },
         senior: {
             select: {
-                name: true
+                name: true,
+                rsh: true,
+                birthDate: true,
+                sector: {
+                    select: {
+                        name: true
+                    }
+                }
             }
         },
         service: {

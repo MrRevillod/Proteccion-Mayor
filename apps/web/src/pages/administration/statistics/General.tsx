@@ -6,8 +6,9 @@ import { useRequest } from "@/hooks/useRequest"
 
 import ReactApexChart from 'react-apexcharts'
 import dayjs from "dayjs"
-import { PiMicrosoftExcelLogoFill } from "react-icons/pi"
-import { Descriptions, message } from "antd"
+import { PiFilePdfFill, PiMicrosoftExcelLogoFill } from "react-icons/pi"
+import { FaFilePdf } from "react-icons/fa6"
+import { Descriptions, message, Tooltip } from "antd"
 
 import PageLayout from "@/layouts/PageLayout"
 import GeneralStatisticsForm from "@/components/forms/statistics/General"
@@ -24,6 +25,7 @@ import { API_URL } from "@/lib/axios"
 import { ProfessionalReportColumns } from "@/lib/columns"
 import { Button } from "@/components/ui/Button"
 import { ApexOptions } from "apexcharts"
+import { generateReportPDF } from "@/lib/downloadDailyAgenda"
 
 const sumColumn = (data: [number, number][], column: number) => {
     return data.reduce((acc, current) => {
@@ -169,9 +171,18 @@ const GeneralStatisticsPage: React.FC = () => {
         >
             <FormProvider {...methods}>
                 <GeneralStatisticsForm setReportData={setReportData} />
-                <div className="grid gap-7">
+                <Tooltip title="Descargar resumen" placement="top" >
+
+                <div className="fixed z-50 bottom-10 right-10">
+                        <Button variant="primary" title="Descargar resumen" onClick={() => { generateReportPDF(reportData) }} >
+                            <FaFilePdf className="text-3xl" />
+                    </Button>
+                </div>
+                </Tooltip>
+
+                <div className="grid gap-7 p-10">
                     <div className={"grid grid-cols-4 gap-7"}>
-                        <div className="bg-white p-4 rounded-md">
+                        <div className="bg-white dark:bg-primary-darker  p-4 rounded-md">
                             <Descriptions title=""   bordered column={1} size="small">
                                 <Descriptions.Item label="Desde">{dayjs(reportData.head.from).format("DD/MM/YYYY")}</Descriptions.Item>
                                 <Descriptions.Item label="Hasta">{dayjs(reportData.head.to).format("DD/MM/YYYY")}</Descriptions.Item>
@@ -183,14 +194,14 @@ const GeneralStatisticsPage: React.FC = () => {
                                 <Descriptions.Item label="Profesional">{reportData.head.professionalName}</Descriptions.Item>
                             </Descriptions>
                         </div>
-                        <div className="col-span-3 bg-white rounded-md">
+                        <div className="col-span-3 bg-white  dark:bg-primary-darker rounded-md">
 
                             <ReactApexChart options={state.options} series={state.series} type="area" height={350} />
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-7 ">
-                        <Show when={reportData?.head.professionalName === "" && Object.keys(proffesionalState).length > 0}>
-                            <div className="bg-white rounded-md p-4 h-[550px] col-span-2 ">
+                        <Show when={!Boolean(reportData?.head.professionalName)}>
+                            <div className="bg-white rounded-md dark:bg-primary-darker p-4 h-[550px] col-span-2 ">
                                 <PageHeader
                                     pageTitle="Profesionales"
                                     data={formattedData}
@@ -207,12 +218,12 @@ const GeneralStatisticsPage: React.FC = () => {
                             </div>
                         </Show>
                         <Show when={reportData?.head.centerName === "" && centerState.series.length > 0}>
-                            <div className="bg-white rounded-md p-4  ">
+                            <div className="bg-white rounded-md p-4 dark:bg-primary-darker ">
                                 <ReactApexChart options={centerState.options} series={centerState.series} type="bar" />
                             </div>
                         </Show>
-                        <Show when={reportData?.head.serviceName === "" && serviceState.series.length > 0}>
-                            <div className="bg-white rounded-md p-4">
+                        <Show when={!Boolean(reportData?.head.serviceName) && !Boolean(reportData?.head.professionalName)}>
+                            <div className="bg-white rounded-md p-4 dark:bg-primary-darker">
                                 <ReactApexChart options={serviceState.options} series={serviceState.series} type="bar" />
                             </div>
                         </Show>

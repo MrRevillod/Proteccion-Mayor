@@ -133,8 +133,9 @@ export class ReportsController {
                 }
                 curDay = curDay.add(1, "day")
             }
-
             
+            const professional = !professionalId ? (serviceId ? await this.service.splitByProfessional(events, Number(serviceId)) :
+                await this.service.splitByProfessional(events)) : {}
 
             res.json({
                 values: {
@@ -143,7 +144,7 @@ export class ReportsController {
                     splitted: {
                         center: !centerId ? await this.service.splitByCenter(events) : {},
                         service: !serviceId ? await this.service.splitByService(events) : {},
-                        professional: !professionalId ? await this.service.splitByProfessional(events) : {}
+                        professional: professional 
                     }
                 },
             })
@@ -197,11 +198,15 @@ export class ReportsController {
                 orderBy: { start: "asc" },
             })
 
-            const excelBuffer = await documents.generarExcel(events)
+            documents.generarExcel(events).then((buffer: Buffer) => {
+                res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                res.setHeader('Content-Disposition', 'attachment; filename=reporte.xlsx')
+                res.send(buffer)
+            }).catch((error: any) => {
+                next(error)
+            })
             console.log(events)
-            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-            res.setHeader('Content-Disposition', 'attachment; filename=reporte.xlsx')
-            res.send(excelBuffer)
+
         } catch (error) {
             next(error)
         }
