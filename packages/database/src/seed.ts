@@ -381,7 +381,7 @@ const seed = async () => {
 
 		})
 
-		utils.uploadImage(operative.image, operativeA.id, "/upload?path=%2Foperatives")
+		await utils.uploadImage(operative.image, operativeA.id, "/upload?path=%2Foperatives")
 
 		OperativesBar.update(index + 1)
 	}

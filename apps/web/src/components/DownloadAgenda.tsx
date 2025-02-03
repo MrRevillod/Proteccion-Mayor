@@ -1,5 +1,5 @@
 import dayjs from "dayjs"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -19,6 +19,7 @@ import { DatetimeSelect } from "@/components/ui/DatetimeSelect"
 import { useAuth } from "@/context/AuthContext"
 
 export const DownloadAgenda: React.FC = () => {
+
 	const { user, role } = useAuth()
 	const { selectedData: professional, handleCancel } = useModal() as {
 		selectedData: Professional
@@ -28,6 +29,14 @@ export const DownloadAgenda: React.FC = () => {
 	const [query, setQuery] = useState("")
 	const [submit, setSubmit] = useState(false)
 	const [selectedDate, setSelectedDate] = useState("")
+	const [selectedProfessional, setSelectedProfessional] = useState<Professional | null>(null)
+
+	useEffect(() => {
+
+		role !== "PROFESSIONAL" && setSelectedProfessional(professional)
+		role === "PROFESSIONAL" && setSelectedProfessional(user as Professional)
+
+	}, [professional])
 
 	const selectOptions = [
 		{ value: "today", label: `Hoy (${dayjs().format("DD/MM/YYYY")})` },
@@ -73,7 +82,7 @@ export const DownloadAgenda: React.FC = () => {
 		const start = dayjs(day).startOf("day").toISOString()
 		const end = dayjs(day).endOf("day").toISOString()
 
-		setQuery(`professionalId=${professional?.id}&start=${start}&end=${end}`)
+		setQuery(`professionalId=${selectedProfessional?.id}&start=${start}&end=${end}`)
 		setSubmit(true)
 	}
 
@@ -94,10 +103,10 @@ export const DownloadAgenda: React.FC = () => {
 
 					<div className="flex justify-center mt-4 flex-col">
 						<p>
-							<strong>Profesional:</strong> {professional?.name}
+							<strong>Profesional:</strong> {selectedProfessional?.name}
 						</p>
 						<p>
-							<strong>Servicio:</strong> {professional?.service.name}
+							<strong>Servicio:</strong> {selectedProfessional?.service.name}
 						</p>
 					</div>
 

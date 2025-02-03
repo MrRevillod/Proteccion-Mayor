@@ -97,7 +97,7 @@ const ProfessionalAgendaPage: React.FC = () => {
 			<UpdateEvent centers={centers} refetch={refetchEvents} />
 
 			<CreateWeeklyEvents services={[]} centers={rawCenters as Center[]} formattedCenters={centers} />
-			<DownloadAgenda />
+			{/* <DownloadAgenda /> */}
 			<OperativeDetails />
 			<ConfirmAction<Event>
 				text="¿Estás seguro(a) de que deseas eliminar este evento?"
