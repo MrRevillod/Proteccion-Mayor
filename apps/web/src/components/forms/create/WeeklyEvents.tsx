@@ -1,16 +1,13 @@
 import dayjs from "dayjs"
 import React, { useEffect, useState } from "react"
-
 import { message } from "antd"
 import { FormProvider, useForm } from "react-hook-form"
-
 import { Show } from "@/components/ui/Show"
 import { Modal } from "@/components/Modal"
 import { Button } from "@/components/ui/Button"
 import { useAuth } from "@/context/AuthContext"
 import { SuperSelect } from "@/components/ui/SuperSelect"
 import { WeeklyEventsStep } from "@/components/WeeklyEventsStep"
-
 import { api } from "@/lib/axios"
 import { useModal } from "@/context/ModalContext"
 import { isWeekend } from "@/lib/validationRules"
@@ -46,7 +43,7 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 
 	const { user, role } = useAuth()
 	const { watch, getValues } = methods
-	const { handleCancel, handleOk } = useModal()
+	const { handleCancel, handleOk, isModalOpen } = useModal()
 
 	const selectedServiceId = watch("serviceId")
 	const selectedProfessionalId = watch("professionalId")
@@ -186,12 +183,12 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 	}
 
 	useEffect(() => {
-		if (role === "PROFESSIONAL") {
+		if (role === "PROFESSIONAL" && isModalOpen) {
 			const professional = user as Professional
 			methods.setValue("professionalId", professional?.id)
 			methods.setValue("serviceId", professional?.serviceId)
 		}
-	}, [])
+	}, [isModalOpen, role, user, methods])
 
 	return (
 		<Modal

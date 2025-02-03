@@ -148,8 +148,8 @@ export const phoneSchema = z
 
 export const colorSchema = z.string().regex(/^#?[0-9A-Fa-f]{6}$/, "El color debe ser un código hexadecimal válido")
 
-export const genderSchema = z.enum(["MA", "FE"], {
-	message: "El género debe ser MA o FE",
+export const genderSchema = z.enum(["MA", "FE", "OTHERS"], {
+	message: "El género debe ser MA, FE u OTHERS",
 })
 
 export const isWeekend = (date: string) => {

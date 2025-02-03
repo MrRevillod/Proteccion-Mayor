@@ -15,6 +15,7 @@ enum Role {
 enum Gender {
   MA
   FE
+  OTHERS
 }
 
 enum RSH {

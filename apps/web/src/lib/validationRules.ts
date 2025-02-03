@@ -176,7 +176,7 @@ export const colorSchema = z
 		return val.startsWith("#") ? val : `#${val}`
 	})
 
-export const genderSchema = z.enum(["MA", "FE"], {
+export const genderSchema = z.enum(["MA", "FE", "OTHERS"], {
 	message: "El género seleccionado no es válido",
 })
 
