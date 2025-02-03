@@ -40,12 +40,10 @@ export const Calendar: React.FC<CalendarProps> = ({ events, operatives }) => {
 		}
 	}, [events, operatives])
 
-
-
 	const getEventOrOperativeById = (id: string): Operative | Event => {
+		console.log(combinedById)
 		return combinedById[id]
 	}
-
 
 	const handleEventMouseEnter = (info: any) => {
 		const event = getEventOrOperativeById(info.event.id)
@@ -95,12 +93,18 @@ export const Calendar: React.FC<CalendarProps> = ({ events, operatives }) => {
 
 	const handleEdit = (info: any) => {
 		const eventOrOperative = getEventOrOperativeById(info.event.id)
+		console.log(info.event.id)
 
 		if (!eventOrOperative) {
 			return message.info("Evento u Operativo no encontrado")
 		}
-		if (dayjs(eventOrOperative.start).isBefore(dayjs()) && dayjs(eventOrOperative.end).isBefore(dayjs())) {
-			message.info("No es posible editar eventos u operativos pasados sin reserva")
+
+		if (
+			"professional" in eventOrOperative &&
+			dayjs(eventOrOperative.start).isBefore(dayjs()) &&
+			dayjs(eventOrOperative.end).isBefore(dayjs())
+		) {
+			message.info("No es posible editar eventos pasados")
 			return
 		}
 
@@ -109,7 +113,6 @@ export const Calendar: React.FC<CalendarProps> = ({ events, operatives }) => {
 			return
 		}
 		showModal("Details", eventOrOperative)
-
 	}
 
 	const isWeekend = (date: Date) => {

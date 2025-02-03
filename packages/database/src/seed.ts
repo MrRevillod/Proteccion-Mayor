@@ -367,24 +367,21 @@ const seed = async () => {
 				})
 		}
 
-		await Promise.all([
-			prisma.operative.upsert({
-				where: { id: operative.id },
-				create: {
-					id: operative.id,
-					name: operative.name,
-					description: operative.description,
-					start: firstOperativeStartDate.add(index, "week").toDate(),
-					end: firstOperativeEndDate.add(index, "week").toDate(),
-					centerId: randCenter[0].id,
-					professionals: { connect: randomProfessionals.map((id) => ({ id })) },
-					services: { connect: randomServices.map((id) => ({ id })) },
-				},
-				update: {},
-			}),
 
-			utils.uploadImage(operative.image, operative.id.toString(), "/upload?path=%2Foperatives"),
-		])
+		const operativeA = await prisma.operative.create({
+			data: {
+				name: operative.name,
+				description: operative.description,
+				start: firstOperativeStartDate.add(index, "week").toDate(),
+				end: firstOperativeEndDate.add(index, "week").toDate(),
+				centerId: randCenter[0].id,
+				professionals: { connect: randomProfessionals.map((id) => ({ id })) },
+				services: { connect: randomServices.map((id) => ({ id })) },
+			},
+
+		})
+
+		utils.uploadImage(operative.image, operativeA.id, "/upload?path=%2Foperatives")
 
 		OperativesBar.update(index + 1)
 	}

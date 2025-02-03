@@ -447,37 +447,31 @@
 	],
 	"operatives": [
 		{
-			"id": 1,
 			"name": "Operativo Bienestar Senior",
 			"description": "Programa integral de atención para personas mayores, enfocado en mejorar su calidad de vida a través de diversos servicios de salud y bienestar.",
 			"image": "https://www.munipunitaqui.cl/wp-content/uploads/2023/05/IMG-2555-scaled.jpg"
 		},
 		{
-			"id": 2,
 			"name": "Operativo Salud y Vida",
 			"description": "Iniciativa dedicada a proporcionar servicios de salud esenciales a personas mayores, asegurando su bienestar físico y mental.",
 			"image": "https://illapelchile.cl/wp-content/uploads/2019/04/operativo-tungasur2.jpg"
 		},
 		{
-			"id": 3,
 			"name": "Operativo Cuidado Mayor",
 			"description": "Proyecto orientado a ofrecer atención especializada y personalizada a personas mayores, cubriendo una amplia gama de necesidades.",
 			"image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlpdvYyroDHf6Vd15Kmy9xiVFHl5QYNU75xw&s"
 		},
 		{
-			"id": 4,
 			"name": "Operativo Atención Integral",
 			"description": "Servicio multidisciplinario que brinda atención completa a personas mayores, incluyendo salud, asesoría y actividades recreativas.",
 			"image": "https://vinculacion.unab.cl/wp-content/uploads/2017/06/Operativo-M%C3%A9dico-2.jpg"
 		},
 		{
-			"id": 5,
 			"name": "Operativo Vida Plena",
 			"description": "Programa diseñado para promover una vida activa y saludable en personas mayores, a través de servicios de salud y actividades comunitarias.",
 			"image": "https://diariolongino.cl/wp-content/uploads/2023/03/20230314_113503.jpg.webp"
 		},
 		{
-			"id": 6,
 			"name": "Operativo Apoyo Senior",
 			"description": "Iniciativa que ofrece una red de apoyo y servicios especializados para personas mayores, mejorando su bienestar y calidad de vida.",
 			"image": "https://images-ext-1.discordapp.net/external/sSX6eKcs0kqP_OZHq94IGLV6gfqjPVSkkByCbNpV0Mc/https/www.munipunitaqui.cl/wp-content/uploads/2023/05/50290a13-dc63-4eac-9e4e-81e289a972ab.jpg?format=webp&width=835&height=626"

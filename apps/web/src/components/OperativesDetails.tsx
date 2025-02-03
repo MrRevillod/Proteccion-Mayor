@@ -22,6 +22,7 @@ export const OperativeDetails: React.FC = () => {
 
 		return acc
 	}, {} as Record<string, any[]>)
+	console.log(operative?.start)
 
 	return (
 		<Modal type="Details" title={`Detalles del operativo: ${operative?.name}`}>
