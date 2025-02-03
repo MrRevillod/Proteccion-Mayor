@@ -22,6 +22,7 @@ export const buildRequestBody = (data: any): FormData | FieldValues => {
 	if (data.image) {
 		Object.keys(data).forEach((key) => {
 			if (key === "image") {
+				console.log("image", data.image)
 				formData.append("image", data.image)
 			} else if (Array.isArray(data[key])) {
 				data[key].forEach((value) => formData.append(`${key}[]`, value))

@@ -15,6 +15,7 @@ interface SuperSelectProps {
     setSearch?: Dispatch<SetStateAction<string>>
     showSearch?: boolean
     onChange?: (value: any, option: any) => void
+    errorAlign?: "horizontal" | "vertical"
 }
 
 export const SuperSelect = ({ name, label, ...props }: SuperSelectProps) => {
@@ -27,6 +28,7 @@ export const SuperSelect = ({ name, label, ...props }: SuperSelectProps) => {
         showSearch = true,
         defaultValue,
         onChange,
+        errorAlign = "horizontal",
     } = props
 
     const {
@@ -50,7 +52,11 @@ export const SuperSelect = ({ name, label, ...props }: SuperSelectProps) => {
 
     return (
         <div className="flex flex-col gap-3">
-            <div className="flex flex-row gap-2 items-center justify-between">
+            <div className={clsx(
+                errorAlign === "horizontal" && "flex gap-2 flex-row items-center justify-between",
+                errorAlign === "vertical" && "flex flex-col gap-2",
+
+            )}>
                 <label className="font-semibold dark:text-light text-dark truncate overflow-hidden whitespace-nowrap">
                     {label}
                 </label>

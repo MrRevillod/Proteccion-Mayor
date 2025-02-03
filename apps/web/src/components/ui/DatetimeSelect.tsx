@@ -13,8 +13,9 @@ interface DatetimeSelectProps {
 	defaultValue?: Dayjs
 	width?: string
 	disabled?: boolean
-	disablePast?: boolean    
-    onChange?: ((date: Dayjs, dateString: string | string[]) => void)
+	disablePast?: boolean
+	onChange?: ((date: Dayjs, dateString: string | string[]) => void)
+	errorAlign?: "horizontal" | "vertical"
 }
 
 export const DatetimeSelect = ({
@@ -24,8 +25,9 @@ export const DatetimeSelect = ({
 	defaultValue,
 	width,
 	disabled = false,
-    disablePast = false,
-    onChange,
+	disablePast = false,
+	onChange,
+	errorAlign = "horizontal",
 }: DatetimeSelectProps) => {
 	const {
 		control,
@@ -46,7 +48,11 @@ export const DatetimeSelect = ({
 
 	return (
 		<div className="flex flex-col gap-3">
-			<div className="flex flex-row gap-2 items-center justify-between">
+			<div className={clsx(
+				errorAlign === "horizontal" && "flex gap-2 flex-row items-center justify-between",
+				errorAlign === "vertical" && "flex flex-col gap-2",
+
+			)}>
 				<label className="font-semibold text-dark dark:text-light">{label}</label>
 				{errors[name] && <div className="text-red text-sm">{errors[name]?.message?.toString()}</div>}
 			</div>
@@ -54,8 +60,8 @@ export const DatetimeSelect = ({
 				control={control}
 				name={name}
 				render={({ field }) => (
-                    <DatePicker
-                        
+					<DatePicker
+
 						{...field}
 						className={classes}
 						showTime={
@@ -79,8 +85,8 @@ export const DatetimeSelect = ({
 						showNow={showTime}
 						value={field.value ? dayjs(field.value) : null}
 						defaultValue={defaultValue ? dayjs(defaultValue) : null}
-                        onChange={onChange || ((event) => setValue(name, event ? dayjs(event).toISOString() : null))}
-                        disabled={disabled}
+						onChange={onChange || ((event) => setValue(name, event ? dayjs(event).toISOString() : null))}
+						disabled={disabled}
 					/>
 				)}
 			/>

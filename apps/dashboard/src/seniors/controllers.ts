@@ -11,12 +11,12 @@ export class SeniorController {
 		private schemas: SeniorSchemas,
 		private storage: StorageService,
 		private mailer: MailerService,
-	) {}
+	) { }
 
 	/**
 	 * Controlador para obtener a 
-     
-    las personas mayores registradas en la base de datos
+	 
+	las personas mayores registradas en la base de datos
 	 * según los filtros ingresados en la aplicación web
 	 *
 	 * filtra por id, nombre, email y si está validado
@@ -67,7 +67,7 @@ export class SeniorController {
 	 */
 
 	public createOne: Controller = async (req, res, handleError) => {
-		const { id, name, email, rsh, sectorId } = req.body as CreateBody
+		const { id, name, email, rsh, sectorId, phone, address, birthDate, gender } = req.body as CreateBody
 
 		try {
 			// Verificar si la persona mayor ya existe en la base de datos
@@ -93,19 +93,28 @@ export class SeniorController {
 			// Id del usuario que está realizando la solicitud
 			const registeredBy = req.getExtension("userId") as string
 
-			const data = {
-				...req.body, // id, name, email, address, gender, phone
-				rsh,
-				registeredBy,
-				validated: true,
-				sectorId: Number(sectorId),
-				password: hashedRandomPin,
-				birthDate: new Date(req.body.birthDate),
-			}
-
 			const senior = await prisma.senior.create({
-				data,
+				data: {
+					id,
+					name,
+					email,
+					phone,
+					rsh,
+					sectorId: Number(sectorId),
+					password: hashedRandomPin,
+					address,
+					birthDate: new Date(birthDate),
+					gender,
+					validated: true,
+					registeredBy
+
+				},
 				select: this.schemas.defaultSelect,
+			})
+
+			await this.storage.uploadFiles({
+				input: req.files as Record<string, Express.Multer.File[]>,
+				url: `/upload?path=%2Fseniors%2F${senior.id}`,
 			})
 
 			this.mailer.send({

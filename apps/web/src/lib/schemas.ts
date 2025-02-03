@@ -22,7 +22,10 @@ export const SeniorSchemas = {
 			gender: rules.genderSchema,
 			phone: rules.phoneSchema,
 			rsh: rules.rshSchema,
-			sectorId: z.coerce.number(),
+			sectorId: z.coerce.number({ message: "El sector es requerido" }),
+			["dni-a"]: rules.imageSchemaCreate,
+			["dni-b"]: rules.imageSchemaCreate,
+			social: rules.imageSchemaCreate,
 		})
 		.refine((data) => rules.isValidDate(data.birthDate), {
 			message: "La fecha de ingresada no es válida",
