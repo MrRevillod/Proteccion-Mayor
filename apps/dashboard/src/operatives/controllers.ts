@@ -70,8 +70,10 @@ export class OperativesController {
 			await prisma.event.deleteMany({
 				where: {
 					start: { gte: startDate, lte: endDate },
+					professionalId: { in: professionals },
 				},
 			})
+
 			const operative = await prisma.operative.create({
 				data: {
 					name,

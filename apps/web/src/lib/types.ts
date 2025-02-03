@@ -92,8 +92,8 @@ export type PasswordFields = {
 export type TableColumnType<T> = Array<{
 	title: string
 	dataIndex: keyof T | string[]
-    key: string
-    sorter?: (a: T, b: T) => number
+	key: string
+	sorter?: (a: T, b: T) => number
 }>
 
 export type FormProps<T> = {
@@ -173,7 +173,7 @@ export type Operative = {
 	end: string
 	professionals: Partial<Professional>[]
 	services: Pick<Service, "id" | "name">[]
-	center: Partial<Center>[]
+	center: Partial<Center>
 	centerId: number
 }
 
@@ -201,36 +201,36 @@ export const RSH = {
 export type Splitted = { [key: string]: { assistance: number, absence: number, unreserved: number } }
 
 export type reportHead = {
-    from: string,
-    to: string,
-    centerName: string,
-    serviceName: string,
-    professionalName: string,
+	from: string,
+	to: string,
+	centerName: string,
+	serviceName: string,
+	professionalName: string,
 }
 
 export type ProfessionalTableRow = {
-    id:string,
-    professionalName: string,
-    assistance: number,
-    absence: number,
-    unreserved: number,
-    total: number
+	id: string,
+	professionalName: string,
+	assistance: number,
+	absence: number,
+	unreserved: number,
+	total: number
 }
 
 export type Report = {
-    head: reportHead
-    assistance: [number, number][]
-    absence: [number, number][]
-    unreserved: [number, number][]
-    splitted: {
-        center: Splitted
-        service: Splitted
-        professional: Splitted
-    }
-    
+	head: reportHead
+	assistance: [number, number][]
+	absence: [number, number][]
+	unreserved: [number, number][]
+	splitted: {
+		center: Splitted
+		service: Splitted
+		professional: Splitted
+	}
+
 }
 
 export type StatisticResponse = {
-    report: Report[]
-    
+	report: Report[]
+
 }
