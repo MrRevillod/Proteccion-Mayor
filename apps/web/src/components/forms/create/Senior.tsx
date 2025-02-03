@@ -75,6 +75,7 @@ export const CreateSenior: React.FC<FormProps<Senior>> = ({ data, setData }) => 
 								options={[
 									{ value: "MA", label: "Masculino" },
 									{ value: "FE", label: "Femenino" },
+									{ value: "OTHERS", label: "Otro" },
 								]}
 							/>
 						</div>
