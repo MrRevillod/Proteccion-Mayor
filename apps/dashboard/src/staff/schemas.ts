@@ -26,7 +26,7 @@ export class StaffSchemas extends Schema {
 			name: rules.nameSchema,
 			email: rules.emailSchema,
 			role: rules.staffRoleSchema,
-			centerId: z.coerce.number(),
+			centerId: z.coerce.number().optional(),
 		})
 	}
 
@@ -35,7 +35,7 @@ export class StaffSchemas extends Schema {
 			.object({
 				name: rules.nameSchema,
 				email: rules.emailSchema,
-				centerId: z.coerce.number(),
+				centerId: z.coerce.number().optional(),
 				role: rules.staffRoleSchema,
 				password: rules.optionalPasswordSchema,
 				confirmPassword: rules.optionalPasswordSchema,

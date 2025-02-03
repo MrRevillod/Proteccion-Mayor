@@ -16,6 +16,7 @@ import { StaffSchemas } from "@/lib/schemas"
 import { selectDataFormatter } from "@/lib/formatters"
 import { createStaff, getCenters } from "@/lib/actions"
 import { Center, FormProps, Staff } from "@/lib/types"
+import { Show } from "@/components/ui/Show"
 
 export const CreateStaff: React.FC<FormProps<Staff>> = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false)
@@ -26,6 +27,7 @@ export const CreateStaff: React.FC<FormProps<Staff>> = ({ data, setData }) => {
 		action: getCenters,
 		onSuccess: (centers) => selectDataFormatter({ data: centers, setData: setCenters }),
 	})
+
 
 	if (error) message.error("Error al cargar los datos")
 
@@ -50,7 +52,9 @@ export const CreateStaff: React.FC<FormProps<Staff>> = ({ data, setData }) => {
 							{ label: "Funcionario", value: "FUNCTIONARY" },
 						]}
 					/>
-					<SuperSelect name="centerId" label="centro" options={centers} />
+					<Show when={methods.watch("role") === "FUNCTIONARY"}>
+						<SuperSelect name="centerId" label="Centro de atención" options={centers} />
+					</Show>
 				</Form>
 			</FormProvider>
 		</Modal>

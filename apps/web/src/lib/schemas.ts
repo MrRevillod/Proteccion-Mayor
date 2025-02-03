@@ -75,7 +75,7 @@ export const StaffSchemas = {
 		name: rules.nameSchema,
 		email: rules.emailSchema,
 		role: rules.staffRoleSchema,
-		centerId: z.coerce.number(),
+		centerId: z.coerce.number().optional(),
 	}),
 
 	Update: z
@@ -86,7 +86,7 @@ export const StaffSchemas = {
 			confirmPassword: rules.optionalPasswordSchema,
 			image: rules.imageSchemaUpdate,
 			role: rules.staffRoleSchema,
-			centerId: z.coerce.number(),
+			centerId: z.coerce.number().optional(),
 		})
 		.refine((data) => data.password === data.confirmPassword, {
 			message: "Las contraseñas ingresadas no coinciden",

@@ -28,6 +28,9 @@ export class StaffController {
 		const { id, name, email, role, centerId } = req.body
 
 		try {
+
+
+
 			const exists = await prisma.staff.findFirst({
 				where: { OR: [{ id }, { email }] },
 			})

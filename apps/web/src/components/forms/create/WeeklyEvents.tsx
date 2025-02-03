@@ -16,7 +16,8 @@ import { DatetimeSelect } from "@/components/ui/DatetimeSelect"
 import { getProfessionals } from "@/lib/actions"
 import { selectDataFormatter } from "@/lib/formatters"
 import { Center, Professional, SuperSelectField } from "@/lib/types"
-
+import "dayjs/locale/es";
+dayjs.locale("es");
 interface Props {
 	centers: Center[]
 	formattedCenters: SuperSelectField[]
@@ -117,6 +118,7 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 			for (let i = 0; i < dayDiff + 1; i++) {
 				if (!isWeekend(start.add(i, "day").toISOString())) {
 					const dayName = toUpperLowerCase(start.add(i, "day").format("dddd"))
+
 					const date = start.add(i, "day").format("YYYY-MM-DD")
 					days.push({ day: dayName, date })
 				}
