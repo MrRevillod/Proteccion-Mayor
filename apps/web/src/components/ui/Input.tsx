@@ -21,6 +21,7 @@ interface InputProps {
 	maxLength?: number
 	minNumber?: number
 	maxNumber?: number
+	errorAlign?: "horizontal" | "vertical"
 }
 
 const InputLabel: React.FC<{ label: string }> = ({ label }) => {
@@ -40,6 +41,7 @@ export const Input: React.FC<InputProps> = (props) => {
 		maxLength,
 		maxNumber,
 		minNumber,
+		errorAlign = "horizontal",
 	} = props
 
 	const {
@@ -75,7 +77,11 @@ export const Input: React.FC<InputProps> = (props) => {
 			</Show>
 
 			<Show when={!login}>
-				<div className="flex flex-row gap-2 items-center justify-between">
+				<div className={clsx(
+					errorAlign === "horizontal" && "flex gap-2 flex-row items-center justify-between",
+					errorAlign === "vertical" && "flex flex-col gap-2",
+
+				)}>
 					<InputLabel label={label} />
 					<Show when={type !== "password"}>
 						{errors[name] && <div className="text-red text-sm">{errors[name]?.message?.toString()}</div>}

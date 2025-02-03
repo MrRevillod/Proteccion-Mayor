@@ -22,7 +22,12 @@ export class SeniorRouter extends Router {
 		this.post({
 			path: "/pre-checked",
 			handler: this.controller.createOne,
-			middlewares: [this.auth.authorize(["ADMIN", "FUNCTIONARY"]), validations.body(this.schemas.create)],
+			middlewares: [
+				uploads.mobileregisterFiles,
+				this.auth.authorize(["ADMIN", "FUNCTIONARY"]),
+				validations.body(this.schemas.create),
+				validations.files({ required: true }),
+			],
 		})
 
 		this.patch({

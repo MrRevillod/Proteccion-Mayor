@@ -19,7 +19,7 @@ const SeniorsPage: React.FC = () => {
 
 	const navigate = useNavigate()
 
-	const { error, loading, data } = useRequest<Senior[]>({
+	const { error, loading, data, refetch } = useRequest<Senior[]>({
 		action: getSeniors,
 		query: "validated=1",
 		onSuccess: (data) => setSeniors(data),
@@ -61,7 +61,7 @@ const SeniorsPage: React.FC = () => {
 				/>
 			</section>
 
-			<CreateSenior data={seniors} setData={setSeniors} />
+			<CreateSenior data={seniors} setData={setSeniors} refetch={refetch} />
 			<UpdateSenior data={seniors} setData={setSeniors} />
 
 			<ConfirmAction<Senior>

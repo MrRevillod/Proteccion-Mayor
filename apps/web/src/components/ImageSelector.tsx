@@ -12,9 +12,13 @@ interface ImageSelectorProps {
 	imageFile?: UploadFile[]
 	setImageFile?: Dispatch<SetStateAction<UploadFile[]>>
 	size: [number, number]
+	name?: string
 }
 
-export const ImageSelector: React.FC<ImageSelectorProps> = ({ imageLabel, imageFile, setImageFile, size }) => {
+export const ImageSelector: React.FC<ImageSelectorProps> = ({ imageLabel, ...props }) => {
+
+	const { imageFile, setImageFile, size, name = "image" } = props
+
 	const {
 		control,
 		setValue,
@@ -30,21 +34,21 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({ imageLabel, imageF
 		reader.readAsDataURL(file)
 
 		reader.onload = () => {
-			setValue("image", file)
+			setValue(name, file)
 		}
 
 		return false
 	}
 
 	const handleRemove = () => {
-		setValue("image", null)
+		setValue(name, null)
 		setImageFile && setImageFile([])
 	}
 
 	return (
 		<Controller
 			control={control}
-			name="image"
+			name={name}
 			render={() => (
 				<ImgCrop
 					rotationSlider
@@ -76,8 +80,8 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({ imageLabel, imageF
 
 							<div className="flex flex-row justify-center w-full rounded-lg cursor-pointer">
 								<div className="flex flex-col gap-1">
-									{errors["image"] && (
-										<p className="text-red">{errors["image"].message?.toString()}</p>
+									{errors[name] && (
+										<p className="text-red">{errors[name].message?.toString()}</p>
 									)}
 									<p className="text-neutral-500 dark:text-gray-light">
 										Haga click para subir una imagen
