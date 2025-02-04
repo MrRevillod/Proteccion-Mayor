@@ -14,9 +14,7 @@ export class SeniorController {
 	) { }
 
 	/**
-	 * Controlador para obtener a 
-	 
-	las personas mayores registradas en la base de datos
+	 * Controlador para obtener a las personas mayores registradas en la base de datos
 	 * según los filtros ingresados en la aplicación web
 	 *
 	 * filtra por id, nombre, email y si está validado
