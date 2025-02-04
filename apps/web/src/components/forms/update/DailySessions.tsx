@@ -27,7 +27,7 @@ export const UpdateDailySessions: React.FC<FormProps<Center>> = ({ refetch }) =>
 	}, [selectedData])
 
 	return (
-		<Modal type="DownloadAgenda" loading={loading} title={`Número de atenciones diarias ${selectedData?.name}`}>
+		<Modal type="Other" loading={loading} title={`Número de atenciones diarias ${selectedData?.name}`}>
 			<FormProvider {...methods}>
 				<Form actionType="update" refetch={refetch} setLoading={setLoading} action={updateDailySessions}>
 					<p>

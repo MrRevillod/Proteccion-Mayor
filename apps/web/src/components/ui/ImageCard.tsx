@@ -47,8 +47,8 @@ export const ImageCard = ({ imagePath, title, description, other, ...props }: Im
 
 	const cardClasses = clsx(
 		onCardClick &&
-			"cursor-pointer hover:shadow-xl hover:bg-opacity-75 transition-transform transform hover:-translate-y-1 duration-300 ease-in-out",
-		"relative overflow-hidden bg-opacity-50 rounded-lg shadow-lg max-w-2xl mx-auto w-full max-h-[280px]",
+		"cursor-pointer hover:shadow-xl hover:bg-opacity-75 transition-transform transform hover:-translate-y-1 duration-300 ease-in-out",
+		"relative overflow-hidden bg-opacity-50 rounded-lg shadow-lg max-w-2xl mx-auto w-full max-h-[280px]"
 	)
 
 	return (

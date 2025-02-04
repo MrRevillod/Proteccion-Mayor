@@ -1,19 +1,20 @@
 import dayjs from "dayjs"
-import React from "react"
+import React, { useState, useEffect } from "react"
 
 import { Form } from "@/components/forms/Form"
 import { Show } from "@/components/ui/Show"
 import { Modal } from "@/components/Modal"
-import { useAuth } from "@/context/AuthContext"
-import { useModal } from "@/context/ModalContext"
-import { useRequest } from "@/hooks/useRequest"
 import { SuperSelect } from "@/components/ui/SuperSelect"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { EventSchemas } from "@/lib/schemas"
 import { BooleanSelect } from "@/components/ui/BooleanSelect"
 import { DatetimeSelect } from "@/components/ui/DatetimeSelect"
+
+import { useAuth } from "@/context/AuthContext"
+import { useModal } from "@/context/ModalContext"
+import { zodResolver } from "@hookform/resolvers/zod"
+
+import { useRequest } from "@/hooks/useRequest"
+import { EventSchemas } from "@/lib/schemas"
 import { selectDataFormatter } from "@/lib/formatters"
-import { useState, useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { getSeniors, updateEvent } from "@/lib/actions"
 import { Professional, Senior, Staff, SuperSelectField } from "@/lib/types"
@@ -49,8 +50,11 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 
 	useRequest<Senior[]>({
 		action: getSeniors,
-		query: `name=${seniorsSearch}&id=${seniorsSearch}&select=name,id&limit=5`,
-		onSuccess: (data) => selectDataFormatter({ data, setData: setSeniors }),
+		query: `name=${seniorsSearch}&id=${seniorsSearch}&validated=1&select=name,id&limit=5`,
+		onSuccess: (data) => {
+			console.log(data)
+			selectDataFormatter({ data, setData: setSeniors })
+		},
 		trigger: isModalOpen && modalType === "Edit",
 	})
 
@@ -74,9 +78,9 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 
 		if (role === "ADMIN") {
 			const serviceProfessionals = professionals?.filter(
-				(professional) => professional.serviceId === selectedData?.serviceId,
-			)
-			selectDataFormatter({ data: serviceProfessionals as Professional[], setData: setSelectProfessionals })
+				({ serviceId }) => serviceId === selectedData?.serviceId
+			) as Professional[]
+			selectDataFormatter({ data: serviceProfessionals, setData: setSelectProfessionals })
 		}
 
 		setSeniorsSearch(selectedData?.seniorId)
