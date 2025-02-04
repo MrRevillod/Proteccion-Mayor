@@ -19,7 +19,7 @@ import { FormProvider, useForm } from "react-hook-form"
 import { createSenior, getSectors } from "@/lib/actions"
 import { FormProps, RSH, Sector, Senior, SuperSelectField } from "@/lib/types"
 
-export const CreateSenior: React.FC<FormProps<Senior>> = ({ data, setData, refetch }) => {
+export const CreateSenior: React.FC<FormProps<Senior>> = ({ refetch }) => {
 	const [loading, setLoading] = useState(false)
 	const [sectors, setSectors] = useState<SuperSelectField[]>([])
 
