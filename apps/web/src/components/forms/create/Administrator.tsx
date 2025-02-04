@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 
 import { Form } from "@/components/forms/Form"
 import { Input } from "@/components/ui/Input"
@@ -28,8 +28,13 @@ export const CreateStaff: React.FC<FormProps<Staff>> = ({ data, setData }) => {
 		onSuccess: (centers) => selectDataFormatter({ data: centers, setData: setCenters }),
 	})
 
-
 	if (error) message.error("Error al cargar los datos")
+
+	useEffect(() => {
+		if (methods.watch("role") === "ADMIN") {
+			methods.setValue("centerId", undefined)
+		}
+	}, [methods.watch("role")])
 
 	return (
 		<Modal type="Create" title="Añadir nuevo funcionario al sistema" loading={loading}>
@@ -53,7 +58,12 @@ export const CreateStaff: React.FC<FormProps<Staff>> = ({ data, setData }) => {
 						]}
 					/>
 					<Show when={methods.watch("role") === "FUNCTIONARY"}>
-						<SuperSelect name="centerId" label="Centro de atención" options={centers} />
+						<SuperSelect
+							name="centerId"
+							label="Centro de atención"
+							options={centers}
+							errorAlign="vertical"
+						/>
 					</Show>
 				</Form>
 			</FormProvider>

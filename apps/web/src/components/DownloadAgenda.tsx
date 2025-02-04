@@ -19,7 +19,6 @@ import { DatetimeSelect } from "@/components/ui/DatetimeSelect"
 import { useAuth } from "@/context/AuthContext"
 
 export const DownloadAgenda: React.FC = () => {
-
 	const { user, role } = useAuth()
 	const { selectedData: professional, handleCancel } = useModal() as {
 		selectedData: Professional
@@ -32,10 +31,8 @@ export const DownloadAgenda: React.FC = () => {
 	const [selectedProfessional, setSelectedProfessional] = useState<Professional | null>(null)
 
 	useEffect(() => {
-
 		role !== "PROFESSIONAL" && setSelectedProfessional(professional)
 		role === "PROFESSIONAL" && setSelectedProfessional(user as Professional)
-
 	}, [professional])
 
 	const selectOptions = [

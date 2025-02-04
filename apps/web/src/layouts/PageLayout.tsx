@@ -12,15 +12,14 @@ interface PageLayoutProps {
 	setData?: Dispatch<SetStateAction<any[]>>
 	customRightSide?: ReactNode
 	children: ReactNode
-    showDescription?: boolean
+	showDescription?: boolean
 }
 
 const PageLayout: React.FC<PageLayoutProps> = ({ pageTitle, ...props }) => {
 	const { create, searchKeys, data, setData, customRightSide, children, showDescription = true } = props
 	return (
-        <Fragment>
-            
-			<Helmet >
+		<Fragment>
+			<Helmet>
 				<title>{pageTitle} - Dirección de personas mayores de la municipalidad de Temuco</title>
 			</Helmet>
 			<section className="pt-8 px-8 md:px-12 lg:px-16 xl:px-18 2xl:px-20 flex flex-col gap-2 w-full">

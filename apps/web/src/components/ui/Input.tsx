@@ -77,11 +77,12 @@ export const Input: React.FC<InputProps> = (props) => {
 			</Show>
 
 			<Show when={!login}>
-				<div className={clsx(
-					errorAlign === "horizontal" && "flex gap-2 flex-row items-center justify-between",
-					errorAlign === "vertical" && "flex flex-col gap-2",
-
-				)}>
+				<div
+					className={clsx(
+						errorAlign === "horizontal" && "flex gap-2 flex-row items-center justify-between",
+						errorAlign === "vertical" && "flex flex-col gap-2",
+					)}
+				>
 					<InputLabel label={label} />
 					<Show when={type !== "password"}>
 						{errors[name] && <div className="text-red text-sm">{errors[name]?.message?.toString()}</div>}

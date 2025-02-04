@@ -196,11 +196,7 @@ const seed = async () => {
 			where: { id: functionaryRUT },
 			create: {
 				id: functionaryRUT,
-				email: utils.generateEmail(
-					faker.person.firstName(),
-					faker.person.lastName(),
-					"help.com",
-				),
+				email: utils.generateEmail(faker.person.firstName(), faker.person.lastName(), "help.com"),
 				password: await hash(DEV_DEFAULT_DEVELOPER_PASSWORD, 10),
 				name: `${faker.person.firstName()} ${faker.person.lastName()}`,
 				centerId: centerIds[i],
@@ -367,7 +363,6 @@ const seed = async () => {
 				})
 		}
 
-
 		const operativeA = await prisma.operative.create({
 			data: {
 				name: operative.name,
@@ -378,7 +373,6 @@ const seed = async () => {
 				professionals: { connect: randomProfessionals.map((id) => ({ id })) },
 				services: { connect: randomServices.map((id) => ({ id })) },
 			},
-
 		})
 
 		await utils.uploadImage(operative.image, operativeA.id, "/upload?path=%2Foperatives")

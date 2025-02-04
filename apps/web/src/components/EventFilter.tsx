@@ -84,6 +84,7 @@ export const EventFilter: React.FC<EventFilterProps> = ({ data, onSubmit }) => {
 				(professional) => professional.serviceId === selectedService,
 			)
 			selectDataFormatter({ data: serviceProfessionals, setData: setSelectProfessionals })
+			methods.setValue("professionalFilter", undefined)
 		}
 	}, [selectedService])
 

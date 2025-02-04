@@ -1,4 +1,12 @@
-import { Professional, ProfessionalTableRow, Senior, Splitted, Staff, TableColumnType, UnvalidatedSenior } from "./types"
+import {
+	Professional,
+	ProfessionalTableRow,
+	Senior,
+	Splitted,
+	Staff,
+	TableColumnType,
+	UnvalidatedSenior,
+} from "./types"
 
 export const UnvalidatedSeniorsColumns: TableColumnType<UnvalidatedSenior> = [
 	{ title: "RUT", dataIndex: "id", key: "id" },
@@ -26,12 +34,21 @@ export const StaffColumns: TableColumnType<Partial<Staff>> = [
 ]
 
 export const ProfessionalReportColumns: TableColumnType<ProfessionalTableRow> = [
-    { title: "Nombre", dataIndex: "professionalName", key: "professionalName", sorter: (a, b) => a.professionalName.localeCompare(b.professionalName) },
-    { title: "Ausencias", dataIndex: "absence", key: "absence", sorter: (a, b) => a.absence - b.absence },
-    { title: "Asistencias", dataIndex: "assistance", key: "assistance", sorter: (a, b) => a.assistance - b.assistance },
-    { title: "Sin reservar", dataIndex: "unreserved", key: "unreserved", sorter: (a, b) => a.unreserved - b.unreserved },
-    { title: "Total", dataIndex: "total", key: "total", sorter: (a, b) => a.total - b.total },
-
+	{
+		title: "Nombre",
+		dataIndex: "professionalName",
+		key: "professionalName",
+		sorter: (a, b) => a.professionalName.localeCompare(b.professionalName),
+	},
+	{ title: "Ausencias", dataIndex: "absence", key: "absence", sorter: (a, b) => a.absence - b.absence },
+	{ title: "Asistencias", dataIndex: "assistance", key: "assistance", sorter: (a, b) => a.assistance - b.assistance },
+	{
+		title: "Sin reservar",
+		dataIndex: "unreserved",
+		key: "unreserved",
+		sorter: (a, b) => a.unreserved - b.unreserved,
+	},
+	{ title: "Total", dataIndex: "total", key: "total", sorter: (a, b) => a.total - b.total },
 ]
 
 export const ProfessionalColumns: TableColumnType<Partial<Professional>> = [

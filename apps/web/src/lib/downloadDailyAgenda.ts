@@ -31,7 +31,11 @@ export const generatePDF = (professional: Professional, events: Event[], date: s
 		event.senior?.id ? event.senior.id : "",
 		event.senior?.name && event.seniorId ? event.senior.name : "No reservado",
 		event.senior?.phone ? event.senior.phone : !event.senior ? "" : "Sin teléfono Registrado",
-		event.assistance ? "Asiste" : event?.seniorId && !event.assistance && dayjs(event.end).isBefore(dayjs()) ? "No asiste" : "",
+		event.assistance
+			? "Asiste"
+			: event?.seniorId && !event.assistance && dayjs(event.end).isBefore(dayjs())
+				? "No asiste"
+				: "",
 		"",
 	])
 
@@ -92,72 +96,73 @@ export const generatePDF = (professional: Professional, events: Event[], date: s
 }
 
 export function generateReportPDF(report: Report) {
-    const doc = new jsPDF();
+	const doc = new jsPDF()
 
-    const headerData = {
-        title: `Reporte de atenciones del ${dayjs(report.head.from).format("DD-MM-YYYY")} al ${dayjs(report.head.to).format("DD-MM-YYYY")}`,
-        profesional: report.head.professionalName || null,
-        service: report.head.serviceName || null,
-        center: report.head.centerName || null,
-    }
-    const margin = 20
-    const lineHeight = 8
-    let cursorY = margin
+	const headerData = {
+		title: `Reporte de atenciones del ${dayjs(report.head.from).format("DD-MM-YYYY")} al ${dayjs(report.head.to).format("DD-MM-YYYY")}`,
+		profesional: report.head.professionalName || null,
+		service: report.head.serviceName || null,
+		center: report.head.centerName || null,
+	}
+	const margin = 20
+	const lineHeight = 8
+	let cursorY = margin
 
-    doc.setFontSize(14)
-    doc.setFont("helvetica", "bold")
-    doc.text(headerData.title, margin, cursorY)
+	doc.setFontSize(14)
+	doc.setFont("helvetica", "bold")
+	doc.text(headerData.title, margin, cursorY)
 
-    const logoPath = "../../public/logo-municipalidad.jpg"
-    const logoWidth = 30
-    const logoHeight = 25
-    doc.addImage(logoPath, "JPG", doc.internal.pageSize.width - margin - logoWidth, 5, logoWidth, logoHeight)
+	const logoPath = "../../public/logo-municipalidad.jpg"
+	const logoWidth = 30
+	const logoHeight = 25
+	doc.addImage(logoPath, "JPG", doc.internal.pageSize.width - margin - logoWidth, 5, logoWidth, logoHeight)
 
-    cursorY += lineHeight * 1.5
+	cursorY += lineHeight * 1.5
 
-    doc.setFontSize(10)
-    doc.setFont("helvetica", "normal")
+	doc.setFontSize(10)
+	doc.setFont("helvetica", "normal")
 
-    headerData.service && doc.text(`Servicio de ${headerData.service}`, margin, cursorY)
-    headerData.service && (cursorY += lineHeight)
-    headerData.profesional && doc.text(`Profesional: ${headerData.profesional}`, margin, cursorY)
-    headerData.profesional && (cursorY += lineHeight)
-    headerData.center && doc.text(`Centro comunitario: ${headerData.center}`, margin, cursorY)
-    headerData.center && (cursorY += lineHeight)
+	headerData.service && doc.text(`Servicio de ${headerData.service}`, margin, cursorY)
+	headerData.service && (cursorY += lineHeight)
+	headerData.profesional && doc.text(`Profesional: ${headerData.profesional}`, margin, cursorY)
+	headerData.profesional && (cursorY += lineHeight)
+	headerData.center && doc.text(`Centro comunitario: ${headerData.center}`, margin, cursorY)
+	headerData.center && (cursorY += lineHeight)
 
+	function createTable(
+		title: string,
+		data: Record<string, { assistance: number; absence: number; unreserved: number }>,
+	) {
+		const sortedData = Object.entries(data)
+			.map(([key, values]) => ({ name: key, ...values }))
+			.sort((a, b) => b.assistance + b.absence - (a.assistance + a.absence))
 
-    function createTable(title: string, data: Record<string, { assistance: number, absence: number, unreserved: number }>) {
-        
-        const sortedData = Object.entries(data)
-            .map(([key, values]) => ({ name: key, ...values }))
-            .sort((a, b) => (b.assistance + b.absence) - (a.assistance + a.absence));
+		const tableData = sortedData.map((row) => [row.name, row.assistance, row.absence, row.unreserved])
 
-        const tableData = sortedData.map(row => [row.name, row.assistance, row.absence, row.unreserved]);
+		doc.setFontSize(15)
+		doc.text(title, margin, (doc as any).lastAutoTable.finalY + 1 + cursorY || 10 + cursorY)
+		doc.setFontSize(10)
 
-        doc.setFontSize(15)
-        doc.text(title, margin, (doc as any).lastAutoTable.finalY + 1 + cursorY || 10 + cursorY);
-        doc.setFontSize(10)
+		autotable(doc, {
+			head: [["Nombre", "Asistencia", "Ausencia", "No Reservado"]],
+			body: tableData,
+			startY: (doc as any).lastAutoTable.finalY + 5 + cursorY || 20 + cursorY,
+			margin: { left: margin, right: margin },
+			headStyles: { fillColor: [4, 108, 78], textColor: [255, 255, 255] },
+			bodyStyles: { fontSize: 10, cellPadding: 1 },
+			alternateRowStyles: { fillColor: [240, 240, 240] },
+			theme: "grid",
+		})
+	}
 
-        autotable(doc, {
-            head: [["Nombre", "Asistencia", "Ausencia", "No Reservado"]],
-            body: tableData,
-            startY: (doc as any).lastAutoTable.finalY + 5 + cursorY || 20 + cursorY,
-            margin: { left: margin, right: margin },
-            headStyles: { fillColor: [4, 108, 78], textColor: [255, 255, 255] },
-            bodyStyles: { fontSize: 10, cellPadding: 1 },
-            alternateRowStyles: { fillColor: [240, 240, 240] },
-            theme: "grid",
-        });
-    }
+	needTable(report.splitted.professional) && createTable("Profesionales", report.splitted.professional)
+	needTable(report.splitted.center) && createTable("Centros", report.splitted.center)
+	needTable(report.splitted.service) && createTable("Servicios", report.splitted.service)
 
-    needTable(report.splitted.professional) && createTable("Profesionales", report.splitted.professional)
-    needTable(report.splitted.center) && createTable("Centros", report.splitted.center)
-    needTable(report.splitted.service) && createTable("Servicios", report.splitted.service)
-
-    doc.save("report.pdf")
+	doc.save("report.pdf")
 }
-//return boolean 
+//return boolean
 
 const needTable = (s: Splitted) => {
-    return Object.keys(s).length > 0
+	return Object.keys(s).length > 0
 }

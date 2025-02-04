@@ -27,11 +27,11 @@ const apiRequest = {
 // Acciones para estadisticas
 
 export const getGeneralStatistics = async (props: QueryActionProps) => {
-    return await apiRequest.get(`/dashboard/reports${props.query ? "?" + props.query : ""}`)
+	return await apiRequest.get(`/dashboard/reports${props.query ? "?" + props.query : ""}`)
 }
 
 export const getGeneralDocument = async (props: QueryActionProps) => {
-    return await apiRequest.get(`/dashboard/reports/report-document`)
+	return await apiRequest.get(`/dashboard/reports/report-document`)
 }
 
 // Acciones CRUD para los funcionarios

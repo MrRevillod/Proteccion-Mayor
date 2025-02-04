@@ -10,7 +10,7 @@ export class StaffController {
 		private mailer: MailerService,
 		private storage: StorageService,
 		private schemas: StaffSchemas = new StaffSchemas(),
-	) { }
+	) {}
 
 	public getMany: Controller = async (req, res, handleError) => {
 		try {
@@ -28,9 +28,6 @@ export class StaffController {
 		const { id, name, email, role, centerId } = req.body
 
 		try {
-
-
-
 			const exists = await prisma.staff.findFirst({
 				where: { OR: [{ id }, { email }] },
 			})

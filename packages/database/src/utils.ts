@@ -27,19 +27,13 @@ export const generateRUT = (): string => {
 }
 
 export const generateEmail = (name: string, lastname: string, domain: string): string => {
-	const cleanString = (str: string) =>
-		str
-			.toLowerCase()
-			.normalize("NFD")
-			.replace(/[̀-ͯ]/g, "")
-			.replace(/\s+/g, "")
+	const cleanString = (str: string) => str.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\s+/g, "")
 
 	const initial = cleanString(name)[0]
 	const cleanLastName = cleanString(lastname)
 
 	return `${initial}.${cleanLastName}@${domain}`
 }
-
 
 export const generateCL_PHONE = (): string => {
 	let phone = "9"
@@ -70,7 +64,7 @@ export const uploadImage = async (url: string, name: string, uploadPath: string)
 		})
 
 		if (!res.ok) throw new Error(`Error uploading image ${name}`)
-	} catch (error) { }
+	} catch (error) {}
 }
 
 export const createProgressBar = (title: string, total: number) => {
