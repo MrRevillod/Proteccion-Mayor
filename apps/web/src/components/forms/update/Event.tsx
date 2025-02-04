@@ -62,8 +62,6 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 			setDisabled(functionary?.centerId !== selectedData?.centerId)
 		}
 
-		console.log(disabled)
-
 		methods.reset({
 			professionalId: selectedData?.professionalId,
 			centerId: selectedData?.centerId,
@@ -76,7 +74,7 @@ export const UpdateEvent: React.FC<EventFormProps> = ({ centers, professionals, 
 
 		if (role === "ADMIN") {
 			const serviceProfessionals = professionals?.filter(
-				(professional) => professional.serviceId === selectedData?.serviceId
+				(professional) => professional.serviceId === selectedData?.serviceId,
 			)
 			selectDataFormatter({ data: serviceProfessionals as Professional[], setData: setSelectProfessionals })
 		}

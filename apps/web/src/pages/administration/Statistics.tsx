@@ -30,10 +30,9 @@ export type SelectedProfessional = {
 }
 
 const StatisticsPage: React.FC = () => {
-    
-    const [from, setFrom] = useState<string>("")
-    const [to,setTo] = useState<string>("")
-    
+	const [from, setFrom] = useState<string>("")
+	const [to, setTo] = useState<string>("")
+
 	const [selectedDate, setSelectedDate] = useState<string>(dayjs().year().toString())
 	const [reportSelection, setReportSelection] = useState<ReportType>("general")
 	const [selectedProfessional, setSelectedProfessional] = useState<SelectedProfessional>({ id: "", name: "" })
@@ -94,8 +93,7 @@ const StatisticsPage: React.FC = () => {
 			customRightSide={
 				<StatisticSelection
 					setReportSelection={setReportSelection}
-                    setSelectedProfessional=
-                    {setSelectedProfessional}
+					setSelectedProfessional={setSelectedProfessional}
 				/>
 			}
 		>

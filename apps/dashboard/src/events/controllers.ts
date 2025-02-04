@@ -12,7 +12,7 @@ export class EventsController {
 		private schemas: EventsSchemas,
 		private mailer: MailerService,
 		private service: EventService = new EventService(),
-	) { }
+	) {}
 
 	/**
 	 * Controlador para obtener un listado de eventos y un objeto con los eventos
@@ -81,8 +81,8 @@ export class EventsController {
 				where: {
 					start: { gte: eventStart, lte: eventEnd },
 					professionals: {
-						some: { id: professionalId }
-					}
+						some: { id: professionalId },
+					},
 				},
 			})
 

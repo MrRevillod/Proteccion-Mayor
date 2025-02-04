@@ -6,213 +6,208 @@ import { Prisma } from "@prisma/client"
 import { prisma } from "@repo/database"
 
 export type eventReportDict = {
-    [key: string]: any[]
+	[key: string]: any[]
 }
 export type eventSplitedDict = {
-    [key: string]: {
-        assistance: number,
-        absence: number,
-        unreserved: number
-    }
+	[key: string]: {
+		assistance: number
+		absence: number
+		unreserved: number
+	}
 }
 
 export type reportHead = {
-    from: string,
-    to: string,
-    centerName: string,
-    serviceName: string,
-    professionalName: string,
+	from: string
+	to: string
+	centerName: string
+	serviceName: string
+	professionalName: string
 }
 
 export class ReportsController {
 	constructor(private service: ReportsService) {}
 
+	public generateRangeStats: Controller = async (req, res, next) => {
+		try {
+			const head: reportHead = {
+				from: req.query.from as string,
+				to: req.query.to as string,
+				centerName: "",
+				serviceName: "",
+				professionalName: "",
+			}
 
-    public generateRangeStats: Controller = async (req, res, next) => {
-        try {
-            const head: reportHead = {
-                from: req.query.from as string,
-                to: req.query.to as string,
-                centerName: "",
-                serviceName: "",
-                professionalName: "",
-            }
+			const filters: Prisma.EventWhereInput[] = []
+			const from = req.query.from as string
+			const to = req.query.to as string
+			const centerId = req.query.centerId as string
+			const serviceId = req.query.serviceId as string
+			const professionalId = req.query.professionalId as string
 
-            const filters: Prisma.EventWhereInput[] = []
-            const from = req.query.from as string
-            const to = req.query.to as string
-            const centerId = req.query.centerId as string
-            const serviceId = req.query.serviceId as string
-            const professionalId = req.query.professionalId as string
+			const fromDate = dayjs(from)
+			const toDate = dayjs(to)
 
-            const fromDate = dayjs(from)
-            const toDate = dayjs(to)
+			if (!fromDate.isValid() || !toDate.isValid()) {
+				throw new AppError(400, "Invalid date range")
+			}
 
-            if (!fromDate.isValid() || !toDate.isValid()) {
-                throw new AppError(400, "Invalid date range")
-            }
+			if (fromDate.isAfter(toDate)) {
+				throw new AppError(400, "Invalid date range")
+			}
 
-            if (fromDate.isAfter(toDate)) {
-                throw new AppError(400, "Invalid date range")
-            }
+			let fromDay = fromDate.startOf("day")
+			let toDay = toDate.endOf("day")
 
-            let fromDay = fromDate.startOf("day")
-            let toDay = toDate.endOf("day")
+			if (centerId) {
+				filters.push({ centerId: Number(centerId) })
+			}
 
-            if (centerId) {
-                filters.push({ centerId: Number(centerId) })
-            }
+			if (serviceId) {
+				filters.push({ serviceId: Number(serviceId) })
+			}
 
-            if (serviceId) {
-                filters.push({ serviceId: Number(serviceId) })
-            }
+			if (professionalId) {
+				filters.push({ professionalId: professionalId })
+			}
 
-            if (professionalId) {
-                filters.push({ professionalId: professionalId })
-            }
+			let eventsParsedByDay: eventReportDict = {}
+			let assistance: [number, number][] = []
+			let absence: [number, number][] = []
+			let unreserved: [number, number][] = []
 
-            let eventsParsedByDay: eventReportDict = {}
-            let assistance: [number, number][] = []
-            let absence: [number, number][] = []
-            let unreserved: [number, number][] = []
+			const events = await prisma.event.findMany({
+				where: {
+					start: { gte: fromDate.startOf("day").toISOString() },
+					end: { lte: toDate.endOf("day").toISOString() },
+					AND: filters,
+				},
+				select: this.service.allSelect,
+				orderBy: { start: "asc" },
+			})
 
-            const events = await prisma.event.findMany({
-                where: {
-                    start: { gte: fromDate.startOf("day").toISOString() },
-                    end: { lte: toDate.endOf("day").toISOString() },
-                    AND: filters
+			if (professionalId) {
+				const professional = await prisma.professional.findUnique({ where: { id: professionalId } })
+				head.professionalName = professional?.name || ""
+			}
 
-                },
-                select: this.service.allSelect,
-                orderBy: { start: "asc" },
-            })
+			if (serviceId) {
+				const service = await prisma.service.findUnique({ where: { id: Number(serviceId) } })
+				head.serviceName = service?.name || ""
+			}
 
-            console.log(events)
-            if (professionalId) {
-                const professional = await prisma.professional.findUnique({ where: { id: professionalId } })
-                head.professionalName = professional?.name || ""
-            }
+			if (centerId) {
+				const center = await prisma.center.findUnique({ where: { id: Number(centerId) } })
+				head.centerName = center?.name || ""
+			}
 
-            if (serviceId) {
-                const service = await prisma.service.findUnique({ where: { id: Number(serviceId) } })
-                head.serviceName = service?.name || ""
-            }
+			events.map((event) => {
+				const dayISO = event.start.toISOString().split("T")[0] + "T00:00:00.000Z"
+				if (!eventsParsedByDay[dayISO]) {
+					eventsParsedByDay[dayISO] = []
+				}
+				eventsParsedByDay[dayISO].push(event)
+			})
+			const days = Object.keys(eventsParsedByDay)
+			// crear un arreglo con todas las fechas desde from hasta to
 
-            if (centerId) {
-                const center = await prisma.center.findUnique({ where: { id: Number(centerId) } })
-                head.centerName = center?.name || ""
-            }
+			let curDay = fromDay
+			while (curDay.isBefore(toDay)) {
+				const dayISO = curDay.toISOString().split("T")[0] + "T00:00:00.000Z"
+				if (days.indexOf(dayISO) === -1) {
+					absence.push([new Date(dayISO).getTime(), 0])
+					assistance.push([new Date(dayISO).getTime(), 0])
+					unreserved.push([new Date(dayISO).getTime(), 0])
+				} else {
+					const events = eventsParsedByDay[dayISO]
+					const assistances = events.filter((event) => event.assistance)
+					const absences = events.filter((event) => !event.assistance)
+					const unreserveds = events.filter((event) => !event.seniorId)
 
-            events.map(event => {
-                const dayISO = event.start.toISOString().split("T")[0] + "T00:00:00.000Z"
-                if (!eventsParsedByDay[dayISO]) {
-                    eventsParsedByDay[dayISO] = []
-                }
-                eventsParsedByDay[dayISO].push(event)
-            })
-            const days = Object.keys(eventsParsedByDay)
-            // crear un arreglo con todas las fechas desde from hasta to 
+					absence.push([new Date(dayISO).getTime(), absences.length])
+					assistance.push([new Date(dayISO).getTime(), assistances.length])
+					unreserved.push([new Date(dayISO).getTime(), unreserveds.length])
+				}
+				curDay = curDay.add(1, "day")
+			}
 
-            let curDay = fromDay
-            while (curDay.isBefore(toDay)) {
-                const dayISO = curDay.toISOString().split("T")[0] + "T00:00:00.000Z"
-                if (days.indexOf(dayISO) === -1) {
-                    absence.push([new Date(dayISO).getTime(), 0])
-                    assistance.push([new Date(dayISO).getTime(), 0])
-                    unreserved.push([new Date(dayISO).getTime(), 0])
-                } else {
-                    const events = eventsParsedByDay[dayISO]
-                    const assistances = events.filter(event => event.assistance)
-                    const absences = events.filter(event => !event.assistance)
-                    const unreserveds = events.filter(event => !event.seniorId)
+			const professional = !professionalId
+				? serviceId
+					? await this.service.splitByProfessional(events, Number(serviceId))
+					: await this.service.splitByProfessional(events)
+				: {}
 
-                    absence.push([new Date(dayISO).getTime(), absences.length])
-                    assistance.push([new Date(dayISO).getTime(), assistances.length])
-                    unreserved.push([new Date(dayISO).getTime(), unreserveds.length])
+			res.json({
+				values: {
+					head,
+					absence,
+					assistance,
+					unreserved,
+					splitted: {
+						center: !centerId ? await this.service.splitByCenter(events) : {},
+						service: !serviceId ? await this.service.splitByService(events) : {},
+						professional: professional,
+					},
+				},
+			})
+		} catch (error) {
+			next(error)
+		}
+	}
 
-                }
-                curDay = curDay.add(1, "day")
-            }
-            
-            const professional = !professionalId ? (serviceId ? await this.service.splitByProfessional(events, Number(serviceId)) :
-                await this.service.splitByProfessional(events)) : {}
+	public generateRangeDocument: Controller = async (req, res, next) => {
+		try {
+			const filters: Prisma.EventWhereInput[] = []
 
-            res.json({
-                values: {
-                    head,
-                    absence, assistance, unreserved,
-                    splitted: {
-                        center: !centerId ? await this.service.splitByCenter(events) : {},
-                        service: !serviceId ? await this.service.splitByService(events) : {},
-                        professional: professional 
-                    }
-                },
-            })
+			const from = req.query.from as string
+			const to = req.query.to as string
+			const centerId = req.query.centerId as string
+			const serviceId = req.query.serviceId as string
+			const professionalId = req.query.professionalId as string
 
-        } catch (error) {
-            next(error)
-        }
-    }
+			const fromDate = dayjs(from)
+			const toDate = dayjs(to)
 
-    public generateRangeDocument: Controller = async (req, res, next) => {
-        try {
-            const filters: Prisma.EventWhereInput[] = []
+			if (!fromDate.isValid() || !toDate.isValid()) {
+				throw new AppError(400, "Invalid date range")
+			}
 
-            const from = req.query.from as string
-            const to = req.query.to as string
-            const centerId = req.query.centerId as string
-            const serviceId = req.query.serviceId as string
-            const professionalId = req.query.professionalId as string
+			if (fromDate.isAfter(toDate)) {
+				throw new AppError(400, "Invalid date range")
+			}
 
-            const fromDate = dayjs(from)
-            const toDate = dayjs(to)
+			if (centerId) {
+				filters.push({ centerId: Number(centerId) })
+			}
 
-            if (!fromDate.isValid() || !toDate.isValid()) {
-                throw new AppError(400, "Invalid date range")
-            }
+			if (serviceId) {
+				filters.push({ serviceId: Number(serviceId) })
+			}
 
-            if (fromDate.isAfter(toDate)) {
-                throw new AppError(400, "Invalid date range")
-            }
+			if (professionalId) {
+				filters.push({ professionalId: professionalId })
+			}
+			const events = await prisma.event.findMany({
+				where: {
+					start: { gte: fromDate.startOf("day").toISOString() },
+					end: { lte: toDate.endOf("day").toISOString() },
+					AND: filters,
+				},
+				select: this.service.allSelect,
+				orderBy: { start: "asc" },
+			})
 
-
-            if (centerId) {
-                filters.push({ centerId: Number(centerId) })
-            }
-
-            if (serviceId) {
-                filters.push({ serviceId: Number(serviceId) })
-            }
-
-            if (professionalId) {
-                filters.push({ professionalId: professionalId })
-            }
-            const events = await prisma.event.findMany({
-                where: {
-                    start: { gte: fromDate.startOf("day").toISOString() },
-                    end: { lte: toDate.endOf("day").toISOString() },
-                    AND: filters
-
-                },
-                select: this.service.allSelect,
-                orderBy: { start: "asc" },
-            })
-
-            documents.generarExcel(events).then((buffer: Buffer) => {
-                res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-                res.setHeader('Content-Disposition', 'attachment; filename=reporte.xlsx')
-                res.send(buffer)
-            }).catch((error: any) => {
-                next(error)
-            })
-            console.log(events)
-
-        } catch (error) {
-            next(error)
-        }
-    }
-
-
-
-
+			documents
+				.generarExcel(events)
+				.then((buffer: Buffer) => {
+					res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+					res.setHeader("Content-Disposition", "attachment; filename=reporte.xlsx")
+					res.send(buffer)
+				})
+				.catch((error: any) => {
+					next(error)
+				})
+		} catch (error) {
+			next(error)
+		}
+	}
 }

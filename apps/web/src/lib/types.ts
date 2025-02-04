@@ -192,28 +192,22 @@ export const RSH = {
 	RSH_91_100: "91-100%",
 }
 
-
-
-
-
-
-
-export type Splitted = { [key: string]: { assistance: number, absence: number, unreserved: number } }
+export type Splitted = { [key: string]: { assistance: number; absence: number; unreserved: number } }
 
 export type reportHead = {
-	from: string,
-	to: string,
-	centerName: string,
-	serviceName: string,
-	professionalName: string,
+	from: string
+	to: string
+	centerName: string
+	serviceName: string
+	professionalName: string
 }
 
 export type ProfessionalTableRow = {
-	id: string,
-	professionalName: string,
-	assistance: number,
-	absence: number,
-	unreserved: number,
+	id: string
+	professionalName: string
+	assistance: number
+	absence: number
+	unreserved: number
 	total: number
 }
 
@@ -227,10 +221,8 @@ export type Report = {
 		service: Splitted
 		professional: Splitted
 	}
-
 }
 
 export type StatisticResponse = {
 	report: Report[]
-
 }

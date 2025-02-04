@@ -11,7 +11,7 @@ export class SeniorController {
 		private schemas: SeniorSchemas,
 		private storage: StorageService,
 		private mailer: MailerService,
-	) { }
+	) {}
 
 	/**
 	 * Controlador para obtener a 
@@ -106,8 +106,7 @@ export class SeniorController {
 					birthDate: new Date(birthDate),
 					gender,
 					validated: true,
-					registeredBy
-
+					registeredBy,
 				},
 				select: this.schemas.defaultSelect,
 			})

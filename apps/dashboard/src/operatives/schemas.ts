@@ -3,7 +3,6 @@ import { Prisma } from "@prisma/client"
 import { rules, Schema } from "@repo/lib"
 
 export class OperativesSchemas extends Schema {
-
 	get query() {
 		return z.object({
 			professionalId: z.string().optional(),

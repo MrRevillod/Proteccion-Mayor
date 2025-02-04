@@ -14,6 +14,7 @@ import { SuperSelect } from "@/components/ui/SuperSelect"
 import { useRequest } from "@/hooks/useRequest"
 import { selectDataFormatter } from "@/lib/formatters"
 import { message } from "antd"
+import { Show } from "@/components/ui/Show"
 
 export const UpdateStaff: React.FC<FormProps<Staff>> = ({ data, setData }) => {
 	const [loading, setLoading] = useState(false)
@@ -46,6 +47,7 @@ export const UpdateStaff: React.FC<FormProps<Staff>> = ({ data, setData }) => {
 	})
 
 	if (error) message.error("Error al cargar los datos")
+
 	return (
 		<Modal type="Edit" title={`Editar la información de ${selectedData?.name}`} loading={loading}>
 			<FormProvider {...methods}>
@@ -60,21 +62,14 @@ export const UpdateStaff: React.FC<FormProps<Staff>> = ({ data, setData }) => {
 					<Input name="email" label="Correo Electrónico" type="email" placeholder="Correo Electrónico" />
 					<Input name="password" label="Contraseña" type="password" placeholder="••••" />
 					<Input name="confirmPassword" label="Confirmar contraseña" type="password" placeholder="••••" />
-					<SuperSelect
-						name="role"
-						label="Rol"
-						options={[
-							{ label: "Administrador", value: "ADMIN" },
-							{ label: "Funcionario", value: "FUNCTIONARY" },
-						]}
-						placeholder="Escoja un rol"
-					/>
-					<SuperSelect
-						name="centerId"
-						label="Centro"
-						options={centers}
-						placeholder="Escoja un centro para el funcionario"
-					/>
+					<Show when={methods.watch("role") === "FUNCTIONARY"}>
+						<SuperSelect
+							name="centerId"
+							label="Centro"
+							options={centers}
+							placeholder="Escoja un centro para el funcionario"
+						/>
+					</Show>
 				</Form>
 			</FormProvider>
 		</Modal>

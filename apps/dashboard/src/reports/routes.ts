@@ -8,17 +8,16 @@ export class ReportsRouter extends Router {
 	) {
 		super({ prefix: "/api/dashboard/reports" })
 
-        this.get({
-            path: "/",
-            handler: this.controller.generateRangeStats,
-            middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL",])],
-        })
+		this.get({
+			path: "/",
+			handler: this.controller.generateRangeStats,
+			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL"])],
+		})
 
-        this.get({
-            path: "/report-document",
-            handler: this.controller.generateRangeDocument,
-            middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL",])],
-        })
-
+		this.get({
+			path: "/report-document",
+			handler: this.controller.generateRangeDocument,
+			middlewares: [this.auth.authorize(["ADMIN", "PROFESSIONAL"])],
+		})
 	}
 }

@@ -10,7 +10,7 @@ export class OperativesController {
 		private schemas: OperativesSchemas,
 		private eventService: EventService = new EventService(),
 		private mailer: MailerService,
-	) { }
+	) {}
 
 	/**
 	 * Controlador para obtener un listado de eventos y un objeto con los eventos
@@ -26,19 +26,20 @@ export class OperativesController {
 
 	public getMany: Controller = async (req, res, handleError) => {
 		try {
-
 			const query = this.schemas.query.parse(req.query)
 			const professionalId = query.professionalId
 
 			const operativos = await prisma.operative.findMany({
 				select: this.schemas.defaultSelect,
 				where: {
-					professionals: professionalId ? {
-						some: {
-							id: professionalId
-						}
-					} : undefined
-				}
+					professionals: professionalId
+						? {
+								some: {
+									id: professionalId,
+								},
+							}
+						: undefined,
+				},
 			})
 
 			const operatives = this.eventService.format([], operativos)
@@ -138,10 +139,10 @@ export class OperativesController {
 						: undefined,
 					professionals: professionals
 						? {
-							set: professionals.map((professionalId: string) => ({
-								id: professionalId,
-							})),
-						}
+								set: professionals.map((professionalId: string) => ({
+									id: professionalId,
+								})),
+							}
 						: undefined,
 				},
 			})

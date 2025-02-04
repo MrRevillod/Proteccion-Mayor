@@ -73,13 +73,29 @@ export const SeniorSchemas = {
 }
 
 export const StaffSchemas = {
-	Create: z.object({
-		id: rules.rutSchema,
-		name: rules.nameSchema,
-		email: rules.emailSchema,
-		role: rules.staffRoleSchema,
-		centerId: z.coerce.number().optional(),
-	}),
+	Create: z
+		.object({
+			id: rules.rutSchema,
+			name: rules.nameSchema,
+			email: rules.emailSchema,
+			role: rules.staffRoleSchema,
+			centerId: z.coerce.number().optional(),
+		})
+		.refine(
+			(data) => {
+				if (data.role === "ADMIN") {
+					return data.centerId === undefined
+				}
+				if (data.role === "FUNCTIONARY") {
+					return data.centerId !== undefined
+				}
+				return true
+			},
+			{
+				message: "El centro es obligatorio para FUNCTIONARY y debe estar vacío para ADMIN",
+				path: ["centerId"],
+			},
+		),
 
 	Update: z
 		.object({
