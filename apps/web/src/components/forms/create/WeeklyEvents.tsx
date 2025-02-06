@@ -1,4 +1,4 @@
-import dayjs from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
 import React, { useEffect, useState } from "react"
 import { message } from "antd"
 import { FormProvider, useForm } from "react-hook-form"
@@ -16,8 +16,10 @@ import { DatetimeSelect } from "@/components/ui/DatetimeSelect"
 import { getProfessionals } from "@/lib/actions"
 import { selectDataFormatter } from "@/lib/formatters"
 import { Center, Professional, SuperSelectField } from "@/lib/types"
-import "dayjs/locale/es";
-dayjs.locale("es");
+
+import "dayjs/locale/es"
+dayjs.locale("es")
+
 interface Props {
 	centers: Center[]
 	formattedCenters: SuperSelectField[]
@@ -92,8 +94,13 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 				return false
 			}
 
-			start = dayjs(start)
-			end = dayjs(end)
+			start = dayjs(start) as Dayjs
+			end = dayjs(end) as Dayjs
+
+			if (isWeekend(start.toISOString()) || isWeekend(end.toISOString())) {
+				message.error("No es posible crear eventos los fines de semana.")
+				return false
+			}
 
 			if (start.isAfter(end)) {
 				message.error("La fecha de término debe ser posterior a la de inicio.")
