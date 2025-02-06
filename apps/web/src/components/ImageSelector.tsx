@@ -16,7 +16,6 @@ interface ImageSelectorProps {
 }
 
 export const ImageSelector: React.FC<ImageSelectorProps> = ({ imageLabel, ...props }) => {
-
 	const { imageFile, setImageFile, size, name = "image" } = props
 
 	const {
@@ -80,9 +79,7 @@ export const ImageSelector: React.FC<ImageSelectorProps> = ({ imageLabel, ...pro
 
 							<div className="flex flex-row justify-center w-full rounded-lg cursor-pointer">
 								<div className="flex flex-col gap-1">
-									{errors[name] && (
-										<p className="text-red">{errors[name].message?.toString()}</p>
-									)}
+									{errors[name] && <p className="text-red">{errors[name].message?.toString()}</p>}
 									<p className="text-neutral-500 dark:text-gray-light">
 										Haga click para subir una imagen
 									</p>

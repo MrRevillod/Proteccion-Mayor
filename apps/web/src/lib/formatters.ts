@@ -54,7 +54,13 @@ interface SelectDataFormatterProps {
 
 const defaultSelectKeys = { label: "name", value: "id" }
 
-export const selectDataFormatter = ({ data, setData, keys = defaultSelectKeys, allString = false, addAll = false }: SelectDataFormatterProps) => {
+export const selectDataFormatter = ({
+	data,
+	setData,
+	keys = defaultSelectKeys,
+	allString = false,
+	addAll = false,
+}: SelectDataFormatterProps) => {
 	let newData = [] as SuperSelectField[]
 
 	if (allString) {
@@ -155,5 +161,9 @@ export const chartSeriesFormatter = (data: Splitted) => {
 		sinReservar.push(dato.unreserved)
 	}
 
-	return [{ name: "Ausencias", data: ausencias }, { name: "Asistencias", data: asistencias }, { name: "Sin reservar", data: sinReservar }]
+	return [
+		{ name: "Ausencias", data: ausencias },
+		{ name: "Asistencias", data: asistencias },
+		{ name: "Sin reservar", data: sinReservar },
+	]
 }

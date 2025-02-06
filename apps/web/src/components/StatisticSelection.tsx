@@ -17,7 +17,10 @@ interface StatisticSelectionProps {
 	setSelectedProfessional: Dispatch<SetStateAction<SelectedProfessional>>
 }
 
-export const StatisticSelection: React.FC<StatisticSelectionProps> = ({ setReportSelection, setSelectedProfessional }) => {
+export const StatisticSelection: React.FC<StatisticSelectionProps> = ({
+	setReportSelection,
+	setSelectedProfessional,
+}) => {
 	const methods = useForm({})
 
 	const { watch } = methods
@@ -60,9 +63,8 @@ export const StatisticSelection: React.FC<StatisticSelectionProps> = ({ setRepor
 				</Show>
 
 				<div className={clsx(statisticSelection === "byProfessional" ? "w-1/2" : "w-full flex")}>
-                    <DatetimeSelect label="Desde" name="from" />
+					<DatetimeSelect label="Desde" name="from" />
 					<DatetimeSelect label="Hasta" name="to" />
-                    
 				</div>
 			</form>
 		</FormProvider>

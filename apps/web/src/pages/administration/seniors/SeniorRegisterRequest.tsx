@@ -112,7 +112,7 @@ const SeniorRegisterRequestPage: React.FC = () => {
 			<section
 				className={clsx(
 					(loading || imageLoading) && "opacity-50",
-					"bg-white dark:bg-primary-dark px-4 py-8 rounded-lg flex flex-row gap-12"
+					"bg-white dark:bg-primary-dark px-4 py-8 rounded-lg flex flex-row gap-12",
 				)}
 			>
 				{(loading || imageLoading) && <Loading />}

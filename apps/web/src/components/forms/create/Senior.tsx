@@ -47,7 +47,6 @@ export const CreateSenior: React.FC<FormProps<Senior>> = ({ refetch }) => {
 	const mutation = useMutation({ mutateFn: createSenior })
 
 	const onSubmit = async (data: any) => {
-
 		setLoading(true)
 
 		try {
@@ -69,7 +68,7 @@ export const CreateSenior: React.FC<FormProps<Senior>> = ({ refetch }) => {
 
 			await mutation.mutate({
 				params: { body: formattedBody },
-				onError: (error) => handleFormError(error, methods.setError)
+				onError: (error) => handleFormError(error, methods.setError),
 			})
 
 			refetch && refetch()
@@ -82,7 +81,6 @@ export const CreateSenior: React.FC<FormProps<Senior>> = ({ refetch }) => {
 
 			handleOk()
 			methods.reset()
-
 		} catch (error) {
 			message.error("Error. Intente nuevamente.")
 		}
@@ -98,18 +96,26 @@ export const CreateSenior: React.FC<FormProps<Senior>> = ({ refetch }) => {
 			</p>
 
 			<FormProvider {...methods}>
-
 				<div className="flex flex-col gap-2 w-full pb-6">
-
 					<form
 						className="flex flex-row gap-8 py-6 bg-light dark:bg-primary-dark rounded-lg"
 						onSubmit={methods.handleSubmit(onSubmit)}
 					>
-
 						<div className="flex flex-col gap-4 w-1/2">
-
-							<Input name="id" label="Rut (sin puntos ni guión)" type="text" placeholder="123456789" errorAlign="vertical" />
-							<Input name="name" label="Nombre" type="text" placeholder="Juan Perez" errorAlign="vertical" />
+							<Input
+								name="id"
+								label="Rut (sin puntos ni guión)"
+								type="text"
+								placeholder="123456789"
+								errorAlign="vertical"
+							/>
+							<Input
+								name="name"
+								label="Nombre"
+								type="text"
+								placeholder="Juan Perez"
+								errorAlign="vertical"
+							/>
 
 							<div className="flex flex-row gap-4 w-full items-center justify-between">
 								<div className="w-1/2">
@@ -138,19 +144,34 @@ export const CreateSenior: React.FC<FormProps<Senior>> = ({ refetch }) => {
 
 							<div className="flex flex-row gap-4 w-full items-center justify-between">
 								<div className="w-1/2">
-									<Input name="phone" label="Teléfono" type="text" placeholder="955473897" errorAlign="vertical" />
+									<Input
+										name="phone"
+										label="Teléfono"
+										type="text"
+										placeholder="955473897"
+										errorAlign="vertical"
+									/>
 								</div>
 								<div className="w-1/2">
-									<Input name="address" label="Dirección" type="text" placeholder="Montt #123" errorAlign="vertical" />
+									<Input
+										name="address"
+										label="Dirección"
+										type="text"
+										placeholder="Montt #123"
+										errorAlign="vertical"
+									/>
 								</div>
 							</div>
 
-							<DatetimeSelect label="Fecha de nacimiento" name="birthDate" showTime={false} errorAlign="vertical" />
-
+							<DatetimeSelect
+								label="Fecha de nacimiento"
+								name="birthDate"
+								showTime={false}
+								errorAlign="vertical"
+							/>
 						</div>
 
 						<div className="w-1/2 flex flex-col gap-4">
-
 							<SuperSelect
 								name="sectorId"
 								label="Selecciona el sector de residencia o atención"
@@ -168,11 +189,9 @@ export const CreateSenior: React.FC<FormProps<Senior>> = ({ refetch }) => {
 							/>
 
 							<ImageSelector size={[480, 300]} imageLabel="Cédula de identidad (lado delantero)" name="dni-a" />
-							<ImageSelector size={[400, 253]} imageLabel="Cédula de identidad (lado trasero)" name="dni-b" />
+							<ImageSelector size={[400, 300]} imageLabel="Cédula de identidad (lado trasero)" name="dni-b" />
 							<ImageSelector size={[400, 400]} imageLabel="Registro social de hogares" name="social" />
-
 						</div>
-
 					</form>
 
 					<div className="flex flex-row gap-4 w-full justify-end -mb-6">
@@ -184,8 +203,7 @@ export const CreateSenior: React.FC<FormProps<Senior>> = ({ refetch }) => {
 						</Button>
 					</div>
 				</div>
-
 			</FormProvider>
-		</Modal >
+		</Modal>
 	)
 }

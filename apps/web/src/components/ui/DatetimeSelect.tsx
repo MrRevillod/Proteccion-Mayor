@@ -14,7 +14,7 @@ interface DatetimeSelectProps {
 	width?: string
 	disabled?: boolean
 	disablePast?: boolean
-	onChange?: ((date: Dayjs, dateString: string | string[]) => void)
+	onChange?: (date: Dayjs, dateString: string | string[]) => void
 	errorAlign?: "horizontal" | "vertical"
 }
 
@@ -48,11 +48,12 @@ export const DatetimeSelect = ({
 
 	return (
 		<div className="flex flex-col gap-3">
-			<div className={clsx(
-				errorAlign === "horizontal" && "flex gap-2 flex-row items-center justify-between",
-				errorAlign === "vertical" && "flex flex-col gap-2",
-
-			)}>
+			<div
+				className={clsx(
+					errorAlign === "horizontal" && "flex gap-2 flex-row items-center justify-between",
+					errorAlign === "vertical" && "flex flex-col gap-2",
+				)}
+			>
 				<label className="font-semibold text-dark dark:text-light">{label}</label>
 				{errors[name] && <div className="text-red text-sm">{errors[name]?.message?.toString()}</div>}
 			</div>
@@ -61,7 +62,6 @@ export const DatetimeSelect = ({
 				name={name}
 				render={({ field }) => (
 					<DatePicker
-
 						{...field}
 						className={classes}
 						showTime={

@@ -41,7 +41,6 @@ export const Calendar: React.FC<CalendarProps> = ({ events, operatives }) => {
 	}, [events, operatives])
 
 	const getEventOrOperativeById = (id: string): Operative | Event => {
-		console.log(combinedById)
 		return combinedById[id]
 	}
 
@@ -93,7 +92,6 @@ export const Calendar: React.FC<CalendarProps> = ({ events, operatives }) => {
 
 	const handleEdit = (info: any) => {
 		const eventOrOperative = getEventOrOperativeById(info.event.id)
-		console.log(info.event.id)
 
 		if (!eventOrOperative) {
 			return message.info("Evento u Operativo no encontrado")

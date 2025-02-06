@@ -8,90 +8,98 @@ import { AiFillEdit, AiFillDelete, AiFillEye, AiOutlineHistory, AiFillCalendar, 
 import { Show } from "./ui/Show"
 
 interface TableProps<T> {
-    data: T[]
-    columnsConfig: TableColumnType<T>
-    loading?: boolean
-    viewable?: boolean
-    history?: boolean
-    editable?: boolean
-    deletable?: boolean
-    downloadable?: boolean
-    onView?: (record: T) => void
-    onHistory?: (record: T) => void
-    onDownloadAgenda?: (record: T) => void
-    scroll?: { y: number | string }
+	data: T[]
+	columnsConfig: TableColumnType<T>
+	loading?: boolean
+	viewable?: boolean
+	history?: boolean
+	editable?: boolean
+	deletable?: boolean
+	downloadable?: boolean
+	onView?: (record: T) => void
+	onHistory?: (record: T) => void
+	onDownloadAgenda?: (record: T) => void
+	scroll?: { y: number | string }
 }
 
 export const Table = <T extends BaseDataType>({ data, ...props }: TableProps<T>) => {
-    const { columnsConfig, loading, editable, deletable, history, viewable, onView, onHistory, downloadable, onDownloadAgenda } =
-        props
+	const {
+		columnsConfig,
+		loading,
+		editable,
+		deletable,
+		history,
+		viewable,
+		onView,
+		onHistory,
+		downloadable,
+		onDownloadAgenda,
+	} = props
 
-    const { showModal } = useModal()
+	const { showModal } = useModal()
 
-    return (
-        <DataTable
-            {...props}
-        loading={loading}
-            dataSource={data}
-            rowKey={(record) => record.id}
-            size="middle"
-            pagination={{ size: "default", position: ["bottomRight"] }}
-            tableLayout="fixed"
+	return (
+		<DataTable
+			{...props}
+			loading={loading}
+			dataSource={data}
+			rowKey={(record) => record.id}
+			size="middle"
+			pagination={{ size: "default", position: ["bottomRight"] }}
+			tableLayout="fixed"
+		>
+			{columnsConfig.map((col) => (
+				<DataTable.Column
+					key={col.key}
+					title={col.title}
+					dataIndex={col.dataIndex as string}
+					sorter={col.sorter}
+					render={(value: any) => {
+						if (tableColumnsFormatters[col.key as keyof typeof tableColumnsFormatters]) {
+							const colKey = col.key as keyof typeof tableColumnsFormatters
+							return tableColumnsFormatters[colKey](value as never)
+						}
 
-        >
-            {columnsConfig.map((col) => (
-                <DataTable.Column
-                    key={col.key}
-                    title={col.title}
-                    dataIndex={col.dataIndex as string}
-                    sorter={col.sorter}
-                    render={(value: any) => {
-                        if (tableColumnsFormatters[col.key as keyof typeof tableColumnsFormatters]) {
-                            const colKey = col.key as keyof typeof tableColumnsFormatters
-                            return tableColumnsFormatters[colKey](value as never)
-                        }
+						return value
+					}}
+				/>
+			))}
 
-                        return value
-                    }}
-
-                />
-            ))}
-
-            {Boolean(editable || deletable || history || viewable) &&
-                <DataTable.Column
-                    title="Administrar"
-                    key="action"
-                    render={(_, record: T) => (
-                        <Space size="large">
-                            {editable && (
-                                <a title="Editar" onClick={() => showModal("Edit", record)}>
-                                    <AiFillEdit className="text-primary dark:text-light text-md font-light h-6 w-6" />
-                                </a>
-                            )}
-                            {deletable && (
-                                <a title="Eliminar" onClick={() => showModal("Confirm", record)}>
-                                    <AiFillDelete className="text-red dark:text-light text-md font-light h-6 w-6" />
-                                </a>
-                            )}
-                            {history && onHistory && (
-                                <a title="Historial" onClick={() => onHistory(record)}>
-                                    <AiOutlineHistory className="text-blue dark:text-light text-md font-light h-6 w-6" />
-                                </a>
-                            )}
-                            {viewable && onView && (
-                                <a title="Ver" onClick={() => onView(record)}>
-                                    <AiFillEye className="text-blue dark:text-light text-md font-light h-6 w-6" />
-                                </a>
-                            )}
-                            {downloadable && onDownloadAgenda && (
-                                <a title="Descargar agenda" onClick={() => onDownloadAgenda(record)}>
-                                    <AiFillCalendar className="text-green dark:text-light text-md font-light h-6 w-6" />
-                                </a>
-                            )}
-                        </Space>
-                    )}
-                />
-            }
-        </DataTable>
-    )
+			{Boolean(editable || deletable || history || viewable) && (
+				<DataTable.Column
+					title="Administrar"
+					key="action"
+					render={(_, record: T) => (
+						<Space size="large">
+							{editable && (
+								<a title="Editar" onClick={() => showModal("Edit", record)}>
+									<AiFillEdit className="text-primary dark:text-light text-md font-light h-6 w-6" />
+								</a>
+							)}
+							{deletable && (
+								<a title="Eliminar" onClick={() => showModal("Confirm", record)}>
+									<AiFillDelete className="text-red dark:text-light text-md font-light h-6 w-6" />
+								</a>
+							)}
+							{history && onHistory && (
+								<a title="Historial" onClick={() => onHistory(record)}>
+									<AiOutlineHistory className="text-blue dark:text-light text-md font-light h-6 w-6" />
+								</a>
+							)}
+							{viewable && onView && (
+								<a title="Ver" onClick={() => onView(record)}>
+									<AiFillEye className="text-blue dark:text-light text-md font-light h-6 w-6" />
+								</a>
+							)}
+							{downloadable && onDownloadAgenda && (
+								<a title="Descargar agenda" onClick={() => onDownloadAgenda(record)}>
+									<AiFillCalendar className="text-green dark:text-light text-md font-light h-6 w-6" />
+								</a>
+							)}
+						</Space>
+					)}
+				/>
+			)}
+		</DataTable>
+	)
 }

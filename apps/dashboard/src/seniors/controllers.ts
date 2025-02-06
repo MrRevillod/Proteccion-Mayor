@@ -11,7 +11,7 @@ export class SeniorController {
 		private schemas: SeniorSchemas,
 		private storage: StorageService,
 		private mailer: MailerService,
-	) { }
+	) {}
 
 	/**
 	 * Controlador para obtener a las personas mayores registradas en la base de datos
@@ -104,8 +104,7 @@ export class SeniorController {
 					birthDate: new Date(birthDate),
 					gender,
 					validated: true,
-					registeredBy
-
+					registeredBy,
 				},
 				select: this.schemas.defaultSelect,
 			})

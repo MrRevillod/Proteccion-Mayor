@@ -12,17 +12,19 @@ export const OperativeDetails: React.FC = () => {
 		return
 	}
 
-	const groupedProfessionals = operative?.professionals.reduce((acc, professional) => {
-		const serviceTitle = professional.service?.title || "Sin servicio"
+	const groupedProfessionals = operative?.professionals.reduce(
+		(acc, professional) => {
+			const serviceTitle = professional.service?.title || "Sin servicio"
 
-		if (!acc[serviceTitle]) {
-			acc[serviceTitle] = []
-		}
-		acc[serviceTitle].push(professional)
+			if (!acc[serviceTitle]) {
+				acc[serviceTitle] = []
+			}
+			acc[serviceTitle].push(professional)
 
-		return acc
-	}, {} as Record<string, any[]>)
-	console.log(operative?.start)
+			return acc
+		},
+		{} as Record<string, any[]>,
+	)
 
 	return (
 		<Modal type="Details" title={`Detalles del operativo: ${operative?.name}`}>
@@ -59,9 +61,7 @@ export const OperativeDetails: React.FC = () => {
 										))}
 									</div>
 								</div>
-
-							))
-							}
+							))}
 						</div>
 					</div>
 				</div>

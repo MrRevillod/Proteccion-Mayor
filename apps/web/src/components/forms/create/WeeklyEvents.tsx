@@ -109,7 +109,7 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 
 			try {
 				await api.get(
-					`/dashboard/events/week-availability?professionalId=${selectedProfessionalId}&start=${start}&end=${end}`
+					`/dashboard/events/week-availability?professionalId=${selectedProfessionalId}&start=${start}&end=${end}`,
 				)
 			} catch (error: any) {
 				if (error.response && error.response.status === 409) {
@@ -151,17 +151,20 @@ export const CreateWeeklyEvents: React.FC<Props> = ({ centers, services, formatt
 	const handlePreviousStep = () => setFormStep((prev) => Math.max(prev - 1, 1))
 
 	const reduceWeekDays = (): Record<string, any> => {
-		return weekDays.reduce((acc, { date }) => {
-			const centerId = getValues(`${date}-centerId`)
-			acc[date] = {
-				centerId,
-				events: Array.from({ length: dailySessions[date] }).map((_, index) => ({
-					start: getValues(`${date}[${index}].start`),
-					end: getValues(`${date}[${index}].end`),
-				})),
-			}
-			return acc
-		}, {} as Record<string, any>)
+		return weekDays.reduce(
+			(acc, { date }) => {
+				const centerId = getValues(`${date}-centerId`)
+				acc[date] = {
+					centerId,
+					events: Array.from({ length: dailySessions[date] }).map((_, index) => ({
+						start: getValues(`${date}[${index}].start`),
+						end: getValues(`${date}[${index}].end`),
+					})),
+				}
+				return acc
+			},
+			{} as Record<string, any>,
+		)
 	}
 
 	const handleSubmit = async () => {

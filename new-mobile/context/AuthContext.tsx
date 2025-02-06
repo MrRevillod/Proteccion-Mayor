@@ -61,7 +61,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 			eventEmitter.emit("session-started")
 		} catch (error: any) {
-			console.log(error)
 			setError(error.response?.data?.message || "Error al iniciar sesión")
 			setUser(null)
 			setIsAuthenticated(false)
