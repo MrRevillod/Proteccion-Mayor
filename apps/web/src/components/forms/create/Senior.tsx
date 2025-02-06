@@ -64,7 +64,7 @@ export const CreateSenior: React.FC<FormProps<Senior>> = ({ refetch }) => {
 
 			formattedBody.append("dni-a", data["dni-a"], "dni-a")
 			formattedBody.append("dni-b", data["dni-b"], "dni-b")
-			formattedBody.append("social", data.social)
+			formattedBody.append("social", data.social, "social")
 
 			await mutation.mutate({
 				params: { body: formattedBody },
@@ -188,16 +188,8 @@ export const CreateSenior: React.FC<FormProps<Senior>> = ({ refetch }) => {
 								options={Object.keys(RSH).map((key) => ({ value: key, label: RSH[key] }))}
 							/>
 
-							<ImageSelector
-								size={[400, 400]}
-								imageLabel="Cédula de identidad (lado delantero)"
-								name="dni-a"
-							/>
-							<ImageSelector
-								size={[400, 400]}
-								imageLabel="Cédula de identidad (lado trasero)"
-								name="dni-b"
-							/>
+							<ImageSelector size={[480, 300]} imageLabel="Cédula de identidad (lado delantero)" name="dni-a" />
+							<ImageSelector size={[400, 300]} imageLabel="Cédula de identidad (lado trasero)" name="dni-b" />
 							<ImageSelector size={[400, 400]} imageLabel="Registro social de hogares" name="social" />
 						</div>
 					</form>

@@ -172,6 +172,7 @@ const SeniorRegisterRequestPage: React.FC = () => {
 									options={[
 										{ value: "MA", label: "Masculino" },
 										{ value: "FE", label: "Femenino" },
+										{ value: "OTHERS", label: "Otro" },
 									]}
 								/>
 							</div>
